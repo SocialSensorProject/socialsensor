@@ -1,0 +1,14 @@
+edu/oregonstate/spark/sensor/GroupLagTime$2.class
+edu/oregonstate/spark/datafilter/BenchMarkTask$1.class
+edu/oregonstate/spark/datafilter/BenchMarkTask.class
+edu/oregonstate/spark/sensor/GroupLagTime$1.class
+edu/oregonstate/spark/sensor/GroupLagTime$3.class
+edu/oregonstate/spark/datafilter/BenchMarkTask$5.class
+edu/oregonstate/spark/sensor/GroupLagTime$4.class
+edu/oregonstate/spark/datafilter/BenchMarkTask$4.class
+edu/oregonstate/spark/outputfilter/ReadOutputParquets$1.class
+edu/oregonstate/spark/outputfilter/ReadOutputParquets.class
+edu/oregonstate/spark/sensor/GroupLagTime.class
+edu/oregonstate/spark/datafilter/BenchMarkTask$2.class
+edu/oregonstate/hadoop/SampleHadoopClass.class
+edu/oregonstate/spark/datafilter/BenchMarkTask$3.class
