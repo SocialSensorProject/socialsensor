@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class LagTime3 implements Serializable {
+public class GroupLagTime implements Serializable {
     private static String hdfsPath =
             "hdfs://ec2-52-2-187-99.compute-1.amazonaws.com:9000/";
     private static String dataPath = hdfsPath + "zaradata/input/";

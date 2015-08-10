@@ -13,7 +13,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ReadTable implements Serializable {
+public class ReadOutputParquets implements Serializable {
     private static String dataPath = "Cluster_results/clusterResults/";
 
     public static void main(String args[]) throws IOException, InterruptedException {
