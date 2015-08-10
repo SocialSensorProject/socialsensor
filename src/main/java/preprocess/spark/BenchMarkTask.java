@@ -39,6 +39,7 @@ public class BenchMarkTask implements Serializable {
         // ----------------- USER MENTION NETWORK--------------------------------------
         x = mainData.select("screen_name", "text");
         getDirectedUserNetwork(x, sqlContext);
+        getGroupedUserMention(sqlContext);
         // ----------------- TWEET_ID USER--------------------------------------------
         x = mainData.select("id", "screen_name");
         getTweetUser(x, sqlContext);
@@ -51,13 +52,11 @@ public class BenchMarkTask implements Serializable {
                 new FlatMapFunction<Row, Row>() {
                     @Override
                     public Iterable<Row> call(Row row) throws Exception {
-                        String username;
-                        username = row.get(0).toString();
-                        ArrayList<Row> list = new ArrayList<>();
+                       ArrayList<Row> list = new ArrayList<>();
                         SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
                         long epochSec = format.parse(row.get(2).toString()).getTime();
                         for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
-                            list.add(RowFactory.create(username, word.toLowerCase(), epochSec));
+                            list.add(RowFactory.create(row.getString(0).toLowerCase(), word.toLowerCase(), epochSec));
                         }
                         return list;
                     }
@@ -124,7 +123,7 @@ public class BenchMarkTask implements Serializable {
         JavaRDD<Row> tweet_user = tweetUser.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
-                return RowFactory.create(row.getLong(0), row.get(1).toString());
+                return RowFactory.create(row.getLong(0), row.getString(0).toLowerCase());
             }
         });
         StructField[] fields = {
@@ -140,11 +139,9 @@ public class BenchMarkTask implements Serializable {
                 new FlatMapFunction<Row, Row>() {
                     @Override
                     public Iterable<Row> call(Row row) throws Exception {
-                        String username;
-                        username = row.get(0).toString();
                         ArrayList<Row> list = new ArrayList<>();
                         for (String word : hmExtractor.extractMentionedScreennames(row.get(1).toString())) {
-                            list.add(RowFactory.create(username, word));
+                            list.add(RowFactory.create(row.getString(0).toLowerCase(), word.toLowerCase()));
                         }
                         return list;
                     }
@@ -162,6 +159,46 @@ public class BenchMarkTask implements Serializable {
         if(flag)
             data.write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(outputPath + folderName + "_csv");
         data.write().mode(SaveMode.Overwrite).parquet(outputPath + folderName + "_parquet");
+    }
+
+    public static void getGroupedUserMention(SQLContext sqlContext){
+        DataFrame user_mention = sqlContext.read().parquet(outputPath + "user_mention_parquet").coalesce(3*16);
+        JavaPairRDD<String, String> userMentions = user_mention.javaRDD().mapToPair(
+                new PairFunction<Row, String, String>() {
+                    @Override
+                    public Tuple2<String, String> call(Row row) throws Exception {
+                        String str1 = "", str2 = "";
+                        if (row.size() > 1) {
+                            str1 = row.get(0).toString();
+                            str2 = row.get(1).toString();
+                        }
+                        return new Tuple2<String, String>(str1, str2);
+                    }
+                });
+
+        JavaPairRDD<String, String> userGroupMentions = userMentions.reduceByKey(new Function2<String, String, String>() {
+            @Override
+            public String call(String s, String s2) throws Exception {
+                return s + "," + s2;
+            }
+        });
+
+        JavaRDD<Row> usermentionRdd = userGroupMentions.map(new Function<Tuple2<String, String>, Row>() {
+            @Override
+            public Row call(Tuple2<String, String> stringStringTuple2) throws Exception {
+                return RowFactory.create(stringStringTuple2._1(), stringStringTuple2._2());
+            }
+        });
+
+        StructField[] fields1 = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("mentionee", DataTypes.StringType, true),
+        };
+        DataFrame user_mentione_grouped = sqlContext.createDataFrame(usermentionRdd, new StructType(fields1));
+
+        user_mentione_grouped.cache();
+        user_mentione_grouped.write().mode(SaveMode.Overwrite).parquet(outputPath + "user_mentione_grouped_parquet");
+
     }
 
 }
