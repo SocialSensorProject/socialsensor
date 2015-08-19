@@ -1,4 +1,4 @@
-SocialSensor -- The project for use of Social Media as a sensor for detection and prediction of various latent phenomena .
+SocialSensor -- Use of Social Media as a sensor for detection and prediction of various latent phenomena .
 
 Copyright (C) 2015, Scott Sanner (ssanner@gmail.com) and
                     Zahra Iman (zahra.iman87@gmail.com) and Mohamed Reda BOUADJENEK <rbouadjenek@gmail.com> and Dan Nguyen <nguyenk4@onid.oregonstate.edu>
