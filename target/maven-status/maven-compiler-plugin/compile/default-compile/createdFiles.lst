@@ -3,6 +3,7 @@ machinelearning/spark/FeatureStatistics$13.class
 machinelearning/spark/FeatureStatistics$7.class
 preprocess/spark/Preprocess$5.class
 sensoreval/spark/LagTimeAnalyzer$1.class
+machinelearning/spark/FeatureStatistics$18.class
 sensoreval/spark/LagTimeAnalyzer.class
 machinelearning/spark/FeatureStatistics$5.class
 machinelearning/spark/FeatureStatistics$15.class
@@ -27,11 +28,14 @@ preprocess/spark/Preprocess$13.class
 preprocess/spark/Preprocess$4.class
 machinelearning/spark/FeatureStatistics$1.class
 machinelearning/spark/FeatureStatistics$14.class
+machinelearning/spark/FeatureStatistics$19.class
 machinelearning/spark/FeatureStatistics$6.class
 sensoreval/spark/LagTimeAnalyzer$2.class
+machinelearning/spark/FeatureStatistics$20.class
 machinelearning/spark/FeatureStatistics$9.class
 preprocess/spark/Preprocess$10.class
 machinelearning/spark/FeatureStatistics$12.class
 preprocess/spark/Preprocess$7.class
 machinelearning/spark/FeatureStatistics$4.class
 preprocess/spark/Preprocess$2.class
+machinelearning/spark/FeatureStatistics$17.class

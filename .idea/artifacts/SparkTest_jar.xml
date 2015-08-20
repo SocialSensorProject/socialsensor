@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SparkTest:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SparkTest_jar</output-path>
+    <root id="archive" name="SparkTest.jar">
+      <element id="module-output" name="SparkTest" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.10.5/scala-library-2.10.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/twitter/twitter-text/1.12.1/twitter-text-1.12.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

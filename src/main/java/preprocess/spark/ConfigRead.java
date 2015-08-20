@@ -101,4 +101,17 @@ public class ConfigRead {
     public String getTestDataPath(){
         return  prop.getProperty("testDataPath");
     }
+    public String getTestOutPath(){
+        return  prop.getProperty("testOutPath");
+    }
+
+    public boolean isTweetMention() {
+        return Boolean.valueOf(prop.getProperty("tweetMention"));
+    }
+
+    public boolean isTweetUserMention() {
+        return Boolean.valueOf(prop.getProperty("tweetUserMention"));
+    }
+
+    public String getScriptPath() { return prop.getProperty("scriptPath"); }
 }

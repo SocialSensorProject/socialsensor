@@ -25,6 +25,7 @@ public class PostProcessParquet implements Serializable {
         int itNum = configRead.getSensorEvalItNum();
         int hashtagNum = configRead.getSensorEvalHashtagNum();
         outputCSVPath = configRead.getOutputCSVPath();
+        String scriptPath = configRead.getScriptPath();
         boolean local = configRead.isLocal();
 
         SparkConf sparkConfig;
@@ -48,9 +49,9 @@ public class PostProcessParquet implements Serializable {
 
         // Combine all CSV files into one file for each group
         printForumla(itNum, hashtagNum);
-        runScript("cp script/mergeFiles.sh "+ outputCSVPath +"mergeFiles.sh");
-        runScript("chmod +x "+ outputCSVPath +"/mergeFiles.sh");
-        runScript("./"+ outputCSVPath +"/mergeFiles.sh");
+        runScript("cp " + scriptPath + "mergeFiles.sh " + outputCSVPath + "mergeFiles.sh");
+        runScript("chmod +x "+ outputCSVPath +"mergeFiles.sh");
+        runScript("./"+ outputCSVPath +"mergeFiles.sh");
     }
 
     public static void readResults2(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException {

@@ -40,7 +40,6 @@ public class Preprocess implements Serializable {
         loadConfig();
         numPart = configRead.getNumPart();
         hdfsPath = configRead.getHdfsPath();
-        System.out.println("****************************** "+hdfsPath);
         dataPath = hdfsPath + configRead.getDataPath(); //configRead.getTestDataPath();
         outputPath = hdfsPath + configRead.getOutputPath(); //configRead.getLocalOutputPath()
         boolean local = configRead.isLocal();
@@ -51,10 +50,14 @@ public class Preprocess implements Serializable {
         boolean tweetUser = configRead.isTweetUser();
         boolean tweetUserHashtag = configRead.isTweetUserHashtag();
         boolean groupedTweetHashtag = configRead.isGroupedTweetHashtag();
+        boolean tweetMention = configRead.isTweetMention();
+        boolean tweetUserMention = configRead.isTweetUserMention();
 
         SparkConf sparkConfig;
         if(local) {
             numPart = 4;
+            dataPath = configRead.getTestDataPath();
+            outputPath = dataPath;
             sparkConfig = new SparkConf().setAppName("SparkTest").setMaster("local[2]");
         }else {
             sparkConfig = new SparkConf().setAppName("SparkTest");
@@ -93,7 +96,17 @@ public class Preprocess implements Serializable {
             getGroupedTweetHashtag(sqlContext);
             //getTweetMention(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "text"), sqlContext);
         }
+        if(tweetUserMention){
+            getTweetUserMention(mainData.select("id", "screen_name", "text"), sqlContext);
+        }
+        if(tweetMention){
+            getTweetMention(sqlContext);
+        }
 
+    }
+
+    private static void getTweetMention(SQLContext sqlContext) {
+        output(sqlContext.read().parquet(dataPath + "tweet_user_mention_parquet").drop("username").coalesce(numPart).distinct(), "tweet_mention", false);
     }
 
     private static void getUniqueUsersHashtagsAndBirthdays1(DataFrame usersHashtagsTime, SQLContext sqlContext){
