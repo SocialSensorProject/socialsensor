@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>edu-oregonstate</groupId>
-    <artifactId>friendsensor</artifactId>
-    <version>1.0</version>
+    <groupId>Group1</groupId>
+    <artifactId>Artifact1</artifactId>
+    <version>Version1</version>
     <packaging>jar</packaging>
-    <name>SparkTest</name>
+    <name>SocialSensor</name>
     <url>http://spark.apache.org/</url>
     <repositories>
         <repository>
@@ -60,6 +60,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/text-1.12.2.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+        </dependency>
         <!--<dependency>
             <groupId>com.twitter</groupId>
             <artifactId>hbc-core</artifactId>
@@ -77,6 +82,13 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <targetPath>resources/</targetPath>
+                <filtering>false</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -87,6 +99,28 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <!--<plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>

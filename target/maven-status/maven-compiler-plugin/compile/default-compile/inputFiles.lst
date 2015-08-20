@@ -1,4 +1,5 @@
-/Users/zahraiman/University/git/friendsensor/src/main/java/edu/oregonstate/spark/datafilter/BenchMarkTask.java
-/Users/zahraiman/University/git/friendsensor/src/main/java/edu/oregonstate/spark/outputfilter/ReadOutputParquets.java
-/Users/zahraiman/University/git/friendsensor/src/main/java/edu/oregonstate/spark/sensor/GroupLagTime.java
-/Users/zahraiman/University/git/friendsensor/src/main/java/edu/oregonstate/hadoop/SampleHadoopClass.java
+/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_Aug19_2/socialsensor/src/main/java/machinelearning/spark/FeatureStatistics.java
+/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_Aug19_2/socialsensor/src/main/java/sensoreval/spark/LagTimeAnalyzer.java
+/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_Aug19_2/socialsensor/src/main/java/preprocess/spark/ConfigRead.java
+/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_Aug19_2/socialsensor/src/main/java/postprocess/spark/PostProcessParquet.java
+/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_Aug19_2/socialsensor/src/main/java/preprocess/spark/Preprocess.java

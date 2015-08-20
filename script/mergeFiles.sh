@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 mkdir res
 FILES=CSVOut*.csv
 for f in $FILES

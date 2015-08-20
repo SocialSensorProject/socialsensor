@@ -1,33 +1,39 @@
-package sql;
+package sensoreval.spark;
 
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.sql.*;
-import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.StructField;
-import org.apache.spark.sql.types.StructType;
-import scala.Function1;
-import scala.Tuple2;
+import preprocess.spark.ConfigRead;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class GroupLagTime implements Serializable {
-    private static String hdfsPath =
-            "hdfs://ec2-52-2-187-99.compute-1.amazonaws.com:9000/";
-    private static String dataPath = hdfsPath + "zaradata/input/";
-    private static String outputPath = hdfsPath + "zaradata/output2/";
+public class LagTimeAnalyzer implements Serializable {
 
-    private static int numPart = 3 * 16;
+    private static String hdfsPath;
+    private static String dataPath;
+    private static String outputPath;
+
+    private static int numPart;
     private static Random randObj = new Random();
-    private static long maxLagTime = 60393600000l;
+    private static long maxLagTime = 60393600000l;// 31 Dec 2014 - 28 Feb 2013
+
+    private static ConfigRead configRead;
+
+    public static void loadConfig() throws IOException {
+        configRead = new ConfigRead();
+    }
 
     public static void main(String args[]) throws Exception {
+        loadConfig();
+        numPart = configRead.getNumPart();
+        hdfsPath = configRead.getHdfsPath();
+        dataPath = hdfsPath + configRead.getDataPath();
+        outputPath = hdfsPath + configRead.getOutputPath();
         SparkConf sparkConfig = new SparkConf().setAppName("LagTime");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConfig);
         SQLContext sqlContext = new SQLContext(sparkContext);
