@@ -1,4 +1,4 @@
-package java.sensoreval.spark;
+package sensoreval.spark;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;

@@ -1,4 +1,4 @@
-package java.machinelearning.spark;
+package machinelearning.spark;
 
 import org.json.simple.JSONObject;
 

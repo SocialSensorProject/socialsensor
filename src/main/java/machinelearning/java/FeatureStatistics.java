@@ -84,9 +84,10 @@ public class FeatureStatistics {
         }).map(new Function<Tuple2<String, Double>, Row>() {
             @Override
             public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                if(stringDoubleTuple2._1().compareTo("paigeaucoin") == 0)
+                System.out.println(stringDoubleTuple2._1() + " ----- " + stringDoubleTuple2._2() + " : " +(double)stringDoubleTuple2._2()/tweetCount);
+                if(Objects.equals(stringDoubleTuple2._1(), "paigeaucoin"))
                     System.out.println("LOOOOKKKKKKK: " + stringDoubleTuple2._2() + " " + tweetCount+ " " + (double) stringDoubleTuple2._2() / tweetCount);
-                return RowFactory.create(stringDoubleTuple2._1(), (double) stringDoubleTuple2._2() / tweetCount);
+                return RowFactory.create(stringDoubleTuple2._1(),  stringDoubleTuple2._2() / (double) tweetCount);
             }
         });
         StructField[] fields = {
