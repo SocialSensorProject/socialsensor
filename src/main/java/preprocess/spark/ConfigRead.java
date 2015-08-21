@@ -114,4 +114,8 @@ public class ConfigRead {
     }
 
     public String getScriptPath() { return prop.getProperty("scriptPath"); }
+
+    public boolean isGroupedTweetHashtagHashtag() {
+        return Boolean.valueOf(prop.getProperty("tweetHashtagHashtagGrouped"));
+    }
 }

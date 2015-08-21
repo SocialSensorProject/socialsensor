@@ -52,7 +52,7 @@ public class Preprocess implements Serializable {
         boolean groupedTweetHashtag = configRead.isGroupedTweetHashtag();
         boolean tweetMention = configRead.isTweetMention();
         boolean tweetUserMention = configRead.isTweetUserMention();
-
+        boolean groupedTweetHashtagHashtag = configRead.isGroupedTweetHashtagHashtag();
         SparkConf sparkConfig;
         if(local) {
             numPart = 4;
@@ -96,6 +96,11 @@ public class Preprocess implements Serializable {
             getGroupedTweetHashtag(sqlContext);
             //getTweetMention(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "text"), sqlContext);
         }
+
+        if(groupedTweetHashtagHashtag) {
+            getGroupedTweetHashtagHashtag(sqlContext);
+            //getTweetMention(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "text"), sqlContext);
+        }
         if(tweetUserMention){
             getTweetUserMention(mainData.select("id", "screen_name", "text"), sqlContext);
         }
@@ -103,6 +108,42 @@ public class Preprocess implements Serializable {
             getTweetMention(sqlContext);
         }
 
+    }
+
+    private static void getGroupedTweetHashtagHashtag(SQLContext sqlContext) {
+        System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
+        DataFrame tweet_hashtag = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart);
+        tweet_hashtag.cache();
+        JavaRDD<Row> t1 = tweet_hashtag.coalesce(numPart).javaRDD().mapToPair(
+                new PairFunction<Row, Long, String>() {
+                    @Override
+                    public Tuple2<Long, String> call(Row row) throws Exception {
+                        return new Tuple2(row.getLong(0), row.getString(1));
+                    }
+                })
+                .reduceByKey(new Function2<String, String, String>() {
+                    @Override
+                    public String call(String s, String s2) throws Exception {
+                        return s + "," + s2;
+                    }
+                })
+                .map(new Function<Tuple2<Long, String>, Row>() {
+                    @Override
+                    public Row call(Tuple2<Long, String> stringStringTuple2) throws Exception {
+                        return RowFactory.create(stringStringTuple2._1(), stringStringTuple2._2());
+                    }
+                });
+
+        StructField[] fields1 = {
+                DataTypes.createStructField("tid1", DataTypes.LongType, true),
+                DataTypes.createStructField("hashtag_group", DataTypes.StringType, true),
+        };
+        DataFrame t = sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart);
+        t.cache();
+        System.out.println("=================== t count: " + t.count());
+        t = tweet_hashtag.join(t, t.col("tid1").equalTo(tweet_hashtag.col("tid"))).drop("tid1");
+        System.out.println("======================= " + t.drop("hashtag").drop("hashtag_group").count());
+        t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet");
     }
 
     private static void getTweetMention(SQLContext sqlContext) {

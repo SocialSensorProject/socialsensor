@@ -29,9 +29,10 @@ public class PostProcessParquet implements Serializable {
         boolean local = configRead.isLocal();
 
         SparkConf sparkConfig;
-        if(local)
+        if(local) {
+            //outputCSVPath = "TestSet/output_all/";
             sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
-        else
+        }else
             sparkConfig = new SparkConf().setAppName("PostProcessParquet");
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConfig);
         SQLContext sqlContext = new SQLContext(sparkContext);
@@ -60,8 +61,7 @@ public class PostProcessParquet implements Serializable {
         JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {
             @Override
             public String call(Row row) throws Exception {
-                String str = row.getString(0) + "," + row.get(1).toString();
-                return str;
+                return row.get(1).toString() + "," + row.getString(0);
             }
         });
         strRes.coalesce(1).saveAsTextFile(outputCSVPath +"out_"+filename+"_csv");
