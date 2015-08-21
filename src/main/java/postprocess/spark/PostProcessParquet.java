@@ -70,11 +70,14 @@ public class PostProcessParquet implements Serializable {
         String line;
         FileWriter fw = new FileWriter(outputCSVPath +"CSVOut_"+filename+".csv");
         BufferedWriter bw = new BufferedWriter(fw);
+        int numberOfLines = 0;
         while((line = bufferedReaderA.readLine()) != null){
             bw.write(line);
             bw.write("\n");
+            numberOfLines++;
         }
         bw.close();
+        //System.out.println("Number of lines in " + outputCSVPath +"CSVOut_"+filename+".csv : "+ numberOfLines);
     }
 
 
