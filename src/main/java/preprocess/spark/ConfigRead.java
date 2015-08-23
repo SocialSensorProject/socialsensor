@@ -118,4 +118,8 @@ public class ConfigRead {
     public boolean isGroupedTweetHashtagHashtag() {
         return Boolean.valueOf(prop.getProperty("tweetHashtagHashtagGrouped"));
     }
+
+    public boolean isGroupedTweetMentionHashtag() {
+        return Boolean.valueOf(prop.getProperty("tweetMentionHashtagGrouped"));
+    }
 }

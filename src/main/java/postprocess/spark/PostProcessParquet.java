@@ -30,7 +30,7 @@ public class PostProcessParquet implements Serializable {
 
         SparkConf sparkConfig;
         if(local) {
-            //outputCSVPath = "TestSet/output_all/";
+            outputCSVPath = "TestSet/output_all/";
             sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
         }else
             sparkConfig = new SparkConf().setAppName("PostProcessParquet");
