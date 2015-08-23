@@ -56,7 +56,7 @@ public class FeatureStatistics2 {
         outputPath = hdfsPath + configRead.getOutputPath();
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
-        int groupNum = 3;
+        int groupNum = 1;
         initializeSqlContext();
         containNotContainCounts = getContainNotContainCounts(groupNum);
 
