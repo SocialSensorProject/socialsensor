@@ -158,6 +158,7 @@ public class FeatureStatistics2 {
         JavaRDD<Row> probContainTweet = calcProb(tweet_mention_hashtag_grouped, groupNum, true, tweetCount);
         DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields));
         results2.registerTempTable("condEntropyTweetTrueToUserTrue");
+        output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueToUserTrue_" + groupNum, false);
         //CE_P(Y = true|  ToUser = true)
         DataFrame toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
         JavaRDD<Row> tores = toresults2.javaRDD().map(new Function<Row, Row>() {
@@ -179,6 +180,7 @@ public class FeatureStatistics2 {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
             }
         });
+        //toresults2 = sqlContext.createDataFrame(tores.coalesce(numPart), new StructType(fields));
         System.out.println("SIZE 1 TO =================" + toresMI.count() + "================");
         //==============================================================================================================
         JavaRDD<Row> probNotContainTweet = calcProb(tweet_mention_hashtag_grouped, groupNum, false, tweetCount);
@@ -236,12 +238,10 @@ public class FeatureStatistics2 {
         sqlContext.createDataFrame(toresMI.coalesce(numPart), new StructType(fields)).registerTempTable("mutualEntropyTweetToUser");
 
         toresults2 = sqlContext.sql("SELECT username, -sum(prob) AS condEntropy FROM condEntropyTweetToUser GROUP BY username");
-        toresults2 = toresults2.sort(toresults2.col("condEntropy"));//.limit((int) toSize / 2 + topUserNum / 2);
-        output(toresults2.coalesce(1), "CondEntropyTweetToUser", false);
+        output(toresults2.sort(toresults2.col("condEntropy").desc()).coalesce(1), "CondEntropyTweetToUser", false);
 
         toresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetToUser GROUP BY username");
-        toresults2 = toresults2.sort(toresults2.col("mutualEntropy"));
-        output(toresults2.coalesce(1), "mutualEntropyTweetToUser", false);
+        output(toresults2.sort(toresults2.col("mutualEntropy").desc()).coalesce(1), "mutualEntropyTweetToUser", false);
 
     }
 
@@ -262,6 +262,7 @@ public class FeatureStatistics2 {
         JavaRDD<Row> probContainTweet = calcProb(tweet_user_hashtag_grouped, groupNum, true, tweetCount);
         DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields));
         results2.registerTempTable("condEntropyTweetTrueFromUserTrue");
+        output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueFromUserTrue_"+groupNum, false);
         //CE_P(Y = true|  FromUser = true)
         DataFrame fromresults2 = results2.join(fromUserProb, fromUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
         JavaRDD<Row> res = fromresults2.javaRDD().map(new Function<Row, Row>() {
@@ -285,6 +286,7 @@ public class FeatureStatistics2 {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
             }
         });
+        //results2 = sqlContext.createDataFrame(res.coalesce(numPart), new StructType(fields));
         System.out.println("SIZE 1=================" + resMI.count() + "================" );
         //==============================================================================================================
         JavaRDD<Row> probNotContainTweet = calcProb(tweet_user_hashtag_grouped, groupNum, false, tweetCount);
@@ -340,7 +342,7 @@ public class FeatureStatistics2 {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
                     return RowFactory.create(row.getString(0), 0.0);
                 else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1-row.getDouble(2)))));
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1 - row.getDouble(2)))));
             }
         }));
         System.out.println("SIZE 4=================" + resMI.count() + "================");
@@ -349,16 +351,13 @@ public class FeatureStatistics2 {
         sqlContext.createDataFrame(resMI.coalesce(numPart), new StructType(fields)).registerTempTable("mutualEntropyTweetFromUser");
         //======================== COMPUTE COND ENTROPY=================================================================
         fromresults2 = sqlContext.sql("SELECT username, -sum(prob) AS condEntropy FROM condEntropyTweetFromUser GROUP BY username");
-        fromresults2 = fromresults2.sort(fromresults2.col("condEntropy"));//.limit((int) fromSize / 2 + topUserNum / 2);
+        fromresults2 = fromresults2.sort(fromresults2.col("condEntropy").desc());//.limit((int) fromSize / 2 + topUserNum / 2);
         fromresults2.cache();
-        //output(sqlContext.createDataFrame(takeMiddle(fromresults2, sparkContext), new StructType(fields)), "CondEntropyTweetFromUser_"+groupNum+"_middle", false);
-        //output(fromresults2.limit(topUserNum), "CondEntropyTweetFromUser_"+groupNum+"_top", false);
         System.out.println("GROUP NUM: " + groupNum);
         output(fromresults2.coalesce(1), "CondEntropyTweetFromUser", false);
 
         fromresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetFromUser GROUP BY username");
-        fromresults2 = fromresults2.sort(fromresults2.col("mutualEntropy"));
-        output(fromresults2.coalesce(1), "mutualEntropyTweetFromUser", false);
+        output(fromresults2.sort(fromresults2.col("mutualEntropy").desc()).coalesce(1), "mutualEntropyTweetFromUser", false);
     }
 
     private static JavaRDD<Row> takeMiddle(DataFrame res, JavaSparkContext sparkContext) { // res is already sorted
@@ -503,6 +502,7 @@ public class FeatureStatistics2 {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
             }
         });
+        output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueContainHashtagTrue_"+groupNum, false);
         System.out.println("SIZE 1=================" + resMI.count() + "================" );
         //==============================================================================================================
         JavaRDD<Row> probNotContainTweet = calcProb(tweet_hashtag_hashtag_grouped, groupNum, false, tweetCount);
@@ -566,7 +566,7 @@ public class FeatureStatistics2 {
 
         //======================== COMPUTE COND ENTROPY=================================================================
         fromresults2 = sqlContext.sql("SELECT hashtag, -sum(prob) AS condEntropy FROM condEntropyTweetFromHashtag GROUP BY hashtag");
-        fromresults2 = fromresults2.sort(fromresults2.col("condEntropy"));//.limit((int) fromSize / 2 + topUserNum / 2);
+        fromresults2 = fromresults2.sort(fromresults2.col("condEntropy").desc());//.limit((int) fromSize / 2 + topUserNum / 2);
         fromresults2.cache();
         //output(sqlContext.createDataFrame(takeMiddle(fromresults2, sparkContext), new StructType(fields)), "CondEntropyTweetFromUser_"+groupNum+"_middle", false);
         //output(fromresults2.limit(topUserNum), "CondEntropyTweetFromUser_"+groupNum+"_top", false);
@@ -575,7 +575,7 @@ public class FeatureStatistics2 {
 
 
         fromresults2 = sqlContext.sql("SELECT hashtag, sum(prob) AS mutualEntropy FROM mutualEntropyTweetFromHashtag GROUP BY hashtag");
-        fromresults2 = fromresults2.sort(fromresults2.col("mutualEntropy"));
+        fromresults2 = fromresults2.sort(fromresults2.col("mutualEntropy").desc());
         //output(sqlContext.createDataFrame(takeMiddle(fromresults2, sparkContext), new StructType(fields)), "mutualEntropyTweetFromUser_"+groupNum+"_middle", false);
         //output(fromresults2.limit(topUserNum), "mutualEntropyTweetFromUser_"+groupNum+"_top", false);
         output(fromresults2.coalesce(1), "mutualEntropyTweetFromHashtag", false);
