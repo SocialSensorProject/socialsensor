@@ -94,12 +94,12 @@ public class Preprocess implements Serializable {
             //getTweetUserHashtag(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "screen_name", "text"), sqlContext);
         }
         if(groupedTweetHashtag) {
-            getGroupedTweetHashtag(sqlContext);
+            getGroupedTweetHashtag(mainData.select("id", "text"), sqlContext);
             //getTweetMention(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "text"), sqlContext);
         }
 
         if(groupedTweetHashtagHashtag) {
-            getGroupedTweetHashtagHashtag(sqlContext);
+            getGroupedTweetHashtagHashtag(mainData.select("id", "text"),sqlContext);
             //getTweetMention(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "text"), sqlContext);
         }
         if(tweetUserMention){
@@ -109,20 +109,26 @@ public class Preprocess implements Serializable {
             getTweetMention(sqlContext);
         }
         if(groupedTweetMentionHashtag){
-            getGroupedTweetMentionHashtag(sqlContext);
+            getGroupedTweetMentionHashtag(mainData.select("id", "text"), sqlContext);
         }
 
     }
 
-    private static void getGroupedTweetHashtagHashtag(SQLContext sqlContext) {
+    private static void getGroupedTweetHashtagHashtag(DataFrame tweet_text, SQLContext sqlContext) {
         System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
         DataFrame tweet_hashtag = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart);
         tweet_hashtag.cache();
-        JavaRDD<Row> t1 = tweet_hashtag.coalesce(numPart).javaRDD().mapToPair(
+        JavaRDD<Row> t1 = tweet_text.coalesce(numPart).javaRDD().mapToPair(
                 new PairFunction<Row, Long, String>() {
                     @Override
                     public Tuple2<Long, String> call(Row row) throws Exception {
-                        return new Tuple2(row.getLong(0), row.getString(1));
+                       String hashtag = "";
+                        for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
+                            hashtag += word.toLowerCase() + ",";
+                        }
+                        if(hashtag.endsWith(","))
+                            hashtag = hashtag.substring(0, hashtag.length()-1);
+                        return new Tuple2(row.getLong(0), hashtag);
                     }
                 })
                 .reduceByKey(new Function2<String, String, String>() {
@@ -357,13 +363,21 @@ public class Preprocess implements Serializable {
 
     }
 
-    public static void getGroupedTweetHashtag(SQLContext sqlContext){
+    public static void getGroupedTweetHashtag(DataFrame tweet_text, SQLContext sqlContext){
         System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
-        JavaRDD<Row> t1 = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart).javaRDD().mapToPair(
+
+        //JavaRDD<Row> t1 = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart).javaRDD().mapToPair(
+        JavaRDD < Row > t1 = tweet_text.coalesce(numPart).javaRDD().mapToPair(
                 new PairFunction<Row, Long, String>() {
                     @Override
                     public Tuple2<Long, String> call(Row row) throws Exception {
-                        return new Tuple2(row.getLong(0), row.getString(1));
+                        String hashtag = "";
+                        for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
+                            hashtag += word.toLowerCase() + ",";
+                        }
+                        if(hashtag.endsWith(","))
+                            hashtag = hashtag.substring(0, hashtag.length()-1);
+                        return new Tuple2(row.getLong(0), hashtag);
                     }
                 })
                 .reduceByKey(new Function2<String, String, String>() {
@@ -394,13 +408,19 @@ public class Preprocess implements Serializable {
         t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_user_hashtag_grouped_parquet");
     }
 
-    public static void getGroupedTweetMentionHashtag(SQLContext sqlContext){
-        System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
-        JavaRDD<Row> t1 = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart).javaRDD().mapToPair(
+    public static void getGroupedTweetMentionHashtag(DataFrame tweet_text, SQLContext sqlContext){
+        System.out.println("GROUPED TWEET MENTION************************** " + dataPath + "tweet_hashtag_time_parquet");
+        JavaRDD<Row> t1 = tweet_text.coalesce(numPart).javaRDD().mapToPair(
                 new PairFunction<Row, Long, String>() {
                     @Override
                     public Tuple2<Long, String> call(Row row) throws Exception {
-                        return new Tuple2(row.getLong(0), row.getString(1));
+                        String hashtag = "";
+                        for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
+                            hashtag += word.toLowerCase() + ",";
+                        }
+                        if(hashtag.endsWith(","))
+                            hashtag = hashtag.substring(0, hashtag.length()-1);
+                        return new Tuple2(row.getLong(0), hashtag);
                     }
                 })
                 .reduceByKey(new Function2<String, String, String>() {
@@ -429,6 +449,7 @@ public class Preprocess implements Serializable {
         t = tweet_user.join(t, t.col("tid1").equalTo(tweet_user.col("tid"))).drop("tid1");
         System.out.println("======================= " + t.drop("mentionee").drop("hashtag").count());
         t.printSchema();
+        System.out.println("--------------"+dataPath+" + tweet_mention_hashtag_grouped_parquet------------------");
         t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_mention_hashtag_grouped_parquet");
     }
 
