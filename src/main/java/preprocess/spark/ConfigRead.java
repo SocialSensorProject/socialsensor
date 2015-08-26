@@ -52,8 +52,8 @@ public class ConfigRead {
         return Boolean.valueOf(prop.getProperty("tweetUserHashtag"));
     }
 
-    public boolean isGroupedTweetHashtag() {
-        return Boolean.valueOf(prop.getProperty("groupedTweetHashtag"));
+    public boolean isGroupedTweetUserHashtag() {
+        return Boolean.valueOf(prop.getProperty("tweetUserHashtagGrouped"));
     }
 
     public boolean isLocal() {

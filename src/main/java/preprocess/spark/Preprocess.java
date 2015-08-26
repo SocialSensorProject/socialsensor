@@ -49,7 +49,7 @@ public class Preprocess implements Serializable {
         boolean groupedUserMention = configRead.isGroupedUserMention();
         boolean tweetUser = configRead.isTweetUser();
         boolean tweetUserHashtag = configRead.isTweetUserHashtag();
-        boolean groupedTweetHashtag = configRead.isGroupedTweetHashtag();
+        boolean groupedTweetUserHashtag = configRead.isGroupedTweetUserHashtag();
         boolean tweetMention = configRead.isTweetMention();
         boolean tweetUserMention = configRead.isTweetUserMention();
         boolean groupedTweetHashtagHashtag = configRead.isGroupedTweetHashtagHashtag();
@@ -72,8 +72,8 @@ public class Preprocess implements Serializable {
         DataFrame mainData = null;
         if(local) {
             mainData = sqlContext.read().json(dataPath + "testset1.json").coalesce(numPart);
-        }else if(tweetHashtagTime || uniqueUserHashtagBirthday || directedUserNet || tweetUserHashtag ||tweetUser) {
-            mainData = sqlContext.read().json(dataPath + "tweets2013-2014-v2.0*.bz2").coalesce(numPart);
+        }else if(tweetHashtagTime || uniqueUserHashtagBirthday || directedUserNet || tweetUserHashtag ||tweetUser || groupedTweetHashtagHashtag || groupedTweetMentionHashtag || groupedTweetUserHashtag) {
+            mainData = sqlContext.read().json(dataPath + "tweets2013-2014-v2.0/*.bz2").coalesce(numPart);
         }
         if(tweetHashtagTime)
             getTweetHashtagTime(mainData.select("id", "text", "created_at"), sqlContext);
@@ -93,8 +93,8 @@ public class Preprocess implements Serializable {
             getTweetUserHashtag(mainData.select("id", "screen_name", "text"), sqlContext);
             //getTweetUserHashtag(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "screen_name", "text"), sqlContext);
         }
-        if(groupedTweetHashtag) {
-            getGroupedTweetHashtag(mainData.select("id", "text"), sqlContext);
+        if(groupedTweetUserHashtag) {
+            getGroupedTweetUserHashtag(mainData.select("id", "screen_name", "text"), sqlContext);
             //getTweetMention(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "text"), sqlContext);
         }
 
@@ -115,44 +115,30 @@ public class Preprocess implements Serializable {
     }
 
     private static void getGroupedTweetHashtagHashtag(DataFrame tweet_text, SQLContext sqlContext) {
-        System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
-        DataFrame tweet_hashtag = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart);
-        tweet_hashtag.cache();
-        JavaRDD<Row> t1 = tweet_text.coalesce(numPart).javaRDD().mapToPair(
-                new PairFunction<Row, Long, String>() {
-                    @Override
-                    public Tuple2<Long, String> call(Row row) throws Exception {
-                       String hashtag = "";
-                        for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
-                            hashtag += word.toLowerCase() + ",";
-                        }
-                        if(hashtag.endsWith(","))
-                            hashtag = hashtag.substring(0, hashtag.length()-1);
-                        return new Tuple2(row.getLong(0), hashtag);
-                    }
-                })
-                .reduceByKey(new Function2<String, String, String>() {
-                    @Override
-                    public String call(String s, String s2) throws Exception {
-                        return s + "," + s2;
-                    }
-                })
-                .map(new Function<Tuple2<Long, String>, Row>() {
-                    @Override
-                    public Row call(Tuple2<Long, String> stringStringTuple2) throws Exception {
-                        return RowFactory.create(stringStringTuple2._1(), stringStringTuple2._2());
-                    }
-                });
-
+        JavaRDD < Row > t1 = tweet_text.coalesce(numPart).javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
+            @Override
+            public Iterable<Row> call(Row row) throws Exception {
+                ArrayList<Row> list = new ArrayList<>();
+                String hashtag = "";
+                for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
+                    hashtag += word.toLowerCase() + ",";
+                }
+                if(hashtag.endsWith(","))
+                    hashtag = hashtag.substring(0, hashtag.length()-1);
+                for (String word : hmExtractor.extractHashtags(row.getString(1))) {
+                    list.add(RowFactory.create(row.getLong(0), word.toLowerCase(), hashtag));
+                }
+                return list;
+            }
+        });
         StructField[] fields1 = {
-                DataTypes.createStructField("tid1", DataTypes.LongType, true),
-                DataTypes.createStructField("hashtag_group", DataTypes.StringType, true),
+                DataTypes.createStructField("tid", DataTypes.LongType, true),
+                DataTypes.createStructField("hashtag", DataTypes.StringType, true),
+                DataTypes.createStructField("hashtagGrouped", DataTypes.StringType, true)
         };
         DataFrame t = sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart);
         t.cache();
-        System.out.println("=================== t count: " + t.count());
-        t = tweet_hashtag.join(t, t.col("tid1").equalTo(tweet_hashtag.col("tid"))).drop("tid1");
-        System.out.println("======================= " + t.drop("hashtag").drop("hashtag_group").count());
+        System.out.println("==============FINAL COUNT========= " + t.count());
         t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet");
     }
 
@@ -363,93 +349,61 @@ public class Preprocess implements Serializable {
 
     }
 
-    public static void getGroupedTweetHashtag(DataFrame tweet_text, SQLContext sqlContext){
+    public static void getGroupedTweetUserHashtag(DataFrame tweet_user_text, SQLContext sqlContext){
         System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
 
         //JavaRDD<Row> t1 = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart).javaRDD().mapToPair(
-        JavaRDD < Row > t1 = tweet_text.coalesce(numPart).javaRDD().mapToPair(
-                new PairFunction<Row, Long, String>() {
+        JavaRDD < Row > t1 = tweet_user_text.coalesce(numPart).javaRDD().map(
+                new Function<Row, Row>() {
                     @Override
-                    public Tuple2<Long, String> call(Row row) throws Exception {
+                    public Row call(Row row) throws Exception {
                         String hashtag = "";
-                        for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
+                        for (String word : hmExtractor.extractHashtags(row.get(2).toString())) {
                             hashtag += word.toLowerCase() + ",";
                         }
                         if(hashtag.endsWith(","))
                             hashtag = hashtag.substring(0, hashtag.length()-1);
-                        return new Tuple2(row.getLong(0), hashtag);
+                        return RowFactory.create(row.getLong(0), row.getString(1), hashtag);
                     }
-                })
-                .reduceByKey(new Function2<String, String, String>() {
-                    @Override
-                    public String call(String s, String s2) throws Exception {
-                        return s + "," + s2;
-                    }
-                })
-                .map(new Function<Tuple2<Long, String>, Row>() {
-                    @Override
-                    public Row call(Tuple2<Long, String> stringStringTuple2) throws Exception {
-                        return RowFactory.create(stringStringTuple2._1(), stringStringTuple2._2());
-                    }
-                });
-
+                }
+        );
         StructField[] fields1 = {
-                DataTypes.createStructField("tid1", DataTypes.LongType, true),
-                DataTypes.createStructField("hashtag", DataTypes.StringType, true),
+                DataTypes.createStructField("tid", DataTypes.LongType, true),
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("hashtag", DataTypes.StringType, true)
         };
         DataFrame t = sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart);
         t.cache();
-        System.out.println("=================== t count: " + t.count());
-        DataFrame tweet_user = sqlContext.read().parquet(dataPath + "tweet_user_parquet").drop("time").coalesce(numPart);
-        tweet_user.cache();
-        System.out.println("=================== tweet_user count: " + tweet_user.count());
-        t = tweet_user.join(t, t.col("tid1").equalTo(tweet_user.col("tid"))).drop("tid1");
-        System.out.println("======================= " + t.drop("username").drop("hashtag").count());
+        System.out.println("==========FINALE COUNT============= " + t.count());
         t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_user_hashtag_grouped_parquet");
     }
 
     public static void getGroupedTweetMentionHashtag(DataFrame tweet_text, SQLContext sqlContext){
-        System.out.println("GROUPED TWEET MENTION************************** " + dataPath + "tweet_hashtag_time_parquet");
-        JavaRDD<Row> t1 = tweet_text.coalesce(numPart).javaRDD().mapToPair(
-                new PairFunction<Row, Long, String>() {
-                    @Override
-                    public Tuple2<Long, String> call(Row row) throws Exception {
-                        String hashtag = "";
-                        for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
-                            hashtag += word.toLowerCase() + ",";
-                        }
-                        if(hashtag.endsWith(","))
-                            hashtag = hashtag.substring(0, hashtag.length()-1);
-                        return new Tuple2(row.getLong(0), hashtag);
-                    }
-                })
-                .reduceByKey(new Function2<String, String, String>() {
-                    @Override
-                    public String call(String s, String s2) throws Exception {
-                        return s + "," + s2;
-                    }
-                })
-                .map(new Function<Tuple2<Long, String>, Row>() {
-                    @Override
-                    public Row call(Tuple2<Long, String> stringStringTuple2) throws Exception {
-                        return RowFactory.create(stringStringTuple2._1(), stringStringTuple2._2());
-                    }
-                });
-
+        System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
+        JavaRDD < Row > t1 = tweet_text.coalesce(numPart).javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
+            @Override
+            public Iterable<Row> call(Row row) throws Exception {
+                ArrayList<Row> list = new ArrayList<>();
+                String hashtag = "";
+                for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
+                    hashtag += word.toLowerCase() + ",";
+                }
+                if(hashtag.endsWith(","))
+                    hashtag = hashtag.substring(0, hashtag.length()-1);
+                for (String word : hmExtractor.extractMentionedScreennames(row.getString(1))) {
+                    list.add(RowFactory.create(row.getLong(0), word.toLowerCase(), hashtag));
+                }
+                return list;
+            }
+        });
         StructField[] fields1 = {
-                DataTypes.createStructField("tid1", DataTypes.LongType, true),
-                DataTypes.createStructField("hashtag", DataTypes.StringType, true),
+                DataTypes.createStructField("tid", DataTypes.LongType, true),
+                DataTypes.createStructField("mentionee", DataTypes.StringType, true),
+                DataTypes.createStructField("hashtag", DataTypes.StringType, true)
         };
         DataFrame t = sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart);
         t.cache();
-        System.out.println("=================== t count: " + t.count());
-        DataFrame tweet_user = sqlContext.read().parquet(dataPath + "tweet_mention_parquet").drop("time").coalesce(numPart);
-        tweet_user.cache();
-        System.out.println("=================== tweet_mention count: " + tweet_user.count());
-        t = tweet_user.join(t, t.col("tid1").equalTo(tweet_user.col("tid"))).drop("tid1");
-        System.out.println("======================= " + t.drop("mentionee").drop("hashtag").count());
-        t.printSchema();
-        System.out.println("--------------"+dataPath+" + tweet_mention_hashtag_grouped_parquet------------------");
+        System.out.println("==========FINALE COUNT============= " + t.count());
         t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_mention_hashtag_grouped_parquet");
     }
 
