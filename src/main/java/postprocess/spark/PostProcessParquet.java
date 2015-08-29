@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class PostProcessParquet implements Serializable {
     private static String outputCSVPath;
     private static ConfigRead configRead;
+    private static boolean findTopMiddle = false;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
@@ -27,10 +28,13 @@ public class PostProcessParquet implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         String scriptPath = configRead.getScriptPath();
         boolean local = configRead.isLocal();
+        boolean calcNoZero = false;
+
 
         SparkConf sparkConfig;
         if(local) {
             outputCSVPath = "TestSet/output_all/";
+            //outputCSVPath = "TestSet/Data/";
             sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
         }else
             sparkConfig = new SparkConf().setAppName("PostProcessParquet");
@@ -41,11 +45,26 @@ public class PostProcessParquet implements Serializable {
         File folder = new File(outputCSVPath);
         ArrayList<String> fileNames = listFilesForFolder(folder);
         DataFrame res; int ind = 0;
+        int[] lineNumbers = new int[fileNames.size()];
         for(String filename: fileNames) {
             System.out.println(outputCSVPath + "/" + filename);
-            res = sqlContext.read().parquet(outputCSVPath + "/" +  filename);
-            readResults2(res, sqlContext, ind, filename);
+            res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
+            lineNumbers[ind] = readResults2(res, sqlContext, ind, filename);
             ind++;
+        }
+        ind = 0;
+        for(String filename: fileNames) {
+            System.out.println("FileName: " + filename + " #lines: " + lineNumbers[ind]);
+            ind++;
+        }
+
+        if(calcNoZero) {
+            System.out.println("BUILDING NON_ZERO FILES");
+            for (String filename : fileNames) {
+                System.out.println(outputCSVPath + "/" + filename);
+                lineNumbers[ind] = readResultsCSV(filename);
+                ind++;
+            }
         }
 
         // Combine all CSV files into one file for each group
@@ -55,7 +74,7 @@ public class PostProcessParquet implements Serializable {
         runScript("./"+ outputCSVPath +"mergeFiles.sh");
     }
 
-    public static void readResults2(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException {
+    public static int readResults2(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException, InterruptedException {
         /**/
 
         JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {
@@ -77,7 +96,37 @@ public class PostProcessParquet implements Serializable {
             numberOfLines++;
         }
         bw.close();
-        //System.out.println("Number of lines in " + outputCSVPath +"CSVOut_"+filename+".csv : "+ numberOfLines);
+        if(findTopMiddle) {
+            //=================== GET TOP MIDDLE BOTTOM===========
+            runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "middle10_NoZero_" + filename);
+            runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "middle10_NoZero_" + filename);
+            runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "tail10_NoZero_" + filename);
+        }
+        return numberOfLines;
+    }
+
+    public static int readResultsCSV(String filename) throws IOException, InterruptedException {
+        FileReader fileReaderA = new FileReader(outputCSVPath +filename);
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        String line;
+        FileWriter fw = new FileWriter(outputCSVPath +"NoZero_"+filename);
+        BufferedWriter bw = new BufferedWriter(fw);
+        int numberOfLines = 0;
+        while((line = bufferedReaderA.readLine()) != null){
+            if(line.split(",")[0].equals("0.0") || line.split(",")[0].equals("-0.0"))
+                break;
+            bw.write(line);
+            bw.write("\n");
+            numberOfLines++;
+        }
+        bw.close();
+        if(findTopMiddle) {
+            //=================== GET TOP MIDDLE BOTTOM===========
+            runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - 5) + ", " + ((int) Math.floor(numberOfLines / 2) + 4) + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "middle10_NoZero_" + filename);
+            runStringCommand("sed -n '" + (numberOfLines - 9) + ", " + numberOfLines + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "tail10_NoZero_" + filename);
+        }
+        System.out.println("Filename: " + filename + " #lines: " + numberOfLines);
+        return numberOfLines;
     }
 
 
@@ -112,6 +161,14 @@ public class PostProcessParquet implements Serializable {
             System.err.println("Make sure the file is executable and you have permissions to execute it. Hint: use \"chmod +x filename\" to make it executable");
             throw new IOException("Cannot find or read " + command);
         }
+        final int returncode = Runtime.getRuntime().exec(new String[] { "bash", "-c", command }).waitFor();
+        if (returncode != 0) {
+            System.err.println("The script returned an Error with exit code: " + returncode);
+            throw new IOException();
+        }
+    }
+
+    public static void runStringCommand(final String command) throws IOException, InterruptedException {
         final int returncode = Runtime.getRuntime().exec(new String[] { "bash", "-c", command }).waitFor();
         if (returncode != 0) {
             System.err.println("The script returned an Error with exit code: " + returncode);
