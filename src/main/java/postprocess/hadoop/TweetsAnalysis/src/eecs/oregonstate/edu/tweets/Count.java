@@ -5,12 +5,13 @@
  */
 package postprocess.hadoop.TweetsAnalysis.src.eecs.oregonstate.edu.tweets;
 
-import alcatel.lucent.bell.labs.function.MD5;
+//import alcatel.lucent.bell.labs.function.MD5;
 import java.io.IOException;
 import java.util.*;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
+import postprocess.hadoop.TweetsAnalysis.src.alcatel.lucent.bell.labs.function.MD5;
 
 /**
  *  This class implements the map/reduce methods to count the elements of a file.

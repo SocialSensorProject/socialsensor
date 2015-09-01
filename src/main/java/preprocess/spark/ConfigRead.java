@@ -122,4 +122,11 @@ public class ConfigRead {
     public boolean isGroupedTweetMentionHashtag() {
         return Boolean.valueOf(prop.getProperty("tweetMentionHashtagGrouped"));
     }
+
+    public boolean isGroupedTweetTermHashtag() {
+        return Boolean.valueOf(prop.getProperty("tweetTermHashtagGrouped"));
+    }
+
+    public String getOutputJsonPath() { return prop.getProperty("outputJsonPath");
+    }
 }

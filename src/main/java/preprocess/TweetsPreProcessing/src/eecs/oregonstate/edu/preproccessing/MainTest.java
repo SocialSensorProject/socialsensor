@@ -5,7 +5,7 @@
  */
 package preprocess.TweetsPreProcessing.src.eecs.oregonstate.edu.preproccessing;
 
-import eecs.oregonstate.edu.tika.language.LanguageIdentifier;
+import preprocess.TweetsPreProcessing.src.eecs.oregonstate.edu.tika.language.LanguageIdentifier;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

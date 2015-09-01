@@ -129,6 +129,14 @@ public class LanguageIdentifier {
 //        System.out.println("Time required: " + (end - start)+"ms");
     }
 
+    public LanguageIdentifier() {
+        String minLanguage = "unknown";
+        double minDistance = .40;
+        this.language = minLanguage;
+        this.distance = minDistance;
+        System.out.println("THIS IS HERE");
+        new LanguageProfile("THIS IS ");
+    }
     /**
      * Constructs a language identifier based on a String of text content
      * @param content the text
