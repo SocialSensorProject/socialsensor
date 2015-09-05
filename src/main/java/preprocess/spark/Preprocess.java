@@ -14,8 +14,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
-import preprocess.ark.src.cmu.arktweetnlp.*;
 import scala.Tuple2;
+import preprocess.spark.ConfigRead;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -79,7 +79,8 @@ public class Preprocess implements Serializable {
         DataFrame mainData = null;
         if(local) {
             mainData = sqlContext.read().json(dataPath + "testset1.json").coalesce(numPart);
-        }else if(tweetHashtagTime || uniqueUserHashtagBirthday || directedUserNet || tweetUserHashtag ||tweetUser || groupedTweetHashtagHashtag || groupedTweetMentionHashtag || groupedTweetUserHashtag) {
+            //sqlContext.read().parquet("/Users/zahraiman/University/FriendSensor/SPARK/July20/SparkTest/mainData_tweets2014-12.parquet").limit(10000)
+        }else if(tweetHashtagTime || uniqueUserHashtagBirthday || directedUserNet || tweetUserHashtag ||tweetUser || groupedTweetHashtagHashtag || groupedTweetMentionHashtag || groupedTweetUserHashtag || groupedTweetTermHashtag) {
             mainData = sqlContext.read().json(dataPath + "tweets2013-2014-v2.0/*.bz2").coalesce(numPart);
         }
         if(tweetHashtagTime)
@@ -106,7 +107,7 @@ public class Preprocess implements Serializable {
         }
 
         if(groupedTweetHashtagHashtag) {
-            getGroupedTweetHashtagHashtag(mainData.select("id", "text"),sqlContext);
+            getGroupedTweetHashtagHashtag(mainData.select("id", "text"), sqlContext);
             //getTweetMention(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "text"), sqlContext);
         }
         if(tweetUserMention){
@@ -119,11 +120,12 @@ public class Preprocess implements Serializable {
             getGroupedTweetMentionHashtag(mainData.select("id", "text"), sqlContext);
         }
         if(groupedTweetTermHashtag){
-            getGroupedTweetTermHashtag(sqlContext.read().parquet("/Users/zahraiman/University/FriendSensor/SPARK/July20/SparkTest/mainData_tweets2014-12.parquet").select("id", "text"), sqlContext);
+            getGroupedTweetTermHashtag(mainData.select("id", "text"), sqlContext);
         }
 
-        getUserFeatures(sqlContext);
-        getHashtagFeatures(sqlContext);
+        if(configRead.getHashtagUserFeatures())
+            getUserHashtagFeatures(sqlContext);
+        getTermFeatures(sqlContext);
 
     }
 
@@ -294,7 +296,7 @@ public class Preprocess implements Serializable {
         output(sqlContext.createDataFrame(tweet_user.distinct(), new StructType(fields)), "tweet_user", false);
     }
 
-    private static void getDirectedUserNetwork(DataFrame userTweets, SQLContext sqlContext){
+    private static void getDirectedUserNetwork(DataFrame userTweets, SQLContext sqlContext) {
         JavaRDD<Row> directed_user = userTweets.javaRDD().flatMap(
                 new FlatMapFunction<Row, Row>() {
                     @Override
@@ -366,7 +368,7 @@ public class Preprocess implements Serializable {
         System.out.println("************************** " + dataPath + "tweet_user_hashtag_grouped_parquet");
 
         //JavaRDD<Row> t1 = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart).javaRDD().mapToPair(
-        JavaRDD < Row > t1 = tweet_user_text.coalesce(numPart).javaRDD().map(
+        JavaRDD<Row> t1 = tweet_user_text.coalesce(numPart).javaRDD().map(
                 new Function<Row, Row>() {
                     @Override
                     public Row call(Row row) throws Exception {
@@ -393,7 +395,7 @@ public class Preprocess implements Serializable {
 
     public static void getGroupedTweetMentionHashtag(DataFrame tweet_text, SQLContext sqlContext){
         System.out.println("************************** " + dataPath + "tweet_hashtag_time_parquet");
-        JavaRDD < Row > t1 = tweet_text.coalesce(numPart).javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
+        JavaRDD<Row> t1 = tweet_text.coalesce(numPart).javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
             @Override
             public Iterable<Row> call(Row row) throws Exception {
                 ArrayList<Row> list = new ArrayList<>();
@@ -436,17 +438,22 @@ public class Preprocess implements Serializable {
                 if (hashtag.endsWith(","))
                     hashtag = hashtag.substring(0, hashtag.length() - 1);
                 Matcher matcher = Pattern.compile(emo_regex2).matcher(row.getString(1));
+                while(matcher.find())
+                    list.add(RowFactory.create(id, matcher.group().toLowerCase(), hashtag));
                 String text = matcher.replaceAll("").trim();
-                StringTokenizer stok = new StringTokenizer(text, "\'\"?, ;.:!()-");
+                StringTokenizer stok = new StringTokenizer(text, "\'\"?, ;.:!()-*«“");
                 String str=""; boolean write = true; boolean isUrl = false;
-                System.out.println("============================== 0");
-                System.out.println("============================== 1: " + stok.countTokens());
                 while(stok.hasMoreTokens()){
-                    System.out.println("============================== 2: " + stok.countTokens());
                     write = true;
                     str = stok.nextToken();
-                    while(str.startsWith("@") || str.startsWith("#") || str.startsWith("http")){
+                    while(str.contains("@") || str.startsWith("#") || str.startsWith("http")){//"#that#this@guy did "
                         isUrl = str.startsWith("http");
+                        if(!isUrl) {
+                            str = str.split("[@#]")[0];
+                            if(str.length() == 0)
+                                write = false;
+                            break;
+                        }
                         if(!stok.hasMoreTokens()) {
                             write = false;
                             break;
@@ -471,64 +478,40 @@ public class Preprocess implements Serializable {
             }
         });
         StructField[] fields1 = {
-                //DataTypes.createStructField("tid", DataTypes.LongType, true),
-                DataTypes.createStructField("term", DataTypes.StringType, true)
-                //DataTypes.createStructField("hashtag", DataTypes.StringType, true)
+                DataTypes.createStructField("tid", DataTypes.LongType, true),
+                DataTypes.createStructField("term", DataTypes.StringType, true),
+                DataTypes.createStructField("hashtag", DataTypes.StringType, true)
         };
-        DataFrame t = sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart);
-        t.cache();
+        sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_term_hashtag_grouped_parquet");
         //System.out.println("==========FINAL COUNT============= " + t.count());
-        t.write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(dataPath + "tweet_term_hashtag_grouped_csv");
-        //t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_term_hashtag_grouped_parquet");
-        System.out.println("==========FINAL COUNT============= " + t.count());
     }
 
 
-    public static void getUserFeatures(SQLContext sqlContext){
-        StructField[] fields1 = {
-                DataTypes.createStructField("username", DataTypes.StringType, true),
-                DataTypes.createStructField("tweetCount", DataTypes.DoubleType, true)
-        };
-        DataFrame userTweetCount = sqlContext.createDataFrame(sqlContext.read().parquet(dataPath + "tweet_user_parquet").coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
-            @Override
-            public Tuple2<String, Double> call(Row row) throws Exception {
-                return new Tuple2<String, Double>(row.getString(1), 1.0);
-            }
-        }).reduceByKey(new Function2<Double, Double, Double>() {
-            @Override
-            public Double call(Double aDouble, Double aDouble2) throws Exception {
-                return aDouble + aDouble2;
-            }
-        }).map(new Function<Tuple2<String, Double>, Row>() {
-            @Override
-            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
-            }
-        }), new StructType(fields1)).coalesce(numPart);
-        userTweetCount.cache();
-        System.out.println("==========FINAL COUNT============= " + userTweetCount.count());
-        userTweetCount.sort(userTweetCount.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "user_tweetCount_parquet");
-        //userTweetCount.sort(userTweetCount.col("tweetCount").desc()).coalesce(1).write().format("com.databricks.spark.csv").save(dataPath + "user_tweetCount_csv");
-    }
+    public static void getUserHashtagFeatures(SQLContext sqlContext){
 
-    public static void getHashtagFeatures(SQLContext sqlContext){
-        /*StructField[] fields1 = {
-                DataTypes.createStructField("hashtag", DataTypes.StringType, true),
-                DataTypes.createStructField("tweetCount", DataTypes.DoubleType, true),
-                DataTypes.createStructField("userCount", DataTypes.DoubleType, true)
-        };*/
-        sqlContext.read().parquet(dataPath + "user_hashtag_birthday_parquet").drop("birthday").distinct().coalesce(numPart).distinct().registerTempTable("userHashtag");
-        DataFrame df1 = sqlContext.sql("SELECT hashtag, count(username) AS userCount from userHashtag GROUP BY hashtag").coalesce(numPart);
-        sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").distinct().coalesce(numPart).distinct().registerTempTable("tweetHashtag");
-        DataFrame df2 = sqlContext.sql("SELECT hashtag, count(tid) AS tweetCount from tweetHashtag GROUP BY hashtag").coalesce(numPart);
-        //df1.join(df2, df2.col("hashtag").equalTo(df1.col("hashtag1"))).drop("hashtag1");
+        sqlContext.read().parquet(dataPath + "tweet_user_parquet").coalesce(numPart).registerTempTable("userTweet");
+        DataFrame df1 = sqlContext.sql("SELECT username, count(tid) AS tweetCount from userTweet GROUP BY username").coalesce(numPart);
+        df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "user_tweetCount_parquet");
 
-        System.out.println("==========FINAL COUNT============= " + df1.count());
+        sqlContext.read().parquet(dataPath + "user_hashtag_birthday_parquet").drop("birthday").coalesce(numPart).distinct().registerTempTable("userHashtag");
+        df1 = sqlContext.sql("SELECT username, count(hashtag) AS hashtagCount from userHashtag GROUP BY username").coalesce(numPart);
+        df1.sort(df1.col("hashtagCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "user_hashtagCount_parquet");
+        df1 = sqlContext.sql("SELECT hashtag, count(username) AS userCount from userHashtag GROUP BY hashtag").coalesce(numPart);
+        System.out.println("==========FINAL COUNT hashtag-user ============= " + df1.count());
         df1.sort(df1.col("userCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "hashtag_userCount_parquet");
-        //df1.sort(df1.col("userCount").desc()).coalesce(1).write().format("com.databricks.spark.csv").save(dataPath + "hashtag_userCount_csv");
-        System.out.println("==========FINAL COUNT============= " + df2.count());
-        df2.sort(df2.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "hashtag_tweetCount_parquet");
+
+        sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart).distinct().registerTempTable("tweetHashtag");
+        df1 = sqlContext.sql("SELECT hashtag, count(tid) AS tweetCount from tweetHashtag GROUP BY hashtag").coalesce(numPart);
+        System.out.println("==========FINAL COUNT hashtag-tweet ============= " + df1.count());
+        df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "hashtag_tweetCount_parquet");
         //df2.sort(df2.col("tweetCount").desc()).coalesce(1).write().format("com.databricks.spark.csv").save(dataPath + "hashtag_tweetCount_csv");
+    }
+
+    public static void getTermFeatures(SQLContext sqlContext){
+
+        sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").distinct().coalesce(numPart).registerTempTable("tweet_term_hashtag");
+        DataFrame df1 = sqlContext.sql("SELECT term, count(tid) AS tweetCount from tweet_term_hashtag GROUP BY term").coalesce(numPart);
+        df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "term_tweetCount_parquet");
     }
 
 

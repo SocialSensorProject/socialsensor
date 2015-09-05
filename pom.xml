@@ -61,6 +61,32 @@
             <systemPath>${project.basedir}/lib/text-1.12.2.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>trove</groupId>
+            <artifactId>trove</artifactId>
+            <version>3.0.0a5</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/trove-3.0.0a5.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.ppl</groupId>
+            <artifactId>postagger</artifactId>
+            <version>2010-05-26</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/stanford-postagger-2010-05-26.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-app</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>org.apache.tika.language</groupId>
+            <artifactId>app</artifactId>
+            <version>1.9</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/tika-app-1.9.jar</systemPath>
+        </dependency>-->
+        <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1</version>

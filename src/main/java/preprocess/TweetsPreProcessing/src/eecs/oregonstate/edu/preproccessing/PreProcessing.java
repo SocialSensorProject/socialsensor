@@ -7,19 +7,15 @@ package preprocess.TweetsPreProcessing.src.eecs.oregonstate.edu.preproccessing;
 
 import java.io.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.apache.tika.language.LanguageIdentifier;
-import org.json.JSONWriter;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import preprocess.spark.ConfigRead;
-//import preprocess.TweetsPreProcessing.src.eecs.oregonstate.edu.tika.language.LanguageIdentifier;
 
 /**
  * This class pre-process the raw dataset of Scott.
@@ -89,7 +85,7 @@ public class PreProcessing {
                             out.put("created_at", date);
                             //matcher = Pattern.compile(emo_regex2).matcher(text);
                             //text = matcher.replaceAll("");
-                            //out.put("text", text);
+                            out.put("text", text);
                             JSONObject userObject = (JSONObject) jsonObject.get("user");
                             // USER INFORMATION
                             String screen_name = (String) userObject.get("screen_name");
@@ -124,7 +120,8 @@ public class PreProcessing {
                             }
                             // GEO INFORMATION
                             if (jsonObject.get("coordinates") != null) {
-                                JSONObject coords = ((JSONObject)jsonObject.get("coordinates"));
+                                JSONObject coordObj = (JSONObject)jsonObject.get("coordinates");
+                                JSONArray coords = (JSONArray) coordObj.get("coordinates");
                                 if ( coords.size() ==2 ) {
                                     if (coords.get(0)!=null)
                                         out.put("tweet_geo_lat", String.valueOf(Double.valueOf(coords.get(0).toString())));
@@ -132,8 +129,18 @@ public class PreProcessing {
                                         out.put("tweet_geo_lng", String.valueOf(Double.valueOf(coords.get(1).toString())));
                                 }
                             }else{
-                                out.put("tweet_geo_lat", null);
-                                out.put("tweet_geo_lng", null);
+                                if (jsonObject.get("geo") != null) {
+                                    JSONObject geo = (JSONObject) ((JSONObject)jsonObject.get("geo")).get("coordinates");
+                                    if ( geo.size() ==2 ) {
+                                        if (geo.get(0)!=null)
+                                            out.put("tweet_geo_lat", String.valueOf(Double.valueOf(geo.get(0).toString())));
+                                        if (geo.get(1)!=null)
+                                            out.put("tweet_geo_lng", String.valueOf(Double.valueOf(geo.get(1).toString())));
+                                    }
+                                }else {
+                                    out.put("tweet_geo_lat", null);
+                                    out.put("tweet_geo_lng", null);
+                                }
                             }
                             writer.write(out.toJSONString());
                             writer.write("\n");
@@ -243,6 +250,7 @@ public class PreProcessing {
         } else {
 //            args = new String[1];
 //            args[0] = "/Users/rbouadjenek/Documents/SocialMediaAnalysis/dataset/";
+            //args[0] = "/Users/rbouadjenek/Documents/SocialMediaAnalysis/dataset/";
             dataDir = args[0];
             PreProcessing pre = new PreProcessing();
             long start = System.currentTimeMillis();

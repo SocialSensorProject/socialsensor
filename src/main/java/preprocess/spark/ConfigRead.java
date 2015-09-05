@@ -1,14 +1,13 @@
 package preprocess.spark;
 
 import java.io.*;
-import java.util.Date;
+
 import java.util.Properties;
 
 /**
  * Created by zahraiman on 8/18/15.
  */
 public class ConfigRead {
-    InputStream inputStream;
     private Properties prop;
 
     public ConfigRead() throws IOException {
@@ -129,4 +128,6 @@ public class ConfigRead {
 
     public String getOutputJsonPath() { return prop.getProperty("outputJsonPath");
     }
+
+    public boolean getHashtagUserFeatures(){ return Boolean.valueOf(prop.getProperty("hashtagUserFeatures"));}
 }
