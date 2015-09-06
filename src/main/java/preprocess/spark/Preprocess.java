@@ -78,7 +78,8 @@ public class Preprocess implements Serializable {
 
         DataFrame mainData = null;
         if(local) {
-            mainData = sqlContext.read().json(dataPath + "testset1.json").coalesce(numPart);
+            mainData = sqlContext.read().json(dataPath + "statuses.log.2013-02-01-11.json").coalesce(numPart);
+            //mainData = sqlContext.read().json(dataPath + "testset1.json").coalesce(numPart);
             //sqlContext.read().parquet("/Users/zahraiman/University/FriendSensor/SPARK/July20/SparkTest/mainData_tweets2014-12.parquet").limit(10000)
         }else if(tweetHashtagTime || uniqueUserHashtagBirthday || directedUserNet || tweetUserHashtag ||tweetUser || groupedTweetHashtagHashtag || groupedTweetMentionHashtag || groupedTweetUserHashtag || groupedTweetTermHashtag) {
             mainData = sqlContext.read().json(dataPath + "tweets2013-2014-v2.0/*.bz2").coalesce(numPart);
@@ -441,17 +442,40 @@ public class Preprocess implements Serializable {
                 while(matcher.find())
                     list.add(RowFactory.create(id, matcher.group().toLowerCase(), hashtag));
                 String text = matcher.replaceAll("").trim();
-                StringTokenizer stok = new StringTokenizer(text, "\'\"?, ;.:!()-*«“");
-                String str=""; boolean write = true; boolean isUrl = false;
+                StringTokenizer stok = new StringTokenizer(text, "\'\"?, ;.:!()-*«“|><`~$^&[]\\}{=”•’…‘！′：+´");
+                String str=""; boolean write = true, isUrl = false, containHttp = false;
                 while(stok.hasMoreTokens()){
                     write = true;
                     str = stok.nextToken();
-                    while(str.contains("@") || str.startsWith("#") || str.startsWith("http")){//"#that#this@guy did "
+                    while(containHttp || str.contains("@") || str.contains("#") || str.contains("http")){//"#that#this@guy did "
+                        if(containHttp){
+                            while (str.contains("/")) {
+                                if (!stok.hasMoreTokens()) {
+                                    write = false;
+                                    break;
+                                }
+                                str = stok.nextToken();
+                            }
+                            containHttp = false;
+                        }
                         isUrl = str.startsWith("http");
                         if(!isUrl) {
-                            str = str.split("[@#]")[0];
-                            if(str.length() == 0)
-                                write = false;
+                            if(str.contains("http")){
+                                containHttp = true;
+                                if(str.split("http")[0].length() > 0){
+                                    str = str.split("http")[0];
+                                    if (str.length() == 0)
+                                        write = false;
+                                }else
+                                    write = false;
+                            }if(str.contains("@") || str.contains("#")) {
+                                if (str.split("[@#]").length > 0) {
+                                    str = str.split("[@#]")[0];
+                                    if (str.length() == 0)
+                                        write = false;
+                                } else
+                                    write = false;
+                            }
                             break;
                         }
                         if(!stok.hasMoreTokens()) {
@@ -471,7 +495,13 @@ public class Preprocess implements Serializable {
                         }
                     }
                     if(write) {
-                        list.add(RowFactory.create(id, str.toLowerCase(), hashtag));
+                        if(str.contains("/")) {
+                            for(String st: str.split("/")) {
+                                list.add(RowFactory.create(id, st.toLowerCase(), hashtag));
+                            }
+                        }else {
+                            list.add(RowFactory.create(id, str.toLowerCase(), hashtag));
+                        }
                     }
                 }
                 return list;
@@ -482,6 +512,7 @@ public class Preprocess implements Serializable {
                 DataTypes.createStructField("term", DataTypes.StringType, true),
                 DataTypes.createStructField("hashtag", DataTypes.StringType, true)
         };
+        //sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart).write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(dataPath + "tweet_term_hashtag_grouped_csv");
         sqlContext.createDataFrame(t1, new StructType(fields1)).coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_term_hashtag_grouped_parquet");
         //System.out.println("==========FINAL COUNT============= " + t.count());
     }
@@ -511,7 +542,9 @@ public class Preprocess implements Serializable {
 
         sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").distinct().coalesce(numPart).registerTempTable("tweet_term_hashtag");
         DataFrame df1 = sqlContext.sql("SELECT term, count(tid) AS tweetCount from tweet_term_hashtag GROUP BY term").coalesce(numPart);
-        df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "term_tweetCount_parquet");
+        df1.cache();
+        df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(dataPath + "term_tweetCount_parquet");
+        //df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "term_tweetCount_parquet");
     }
 
 
