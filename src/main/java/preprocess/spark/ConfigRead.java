@@ -130,4 +130,8 @@ public class ConfigRead {
     }
 
     public boolean getHashtagUserFeatures(){ return Boolean.valueOf(prop.getProperty("hashtagUserFeatures"));}
+
+    public boolean getTermFeatures() {
+        return Boolean.valueOf(prop.getProperty("termFeatures"));
+    }
 }

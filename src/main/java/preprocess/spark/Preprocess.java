@@ -74,12 +74,10 @@ public class Preprocess implements Serializable {
         SQLContext sqlContext = new SQLContext(sparkContext);
         sqlContext.sql("SET spark.sql.shuffle.partitions=" + numPart);
 
-
-
         DataFrame mainData = null;
         if(local) {
-            mainData = sqlContext.read().json(dataPath + "statuses.log.2013-02-01-11.json").coalesce(numPart);
-            //mainData = sqlContext.read().json(dataPath + "testset1.json").coalesce(numPart);
+            //mainData = sqlContext.read().json(dataPath + "statuses.log.2013-02-01-11.json").coalesce(numPart);
+            mainData = sqlContext.read().json(dataPath + "testset1.json").coalesce(numPart);
             //sqlContext.read().parquet("/Users/zahraiman/University/FriendSensor/SPARK/July20/SparkTest/mainData_tweets2014-12.parquet").limit(10000)
         }else if(tweetHashtagTime || uniqueUserHashtagBirthday || directedUserNet || tweetUserHashtag ||tweetUser || groupedTweetHashtagHashtag || groupedTweetMentionHashtag || groupedTweetUserHashtag || groupedTweetTermHashtag) {
             mainData = sqlContext.read().json(dataPath + "tweets2013-2014-v2.0/*.bz2").coalesce(numPart);
@@ -126,8 +124,11 @@ public class Preprocess implements Serializable {
 
         if(configRead.getHashtagUserFeatures())
             getUserHashtagFeatures(sqlContext);
-        getTermFeatures(sqlContext);
 
+        if(configRead.getTermFeatures())
+            getTermFeatures(sqlContext);
+
+        cleanTerms(sqlContext);
     }
 
     private static void getGroupedTweetHashtagHashtag(DataFrame tweet_text, SQLContext sqlContext) {
@@ -539,12 +540,69 @@ public class Preprocess implements Serializable {
     }
 
     public static void getTermFeatures(SQLContext sqlContext){
-
-        sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").distinct().coalesce(numPart).registerTempTable("tweet_term_hashtag");
-        DataFrame df1 = sqlContext.sql("SELECT term, count(tid) AS tweetCount from tweet_term_hashtag GROUP BY term").coalesce(numPart);
-        df1.cache();
+        //.coalesce(numPart).registerTempTable("tweet_term_hashtag");
+        StructField[] fields1 = {
+                DataTypes.createStructField("term", DataTypes.StringType, true),
+                DataTypes.createStructField("tweetCount", DataTypes.DoubleType, true)
+        };
+        DataFrame df1 = sqlContext.createDataFrame(sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+            @Override
+            public Tuple2<String, Double> call(Row row) throws Exception {
+                return new Tuple2<String, Double>(row.getString(1), 1.0);
+            }
+        }).reduceByKey(new Function2<Double, Double, Double>() {
+            @Override
+            public Double call(Double aDouble, Double aDouble2) throws Exception {
+                return aDouble + aDouble2;
+            }
+        }).map(new Function<Tuple2<String, Double>, Row>() {
+            @Override
+            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
+                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            }
+        }), new StructType(fields1)).coalesce(numPart);
+        System.out.println("==========FINAL COUNT Term============= " + df1.count());
+        ///DataFrame df1 = sqlContext.sql("SELECT term, count(tid) AS tweetCount from tweet_term_hashtag GROUP BY term").coalesce(numPart);
+        //df1.cache();
         df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(dataPath + "term_tweetCount_parquet");
         //df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "term_tweetCount_parquet");
+    }
+
+    public static void cleanTerms(SQLContext sqlContext){
+        StructField[] fields1 = {
+                DataTypes.createStructField("term1", DataTypes.StringType, true),
+                DataTypes.createStructField("freq", DataTypes.DoubleType, true)
+        };
+        StructField[] fields = {
+                DataTypes.createStructField("tid", DataTypes.LongType, true),
+                DataTypes.createStructField("term", DataTypes.StringType, true),
+                DataTypes.createStructField("hashtag", DataTypes.StringType, true)
+        };
+        DataFrame df1 = sqlContext.createDataFrame(sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "cleanTerms").javaRDD(), new StructType(fields1)).drop("freq");
+        DataFrame df2 = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet");
+        //System.out.println("============== FINAL COUNT TERM NOT REMOVED ============== " + df2.count());10267957382
+
+        DataFrame df3 = df2.join(df1, df1.col("term1").equalTo(df2.col("term"))).drop("term1");
+        df3.printSchema();
+        df3.write().parquet(dataPath + "tweet_cleanTerms_hashtag_grouped_parquet");
+        System.out.println("============== FINAL COUNT TERM REMOVED ============== " + df3.count());
+        /*
+        List<String> cleanTerms = new ArrayList<String>();
+        for(Row r :sqlContext.createDataFrame(sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "cleanTerms2").javaRDD(), new StructType(fields1)).drop("freq").collectAsList())
+            cleanTerms.add(r.getString(0));
+        final List<String> terms = cleanTerms;
+        DataFrame df2 = sqlContext.createDataFrame(sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "tweet_term_hashtag_grouped_parquet").javaRDD(), new StructType(fields));//.registerTempTable("tweet_freq");
+        df2 = sqlContext.createDataFrame(sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "tweet_term_hashtag_grouped_parquet").javaRDD().map(new Function<Row, Row>() {
+                    @Override
+                    public Row call(Row row) throws Exception {
+                        if (terms.contains(row.getString(1)))
+                            return RowFactory.create(row.getLong(0), row.getString(1), row.getString(2));
+                        else
+                            return null;
+                    }
+                }), new StructType(fields));
+        System.out.println("Count: " + df2.count());
+         */
     }
 
 
