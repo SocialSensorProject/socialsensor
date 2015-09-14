@@ -74,6 +74,8 @@ public class Preprocess implements Serializable {
         SQLContext sqlContext = new SQLContext(sparkContext);
         sqlContext.sql("SET spark.sql.shuffle.partitions=" + numPart);
 
+        getTweetTerm(sqlContext);
+
         DataFrame mainData = null;
         if(local) {
             //mainData = sqlContext.read().json(dataPath + "statuses.log.2013-02-01-11.json").coalesce(numPart);
@@ -128,7 +130,7 @@ public class Preprocess implements Serializable {
         if(configRead.getTermFeatures())
             getTermFeatures(sqlContext);
 
-        cleanTerms(sqlContext);
+        //cleanTerms(sqlContext);
     }
 
     private static void getGroupedTweetHashtagHashtag(DataFrame tweet_text, SQLContext sqlContext) {
@@ -603,6 +605,13 @@ public class Preprocess implements Serializable {
                 }), new StructType(fields));
         System.out.println("Count: " + df2.count());
          */
+    }
+
+    public static void getTweetTerm(SQLContext sqlContext){
+        DataFrame df = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag");
+        //System.out.println("COUNT: " + df.count());
+        df.cache();
+        df.coalesce(1).write().parquet(dataPath+"tweet_term_parquet");
     }
 
 

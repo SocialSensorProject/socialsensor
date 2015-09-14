@@ -36,43 +36,43 @@ public class ScatterPlot implements Comparable<ScatterPlot> {
         this.featureKey = featureKey;
     }
 
-    /*@Override
-    public int compareTo(ScatterPlot o) {
-        if(!flagCE) {
-            if (this.featureValue > o.featureValue)
-                return -1;
-            else if (this.featureValue < o.featureValue)
-                return 1;
-            else
-                return 0;
-        }else{
-            if (this.featureValue > o.featureValue)
-                return 1;
-            else if (this.featureValue < o.featureValue)
-                return -1;
-            else
-                return 0;
-        }
-    }*/
-
     @Override
     public int compareTo(ScatterPlot o) {
         if(!flagCE) {
-            if (this.secondDimCount > o.secondDimCount)
+            if (this.featureValue > o.featureValue)
                 return -1;
-            else if (this.secondDimCount < o.secondDimCount)
+            else if (this.featureValue < o.featureValue)
                 return 1;
             else
                 return 0;
         }else{
-            if (this.secondDimCount > o.secondDimCount)
+            if (this.featureValue > o.featureValue)
                 return 1;
-            else if (this.secondDimCount < o.secondDimCount)
+            else if (this.featureValue < o.featureValue)
                 return -1;
             else
                 return 0;
         }
     }
+
+    /*@Override
+    public int compareTo(ScatterPlot o) {
+        if(!flagCE) {
+            if (this.secondDimCount > o.secondDimCount)
+                return -1;
+            else if (this.secondDimCount < o.secondDimCount)
+                return 1;
+            else
+                return 0;
+        }else{
+            if (this.secondDimCount > o.secondDimCount)
+                return 1;
+            else if (this.secondDimCount < o.secondDimCount)
+                return -1;
+            else
+                return 0;
+        }
+    }*/
 
     public ScatterPlot(double featureValue, double secondDimCount, String featureKey, boolean flagCE) {
         this.featureValue = featureValue;
