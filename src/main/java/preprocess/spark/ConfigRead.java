@@ -134,4 +134,8 @@ public class ConfigRead {
     public boolean getTermFeatures() {
         return Boolean.valueOf(prop.getProperty("termFeatures"));
     }
+    public boolean getTestTrainData() {
+        return Boolean.valueOf(prop.getProperty("buildTestTrainData"));
+    }
+
 }
