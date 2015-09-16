@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="lagtime:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/lagtime_jar</output-path>
+    <root id="archive" name="lagtime.jar">
+      <element id="module-output" name="lagtime" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/databricks/spark-csv_2.10/1.1.0/spark-csv_2.10-1.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-csv/1.1/commons-csv-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/univocity/univocity-parsers/1.5.1/univocity-parsers-1.5.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/twitter/twitter-text/1.12.1/twitter-text-1.12.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
