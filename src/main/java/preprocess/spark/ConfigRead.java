@@ -138,4 +138,6 @@ public class ConfigRead {
         return Boolean.valueOf(prop.getProperty("buildTestTrainData"));
     }
 
+    public boolean isTweetTime() { return Boolean.valueOf(prop.getProperty("tweetTime"));
+    }
 }
