@@ -61,6 +61,20 @@
             <systemPath>${project.basedir}/lib/text-1.12.2.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>de.bwaldvogel</groupId>
+            <artifactId>liblinear</artifactId>
+            <version>1.12.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/liblinear-1.8.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>de.bwaldvogel</groupId>
+            <artifactId>libsvm</artifactId>
+            <version>1.12.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/libsvm.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>trove</groupId>
             <artifactId>trove</artifactId>
             <version>3.0.0a5</version>

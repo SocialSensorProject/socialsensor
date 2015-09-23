@@ -143,7 +143,7 @@ public class Preprocess implements Serializable {
             //getGroupedMentionHashtagTermList(sqlContext, sparkContext);
             //getTweetTerm(sqlContext);
 
-            //getGroupedMentionHashtagTerm(sqlContext, sparkContext);
+            getGroupedMentionHashtagTerm(sqlContext, sparkContext);
             //getTestTrainData(sqlContext);
 
             /*for (int gNum = 1; gNum <= 2; gNum++) {
@@ -159,7 +159,7 @@ public class Preprocess implements Serializable {
             //writeAsCSV(sqlContext);
         }
 
-        getTweetTerm(sqlContext);
+        //getTweetTerm(sqlContext);
         //cleanTerms(sqlContext);
     }
 
@@ -666,7 +666,7 @@ public class Preprocess implements Serializable {
         System.out.println("================== IND VALUE AFTER FROM_FEATURE=================: " + ind);
 
         final long ind2 = ind;
-        df2 = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart);//.registerTempTable("tweetMention");
+        df2 = sqlContext.read().parquet(outputPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart);//.registerTempTable("tweetMention");
         df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
             @Override
             public Tuple2<String, Double> call(Row row) throws Exception {//tid, username, id
@@ -712,8 +712,8 @@ public class Preprocess implements Serializable {
             }
         }), new StructType(fieldsTerm)).coalesce(numPart);
         //output(df2, "tweet_termFeature_grouped", false);
-        System.out.println("==========FINAL TERM COUNT============= " + df2.count());
-        //System.out.println("================== IND VALUE AFTER TERM_FEATURE=================: " + ind);
+        //System.out.println("==========FINAL TERM COUNT============= " + df2.count());
+        System.out.println("================== IND VALUE AFTER TERM_FEATURE=================: " + fromNumberMap.count());
 
         final long ind3 = ind;
         df2 = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart);//.registerTempTable("tweetMention");
@@ -764,8 +764,8 @@ public class Preprocess implements Serializable {
         //output(df2, "tweet_hashtagFeature_grouped", false);
 
         final long ind4 = ind;
-        System.out.println("==========FINAL HASHTAG COUNT============= " + df2.count());
-        //System.out.println("================== IND VALUE AFTER HASHTAG_FEATURE=================: " + ind);
+        //System.out.println("==========FINAL HASHTAG COUNT============= " + df2.count());
+        System.out.println("================== IND VALUE AFTER HASHTAG_FEATURE=================: " + fromNumberMap.count());
 
         df2 = sqlContext.read().parquet(dataPath + "tweet_mention_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart);//.registerTempTable("tweetMention");
         df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
@@ -813,7 +813,7 @@ public class Preprocess implements Serializable {
             }
         }), new StructType(fieldsMention)).coalesce(numPart);
         //output(df2, "tweet_mentionFeature_grouped", false);
-        //System.out.println("==========FINAL Mention COUNT============= " + df2.count());
+        System.out.println("==========FINAL Mention COUNT============= " + fromNumberMap.count());
         System.out.println("==========FINAL Feature COUNT============= " + (ind-1));
     }
 
