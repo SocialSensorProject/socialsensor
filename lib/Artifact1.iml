@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/target/classes" />
-    <output-test url="file://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/target/test-classes" />
-    <content url="file://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor">
-      <sourceFolder url="file://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/target" />
+    <output url="file://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/target/classes" />
+    <output-test url="file://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/target/test-classes" />
+    <content url="file://$MODULE_DIR$/../../../SocialSensorProject/socialsensor">
+      <sourceFolder url="file://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -144,7 +144,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.twitter:text:1.12.2">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/lib/text-1.12.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/lib/text-1.12.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -153,7 +153,7 @@
     <orderEntry type="module-library">
       <library name="Maven: trove:trove:3.0.0a5">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/lib/trove-3.0.0a5.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/lib/trove-3.0.0a5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -162,7 +162,7 @@
     <orderEntry type="module-library">
       <library name="Maven: edu.stanford.ppl:postagger:2010-05-26">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../SocialSensorProject_Sept8/socialsensor/lib/stanford-postagger-2010-05-26.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../SocialSensorProject/socialsensor/lib/stanford-postagger-2010-05-26.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
