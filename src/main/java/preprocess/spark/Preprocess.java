@@ -146,15 +146,14 @@ public class Preprocess implements Serializable {
             //getGroupedMentionHashtagTerm(sqlContext, sparkContext);
             //getTestTrainData(sqlContext);
 
-            for (int gNum = 1; gNum <= 2; gNum++) {
+            for (int gNum = 2; gNum <= 2; gNum++) {
                 groupNum = gNum;
                 System.out.println("==================== Group Num: "+groupNum+"===================");
                 System.out.println("==================== ENTERING TWEET TOPICAL===================");
-                if(gNum > 1)
-                    getTweetTopical(sqlContext);
+                //getTweetTopical(sqlContext);
                 getTestTrainData(sqlContext);
                 System.out.println("==================== ENTERING TEST TRAIN DATA WITH TOPICAL===================");
-                getTestTrainDataSet(sqlContext);
+                //getTestTrainDataSet(sqlContext);
             }
 
             //writeAsCSV(sqlContext);
@@ -214,7 +213,7 @@ public class Preprocess implements Serializable {
                     return RowFactory.create(v1.getLong(0), 0);
             }
         }), new StructType(fields));
-        df.write().parquet(outputPath + "tweet_topical_parquet");
+        df.write().parquet(outputPath + "tweet_topical_"+groupNum+"_parquet");
         //DataFrame negativeSamples, positiveSamples;
         // negativeSamples = df.filter(df.col("topical").$eq$eq$eq(0)).coalesce(numPart);
         // positiveSamples = df.filter(df.col("topical").$greater(0)).coalesce(numPart);
@@ -377,7 +376,7 @@ public class Preprocess implements Serializable {
         //negativeSamples = df.filter(df.col("topical").$eq$eq$eq(0)).coalesce(numPart);
         //positiveSamples = df.filter(df.col("topical").$greater(0)).coalesce(numPart);
 
-        DataFrame tweetTopical = sqlContext.read().parquet(outputPath + "tweet_topical_parquet").coalesce(numPart);
+        DataFrame tweetTopical = sqlContext.read().parquet(outputPath + "tweet_topical_" + groupNum + "_parquet").coalesce(numPart);
         positiveSamples = tweetTopical.filter(tweetTopical.col("topical").$eq$eq$eq(1)).coalesce(numPart);
         negativeSamples = tweetTopical.filter(tweetTopical.col("topical").$eq$eq$eq(0)).coalesce(numPart);
 
@@ -445,7 +444,7 @@ public class Preprocess implements Serializable {
         negativeSamples = negativeSamples.sample(false, );
         df1 = negativeSamples.unionAll(positiveSamples);*/
 
-        output(df1, "tweet_hashtag_user_mention_term_time_allInnerJoins", false);
+        output(df1, "tweet_hashtag_user_mention_term_time_"+groupNum+"_allInnerJoins", false);
         System.out.println("================== Only tweets with chosen features TWEET TOPICAL COUNT: " + df1.count() + "========================");
         System.out.println("================== Only tweets with chosen features TWEET TOPICAL POSITIVE COUNT: " + positiveSamples.count() + "========================");
         System.out.println("================== Only tweets with chosen features TWEET TOPICAL NEGATIVE COUNT: " + negativeSamples.count() + "========================");

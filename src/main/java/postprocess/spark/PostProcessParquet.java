@@ -13,6 +13,7 @@ import preprocess.spark.ConfigRead;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PostProcessParquet implements Serializable {
@@ -60,7 +61,7 @@ public class PostProcessParquet implements Serializable {
             //writeHeader();
             SparkConf sparkConfig;
             if (local) {
-                outputCSVPath = "ClusterResults/tweet_term_parquet/";
+                outputCSVPath = "ClusterResults/TestTrain/";
                 //outputCSVPath = "ClusterResults/DisasterTerm/disaster_term/";
                 //outputCSVPath = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
@@ -82,9 +83,9 @@ public class PostProcessParquet implements Serializable {
                     continue;
                 System.out.println(outputCSVPath +"/"+ filename);
                 res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
-                //lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
+                lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
                 //res = sqlContext.read().parquet(outputCSVPath);
-                lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
+                //lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
             }
             ind = 0;
             for (String filename : fileNames) {
@@ -115,53 +116,71 @@ public class PostProcessParquet implements Serializable {
     }
 
     public static int readResults2(DataFrame results, JavaSparkContext sc, int index, String filename) throws IOException, InterruptedException {
-        /**/
-        String outputCSVPath2 = "ClusterResults/TestTrain_Arff/";
+        /*
+        * testTrain_data
+         |-- user: string (nullable = true)
+         |-- term: string (nullable = true)
+         |-- hashtag: string (nullable = true)
+         |-- mentionee: string (nullable = true)
+         |-- time: long (nullable = true)
+         |-- tid: long (nullable = true)
+         |-- topical: integer (nullable = true
+        */
+        String outputCSVPath2 = "ClusterResults/TestTrain/";
+
         final Accumulator<Integer> accumulator = sc.accumulator(0);
         JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {
             @Override
             public String call(Row row) throws Exception {
                 String topical = ""; String[] features;
-                String out = "";
-                if(row.get(0) != null) {
-                    topical = row.get(0).toString();
+                String out = "", time = "";
+                if(row.get(6) != null) {
+                    topical = row.get(6).toString();
                 }
-                if(row.get(1) != null && !row.get(1).toString().equals("null")) // FROM Feature
-                    out += row.getString(1);
-                if(row.get(2) != null && !row.get(2).toString().equals("null")) { // TERM Feature
-                    out += " " + row.getString(2);
-                    /*term = row.getString(2).split(" ");
-                    Arrays.sort(term);
-                    for(String st: term)
-                        out += " " + term;*/
+                if(row.get(0) != null) { // FROM Feature
+                    out += row.get(0).toString() + " ";
                 }
-                if(row.get(3) != null && !row.get(3).toString().equals("null")) { // HASHTAG Feature
-                    out += " " + row.getString(3);
+                if(row.get(1) != null && !row.get(1).toString().equals("null")) // TERM Feature
+                    out += row.getString(1) + " ";
+                if(row.get(2) != null && !row.get(2).toString().equals("null")) { // HASHTAG Feature
+                    out += row.getString(2) + " ";
                 }
-                if(row.get(4) != null && !row.get(4).toString().equals("null")) { // MENTION Feature
-                    out += " " + row.getString(4);
+                if(row.get(3) != null && !row.get(3).toString().equals("null")) { // MENTION Feature
+                    out += row.getString(3) + " ";
                 }
+                if(row.get(4) != null && !row.get(4).toString().equals("null")) { // TIME Feature
+                    //time += " " + format.format(row.getLong(4));
+                    time = row.get(4).toString();
+                }
+                //if(row.get(5) != null && !row.get(5).toString().equals("null")) { // TWEETID Feature
+                //    out += " " + row.getString(5);
+                //}
                 if(topical.equals("1"))
                     accumulator.add(1);
-                features = out.split(" ");
-                /*Set<String> set = new HashSet<String>(features.length);
-                Collections.addAll(set, features);
-                double [] tmp = new double[set.size()];
-                int i = 0;
-                for(String s: set){
-                    tmp[i] = Double.valueOf(s);
-                    if(tmp[i] > 156758174)
-                        System.out.println("PROBLEM");
-                    i++;
+                if(out.length() > 0) {
+                    out = out.substring(0, out.length() - 1);
+                    features = out.split(" ");
+                    Set<String> set = new HashSet<String>(features.length);
+                    Collections.addAll(set, features);
+                    double[] tmp = new double[set.size()];
+                    int i = 0;
+                    for (String s : set) {
+                        tmp[i] = Double.valueOf(s);
+                        i++;
+                    }
+                    Arrays.sort(tmp);
+                    out = topical;
+                    for (double st : tmp)
+                        out += " " + new BigDecimal(st).toPlainString() + ":1";
+                }else{
+                    out = topical;
                 }
-                Arrays.sort(tmp);
-                for(double st: tmp)
-                    out += "," + new BigDecimal(st).toPlainString() + " 1";
-                */
-                out = "{0 " + topical;
+                out += " " + time;
+
+                /*out = "{0 " + topical;
                 for(String st: features)
                     out += "," + st + " 1";
-                out += "}";
+                out += "}";*/
                 return out;
             }
         });
