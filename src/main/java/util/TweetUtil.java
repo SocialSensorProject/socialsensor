@@ -1,5 +1,7 @@
 package util;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +11,34 @@ import java.util.List;
  */
 public class TweetUtil {
 
+    public static void runStringCommand(final String command) throws IOException, InterruptedException {
+        final int returncode = Runtime.getRuntime().exec(new String[] { "bash", "-c", command }).waitFor();
+        if (returncode != 0) {
+            System.err.println("The script returned an Error with exit code: " + returncode);
+            throw new IOException();
+        }
+    }
+
+    /**
+     * Run script.
+     *
+     * @param scriptFile the script file
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws InterruptedException the interrupted exception
+     */
+    public static void runScript(final String scriptFile) throws IOException, InterruptedException {
+        final String command = scriptFile;
+        if (!new File(command).exists() || !new File(command).canRead() || !new File(command).canExecute()) {
+            System.err.println("Cannot find or read " + command);
+            System.err.println("Make sure the file is executable and you have permissions to execute it. Hint: use \"chmod +x filename\" to make it executable");
+            throw new IOException("Cannot find or read " + command);
+        }
+        final int returncode = Runtime.getRuntime().exec(new String[] { "bash", "-c", command }).waitFor();
+        if (returncode != 0) {
+            System.err.println("The script returned an Error with exit code: " + returncode);
+            throw new IOException();
+        }
+    }
 
     public List<String> getGroupHashtagList(int groupNum, boolean localRun) {
         List<String> hashtagList = new ArrayList<>();

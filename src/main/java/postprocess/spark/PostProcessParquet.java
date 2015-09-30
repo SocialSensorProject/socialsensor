@@ -10,11 +10,13 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.DataFrame;
 import preprocess.spark.ConfigRead;
+import util.TweetUtil;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 public class PostProcessParquet implements Serializable {
     private static String outputCSVPath;
@@ -26,6 +28,8 @@ public class PostProcessParquet implements Serializable {
     public static String ceName = "CE_Suvash";
     public static String clusterResultsPath = "/Volumes/SocSensor/Zahra/Sept16/ClusterResults/";
     public static int topFeatureNum = 1000;
+    private static String scriptPath = configRead.getScriptPath();
+    private static TweetUtil tweetUtil = new TweetUtil();
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
@@ -37,7 +41,6 @@ public class PostProcessParquet implements Serializable {
         int itNum = configRead.getSensorEvalItNum();
         int hashtagNum = configRead.getSensorEvalHashtagNum();
         outputCSVPath = configRead.getOutputCSVPath();
-        String scriptPath = configRead.getScriptPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
         boolean convertParquet = true;
@@ -97,11 +100,13 @@ public class PostProcessParquet implements Serializable {
         if(runScript) {
             // Combine all CSV files into one file for each group
             printForumla(itNum, hashtagNum);
-            runScript("cp " + scriptPath + "mergeFiles.sh " + outputCSVPath + "mergeFiles.sh");
-            runScript("chmod +x " + outputCSVPath + "mergeFiles.sh");
-            runScript("./" + outputCSVPath + "mergeFiles.sh");
+            tweetUtil.runScript("cp " + scriptPath + "mergeFiles.sh " + outputCSVPath + "mergeFiles.sh");
+            tweetUtil.runScript("chmod +x " + outputCSVPath + "mergeFiles.sh");
+            tweetUtil.runScript("./" + outputCSVPath + "mergeFiles.sh");
         }
     }
+
+
 
     public static void writeHeader() throws IOException {
         double featureNum = 1006133;
@@ -224,9 +229,9 @@ public class PostProcessParquet implements Serializable {
         new File(outputCSVPath +"out_"+filename+"_csv/part-00000").delete();
         if(findTopMiddle) {
             //=================== GET TOP MIDDLE BOTTOM===========
-            runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "top10_CSVOut_" + filename + ".csv");
-            runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - (configRead.getTopUserNum() / 2)) + ", " + ((int) Math.floor(numberOfLines / 2) + (configRead.getTopUserNum() / 2 - 1)) + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "middle10_CSVOut_" + filename + ".csv");
-            runStringCommand("sed -n '" + (numberOfLines - (configRead.getTopUserNum() - 1)) + ", " + numberOfLines + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "tail10_CSVOut_" + filename + ".csv");
+            tweetUtil.runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "top10_CSVOut_" + filename + ".csv");
+            tweetUtil.runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - (configRead.getTopUserNum() / 2)) + ", " + ((int) Math.floor(numberOfLines / 2) + (configRead.getTopUserNum() / 2 - 1)) + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "middle10_CSVOut_" + filename + ".csv");
+            tweetUtil.runStringCommand("sed -n '" + (numberOfLines - (configRead.getTopUserNum() - 1)) + ", " + numberOfLines + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "tail10_CSVOut_" + filename + ".csv");
         }*/
         int numberOfLines = accumulator.value().intValue();
         return numberOfLines;
@@ -259,8 +264,8 @@ public class PostProcessParquet implements Serializable {
         bufferedReaderA.close();
         if(findTopMiddle) {
             //=================== GET TOP MIDDLE BOTTOM===========
-            runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - 5) + ", " + ((int) Math.floor(numberOfLines / 2) + 4) + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "middle10_NoZero_" + filename);
-            runStringCommand("sed -n '" + (numberOfLines - 9) + ", " + numberOfLines + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "tail10_NoZero_" + filename);
+            tweetUtil.runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - 5) + ", " + ((int) Math.floor(numberOfLines / 2) + 4) + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "middle10_NoZero_" + filename);
+            tweetUtil.runStringCommand("sed -n '" + (numberOfLines - 9) + ", " + numberOfLines + "p' " + outputCSVPath + "NoZero_" + filename + " >  " + outputCSVPath + "tail10_NoZero_" + filename);
         }
         System.out.println("Filename: " + filename + " #lines: " + numberOfLines);
         return numberOfLines;
@@ -291,9 +296,9 @@ public class PostProcessParquet implements Serializable {
         bw.close();
         if(findTopMiddle) {
             //=================== GET TOP MIDDLE BOTTOM===========
-            runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "top10_CSVOut_" + filename + ".csv");
-            runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - (configRead.getTopUserNum() / 2)) + ", " + ((int) Math.floor(numberOfLines / 2) + (configRead.getTopUserNum() / 2 - 1)) + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "middle10_CSVOut_" + filename + ".csv");
-            runStringCommand("sed -n '" + (numberOfLines - (configRead.getTopUserNum() - 1)) + ", " + numberOfLines + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "tail10_CSVOut_" + filename + ".csv");
+            tweetUtil.runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "top10_CSVOut_" + filename + ".csv");
+            tweetUtil.runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - (configRead.getTopUserNum() / 2)) + ", " + ((int) Math.floor(numberOfLines / 2) + (configRead.getTopUserNum() / 2 - 1)) + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "middle10_CSVOut_" + filename + ".csv");
+            tweetUtil.runStringCommand("sed -n '" + (numberOfLines - (configRead.getTopUserNum() - 1)) + ", " + numberOfLines + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "tail10_CSVOut_" + filename + ".csv");
         }*/
         return 0;
     }
@@ -316,34 +321,9 @@ public class PostProcessParquet implements Serializable {
         return fileNames;
     }
 
-    /**
-     * Run script.
-     *
-     * @param scriptFile the script file
-     * @throws IOException Signals that an I/O exception has occurred.
-     * @throws InterruptedException the interrupted exception
-     */
-    public static void runScript(final String scriptFile) throws IOException, InterruptedException {
-        final String command = scriptFile;
-        if (!new File(command).exists() || !new File(command).canRead() || !new File(command).canExecute()) {
-            System.err.println("Cannot find or read " + command);
-            System.err.println("Make sure the file is executable and you have permissions to execute it. Hint: use \"chmod +x filename\" to make it executable");
-            throw new IOException("Cannot find or read " + command);
-        }
-        final int returncode = Runtime.getRuntime().exec(new String[] { "bash", "-c", command }).waitFor();
-        if (returncode != 0) {
-            System.err.println("The script returned an Error with exit code: " + returncode);
-            throw new IOException();
-        }
-    }
 
-    public static void runStringCommand(final String command) throws IOException, InterruptedException {
-        final int returncode = Runtime.getRuntime().exec(new String[] { "bash", "-c", command }).waitFor();
-        if (returncode != 0) {
-            System.err.println("The script returned an Error with exit code: " + returncode);
-            throw new IOException();
-        }
-    }
+
+    
 
     public static void printForumla(int itNum, int hashtagNum){
         String str = "=AVERAGE(";
@@ -575,8 +555,8 @@ public class PostProcessParquet implements Serializable {
                 bufferedReaderA.close();
                 bw.close();
                 ind++;
-                runStringCommand("rm "+outputCSVPath + feature + "1.csv");
-                runStringCommand("mv "+outputCSVPath + feature + "_tmp.csv" + " " + outputCSVPath + feature + "1.csv");
+                tweetUtil.runStringCommand("rm "+outputCSVPath + feature + "1.csv");
+                tweetUtil.runStringCommand("mv "+outputCSVPath + feature + "_tmp.csv" + " " + outputCSVPath + feature + "1.csv");
             }
         }
     }
@@ -607,8 +587,8 @@ public class PostProcessParquet implements Serializable {
         }
         bw.close();
         bufferedReaderA.close();
-        runStringCommand("rm " + path + fileName);
-        runStringCommand("mv " + path + "Tmp_" + fileName + " " + path + fileName);
+        tweetUtil.runStringCommand("rm " + path + fileName);
+        tweetUtil.runStringCommand("mv " + path + "Tmp_" + fileName + " " + path + fileName);
         System.out.println("DONE");
     }
 
@@ -619,16 +599,16 @@ public class PostProcessParquet implements Serializable {
             for(String subAlg: subAlgs) {
                 for(String feature : features) {
                     if(subAlg.equals("CE") || subAlg.equals("CE_Suvash")) {
-                        runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; tail -" + topFeatureNum + " " + feature + "/" + feature + "1.csv > " + feature + "/" + feature + ".csv;");
+                        tweetUtil.runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; tail -" + topFeatureNum + " " + feature + "/" + feature + "1.csv > " + feature + "/" + feature + ".csv;");
                     }else
-                        runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sed -n '1,"+topFeatureNum+"p' " + feature + "/" + feature + "1.csv > " + feature + "/" + feature + ".csv;");
+                        tweetUtil.runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sed -n '1,"+topFeatureNum+"p' " + feature + "/" + feature + "1.csv > " + feature + "/" + feature + ".csv;");
                     // Fix scientific numbers and add featureName column to the beginning
                     fixNumbers(clusterResultsPath, topic, subAlg, feature);
                     // SORT the CE lowest to highest
                     if(subAlg.equals("CE") || subAlg.equals("CE_Suvash")) {
-                        runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sort --field-separator=',' -n -k2,2 " + feature + "/" + feature + ".csv > " + feature + "/" + feature + "_tmp.csv;");
-                        runStringCommand("rm " +  clusterResultsPath + topic + "/" + subAlg + "/" + feature + "/" + feature + ".csv");
-                        runStringCommand("mv " + clusterResultsPath + topic + "/" + subAlg + "/" + feature + "/" + feature + "_tmp.csv  " + clusterResultsPath + topic + "/" + subAlg + "/" + feature + "/" + feature + ".csv");
+                        tweetUtil.runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sort --field-separator=',' -n -k2,2 " + feature + "/" + feature + ".csv > " + feature + "/" + feature + "_tmp.csv;");
+                        tweetUtil.runStringCommand("rm " +  clusterResultsPath + topic + "/" + subAlg + "/" + feature + "/" + feature + ".csv");
+                        tweetUtil.runStringCommand("mv " + clusterResultsPath + topic + "/" + subAlg + "/" + feature + "/" + feature + "_tmp.csv  " + clusterResultsPath + topic + "/" + subAlg + "/" + feature + "/" + feature + ".csv");
                     }
                 }
                 String command = "cd " + clusterResultsPath + topic + "/" + subAlg + "/; cat ";
@@ -636,7 +616,7 @@ public class PostProcessParquet implements Serializable {
                     command += feature + "/" + feature + ".csv ";
                 command += " > mixed.csv";
 
-                runStringCommand(command);
+                tweetUtil.runStringCommand(command);
 
                 if(checkEquality(clusterResultsPath + topic + "/" + subAlg + "/mixed.csv")) {
                     sortRandomly = "";
@@ -648,12 +628,12 @@ public class PostProcessParquet implements Serializable {
                     sortRandomly += "; rm ";
                     for(String feature: features)
                         sortRandomly += clusterResultsPath + topic + "/" + subAlg + "/" + feature +"/" + feature + "2.csv ";
-                    runStringCommand(sortRandomly);
+                    tweetUtil.runStringCommand(sortRandomly);
                 }
                 if(subAlg.equals("CE") || subAlg.equals("CE_Suvash"))
-                    runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sort --field-separator=',' -n -k2,2 mixed.csv  > mixed1.csv;  sed -n '1,"+topFeatureNum+"p' mixed1.csv > mixed.csv; rm mixed1.csv;");
+                    tweetUtil.runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sort --field-separator=',' -n -k2,2 mixed.csv  > mixed1.csv;  sed -n '1,"+topFeatureNum+"p' mixed1.csv > mixed.csv; rm mixed1.csv;");
                 else
-                    runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sort --field-separator=',' -rn -k2,2 mixed.csv  > mixed1.csv;  sed -n '1,"+topFeatureNum+"p' mixed1.csv > mixed.csv; rm mixed1.csv;");
+                    tweetUtil.runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sort --field-separator=',' -rn -k2,2 mixed.csv  > mixed1.csv;  sed -n '1,"+topFeatureNum+"p' mixed1.csv > mixed.csv; rm mixed1.csv;");
             }
         }
     }

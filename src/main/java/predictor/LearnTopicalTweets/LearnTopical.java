@@ -3,7 +3,9 @@ package predictor.LearnTopicalTweets;
 import predictor.de.bwaldvogel.liblinear.InvalidInputDataException;
 import predictor.de.bwaldvogel.liblinear.Predict;
 import predictor.de.bwaldvogel.liblinear.Train;
+import preprocess.spark.ConfigRead;
 import util.Statistics;
+import util.TweetUtil;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -20,6 +22,7 @@ public class LearnTopical {
     private static DecimalFormat df3 = new DecimalFormat("#.###");
     private static int featureNum = 1000000;
     private static int sampleNum = 2000000;
+    private static TweetUtil tweetUtil = new TweetUtil();
 
     private static String path = "Data/Learning/Topics/";
     private static String LRPath = "Data/Learning/LogisticRegression/";
@@ -83,16 +86,16 @@ public class LearnTopical {
     /*
      * Run tests on data
      */
-    public static void main(String[] args) throws IOException, InvalidInputDataException, ParseException {
+    public static void main(String[] args) throws IOException, InvalidInputDataException, ParseException, InterruptedException {
         String time1 = "2013-06-20 15:08:01";
         String time2 = "Thu Jun 20 15:08:01 +0001 2013";
         long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
         long t2 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse(time2).getTime();
-        boolean filePrepare = true;
+        boolean filePrepare = false;
 
         if(filePrepare) {
             //prepareTestTrainSplits();
-            modifyFeatureList();
+            //modifyFeatureList();
             findTestTrain();
             findTopicalTest(trainFileName, trainHashtagList);
             findTopicalTest(trainFileName + "_t", trainHashtagList);
@@ -348,7 +351,7 @@ public class LearnTopical {
     }
 
 
-    public static void findTopicalTest(String fileName, String hashtagListName) throws IOException {
+    public static void findTopicalTest(String fileName, String hashtagListName) throws IOException, InterruptedException {
         FileReader fileReaderA;
         BufferedReader bufferedReaderA;
         String line;
@@ -394,6 +397,8 @@ public class LearnTopical {
                 }
                 bufferedReaderA.close();
                 bwTest.close();
+                tweetUtil.runStringCommand("rm -f " + path + classNum + "/fold" + i + "/" + fileName + ".csv");
+                tweetUtil.runStringCommand("mv " + path + classNum + "/fold" + i + "/" +  fileName  + "_edited.csv " + path + classNum + "/fold" + i + "/" +  fileName  + ".csv");
             }
         }
     }
