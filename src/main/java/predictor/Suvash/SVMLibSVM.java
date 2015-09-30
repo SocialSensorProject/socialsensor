@@ -1,7 +1,7 @@
-package predictor;
+package predictor.Suvash;
 
 import libsvm.*;
-import predictor.ArffData.DataEntry;
+import predictor.Suvash.ArffData.DataEntry;
 
 import java.io.IOException;
 import java.util.ArrayList;

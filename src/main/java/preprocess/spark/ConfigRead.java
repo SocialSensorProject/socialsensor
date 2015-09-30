@@ -140,4 +140,8 @@ public class ConfigRead {
 
     public boolean isTweetTime() { return Boolean.valueOf(prop.getProperty("tweetTime"));
     }
+
+    public boolean isHashtagBirthdays() {
+        return Boolean.valueOf(prop.getProperty("hashtagPairBirthday"));
+    }
 }

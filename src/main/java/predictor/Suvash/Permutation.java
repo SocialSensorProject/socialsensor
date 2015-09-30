@@ -15,7 +15,7 @@
  *
  *************************************************************************/
 
-package predictor;
+package predictor.Suvash;
 
 import java.util.Arrays;
 import java.util.Collections;

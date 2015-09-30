@@ -1,4 +1,4 @@
-package predictor;
+package predictor.Suvash;
 
 /** Loads an ARFF file, either sparse or dense format.
  *   

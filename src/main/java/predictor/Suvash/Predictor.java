@@ -1,7 +1,7 @@
-package predictor;
+package predictor.Suvash;
 
 
-import predictor.ArffData.DataEntry;
+import predictor.Suvash.ArffData.DataEntry;
 import util.Statistics;
 
 import java.io.IOException;
