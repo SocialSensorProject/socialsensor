@@ -1,6 +1,6 @@
 package predictor.de.bwaldvogel.liblinear;
 
-import static de.bwaldvogel.liblinear.Linear.copyOf;
+import static predictor.de.bwaldvogel.liblinear.Linear.copyOf;
 
 
 public final class Parameter {

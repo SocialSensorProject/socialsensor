@@ -1,6 +1,5 @@
 package predictor.Suvash;
 
-import libsvm.*;
 import predictor.Suvash.ArffData.DataEntry;
 
 import java.io.IOException;
@@ -10,7 +9,7 @@ public class SVMLibSVM extends Predictor {
 
 	private boolean _firstLabelIsTrue;
 	
-	private svm_model _model = null;
+	/*private svm_model _model = null;
 	private double _C   = 2d;
 	private double _EPS = 0.001d;
 	
@@ -23,9 +22,9 @@ public class SVMLibSVM extends Predictor {
 		_model = svmTrain();		
 	}
 
-	/*
-	 * train the svm model
-	 */
+	//
+	 // train the svm model
+	 //
 	private svm_model svmTrain() {
 		svm_problem prob = new svm_problem();
 		int dataCount = _trainData._data.size();
@@ -112,5 +111,6 @@ public class SVMLibSVM extends Predictor {
 		svm.runTests("fresh/groups_interests_binary/active_groups_interests_binary_data.arff", 10);
 
 	}
+	*/
 	
 }

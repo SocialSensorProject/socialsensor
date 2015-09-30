@@ -1,6 +1,6 @@
 package predictor.Suvash;
 
-import de.bwaldvogel.liblinear.*;
+import predictor.de.bwaldvogel.liblinear.*;
 import predictor.Suvash.ArffData.DataEntry;
 
 import java.io.IOException;
