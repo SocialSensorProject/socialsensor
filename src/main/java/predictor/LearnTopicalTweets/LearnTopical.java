@@ -88,10 +88,10 @@ public class LearnTopical {
         String time2 = "Thu Jun 20 15:08:01 +0001 2013";
         long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
         long t2 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse(time2).getTime();
-        boolean filePrepare = false;
+        boolean filePrepare = true;
 
         if(filePrepare) {
-            prepareTestTrainSplits();
+            //prepareTestTrainSplits();
             modifyFeatureList();
             findTestTrain();
             findTopicalTest(trainFileName, trainHashtagList);
@@ -248,7 +248,7 @@ public class LearnTopical {
             hashtagSetDate.put(splitSt[1], Long.valueOf(splitSt[2]));
         }
         //build test/train data and hashtag lists
-        for(int classNum = 2; classNum < 3; classNum++ ) {
+        for(int classNum = 1; classNum < 3; classNum++ ) {
             if(classNum == 1)
                 classFileName = disasterFileName;
             else if(classNum == 2)
@@ -356,6 +356,7 @@ public class LearnTopical {
         String[] splits;
         FileWriter fwTest;
         BufferedWriter bwTest;
+        boolean topical = false;
         for(int classNum = 1; classNum <= numOfTopics; classNum++) {
             for (int i = 0; i < numOfFolds; i++) {
                 fileReaderA = new FileReader(path + classNum + "/fold" + i + "/" + hashtagListName +".csv");
@@ -371,20 +372,25 @@ public class LearnTopical {
                 fwTest = new FileWriter(path + classNum + "/fold" + i + "/" +  fileName  + "_edited.csv");
                 bwTest = new BufferedWriter(fwTest);
                 while ((line = bufferedReaderA.readLine()) != null) {
+                    topical = false;
                     if(line.length() == 1) {
-                        bwTest.write(line);
+                        bwTest.write(line + "\n");
                         continue;
                     }
                     line = line.substring(2, line.length());
                     splits = line.split(":1 ");
                     splits[splits.length-1] = splits[splits.length-1].split(":1")[0];
-                    for(int k = 1; k < splits.length; k++){
-                        if(testHashtagIndexes.contains(Double.valueOf(splits[k])))
-                            bwTest.write("1 ");
-                        else
-                            bwTest.write("0 ");
-                        bwTest.write(line);
+                    for(int k = 1; k < splits.length; k++) {
+                        if (testHashtagIndexes.contains(Double.valueOf(splits[k]))) {
+                            topical = true;
+                            break;
+                        }
                     }
+                    if(topical)
+                        bwTest.write("1 ");
+                    else
+                        bwTest.write("0 ");
+                    bwTest.write(line + "\n");
                 }
                 bufferedReaderA.close();
                 bwTest.close();
