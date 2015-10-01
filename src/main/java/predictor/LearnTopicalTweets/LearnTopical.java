@@ -91,15 +91,15 @@ public class LearnTopical {
         String time2 = "Thu Jun 20 15:08:01 +0001 2013";
         long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
         long t2 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse(time2).getTime();
-        boolean filePrepare = false;
+        boolean filePrepare = true;
 
-        if(filePrepare) {
-            //prepareTestTrainSplits();
+        if (filePrepare) {
+            prepareTestTrainSplits();
             //modifyFeatureList();
             findTestTrain();
             findTopicalTest(trainFileName, trainHashtagList);
-            findTopicalTest(trainFileName + "_t", trainHashtagList);
-            findTopicalTest(trainFileName + "_v", trainHashtagList);
+            findTopicalTest(trainFileName + "_t", trainHashtagList + "_t");
+            findTopicalTest(trainFileName + "_v", trainHashtagList + "_v");
             findTopicalTest(testFileName, testHashtagList);
         }
 
@@ -109,8 +109,8 @@ public class LearnTopical {
         ArrayList<Double> fscores = new ArrayList<Double>();
 
 
-        //String solverType = "L2_LR";
-        String solverType = "L1_LR";
+        String solverType = "L2_LR";
+        //String solverType = "L1_LR";
 
         Train train = new Train();
         String[] arguments = new String[50];
@@ -140,7 +140,7 @@ public class LearnTopical {
         predInd++;
         int remInd = ind, remPredInd = predInd;
         //System.out.println("Running " + getName() + " using " + source_file);
-        double[] cValues = {0.001, 0.01, 0.1, 1, 10, 100};
+        double[] cValues = {1e-7, 1e-6, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100};
         double bestC = -1, bestError = sampleNum;
         for (int classNum = 1; classNum <= numOfTopics; classNum++) {
             accuracies = new ArrayList<Double>();
@@ -153,22 +153,29 @@ public class LearnTopical {
                 bestC = -1;
                 bestError = sampleNum;
                 System.out.println("========================foldNum: " + i + "============================");
-                String trainName =  classNum + "/fold" + i + "/" + trainFileName+ "_t.csv";// + (i+1);
-                String testName =  classNum + "/fold" + i + "/" + trainFileName + "_v.csv";//  + (i+1);
+                String trainName = classNum + "/fold" + i + "/" + trainFileName + "_t.csv";// + (i+1);
+                String testName = classNum + "/fold" + i + "/" + trainFileName + "_v.csv";//  + (i+1);
                 for (double c : cValues) {
                     ind = remInd;
                     predInd = remPredInd;
                     System.out.println("========================C Value: " + c + "============================");
-                    arguments[ind] = "-c";ind++;
-                    arguments[ind] = String.valueOf(c);ind++;
-                    arguments[ind] = path + trainName;ind++;
-                    arguments[ind] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;ind++;
+                    arguments[ind] = "-c";
+                    ind++;
+                    arguments[ind] = String.valueOf(c);
+                    ind++;
+                    arguments[ind] = path + trainName;
+                    ind++;
+                    arguments[ind] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;
+                    ind++;
                     Arrays.copyOfRange(arguments, 0, ind - 1);
                     train.run(arguments);
 
-                    argumentsPred[predInd] = path + testName;predInd++;
-                    argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;predInd++;
-                    argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + outputFileName + "_" + c;predInd++;
+                    argumentsPred[predInd] = path + testName;
+                    predInd++;
+                    argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;
+                    predInd++;
+                    argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + outputFileName + "_" + c;
+                    predInd++;
                     Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
 
                     double[] measures = predict.mainPredict(argumentsPred);
@@ -176,30 +183,34 @@ public class LearnTopical {
                     //precisions.add(measures[1]);
                     //recalls.add(measures[2]);
                     //fscores.add(measures[3]);
-                    if (measures[4] < bestError) { //error
+                    if (measures[4] <= bestError) { //error
                         bestC = c;
                         bestError = measures[4];
                     }
                 }
                 System.err.println(" For classNum: " + classNum + " and foldNum: " + i + " , the best C is : " + bestC + " with error value of " + bestError);
                 //Evaluate on Test with bestC found on train validation data
-                testName =  classNum + "/" + solverType + "/fold" + i + "/" +  testFileName + ".csv";//  + (i+1);
-                trainName =  classNum + "/" + solverType + "/fold" + i + "/" +  trainFileName + ".csv";//  + (i+1);
+                testName = classNum + "/fold" + i + "/" + testFileName + ".csv";//  + (i+1);
+                trainName = classNum + "/fold" + i + "/" + trainFileName + ".csv";//  + (i+1);
                 double c = bestC;
                 predInd = remPredInd;
                 System.out.println("========================Evaluate on Test data with C Value: " + c + "============================");
                 ind = remInd;
-                arguments[ind] = "-c";ind++;
-                arguments[ind] = String.valueOf(c);ind++;
-                arguments[ind] = path + trainName;ind++;
-                arguments[ind] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" +  modelFileName + "_" + c;ind++;
+                arguments[ind] = "-c";
+                ind++;
+                arguments[ind] = String.valueOf(c);
+                ind++;
+                arguments[ind] = path + trainName;
+                ind++;
+                arguments[ind] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + modelFileName + "_" + c;
+                ind++;
                 Arrays.copyOfRange(arguments, 0, ind - 1);
                 train.run(arguments);
                 argumentsPred[predInd] = path + testName;
                 predInd++;
-                argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" +  modelFileName + "_" + c;
+                argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + modelFileName + "_" + c;
                 predInd++;
-                argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" +  outputFileName + "_" + c;
+                argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + outputFileName + "_" + c;
                 predInd++;
                 Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
                 double[] measures = predict.mainPredict(argumentsPred);
@@ -207,10 +218,13 @@ public class LearnTopical {
                 precisions.add(measures[1]);
                 recalls.add(measures[2]);
                 fscores.add(measures[3]);
+
+                writeFeatureFile(LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + modelFileName + "_" + c);
+
             }
 
-            for(int o = 0; o < accuracies.size(); o++) {
-                System.out.println(accuracies.get(o) + " " + precisions.get(o) + " " + recalls.get(o) + " "  + fscores.get(o));
+            for (int o = 0; o < accuracies.size(); o++) {
+                System.out.println(accuracies.get(o) + " " + precisions.get(o) + " " + recalls.get(o) + " " + fscores.get(o));
             }
 
             //System.out.println("- Finished fold " + (i+1) + ", accuracy: " + df3.format( correct / (double)_testData._data.size() ));
@@ -221,6 +235,32 @@ public class LearnTopical {
             System.out.println();
         }
     }
+    public static void writeFeatureFile(String modelName) throws IOException {
+
+        //build test/train data and hashtag lists
+        for(int classNum = 1; classNum < 3; classNum++ ) {
+            for (int i = 0; i < numOfFolds; i++) {
+                FileReader fileReaderA = new FileReader(modelName);
+                BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+                FileReader fileReaderB = new FileReader(path + featurepath + indexFileName);
+                BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
+                FileWriter fw = new FileWriter(path + classNum +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
+                BufferedWriter bw = new BufferedWriter(fw);
+                String line = "", line2;String [] splits;int ind = 0;
+                for(int kk = 0; kk < 7; kk++)//read header
+                    bufferedReaderA.readLine();
+                while ((line2 = bufferedReaderB.readLine()) != null) {//last line of model is the bias feature
+                    ind++;
+                    line = bufferedReaderA.readLine();
+                    splits = line2.split(",");
+                    bw.write(splits[0] + "," + splits[1] + "," + line + "\n");
+                }
+                fileReaderA.close();
+                fileReaderB.close();
+                bw.close();
+            }
+        }
+    }
 
     /*
     Prepare temporal splits for test and train and cross-validataion
@@ -229,11 +269,20 @@ public class LearnTopical {
 
         long []splitTimestamps = new long[numOfFolds];
         final SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
-        String[] dates = {"Sun Sep 01 00:00:00 +0000 2013", "Tue Oct 01 00:00:00 +0000 2013", "Fri Nov 01 00:00:00 +0000 2013",
+        /*String[] dates = {"Sun Sep 01 00:00:00 +0000 2013", "Tue Oct 01 00:00:00 +0000 2013", "Fri Nov 01 00:00:00 +0000 2013",
                 "Sun Dec 01 00:00:00 +0000 2013", "Wed Jan 01 00:00:00 +0000 2014", "Sat Feb 01 00:00:00 +0000 2014",
                 "Sat Mar 01 00:00:00 +0000 2014", "Tue Apr 01 00:00:00 +0000 2014", "Thu May 01  00:00:00 +0000 2014",
                 "Sun Jun 01 00:00:00 +0000 2014"};
-        String dates0 = "Thu Aug 01 00:00:00 +0000 2013";
+                String dates0 = "Thu Aug 01 00:00:00 +0000 2013";
+        */
+        String[] dates = {"Wed Jan 01 00:00:00 +0000 2014", "Sat Feb 01 00:00:00 +0000 2014",
+                "Sat Mar 01 00:00:00 +0000 2014", "Tue Apr 01 00:00:00 +0000 2014", "Thu May 01  00:00:00 +0000 2014",
+                "Sun Jun 01 00:00:00 +0000 2014", "Tue Jul 01 00:00:00 +0000 2014", "Fri Aug 01 00:00:00 +0000 2014", "Mon Sep 01 00:00:00 +0000 2014", "Wed Oct 01 00:00:00 +0000 2014"};
+        //"Mon Jul 01 00:00:00 +0000 2013",
+        String[] valDates = {"Fri Nov 01 00:00:00 +0000 2013",
+                "Sun Dec 01 00:00:00 +0000 2013", "Wed Jan 01 00:00:00 +0000 2014", "Sat Feb 01 00:00:00 +0000 2014",
+                "Sat Mar 01 00:00:00 +0000 2014", "Tue Apr 01 00:00:00 +0000 2014", "Thu May 01  00:00:00 +0000 2014", "Sun Jun 01 00:00:00 +0000 2014", "Tue Jul 01 00:00:00 +0000 2014", "Fri Aug 01 00:00:00 +0000 2014"};
+        String dates0 = "Sun Dec 01 00:00:00 +0000 2013";
         FileReader fileReaderA;
         BufferedReader bufferedReaderA;
         FileWriter fw, fwTest, fwVal, fwAllTrain;
@@ -278,11 +327,11 @@ public class LearnTopical {
                         cleanLine += " " + splitSt[j];
                     }
                     if (Long.valueOf(splitSt[splitSt.length - 1]) <= splitTimestamps[i]) {
-                        if(i > 0)
+                        /*if(i > 0)
                             valSplit = splitTimestamps[i-1];
                         else
-                            valSplit = format.parse(dates0).getTime() ;
-                        if(Long.valueOf(splitSt[splitSt.length - 1]) >= valSplit){
+                            valSplit = format.parse(dates0).getTime() ;*/
+                        if(Long.valueOf(splitSt[splitSt.length - 1]) >= format.parse(valDates[i]).getTime()){
                             bwVal.write(cleanLine + "\n");
                             trainValFileSize++;
                         }else {
@@ -306,19 +355,31 @@ public class LearnTopical {
                 //build test/train hashtag lists
                 fileReaderA = new FileReader(path + classNum + "/" + allHashtagList + "_" + classNum + ".csv");
                 bufferedReaderA = new BufferedReader(fileReaderA);
-                fw = new FileWriter(path + classNum + "/fold" + i + "/" + trainHashtagList + ".csv");
+                fw = new FileWriter(path + classNum + "/fold" + i + "/" + trainHashtagList + "_t.csv");
                 bw = new BufferedWriter(fw);
+                fwVal = new FileWriter(path + classNum + "/fold" + i + "/" + trainHashtagList + "_v.csv");
+                bwVal = new BufferedWriter(fwVal);
+                fwAllTrain = new FileWriter(path + classNum + "/fold" + i + "/" + trainHashtagList + ".csv");
+                bwAllTrain = new BufferedWriter(fwAllTrain);
                 fwTest = new FileWriter(path + classNum + "/fold" + i + "/" + testHashtagList + ".csv");
                 bwTest = new BufferedWriter(fwTest);
+
                 while ((line = bufferedReaderA.readLine()) != null) {
                     if (hashtagSetDate.get(line) <= splitTimestamps[i]) {
-                        bw.write(line + "\n");
+                        if(hashtagSetDate.get(line) >= format.parse(valDates[i]).getTime()){
+                            bwVal.write(line + "\n");
+                        }else {
+                            bw.write(line + "\n");
+                        }
+                        bwAllTrain.write(line + "\n");
                     }else{
                         bwTest.write(line + "\n");
                     }
                 }
                 bw.close();
                 bwTest.close();
+                bwVal.close();
+                bwAllTrain.close();
                 bufferedReaderA.close();
                 fw = new FileWriter(path + classNum + "/fold" + i + "/" + splitTimestamps[i] + "_" + dates[i] + ".csv");
                 bw = new BufferedWriter(fw);
