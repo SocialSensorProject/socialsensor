@@ -22,13 +22,13 @@ public class PostProcessParquet implements Serializable {
     private static String outputCSVPath;
     private static ConfigRead configRead;
     private static boolean findTopMiddle = false;
-    public  static String[] topics = {"Politics"};
-    public  static String[] features = {"From"};//, "Hashtag", "Term", "Mention"};
-    public  static String[] subAlgs = {"CE_Suvash"};//"JP", "CE", "CP", "MI"};
+    public  static String[] topics = {"Politics", "Disaster"};
+    public  static String[] features = {"From", "Mention"};//, "Hashtag", "Term"};
+    public  static String[] subAlgs = {"CE_Suvash", "JP", "CE", "CP", "MI"};
     public static String ceName = "CE_Suvash";
     public static String clusterResultsPath = "/Volumes/SocSensor/Zahra/Sept16/ClusterResults/";
     public static int topFeatureNum = 1000;
-    private static String scriptPath = configRead.getScriptPath();
+    private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
 
     public static void loadConfig() throws IOException {
@@ -36,17 +36,18 @@ public class PostProcessParquet implements Serializable {
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {
-        writeHeader();
+
         loadConfig();
+        scriptPath = configRead.getScriptPath();
         int itNum = configRead.getSensorEvalItNum();
         int hashtagNum = configRead.getSensorEvalHashtagNum();
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = true;
+        boolean convertParquet = false;
         boolean fixNumbers = false;
         boolean runScript = false;
-        boolean makeScatterFiles = false;
+        boolean makeScatterFiles = true;
         boolean cleanTerms = false;
         boolean buildLists = false;
 
@@ -64,7 +65,7 @@ public class PostProcessParquet implements Serializable {
             //writeHeader();
             SparkConf sparkConfig;
             if (local) {
-                outputCSVPath = "ClusterResults/TestTrain/";
+                outputCSVPath = "ClusterResults/userFeatures/";
                 //outputCSVPath = "ClusterResults/DisasterTerm/disaster_term/";
                 //outputCSVPath = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
@@ -86,9 +87,9 @@ public class PostProcessParquet implements Serializable {
                     continue;
                 System.out.println(outputCSVPath +"/"+ filename);
                 res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
-                lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
+                //lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
                 //res = sqlContext.read().parquet(outputCSVPath);
-                //lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
+                lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
             }
             ind = 0;
             for (String filename : fileNames) {
@@ -277,10 +278,14 @@ public class PostProcessParquet implements Serializable {
         JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {//.distinct()
             @Override
             public String call(Row row) throws Exception {
-                return row.getLong(0) + "," + row.getString(1);
+                if(row.get(0) == null || row.get(1) == null) {
+                    System.out.println(row);
+                    return "";
+                }
+                return row.get(0).toString() + "," + row.get(1).toString();
             }
         });
-        strRes.coalesce(1).saveAsTextFile("/Volumes/SocSensor/Zahra/Tweet_Term_hashtag/" +"outTerms_"+filename+"_csv");
+        strRes.coalesce(1).saveAsTextFile("ClusterResults/" + "out_" + filename + "_csv");
         //strRes.coalesce(1).saveAsTextFile(outputCSVPath +"out_"+filename+"_csv");
         /*FileReader fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
@@ -359,7 +364,8 @@ public class PostProcessParquet implements Serializable {
     public static void makeScatterFiles() throws IOException {
 
         String[] hashtagCounts = {"CSVOut_hashtag_tweetCount_parquet.csv", "CSVOut_hashtag_userCount_parquet.csv"};
-        String[] userCounts = {"CSVOut_user_hashtagCount_parquet.csv", "CSVOut_user_tweetCount_parquet.csv"};
+        //String[] userCounts = {"CSVOut_user_hashtagCount_parquet.csv", "CSVOut_user_tweetCount_parquet.csv"};
+        String[] userCounts = {"CSVOut_user_followerCount_parquet.csv"};
         String[] termCounts = {"CSVOut_term_tweetCount_parquet.csv"};
         String hashtagProbPath, hashtagUniqueCountPath, outputPath, outputPath2, commonPath, countName;
         HashMap<String, String[]> hashMap;
@@ -387,7 +393,8 @@ public class PostProcessParquet implements Serializable {
                                 countName =  userCounts[c];
                                 break;
                         }
-                        hashtagUniqueCountPath = "/Volumes/SocSensor/Zahra/Sept16/ClusterResults/counts/name_numbers/" + countName;
+                        //hashtagUniqueCountPath = "/Volumes/SocSensor/Zahra/Sept16/ClusterResults/counts/name_numbers/" + countName;
+                        hashtagUniqueCountPath = "ClusterResults/" + countName;
                         outputPath = commonPath + feature + "_" + countName.split("[._]")[2] + "_" + subAlg + ".csv";
                         outputPath2 = commonPath + feature + "_" + countName.split("[._]")[2] + "_" + subAlg + "_keys.csv";
                         FileReader fileReaderA = new FileReader(hashtagProbPath);
@@ -406,7 +413,9 @@ public class PostProcessParquet implements Serializable {
                         String[] value;
                         System.out.println( hashtagProbPath + " --- " + hashtagUniqueCountPath);
                         while ((line = bufferedReaderB.readLine()) != null) {
-                            strs = line.split(",");
+                            strs = new String[2];
+                            strs[0] = line.split(",")[1];
+                            strs[1] = line.split(",")[0];
                             if(strs.length <2)
                                 continue;
                             if(Double.valueOf(strs[0]) < 5)
@@ -636,6 +645,7 @@ public class PostProcessParquet implements Serializable {
                     tweetUtil.runStringCommand("cd " + clusterResultsPath + topic + "/" + subAlg + "/; sort --field-separator=',' -rn -k2,2 mixed.csv  > mixed1.csv;  sed -n '1,"+topFeatureNum+"p' mixed1.csv > mixed.csv; rm mixed1.csv;");
             }
         }
+        //writeHeader();
     }
 
     private static boolean checkEquality(String fileName) throws IOException {
