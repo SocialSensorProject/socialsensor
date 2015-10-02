@@ -44,10 +44,10 @@ public class PostProcessParquet implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = false;
+        boolean convertParquet = true;
         boolean fixNumbers = false;
         boolean runScript = false;
-        boolean makeScatterFiles = true;
+        boolean makeScatterFiles = false;
         boolean cleanTerms = false;
         boolean buildLists = false;
 

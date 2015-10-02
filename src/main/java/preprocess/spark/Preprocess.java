@@ -82,6 +82,9 @@ public class Preprocess implements Serializable {
         SQLContext sqlContext = new SQLContext(sparkContext);
         sqlContext.sql("SET spark.sql.shuffle.partitions=" + numPart);
 
+        readCompleteRaw(sqlContext);
+        //getFeatures(null, sqlContext);
+
         DataFrame mainData = null;
         if(localRun) {
             //mainData = sqlContext.read().json(dataPath + "statuses.log.2013-02-01-11.json").coalesce(numPart);
@@ -1036,6 +1039,169 @@ public class Preprocess implements Serializable {
         //df1.cache();
         df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(dataPath + "term_tweetCount_parquet");
         //df1.sort(df1.col("tweetCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "term_tweetCount_parquet");
+    }
+
+    public static void readCompleteRaw(SQLContext sqlContext){
+        //DataFrame mainData = sqlContext.read().json(dataPath + "tweets2013-2014-v3.0/tweets2013-02.txt.bz2").coalesce(numPart);
+        //tweets2014-12-v2.txt
+        //DataFrame mainData = sqlContext.read().json(dataPath + "tweets2013-2014-v3.0/*.bz2").select("screen_name",
+        //        "followers_count", "listed_count", "favorite_count", "statuses_count", "friends_count", "user_location", "user_timezone").coalesce(numPart);
+
+        StructField[] fields = {
+                DataTypes.createStructField("tid", DataTypes.StringType, true),
+                DataTypes.createStructField("place_country_code", DataTypes.StringType, true),
+                DataTypes.createStructField("place_full_name", DataTypes.StringType, true),
+                DataTypes.createStructField("tweet_geo_lat", DataTypes.StringType, true),
+                DataTypes.createStructField("tweet_geo_lng", DataTypes.StringType, true),
+                DataTypes.createStructField("tweet_favorite_count", DataTypes.DoubleType, true),
+                DataTypes.createStructField("retweet_count", DataTypes.DoubleType, true),
+                DataTypes.createStructField("created_at", DataTypes.StringType, true)
+        };
+        DataFrame mainData = sqlContext.createDataFrame(sqlContext.read().json(dataPath + "tweets2013-2014-v3.0/*.bz2").select("id",
+                "place_country_code", "place_full_name", "tweet_geo_lat", "tweet_geo_lng", "tweet_favorite_count", "retweet_count", "created_at").coalesce(numPart).javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if(row.get(0) == null || row.get(1) == null || row.get(2) == null||row.get(3) == null||row.get(4) == null||row.get(5) == null
+                ||row.get(6) == null||row.get(7) == null)
+                    return RowFactory.create("-1", "", "", "", "", "", "", "");
+                double favCount, retweetCount;
+                if(row.get(5).toString().equals("null") || row.get(5).toString().equals(""))
+                    favCount = -1;
+                else
+                    favCount = Double.valueOf(row.get(5).toString());
+                if(row.get(6).toString().equals("null") || row.get(6).toString().equals(""))
+                    retweetCount = -1;
+                else
+                    retweetCount = Double.valueOf(row.get(6).toString());
+                return RowFactory.create(row.get(0).toString(), row.get(1).toString(), row.get(2).toString(), row.get(3).toString()
+                        ,row.get(4).toString(), favCount, retweetCount, row.get(7).toString());
+            }
+        }), new StructType(fields));
+        mainData.printSchema();
+
+        mainData.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_features_parquet");
+        System.out.println("=================== ID : " + mainData.select("id").count() + "====================");
+        //DataFrame mainData = sqlContext.read().json(dataPath + "tweets2014-12-v2.txt.bz2").coalesce(numPart);
+
+
+        //getFeatures(mainData, sqlContext);
+        getTweetFeatures(sqlContext);
+    }
+
+    public static void getFeatures(DataFrame data, SQLContext sqlContext){
+        //{"tweet_favorite_count":"0","tweet_geo_lat":null,"tweet_geo_lng":null,"user_location":"","statuses_count":"1888",
+        // "place_country_code":null,"id":461520349717209088,"user_timezone":null,"friends_count":"118","place_full_name":null,
+        // "retweet_count":"0","created_at":"Wed Apr 30 15:00:00 +0000 2014","screen_name":"makaylaagarcia","favorite_count":"1052",
+        // "followers_count":"122","listed_count":"0"}
+        StructField[] userFeatureCounts = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("featureCount", DataTypes.DoubleType, true)
+        };
+        if(data == null)
+            data = sqlContext.read().parquet(dataPath + "user_features_parquet").distinct().coalesce(numPart);
+        //System.out.println("===============Count: " + data.count() + "==="+data.select("screen_name").distinct().count()+ "==================");
+
+        String[] features = {"followers_count","listed_count", "favorite_count", "statuses_count", "friends_count"};
+        String[] locationFeatures = {"user_location", "user_timezone"};
+        StructField[] userLocationField = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("user_location", DataTypes.StringType, true),
+                DataTypes.createStructField("user_timezone", DataTypes.StringType, true)
+        };
+
+        for(String featureName : features) {
+            DataFrame df1 = sqlContext.createDataFrame(data.select("screen_name", featureName).coalesce(numPart).distinct().javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+                @Override
+                public Tuple2<String, Double> call(Row row) throws Exception {
+                    if (row.get(1) == null || row.getString(1).equals("null") || row.getString(1).equals(""))
+                        return new Tuple2<String, Double>(row.getString(0), 0.0);
+                    else
+                        return new Tuple2<String, Double>(row.getString(0), Double.valueOf(row.getString(1)));
+                }
+            }).reduceByKey(new Function2<Double, Double, Double>() {
+                @Override
+                public Double call(Double aDouble, Double aDouble2) throws Exception {
+                    if(aDouble > aDouble2)
+                        return aDouble;
+                    else
+                        return aDouble2;
+                }
+            }).map(new Function<Tuple2<String, Double>, Row>() {
+                @Override
+                public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
+                    return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+                }
+            }), new StructType(userFeatureCounts)).coalesce(numPart);
+            //System.out.println("==========FINAL "+featureName+"============= " + df1.count());
+            df1.sort(df1.col("featureCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(dataPath + "user_" + featureName + "_parquet");
+        }
+
+        DataFrame df1 = sqlContext.createDataFrame(data.select("screen_name", locationFeatures[0], locationFeatures[1]).coalesce(numPart).distinct().javaRDD().filter(new Function<Row, Boolean>() {
+            @Override
+            public Boolean call(Row v1) throws Exception {
+                if((v1.get(1) == null || v1.getString(1).equals("") || v1.getString(1).equals("null")) && (v1.get(2) == null || v1.getString(2).equals("") || v1.getString(2).equals("null")))
+                    return false;
+                else
+                    return true;
+            }
+        }), new StructType(userLocationField)).coalesce(numPart);
+        System.out.println("==========FINAL userLocationField ============= " + df1.count());
+        df1.coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(dataPath + "user_location_parquet");
+    }
+
+    public static void getTweetFeatures(SQLContext sqlContext){
+        String[] features = {"tweet_favorite_count", "retweet_count"};
+        String[] tweetFeatures = {"place_country_code","place_full_name", "tweet_geo_lat", "tweet_geo_lng"};
+        DataFrame data = sqlContext.read().parquet(dataPath + "tweet_features_parquet").distinct().coalesce(numPart);
+        StructField[] tweetFeatureCounts = {
+                DataTypes.createStructField("tid", DataTypes.StringType, true),
+                DataTypes.createStructField("featureCount", DataTypes.DoubleType, true)
+        };
+
+        for(String featureName : features) {
+            DataFrame df1 = sqlContext.createDataFrame(data.select("id", featureName).coalesce(numPart).distinct().javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+                @Override
+                public Tuple2<String, Double> call(Row row) throws Exception {
+                    if (row.get(1) == null || row.getString(1).equals("null") || row.getString(1).equals(""))
+                        return new Tuple2<String, Double>(row.getString(0), 0.0);
+                    else
+                        return new Tuple2<String, Double>(row.getString(0), Double.valueOf(row.getString(1)));
+                }
+            }).reduceByKey(new Function2<Double, Double, Double>() {
+                @Override
+                public Double call(Double aDouble, Double aDouble2) throws Exception {
+                    return aDouble + aDouble2;
+                }
+            }).map(new Function<Tuple2<String, Double>, Row>() {
+                @Override
+                public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
+                    return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+                }
+            }), new StructType(tweetFeatureCounts)).coalesce(numPart);
+            //System.out.println("==========FINAL "+featureName+"============= " + df1.count());
+            df1.sort(df1.col("featureCount").desc()).coalesce(1).write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_" + featureName + "_parquet");
+        }
+
+        StructField[] tweetLocationField = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("place_country_code", DataTypes.StringType, true),
+                DataTypes.createStructField("place_full_name", DataTypes.StringType, true),
+                DataTypes.createStructField("tweet_geo_lat", DataTypes.StringType, true),
+                DataTypes.createStructField("tweet_geo_lng", DataTypes.StringType, true)
+        };
+        DataFrame df1 = sqlContext.createDataFrame(data.select("id", tweetFeatures[0], tweetFeatures[1],tweetFeatures[2], tweetFeatures[3]).coalesce(numPart).distinct().javaRDD().filter(new Function<Row, Boolean>() {
+            @Override
+            public Boolean call(Row v1) throws Exception {
+                if((v1.get(1) == null || v1.getString(1).equals("") || v1.getString(1).equals("null")) && (v1.get(2) == null || v1.getString(2).equals("") || v1.getString(2).equals("null"))
+                        && (v1.get(1) == null || v1.getString(3).equals("") || v1.getString(3).equals("null")) && (v1.get(4) == null || v1.getString(4).equals("") || v1.getString(2).equals("null")))
+                    return false;
+                else
+                    return true;
+            }
+        }), new StructType(tweetLocationField)).coalesce(numPart);
+        System.out.println("==========FINAL userLocationField ============= " + df1.count());
+        df1.coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_location_parquet");
+
     }
 
     public static void cleanTerms(SQLContext sqlContext){

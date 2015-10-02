@@ -39,49 +39,11 @@ public class LearnTopical {
     private static String testFileName = "testTrain_test_";
     private static String outputFileName = "output_disaster";
     private static String modelFileName = "model_disaster";
-    private static String solverType = "L2_LR";
+    private static String solverType;
     private static int numOfFolds = 10;
     private static int numOfTopics = 2;
 
-    public static void main1(String[] args) throws IOException, InvalidInputDataException {
 
-        //String solverType = "L1_LR";
-
-        Train train = new Train();
-
-        String[] arguments = new String[50];
-        int ind = 0;
-        arguments[ind] = "-c";ind++;
-        arguments[ind] = "10";ind++;
-        arguments[ind] = "-v";ind++;
-        arguments[ind] = "10";ind++;
-        arguments[ind] = "-s";ind++;
-        if(solverType.equals("L2_LR"))
-            arguments[ind] = "0";
-        else if(solverType.equals("L1_LR"))
-            arguments[ind] = "6";
-        ind++;
-        arguments[ind] = "-B";ind++;
-        arguments[ind] = "1";ind++;
-        //arguments[ind] = "-w3";ind++;
-        //arguments[ind] = "2";ind++;
-        arguments[ind] = path+trainFileName;ind++;
-        arguments[ind] = path+solverType+"_"+modelFileName;ind++;
-        Arrays.copyOfRange(arguments, 0, ind - 1);
-
-        //train.run(arguments);
-
-        Predict predict = new Predict();
-        arguments = new String[50];
-        ind= 0;
-        arguments[ind] = "-b";ind++;
-        arguments[ind] = "1";ind++;
-        arguments[ind] = path+testFileName;ind++;
-        arguments[ind] = path+solverType+"_"+modelFileName;ind++;
-        arguments[ind] = path+solverType+"_"+outputFileName;ind++;
-        predict.mainPredict(arguments);
-
-    }
 
     /*
      * Run tests on data
@@ -91,7 +53,7 @@ public class LearnTopical {
         String time2 = "Thu Jun 20 15:08:01 +0001 2013";
         long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
         long t2 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse(time2).getTime();
-        boolean filePrepare = true;
+        boolean filePrepare = false;
 
         if (filePrepare) {
             prepareTestTrainSplits();
@@ -109,7 +71,8 @@ public class LearnTopical {
         ArrayList<Double> fscores = new ArrayList<Double>();
 
 
-        String solverType = "L2_LR";
+        //String solverType = "L2_LR";
+        solverType = "L2_LRD";
         //String solverType = "L1_LR";
 
         Train train = new Train();
@@ -128,6 +91,8 @@ public class LearnTopical {
             arguments[ind] = "0";
         else if (solverType.equals("L1_LR"))
             arguments[ind] = "6";
+        else if (solverType.equals("L2_LRD"))
+            arguments[ind] = "7";
         ind++;
         arguments[ind] = "-B";
         ind++;
@@ -244,7 +209,7 @@ public class LearnTopical {
                 BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
                 FileReader fileReaderB = new FileReader(path + featurepath + indexFileName);
                 BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
-                FileWriter fw = new FileWriter(path + classNum +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
+                 FileWriter fw = new FileWriter(path + classNum +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
                 BufferedWriter bw = new BufferedWriter(fw);
                 String line = "", line2;String [] splits;int ind = 0;
                 for(int kk = 0; kk < 7; kk++)//read header
