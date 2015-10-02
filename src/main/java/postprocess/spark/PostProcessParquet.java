@@ -24,9 +24,9 @@ public class PostProcessParquet implements Serializable {
     private static boolean findTopMiddle = false;
     public  static String[] topics = {"Politics", "Disaster"};
     public  static String[] features = {"From", "Mention"};//, "Hashtag", "Term"};
-    public  static String[] subAlgs = {"CE_Suvash", "JP", "CE", "CP", "MI"};
+    public  static String[] subAlgs = {"CE_Suvash", "JP", "CP", "MI"};//"CE"
     public static String ceName = "CE_Suvash";
-    public static String clusterResultsPath = "/Volumes/SocSensor/Zahra/Sept16/ClusterResults/";
+    public static String clusterResultsPath = "/data/Sept16/ClusterResults/";
     public static int topFeatureNum = 1000;
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
@@ -65,7 +65,7 @@ public class PostProcessParquet implements Serializable {
             //writeHeader();
             SparkConf sparkConfig;
             if (local) {
-                outputCSVPath = "ClusterResults/userFeatures/";
+                outputCSVPath = "/data/Sept16/ClusterResults/userFeaturesCounts/";
                 //outputCSVPath = "ClusterResults/DisasterTerm/disaster_term/";
                 //outputCSVPath = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
@@ -328,7 +328,7 @@ public class PostProcessParquet implements Serializable {
 
 
 
-    
+
 
     public static void printForumla(int itNum, int hashtagNum){
         String str = "=AVERAGE(";
@@ -365,7 +365,7 @@ public class PostProcessParquet implements Serializable {
 
         String[] hashtagCounts = {"CSVOut_hashtag_tweetCount_parquet.csv", "CSVOut_hashtag_userCount_parquet.csv"};
         //String[] userCounts = {"CSVOut_user_hashtagCount_parquet.csv", "CSVOut_user_tweetCount_parquet.csv"};
-        String[] userCounts = {"CSVOut_user_followerCount_parquet.csv"};
+        String[] userCounts = {"CSVOut_user_followerCount_parquet.csv", "CSVOut_user_favoriteCount_parquet.csv", "CSVOut_user_friendsCount_parquet.csv", "CSVOut_user_statusesCount_parquet.csv"};
         String[] termCounts = {"CSVOut_term_tweetCount_parquet.csv"};
         String hashtagProbPath, hashtagUniqueCountPath, outputPath, outputPath2, commonPath, countName;
         HashMap<String, String[]> hashMap;
@@ -418,7 +418,7 @@ public class PostProcessParquet implements Serializable {
                             strs[1] = line.split(",")[0];
                             if(strs.length <2)
                                 continue;
-                            if(Double.valueOf(strs[0]) < 5)
+                            if(Double.valueOf(strs[0]) < 10)
                                 break;
                             if (!hashMap.containsKey(strs[1])) {
                                 value = new String[2];
@@ -472,9 +472,9 @@ public class PostProcessParquet implements Serializable {
                                 bw2.write(objects.get(i).getSecondDimCount() + ","+objects.get(i).getFeatureValue()+","+""+",0");
                             bw2.write("\n");
                             //if(hashMap.get(key)[1].equals("")){
-                                //if(!subAlg.equals("CE"))
-                                //    System.out.println("Something wrong " + key + " "  + hashMap.get(key)[0]);
-                                //else
+                            //if(!subAlg.equals("CE"))
+                            //    System.out.println("Something wrong " + key + " "  + hashMap.get(key)[0]);
+                            //else
                             //    continue;
                             //}
                             //bw.write(hashMap.get(key)[0] + "," + hashMap.get(key)[1]);
