@@ -154,24 +154,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: de.bwaldvogel:liblinear:1.12.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/liblinear-1.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Maven: de.bwaldvogel:libsvm:1.12.2">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/libsvm.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="Maven: trove:trove:3.0.0a5">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/trove-3.0.0a5.jar!/" />

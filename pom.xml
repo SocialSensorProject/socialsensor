@@ -60,7 +60,7 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/text-1.12.2.jar</systemPath>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>de.bwaldvogel</groupId>
             <artifactId>liblinear</artifactId>
             <version>1.12.2</version>
@@ -73,7 +73,7 @@
             <version>1.12.2</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/libsvm.jar</systemPath>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>trove</groupId>
             <artifactId>trove</artifactId>

@@ -1,12 +1,14 @@
 package postprocess.spark;
 
 import machinelearning.ScatterPlot;
+import util.ValueComparator;
 import org.apache.spark.Accumulator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.DataFrame;
 import preprocess.spark.ConfigRead;
@@ -16,6 +18,8 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class PostProcessParquet implements Serializable {
@@ -24,9 +28,9 @@ public class PostProcessParquet implements Serializable {
     private static boolean findTopMiddle = false;
     public  static String[] topics = {"Politics", "Disaster"};
     public  static String[] features = {"From", "Mention"};//, "Hashtag", "Term"};
-    public  static String[] subAlgs = {"CE_Suvash", "JP", "CP", "MI"};//"CE"
+    public  static String[] subAlgs = { "MI", "CP"};//, "CE_Suvash","JP",};//"CE"
     public static String ceName = "CE_Suvash";
-    public static String clusterResultsPath = "/data/Sept16/ClusterResults/";
+    public static String clusterResultsPath = "/Volumes/SocSensor/Zahra/SocialSensor/FeatureStatisticsRun_Sept1/ClusterResults/";
     public static int topFeatureNum = 1000;
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
@@ -44,10 +48,10 @@ public class PostProcessParquet implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = true;
+        boolean convertParquet = false;
         boolean fixNumbers = false;
         boolean runScript = false;
-        boolean makeScatterFiles = false;
+        boolean makeScatterFiles = true;
         boolean cleanTerms = false;
         boolean buildLists = false;
 
@@ -65,7 +69,7 @@ public class PostProcessParquet implements Serializable {
             //writeHeader();
             SparkConf sparkConfig;
             if (local) {
-                outputCSVPath = "/data/Sept16/ClusterResults/userFeaturesCounts/";
+                outputCSVPath = "ClusterResults/";
                 //outputCSVPath = "ClusterResults/DisasterTerm/disaster_term/";
                 //outputCSVPath = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
@@ -81,15 +85,18 @@ public class PostProcessParquet implements Serializable {
             int ind = -1;
             int[] lineNumbers = new int[fileNames.size()];
             for (String filename : fileNames) {
+                if(!filename.equals("mention_tweetCount_parquet"))
+                    continue;
                 ind++;
                 //if(ind > 53) continue;
                 if (filename.contains(".csv"))
                     continue;
                 System.out.println(outputCSVPath +"/"+ filename);
                 res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
-                //lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
-                //res = sqlContext.read().parquet(outputCSVPath);
-                lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
+                lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
+                //lineNumbers[ind] = readResults1(null, sqlContext, ind, filename);
+                //lineNumbers[ind] = readLocationResults(null, sqlContext, ind, filename);
+                //writeLocationResults(filename);
             }
             ind = 0;
             for (String filename : fileNames) {
@@ -107,7 +114,22 @@ public class PostProcessParquet implements Serializable {
         }
     }
 
-
+    public static void readHashtagSetDateResuts(String filename) throws IOException {
+        FileReader fileReaderA = new FileReader(clusterResultsPath + filename);
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        String line;
+        FileWriter fw = new FileWriter(outputCSVPath + filename +".csv");
+        BufferedWriter bw = new BufferedWriter(fw);
+        String[] strs;
+        Map<String, Long> hashtagDate = new HashMap<>();
+        while((line = bufferedReaderA.readLine()) != null){
+            strs = line.split(",");
+        /*    if(hashtagDate.containsKey(strs[1])){
+                if(hashtagDate.get(strs[1]) < strs[2])
+                    hashtagDate.put(strs[1], strs[2]);
+            }*/
+        }
+    }
 
     public static void writeHeader() throws IOException {
         double featureNum = 1006133;
@@ -123,14 +145,15 @@ public class PostProcessParquet implements Serializable {
 
     public static int readResults2(DataFrame results, JavaSparkContext sc, int index, String filename) throws IOException, InterruptedException {
         /*
-        * testTrain_data
+        * root
          |-- user: string (nullable = true)
          |-- term: string (nullable = true)
          |-- hashtag: string (nullable = true)
          |-- mentionee: string (nullable = true)
+         |-- location: string (nullable = true)
          |-- time: long (nullable = true)
          |-- tid: long (nullable = true)
-         |-- topical: integer (nullable = true
+         |-- topical: integer (nullable = true)
         */
         String outputCSVPath2 = "ClusterResults/TestTrain/";
 
@@ -140,8 +163,8 @@ public class PostProcessParquet implements Serializable {
             public String call(Row row) throws Exception {
                 String topical = ""; String[] features;
                 String out = "", time = "";
-                if(row.get(6) != null) {
-                    topical = row.get(6).toString();
+                if(row.get(7) != null) {
+                    topical = row.get(7).toString();
                 }
                 if(row.get(0) != null) { // FROM Feature
                     out += row.get(0).toString() + " ";
@@ -154,9 +177,12 @@ public class PostProcessParquet implements Serializable {
                 if(row.get(3) != null && !row.get(3).toString().equals("null")) { // MENTION Feature
                     out += row.getString(3) + " ";
                 }
-                if(row.get(4) != null && !row.get(4).toString().equals("null")) { // TIME Feature
+                if(row.get(4) != null && !row.get(4).toString().equals("null")) { // LOCATION Feature
+                    out += row.getString(4) + " ";
+                }
+                if(row.get(5) != null && !row.get(5).toString().equals("null")) { // TIME Feature
                     //time += " " + format.format(row.getLong(4));
-                    time = row.get(4).toString();
+                    time = row.get(5).toString();
                 }
                 //if(row.get(5) != null && !row.get(5).toString().equals("null")) { // TWEETID Feature
                 //    out += " " + row.getString(5);
@@ -192,48 +218,6 @@ public class PostProcessParquet implements Serializable {
         });
         strRes.coalesce(1).saveAsTextFile(outputCSVPath2 + "out_" + filename + "_csv");
         System.out.println("Count: " + strRes.count());
-        /*FileReader fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
-        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-        String line;
-        String name = "";
-        if(filename.contains("Term"))
-            name = "Term";
-        else if(filename.contains("Hashtag"))
-            name = "Hashtag";
-        else if(filename.contains("Mention"))
-            name = "Mention";
-        else if(filename.contains("From"))
-            name = "From";
-        String path = "";
-        if(filename.contains("_1_"))
-            path = "Disaster/";
-        else if(filename.contains("_2_"))
-            path = "Politics/";
-        if(filename.contains("CondEntropy"))
-            path += ceName+"/" + name + "/";
-        else if(filename.contains("mutualEntropy"))
-            path += "MI/" + name + "/";
-        else if(filename.contains("ProbTweetTrueCond"))
-            path += "CP/" + name + "/";
-        else if(filename.contains("ProbTweetTrueContain"))
-            path += "JP/" + name + "/";
-        FileWriter fw = new FileWriter(clusterResultsPath + path + name+"1.csv");
-        BufferedWriter bw = new BufferedWriter(fw);
-        int numberOfLines = 0;
-        while((line = bufferedReaderA.readLine()) != null){
-            bw.write(line);
-            bw.write("\n");
-            numberOfLines++;
-        }
-        bw.close();
-        bufferedReaderA.close();
-        new File(outputCSVPath +"out_"+filename+"_csv/part-00000").delete();
-        if(findTopMiddle) {
-            //=================== GET TOP MIDDLE BOTTOM===========
-            tweetUtil.runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "top10_CSVOut_" + filename + ".csv");
-            tweetUtil.runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - (configRead.getTopUserNum() / 2)) + ", " + ((int) Math.floor(numberOfLines / 2) + (configRead.getTopUserNum() / 2 - 1)) + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "middle10_CSVOut_" + filename + ".csv");
-            tweetUtil.runStringCommand("sed -n '" + (numberOfLines - (configRead.getTopUserNum() - 1)) + ", " + numberOfLines + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "tail10_CSVOut_" + filename + ".csv");
-        }*/
         int numberOfLines = accumulator.value().intValue();
         return numberOfLines;
     }
@@ -274,7 +258,6 @@ public class PostProcessParquet implements Serializable {
 
     public static int readResults1(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException, InterruptedException {
         /**/
-
         JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {//.distinct()
             @Override
             public String call(Row row) throws Exception {
@@ -286,28 +269,104 @@ public class PostProcessParquet implements Serializable {
             }
         });
         strRes.coalesce(1).saveAsTextFile("ClusterResults/" + "out_" + filename + "_csv");
-        //strRes.coalesce(1).saveAsTextFile(outputCSVPath +"out_"+filename+"_csv");
-        /*FileReader fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
-        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-        String line;
-        FileWriter fw = new FileWriter(outputCSVPath +"CSVOut_"+filename+".csv");
-        BufferedWriter bw = new BufferedWriter(fw);
-        int numberOfLines = 0;
-        while((line = bufferedReaderA.readLine()) != null){
-            bw.write(line);
-            bw.write("\n");
-            numberOfLines++;
-        }
-        bw.close();
-        if(findTopMiddle) {
-            //=================== GET TOP MIDDLE BOTTOM===========
-            tweetUtil.runStringCommand("sed -n '1, " + configRead.getTopUserNum() + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "top10_CSVOut_" + filename + ".csv");
-            tweetUtil.runStringCommand("sed -n '" + ((int) Math.floor(numberOfLines / 2) - (configRead.getTopUserNum() / 2)) + ", " + ((int) Math.floor(numberOfLines / 2) + (configRead.getTopUserNum() / 2 - 1)) + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "middle10_CSVOut_" + filename + ".csv");
-            tweetUtil.runStringCommand("sed -n '" + (numberOfLines - (configRead.getTopUserNum() - 1)) + ", " + numberOfLines + "p' " + outputCSVPath + "CSVOut_" + filename + ".csv >  " + outputCSVPath + "tail10_CSVOut_" + filename + ".csv");
-        }*/
         return 0;
     }
 
+    public static int readLocationResults(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException, InterruptedException {
+        /**/
+        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee])";//"\\p{InEmoticons}";
+        FileReader fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        FileWriter fw = new FileWriter(outputCSVPath +"location_freq1.csv");
+        BufferedWriter bw = new BufferedWriter(fw);
+        //FileWriter fwUserLoc = new FileWriter(outputCSVPath +"user_location_clean.csv");
+        //BufferedWriter bwUserLoc = new BufferedWriter(fwUserLoc);
+        String line;
+        int numberOfLines = 0;
+        String username, loc;
+        String [] splits;
+        Map<String, Set<String>> usernameLocMap = new HashMap<>();
+        Map<String, Double> locMap = new HashMap<>();
+        ValueComparator bvc = new ValueComparator(locMap);
+        TreeMap<String, Double> sorted_map = new TreeMap(bvc);
+        while((line = bufferedReaderA.readLine()) != null){
+            Matcher matcher = Pattern.compile(emo_regex2).matcher(line);
+            line = matcher.replaceAll("").trim();
+            splits = line.split(",");
+            if(splits.length < 2)
+                continue;
+            username = splits[0];
+            for(int i = 1; i < splits.length; i++) {
+                loc = splits[i].toLowerCase().replace(" ", "");
+                if (locMap.containsKey(loc)) {
+                    locMap.put(loc, locMap.get(loc) + 1);
+                } else
+                    locMap.put(loc, 1.0);
+                numberOfLines++;
+            }
+        }
+        sorted_map.putAll(locMap);
+        for(Map.Entry<String, Double> entry : sorted_map.entrySet()) {
+            bw.write(entry.getKey() + "," + entry.getValue() + "\n");
+        }
+        bw.close();
+        return 0;
+    }
+
+
+    public static int writeLocationResults(String filename) throws IOException, InterruptedException {
+        /**/
+        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]\\)";//"\\p{InEmoticons}";
+        FileReader fileReaderA = new FileReader(outputCSVPath +"location_frequency.csv");
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        FileWriter fwUserLoc = new FileWriter(outputCSVPath +"user_location_clean.csv");
+        BufferedWriter bwUserLoc = new BufferedWriter(fwUserLoc);
+        String line;
+        int numberOfLines = 0;
+        String username, loc;
+        String [] splits;
+        Map<String, Set<String>> usernameLocMap = new HashMap<>();
+        Map<String, Double> locMap = new HashMap<>();
+        while((line = bufferedReaderA.readLine()) != null) {
+            splits = line.split(",");
+            if (Double.valueOf(splits[1]) > configRead.getUserLocThreshold())
+                locMap.put(splits[0], Double.valueOf(splits[1]));
+        }
+        fileReaderA.close();
+        fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
+        bufferedReaderA = new BufferedReader(fileReaderA);
+        while((line = bufferedReaderA.readLine()) != null) {
+            Matcher matcher = Pattern.compile(emo_regex2).matcher(line);
+            line = matcher.replaceAll("").trim();
+            splits = line.split(",");
+            if(splits.length < 2)
+                continue;
+            username = splits[0];
+            for(int i = 1; i < splits.length; i++) {
+                loc = splits[i].toLowerCase().replace(" ", "");
+                if (locMap.containsKey(loc)) {
+                    if (!usernameLocMap.containsKey(loc)) {
+                        Set<String> users = new HashSet<>();
+                        users.add(username);
+                        usernameLocMap.put(loc, users);
+                    } else {
+                        Set<String> users = usernameLocMap.get(loc);
+                        users.add(username);
+                        usernameLocMap.put(loc, users);
+                    }
+                }
+            }
+        }
+        for(String key : usernameLocMap.keySet()) {
+            if(key.equals(""))
+                continue;
+            for(String user : usernameLocMap.get(key))
+                bwUserLoc.write(user + "," + key + "\n");
+        }
+        fileReaderA.close();
+        bwUserLoc.close();
+        return 0;
+    }
 
     public static ArrayList<String> listFilesForFolder(final File folder) {
         ArrayList<String> fileNames = new ArrayList<String>();
@@ -365,22 +424,24 @@ public class PostProcessParquet implements Serializable {
 
         String[] hashtagCounts = {"CSVOut_hashtag_tweetCount_parquet.csv", "CSVOut_hashtag_userCount_parquet.csv"};
         //String[] userCounts = {"CSVOut_user_hashtagCount_parquet.csv", "CSVOut_user_tweetCount_parquet.csv"};
-        String[] userCounts = {"CSVOut_user_followerCount_parquet.csv", "CSVOut_user_favoriteCount_parquet.csv", "CSVOut_user_friendsCount_parquet.csv", "CSVOut_user_statusesCount_parquet.csv"};
+        String[] userCounts = {"CSVOut_user_favoriteCount_parquet.csv", "CSVOut_user_friendsCount_parquet.csv", "CSVOut_user_followerCount_parquet.csv", "CSVOut_user_statusesCount_parquet.csv"};
         String[] termCounts = {"CSVOut_term_tweetCount_parquet.csv"};
         String hashtagProbPath, hashtagUniqueCountPath, outputPath, outputPath2, commonPath, countName;
         HashMap<String, String[]> hashMap;
         List<ScatterPlot> objects;
-        boolean flagCE;
+        boolean flagCE, flag3, flag2;
         for(String topic : topics) {
             for (String subAlg : subAlgs) {
                 for (String feature : features) {
-                    for(int c = 0; c < 2; c++) {
+                    for(int c = 0; c < 4; c++) {
                         if (feature.equals("Term") && c == 1)//no second count for term
                             continue;
                         commonPath =  clusterResultsPath + topic + "/" + subAlg + "/";
                         //if(subAlg.equals("CE")) // for CE, we consider only non-zero values
                         //    hashtagProbPath = commonPath + feature + "/NoZero_" + feature + "1.csv";
                         //else
+                        if(topic.equals("Politics") && c ==0 && subAlg.equals("MI") && feature.equals("From"))
+                            continue;
                         hashtagProbPath = commonPath + feature + "/" + feature + "1.csv";
                         switch (feature) {
                             case "Hashtag":
@@ -394,9 +455,9 @@ public class PostProcessParquet implements Serializable {
                                 break;
                         }
                         //hashtagUniqueCountPath = "/Volumes/SocSensor/Zahra/Sept16/ClusterResults/counts/name_numbers/" + countName;
-                        hashtagUniqueCountPath = "ClusterResults/" + countName;
+                        hashtagUniqueCountPath = "ClusterResults/userFeaturesCounts/" + countName;
                         outputPath = commonPath + feature + "_" + countName.split("[._]")[2] + "_" + subAlg + ".csv";
-                        outputPath2 = commonPath + feature + "_" + countName.split("[._]")[2] + "_" + subAlg + "_keys.csv";
+                        outputPath2 = commonPath + feature + "_" + countName.split("[._]")[2] + "_" + subAlg + ".csv";
                         FileReader fileReaderA = new FileReader(hashtagProbPath);
                         FileReader fileReaderB = new FileReader(hashtagUniqueCountPath);
                         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
@@ -412,13 +473,14 @@ public class PostProcessParquet implements Serializable {
                         double val;
                         String[] value;
                         System.out.println( hashtagProbPath + " --- " + hashtagUniqueCountPath);
+                        System.out.println("outputPath: " + outputPath2);
                         while ((line = bufferedReaderB.readLine()) != null) {
                             strs = new String[2];
                             strs[0] = line.split(",")[1];
-                            strs[1] = line.split(",")[0];
+                            strs[1] = line.split(",")[0].toLowerCase();
                             if(strs.length <2)
                                 continue;
-                            if(Double.valueOf(strs[0]) < 10)
+                            if(Double.valueOf(strs[0]) < 1000)
                                 break;
                             if (!hashMap.containsKey(strs[1])) {
                                 value = new String[2];
@@ -426,26 +488,35 @@ public class PostProcessParquet implements Serializable {
                                 value[1] = "";// second String is the probability
                                 hashMap.put(strs[1], value);
                             }else {
-                                System.out.println("Something wrong " + strs[0] + " " + strs[1]);
+                                System.out.println("Something wrong " + line);
                             }
                         }
                         System.out.println("First file done");
+                        flag2 = false; flag3 = false;
                         while ((line = bufferedReaderA.readLine()) != null) { // Mention, 0.01, username
                             strs = line.split(",");
                             if(strs.length <2)
                                 continue;
-                            if(strs.length == 2){
+                            if(strs.length == 2 && !flag3){
+                                flag2 = true;
                                 if (hashMap.containsKey(strs[1])) {
                                     value = hashMap.get(strs[1]);
                                     value[1] = new BigDecimal(strs[0]).toPlainString();
+                                    if(strs[0].equals("9.115169284401823E-11"))
+                                        System.out.println(value[0] + value[1]);
                                     hashMap.put(strs[1], value);
                                 }
-                            }else {
+                            }else if(strs.length == 3){
+                                flag3 = true;
                                 if (hashMap.containsKey(strs[2])) {
                                     value = hashMap.get(strs[2]);
                                     value[1] = new BigDecimal(strs[1]).toPlainString();
+                                    if(strs[1].equals("9.115169284401823E-11"))
+                                        System.out.println(value[0] + value[1]);
                                     hashMap.put(strs[2], value);
                                 }
+                            }else {
+                                System.out.println("Something wrong " + line);
                             }/*else {
                                 if(!subAlg.equals("CE"))
                                     System.out.println("Something wrong " + strs[0] + " " + strs[1] + "  " + strs[2]);

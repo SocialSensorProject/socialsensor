@@ -130,6 +130,7 @@ public class ConfigRead {
     }
 
     public boolean getHashtagUserFeatures(){ return Boolean.valueOf(prop.getProperty("hashtagUserFeatures"));}
+    public int getUserLocThreshold(){ return Integer.valueOf(prop.getProperty("userLocThreshold"));}
 
     public boolean getTermFeatures() {
         return Boolean.valueOf(prop.getProperty("termFeatures"));
@@ -138,8 +139,9 @@ public class ConfigRead {
         return Boolean.valueOf(prop.getProperty("buildTestTrainData"));
     }
 
-    public boolean isTweetTime() { return Boolean.valueOf(prop.getProperty("tweetTime"));
-    }
+    public boolean isTweetTime() { return Boolean.valueOf(prop.getProperty("tweetTime"));}
+
+    public boolean isWriteHashtagSetBirthday() { return Boolean.valueOf(prop.getProperty("writeHashtagSetBirthday"));}
 
     public boolean isHashtagBirthdays() {
         return Boolean.valueOf(prop.getProperty("hashtagPairBirthday"));

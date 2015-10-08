@@ -8,6 +8,7 @@ import util.Statistics;
 import util.TweetUtil;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +36,7 @@ public class LearnTopical {
     private static String trainHashtagList = "trainHashtagList";
     private static String disasterFileName = "tweet_hashtag_user_mention_term_time_1_allInnerJoins.csv";
     private static String politicFileName = "tweet_hashtag_user_mention_term_time_2_allInnerJoins.csv";
+    private static String naturaldisasterFileName = "tweet_hashtag_user_mention_term_time_3_allInnerJoins.csv";
     private static String trainFileName = "testTrain_train_";
     private static String testFileName = "testTrain_test_";
     private static String outputFileName = "output_disaster";
@@ -42,7 +44,9 @@ public class LearnTopical {
     private static String solverType;
     private static int numOfFolds = 10;
     private static int numOfTopics = 2;
-
+    private static String[] classNames = {"naturaldisaster"};//, "disaster", "politics"};
+    private static int[][] positives = new int[classNames.length][numOfFolds];
+    private static int[][] total = new int[classNames.length][numOfFolds];
 
 
     /*
@@ -53,16 +57,16 @@ public class LearnTopical {
         String time2 = "Thu Jun 20 15:08:01 +0001 2013";
         long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
         long t2 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse(time2).getTime();
-        boolean filePrepare = false;
+        boolean filePrepare = true;
 
         if (filePrepare) {
             prepareTestTrainSplits();
             //modifyFeatureList();
-            findTestTrain();
+            /*findTestTrain();
             findTopicalTest(trainFileName, trainHashtagList);
             findTopicalTest(trainFileName + "_t", trainHashtagList + "_t");
             findTopicalTest(trainFileName + "_v", trainHashtagList + "_v");
-            findTopicalTest(testFileName, testHashtagList);
+            findTopicalTest(testFileName, testHashtagList);*/
         }
 
         ArrayList<Double> accuracies = new ArrayList<Double>();
@@ -71,9 +75,9 @@ public class LearnTopical {
         ArrayList<Double> fscores = new ArrayList<Double>();
 
 
-        //String solverType = "L2_LR";
-        solverType = "L2_LRD";
-        //String solverType = "L1_LR";
+        solverType = "l2_lr";
+        //solverType = "l2_lrd";
+        //solverType = "l1_lr";
 
         Train train = new Train();
         String[] arguments = new String[50];
@@ -87,11 +91,11 @@ public class LearnTopical {
         //arguments[ind] = "10";ind++;
         arguments[ind] = "-s";
         ind++;
-        if (solverType.equals("L2_LR"))
+        if (solverType.equals("l2_lr"))
             arguments[ind] = "0";
-        else if (solverType.equals("L1_LR"))
+        else if (solverType.equals("l1_lr"))
             arguments[ind] = "6";
-        else if (solverType.equals("L2_LRD"))
+        else if (solverType.equals("l2_lrd"))
             arguments[ind] = "7";
         ind++;
         arguments[ind] = "-B";
@@ -105,41 +109,45 @@ public class LearnTopical {
         predInd++;
         int remInd = ind, remPredInd = predInd;
         //System.out.println("Running " + getName() + " using " + source_file);
-        double[] cValues = {1e-7, 1e-6, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100};
-        double bestC = -1, bestError = sampleNum;
-        for (int classNum = 1; classNum <= numOfTopics; classNum++) {
+        //double[] cValues = {1e-7, 1e-6, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 1e4, 1e5, 1e7, 1e10};
+        double[] cValues = {1e-5, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 1e7};
+        double bestc = -1, bestError = -1;
+        int classInd = -1;
+        //for (int classname = 1; classname <= numOfTopics; classname++) {
+        for (String classname : classNames) {
+            classInd++;
             accuracies = new ArrayList<Double>();
             precisions = new ArrayList<Double>();
             recalls = new ArrayList<Double>();
             fscores = new ArrayList<Double>();
 
-            System.out.println("========================TopicNum: " + classNum + "============================");
+            System.out.println("========================TopicNum: " + classname + "============================");
             for (int i = 0; i < numOfFolds; i++) {
-                bestC = -1;
-                bestError = sampleNum;
+                bestc = -1;
+                bestError = -1;
                 System.out.println("========================foldNum: " + i + "============================");
-                String trainName = classNum + "/fold" + i + "/" + trainFileName + "_t.csv";// + (i+1);
-                String testName = classNum + "/fold" + i + "/" + trainFileName + "_v.csv";//  + (i+1);
+                String trainName = classname + "/fold" + i + "/" + trainFileName + "_t.csv";// + (i+1);
+                String testName = classname + "/fold" + i + "/" + trainFileName + "_v.csv";//  + (i+1);
                 for (double c : cValues) {
                     ind = remInd;
                     predInd = remPredInd;
                     System.out.println("========================C Value: " + c + "============================");
-                    arguments[ind] = "-c";
-                    ind++;
-                    arguments[ind] = String.valueOf(c);
-                    ind++;
+                    arguments[ind] = "-w0";ind++;
+                    arguments[ind] = String.valueOf(c);ind++;
+                    arguments[ind] = "-w1";ind++;
+                    arguments[ind] = String.valueOf(c*((double)total[classInd][i]-positives[classInd][i])/positives[classInd][i]);ind++;
                     arguments[ind] = path + trainName;
                     ind++;
-                    arguments[ind] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;
+                    arguments[ind] = LRPath + classname + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;
                     ind++;
                     Arrays.copyOfRange(arguments, 0, ind - 1);
                     train.run(arguments);
 
                     argumentsPred[predInd] = path + testName;
                     predInd++;
-                    argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;
+                    argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + i + "/" + modelFileName + "_" + c;
                     predInd++;
-                    argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/" + outputFileName + "_" + c;
+                    argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + i + "/" + outputFileName + "_" + c;
                     predInd++;
                     Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
 
@@ -148,34 +156,35 @@ public class LearnTopical {
                     //precisions.add(measures[1]);
                     //recalls.add(measures[2]);
                     //fscores.add(measures[3]);
-                    if (measures[4] <= bestError) { //error
-                        bestC = c;
-                        bestError = measures[4];
+                    if (measures[3] > bestError) { //error
+                        bestc = c;
+                        bestError = measures[3];
                     }
                 }
-                System.err.println(" For classNum: " + classNum + " and foldNum: " + i + " , the best C is : " + bestC + " with error value of " + bestError);
-                //Evaluate on Test with bestC found on train validation data
-                testName = classNum + "/fold" + i + "/" + testFileName + ".csv";//  + (i+1);
-                trainName = classNum + "/fold" + i + "/" + trainFileName + ".csv";//  + (i+1);
-                double c = bestC;
+                //bestc = 1;
+                System.err.println(" For classname: " + classname + " and foldNum: " + i + " , the best C is : " + bestc + " with error value of " + bestError);
+                //Evaluate on Test with bestc found on train validation data
+                testName = classname + "/fold" + i + "/" + testFileName + ".csv";//  + (i+1);
+                trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";//  + (i+1);
+                double c = bestc;
                 predInd = remPredInd;
                 System.out.println("========================Evaluate on Test data with C Value: " + c + "============================");
                 ind = remInd;
-                arguments[ind] = "-c";
-                ind++;
-                arguments[ind] = String.valueOf(c);
-                ind++;
+                arguments[ind] = "-w0";ind++;
+                arguments[ind] = String.valueOf(c);ind++;
+                arguments[ind] = "-w1";ind++;
+                arguments[ind] = String.valueOf(c*(total[classInd][i]-positives[classInd][i])/positives[classInd][i]);ind++;
                 arguments[ind] = path + trainName;
                 ind++;
-                arguments[ind] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + modelFileName + "_" + c;
+                arguments[ind] = LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + modelFileName + "_" + c;
                 ind++;
                 Arrays.copyOfRange(arguments, 0, ind - 1);
                 train.run(arguments);
                 argumentsPred[predInd] = path + testName;
                 predInd++;
-                argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + modelFileName + "_" + c;
+                argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + modelFileName + "_" + c;
                 predInd++;
-                argumentsPred[predInd] = LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + outputFileName + "_" + c;
+                argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + outputFileName + "_" + c;
                 predInd++;
                 Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
                 double[] measures = predict.mainPredict(argumentsPred);
@@ -184,7 +193,7 @@ public class LearnTopical {
                 recalls.add(measures[2]);
                 fscores.add(measures[3]);
 
-                writeFeatureFile(LRPath + classNum + "/" + solverType + "/fold" + i + "/bestC/" + modelFileName + "_" + c);
+                writeFeatureFile(LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + modelFileName + "_" + c);
 
             }
 
@@ -203,13 +212,13 @@ public class LearnTopical {
     public static void writeFeatureFile(String modelName) throws IOException {
 
         //build test/train data and hashtag lists
-        for(int classNum = 1; classNum < 3; classNum++ ) {
+        for(String classname : classNames) {
             for (int i = 0; i < numOfFolds; i++) {
                 FileReader fileReaderA = new FileReader(modelName);
                 BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
                 FileReader fileReaderB = new FileReader(path + featurepath + indexFileName);
                 BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
-                 FileWriter fw = new FileWriter(path + classNum +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
+                 FileWriter fw = new FileWriter(path + classname +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
                 BufferedWriter bw = new BufferedWriter(fw);
                 String line = "", line2;String [] splits;int ind = 0;
                 for(int kk = 0; kk < 7; kk++)//read header
@@ -218,7 +227,7 @@ public class LearnTopical {
                     ind++;
                     line = bufferedReaderA.readLine();
                     splits = line2.split(",");
-                    bw.write(splits[0] + "," + splits[1] + "," + line + "\n");
+                    bw.write(splits[0] + "," + splits[1] + "," + new BigDecimal(Double.valueOf(line)).toPlainString() + "\n");
                 }
                 fileReaderA.close();
                 fileReaderB.close();
@@ -260,34 +269,51 @@ public class LearnTopical {
         fileReaderA = new FileReader(path +featurepath + hashtagSetDate);
         bufferedReaderA = new BufferedReader(fileReaderA);
         Map<String, Long> hashtagSetDate = new HashMap<>();
+        List<String> hashtagSet = new ArrayList<>();
+        //for(int groupNum = 1; groupNum <= classNames.length; groupNum++)//
+            hashtagSet.addAll(tweetUtil.getGroupHashtagList(3, false));
         while ((line = bufferedReaderA.readLine()) != null) {
             splitSt = line.split(",");
-            hashtagSetDate.put(splitSt[1], Long.valueOf(splitSt[2]));
+            if(hashtagSet.contains(splitSt[0]))
+                hashtagSetDate.put(splitSt[0], Long.valueOf(splitSt[1]));
         }
         //build test/train data and hashtag lists
-        for(int classNum = 1; classNum < 3; classNum++ ) {
-            if(classNum == 1)
-                classFileName = disasterFileName;
-            else if(classNum == 2)
-                classFileName = politicFileName;
+        int classInd = -1;
+        for(String classname : classNames) {
+            classInd++;
+            switch (classname) {
+                case "disaster":
+                    classFileName = disasterFileName;
+                    break;
+                case "politics":
+                    classFileName = politicFileName;
+                    break;
+                case "naturaldisaster":
+                    classFileName = naturaldisasterFileName;
+                    break;
+            }
             for (int i = 0; i < numOfFolds; i++) {
                 trainFileSize = 0;testFileSize = 0;trainValFileSize = 0;
                 splitTimestamps[i] = format.parse(dates[i]).getTime();
                 fileReaderA = new FileReader(path + classFileName);
                 bufferedReaderA = new BufferedReader(fileReaderA);
-                fw = new FileWriter(path + classNum + "/fold" + i + "/" + trainFileName+ "_t.csv");
+                fw = new FileWriter(path + classname + "/fold" + i + "/" + trainFileName+ "_t.csv");
                 bw = new BufferedWriter(fw);
-                fwTest = new FileWriter(path + classNum + "/fold" + i + "/" +  testFileName  + ".csv");
+                fwTest = new FileWriter(path + classname + "/fold" + i + "/" +  testFileName  + ".csv");
                 bwTest = new BufferedWriter(fwTest);
-                fwVal = new FileWriter(path + classNum + "/fold" + i + "/" + trainFileName  + "_v.csv");
+                fwVal = new FileWriter(path + classname + "/fold" + i + "/" + trainFileName  + "_v.csv");
                 bwVal = new BufferedWriter(fwVal);
-                fwAllTrain = new FileWriter(path + classNum + "/fold" + i + "/" +  trainFileName + ".csv");
+                fwAllTrain = new FileWriter(path + classname + "/fold" + i + "/" +  trainFileName + ".csv");
                 bwAllTrain = new BufferedWriter(fwAllTrain);
                 //WRITE THE HASHTAG LIST BASED ON TIMESTAMP
                 String cleanLine = "";
+                total[classInd][i] = 0;
+                positives[classInd][i] = 0;
                 while ((line = bufferedReaderA.readLine()) != null) {
                     splitSt = line.split(" ");
                     cleanLine = splitSt[0];
+
+
                     for (int j = 1; j < splitSt.length - 1; j++) {
                         cleanLine += " " + splitSt[j];
                     }
@@ -300,6 +326,9 @@ public class LearnTopical {
                             bwVal.write(cleanLine + "\n");
                             trainValFileSize++;
                         }else {
+                            total[classInd][i]++;
+                            if(cleanLine.charAt(0) == '1')
+                                positives[classInd][i]++;
                             trainFileSize++;
                             bw.write(cleanLine + "\n");
                         }
@@ -318,15 +347,15 @@ public class LearnTopical {
                 System.out.println("FileName: " + classFileName + " - TrainFileLine: " + trainFileSize + " - TrainValFileLine: " + trainValFileSize + " - TestFileLine: " + testFileSize);
 
                 //build test/train hashtag lists
-                fileReaderA = new FileReader(path + classNum + "/" + allHashtagList + "_" + classNum + ".csv");
+                fileReaderA = new FileReader(path + classname + "/" + allHashtagList + "_" + classname + ".csv");
                 bufferedReaderA = new BufferedReader(fileReaderA);
-                fw = new FileWriter(path + classNum + "/fold" + i + "/" + trainHashtagList + "_t.csv");
+                fw = new FileWriter(path + classname + "/fold" + i + "/" + trainHashtagList + "_t.csv");
                 bw = new BufferedWriter(fw);
-                fwVal = new FileWriter(path + classNum + "/fold" + i + "/" + trainHashtagList + "_v.csv");
+                fwVal = new FileWriter(path + classname + "/fold" + i + "/" + trainHashtagList + "_v.csv");
                 bwVal = new BufferedWriter(fwVal);
-                fwAllTrain = new FileWriter(path + classNum + "/fold" + i + "/" + trainHashtagList + ".csv");
+                fwAllTrain = new FileWriter(path + classname + "/fold" + i + "/" + trainHashtagList + ".csv");
                 bwAllTrain = new BufferedWriter(fwAllTrain);
-                fwTest = new FileWriter(path + classNum + "/fold" + i + "/" + testHashtagList + ".csv");
+                fwTest = new FileWriter(path + classname + "/fold" + i + "/" + testHashtagList + ".csv");
                 bwTest = new BufferedWriter(fwTest);
 
                 while ((line = bufferedReaderA.readLine()) != null) {
@@ -346,7 +375,7 @@ public class LearnTopical {
                 bwVal.close();
                 bwAllTrain.close();
                 bufferedReaderA.close();
-                fw = new FileWriter(path + classNum + "/fold" + i + "/" + splitTimestamps[i] + "_" + dates[i] + ".csv");
+                fw = new FileWriter(path + classname + "/fold" + i + "/" + splitTimestamps[i] + ".timestamp");
                 bw = new BufferedWriter(fw);
                 bw.write(splitTimestamps[i] + "\n");
                 bw.write(dates[i] + "\n");
@@ -365,7 +394,10 @@ public class LearnTopical {
         hashtagMap = new HashMap<>();
         String line;
         while ((line = bufferedReaderA.readLine()) != null) {
-            hashtagMap.put(line.split(",")[0], Double.valueOf(line.split(",")[1]));
+            if(line.split(",").length > 2)
+                hashtagMap.put(line.split(",")[1], Double.valueOf(line.split(",")[2]));
+            else
+                hashtagMap.put(line.split(",")[0], Double.valueOf(line.split(",")[1]));
         }
         bufferedReaderA.close();
         /*fileReaderA = new FileReader(path + indexFileName);
@@ -386,9 +418,9 @@ public class LearnTopical {
         FileWriter fwTest;
         BufferedWriter bwTest;
         boolean topical = false;
-        for(int classNum = 1; classNum <= numOfTopics; classNum++) {
+        for(String classname : classNames) {
             for (int i = 0; i < numOfFolds; i++) {
-                fileReaderA = new FileReader(path + classNum + "/fold" + i + "/" + hashtagListName +".csv");
+                fileReaderA = new FileReader(path + classname + "/fold" + i + "/" + hashtagListName +".csv");
                 bufferedReaderA = new BufferedReader(fileReaderA);
                 testHashtagIndexes = new HashSet<>();
                 while ((line = bufferedReaderA.readLine()) != null) {
@@ -396,9 +428,9 @@ public class LearnTopical {
                 }
                 bufferedReaderA.close();
                 System.out.println("========================foldNum: " + i + "============================");
-                fileReaderA = new FileReader(path + classNum + "/fold" + i + "/" +  fileName  + ".csv");
+                fileReaderA = new FileReader(path + classname + "/fold" + i + "/" +  fileName  + ".csv");
                 bufferedReaderA = new BufferedReader(fileReaderA);
-                fwTest = new FileWriter(path + classNum + "/fold" + i + "/" +  fileName  + "_edited.csv");
+                fwTest = new FileWriter(path + classname + "/fold" + i + "/" +  fileName  + "_edited.csv");
                 bwTest = new BufferedWriter(fwTest);
                 while ((line = bufferedReaderA.readLine()) != null) {
                     topical = false;
@@ -423,13 +455,13 @@ public class LearnTopical {
                 }
                 bufferedReaderA.close();
                 bwTest.close();
-                tweetUtil.runStringCommand("rm -f " + path + classNum + "/fold" + i + "/" + fileName + ".csv");
-                tweetUtil.runStringCommand("mv " + path + classNum + "/fold" + i + "/" +  fileName  + "_edited.csv " + path + classNum + "/fold" + i + "/" +  fileName  + ".csv");
+                tweetUtil.runStringCommand("rm -f " + path + classname + "/fold" + i + "/" + fileName + ".csv");
+                tweetUtil.runStringCommand("mv " + path + classname + "/fold" + i + "/" +  fileName  + "_edited.csv " + path + classname + "/fold" + i + "/" +  fileName  + ".csv");
             }
         }
     }
 
-    public static void modifyFeatureList() throws IOException {
+    public static void modifyFeatureList() throws IOException, InterruptedException {
         FileReader fileReaderA;
         BufferedReader bufferedReaderA;
         String line;
@@ -453,10 +485,14 @@ public class LearnTopical {
             }
             else if(ind <= 317846+361789+72267+244478)
                 bwTest.write("mention,"+line+"\n");
+            else
+                bwTest.write("location,"+line+"\n");
             ind++;
         }
         bw.close();
         bwTest.close();
         bufferedReaderA.close();
+        tweetUtil.runStringCommand("rm -f " + path + featurepath + indexFileName);
+        tweetUtil.runStringCommand("mv " + path + featurepath + indexFileName + "_edited.csv " + path + featurepath + indexFileName);
     }
 }
