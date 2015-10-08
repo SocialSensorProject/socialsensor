@@ -4,7 +4,7 @@ Copyright (C) 2015, Scott Sanner (ssanner@gmail.com) and
                     Zahra Iman (zahra.iman87@gmail.com) and Mohamed Reda BOUADJENEK <rbouadjenek@gmail.com> and Dan Nguyen <nguyenk4@onid.oregonstate.edu>
 
 
-GPLv3 License
+GPLv3 License111
 =============
 
 This program is free software: you can redistribute it and/or modify
