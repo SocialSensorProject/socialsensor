@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: sigproc-sp.aux
+The style file: abbrv.bst
+Database file #1: sigproc.bib
+Warning--I didn't find a database entry for "sadelik"
+Warning--empty year in cdcEpidemic
+You've used 21 entries,
+            2118 wiz_defined-function locations,
+            627 strings with 8720 characters,
+and the built_in function-call counts, 8609 in all, are:
+= -- 849
+> -- 406
+< -- 11
++ -- 160
+- -- 138
+* -- 567
+:= -- 1336
+add.period$ -- 66
+call.type$ -- 21
+change.case$ -- 131
+chr.to.int$ -- 0
+cite$ -- 22
+duplicate$ -- 368
+empty$ -- 672
+format.name$ -- 138
+if$ -- 1883
+int.to.chr$ -- 0
+int.to.str$ -- 21
+missing$ -- 22
+newline$ -- 108
+num.names$ -- 42
+pop$ -- 159
+preamble$ -- 1
+purify$ -- 111
+quote$ -- 0
+skip$ -- 293
+stack$ -- 0
+substring$ -- 521
+swap$ -- 132
+text.length$ -- 11
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 82
+warning$ -- 1
+while$ -- 77
+width$ -- 23
+write$ -- 237
+(There were 2 warnings)

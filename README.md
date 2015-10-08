@@ -12,7 +12,7 @@ LICENSE.txt:  GPLv3 license information for SocialSensorProject source and alter
 
 USAGE
 -----
-See USE.txt
+See USE
 
 
 COPYRIGHT

@@ -1,0 +1,140 @@
+\begin{thebibliography}{10}
+
+\bibitem{albakour}
+M.-D. Albakour, C.~Macdonald, and I.~Ounis.
+\newblock Identifying local events by using microblogs as social sensors.
+\newblock In {\em Proceedings of the 10th Conference on Open Research Areas in
+  Information Retrieval}, OAIR '13, pages 173--180, Paris, France, France,
+  2013. LE CENTRE DE HAUTES ETUDES INTERNATIONALES D'INFORMATIQUE DOCUMENTAIRE.
+
+\bibitem{aramaki}
+E.~Aramaki, S.~Maskawa, and M.~Morita.
+\newblock Twitter catches the flu: Detecting influenza epidemics using twitter.
+\newblock In {\em Proceedings of the Conference on Empirical Methods in Natural
+  Language Processing}, EMNLP '11, pages 1568--1576, Stroudsburg, PA, USA,
+  2011. Association for Computational Linguistics.
+
+\bibitem{budak}
+C.~Budak, D.~Agrawal, and A.~{El Abbadi}.
+\newblock Structural trend analysis for online social networks.
+\newblock {\em {PVLDB}}, 4(10):646--656, 2011.
+
+\bibitem{cdcEpidemic}
+CDC.
+\newblock Principles of epidemiology, second edition.
+\newblock {\em Centers for Disease Control and Prevention}.
+
+\bibitem{cheong}
+F.~Cheong and C.~Cheong.
+\newblock Social media data mining: {A} social network analysis of tweets
+  during the 2010-2011 australian floods.
+\newblock In {\em Pacific Asia Conference on Information Systems, {PACIS} 2011:
+  Quality Research in Pacific Asia, Brisbane, Queensland, Australia, 7-11 July
+  2011}, page~46, 2011.
+
+\bibitem{cuiZhang}
+A.~Cui, M.~Zhang, Y.~Liu, S.~Ma, and K.~Zhang.
+\newblock Discover breaking events with popular hashtags in twitter.
+\newblock In {\em 21st {ACM} International Conference on Information and
+  Knowledge Management, CIKM'12, Maui, HI, USA, October 29 - November 02,
+  2012}, pages 1794--1798, 2012.
+
+\bibitem{culotta}
+A.~Culotta.
+\newblock Towards detecting influenza epidemics by analyzing twitter messages.
+\newblock In {\em Proceedings of the First Workshop on Social Media Analytics},
+  SOMA '10, pages 115--122, New York, NY, USA, 2010. ACM.
+
+\bibitem{eubank}
+S.~Eubank, H.~Guclu, V.~A. Kumar, M.~V. Marathe, A.~Srinivasan, Z.~Toroczkai,
+  and N.~Wang.
+\newblock Modelling disease outbreaks in realistic urban social networks.
+\newblock {\em Nature}, 429(6988):180--184, 2004.
+
+\bibitem{garcia}
+M.~Garc{\'{\i}}a{-}Herranz, E.~M. Egido, M.~Cebri{\'{a}}n, N.~A. Christakis,
+  and J.~H. Fowler.
+\newblock Using friends as sensors to detect global-scale contagious outbreaks.
+\newblock {\em PloS one}, abs/1211.6512, 2012.
+
+\bibitem{sandy}
+Y.~Kryvasheyeu, H.~Chen, E.~Moro, P.~V. Hentenryck, and M.~Cebri{\'{a}}n.
+\newblock Performance of social network sensors during hurricane sandy.
+\newblock {\em PLoS one}, abs/1402.2482, 2014.
+
+\bibitem{mathioudakis}
+M.~Mathioudakis and N.~Koudas.
+\newblock Twittermonitor: trend detection over the twitter stream.
+\newblock In {\em Proceedings of the {ACM} {SIGMOD} International Conference on
+  Management of Data, {SIGMOD} 2010, Indianapolis, Indiana, USA, June 6-10,
+  2010}, pages 1155--1158, 2010.
+
+\bibitem{nichols}
+J.~Nichols, J.~Mahmud, and C.~Drews.
+\newblock Summarizing sporting events using twitter.
+\newblock In {\em 17th International Conference on Intelligent User Interfaces,
+  IUI '12, Lisbon, Portugal, February 14-17, 2012}, pages 189--198, 2012.
+
+\bibitem{petrovic}
+S.~Petrovic, M.~Osborne, and V.~Lavrenko.
+\newblock Streaming first story detection with application to twitter.
+\newblock In {\em Human Language Technologies: Conference of the North American
+  Chapter of the Association of Computational Linguistics, Proceedings, June
+  2-4, 2010, Los Angeles, California, {USA}}, pages 181--189, 2010.
+
+\bibitem{sadilek}
+A.~Sadilek, H.~A. Kautz, and V.~Silenzio.
+\newblock Modeling spread of disease from social interactions.
+\newblock In {\em Proceedings of the Sixth International Conference on Weblogs
+  and Social Media, Dublin, Ireland, June 4-7, 2012}, 2012.
+
+\bibitem{sakakiDrive}
+T.~Sakaki, Y.~Matsuo, T.~Yanagihara, N.~Chandrasiri, and K.~Nawa.
+\newblock Real-time event extraction for driving information from social
+  sensors.
+\newblock In {\em Cyber Technology in Automation, Control, and Intelligent
+  Systems (CYBER), 2012 IEEE International Conference on}, pages 221--226, May
+  2012.
+
+\bibitem{sakakiEq2}
+T.~Sakaki, M.~Okazaki, and Y.~Matsuo.
+\newblock Tweet analysis for real-time event detection and earthquake reporting
+  system development.
+\newblock {\em Knowledge and Data Engineering, IEEE Transactions on},
+  25(4):919--931, April 2013.
+
+\bibitem{starbird}
+K.~Starbird and L.~Palen.
+\newblock {\em Pass it on?: Retweeting in mass emergency}.
+\newblock International Community on Information Systems for Crisis Response
+  and Management, 2010.
+
+\bibitem{vieweg}
+S.~Vieweg, A.~L. Hughes, K.~Starbird, and L.~Palen.
+\newblock Microblogging during two natural hazards events: what twitter may
+  contribute to situational awareness.
+\newblock In {\em Proceedings of the 28th International Conference on Human
+  Factors in Computing Systems, {CHI} 2010, Atlanta, Georgia, USA, April 10-15,
+  2010}, pages 1079--1088, 2010.
+
+\bibitem{wangLee}
+J.~Weng and B.~Lee.
+\newblock Event detection in twitter.
+\newblock In {\em Proceedings of the Fifth International Conference on Weblogs
+  and Social Media, Barcelona, Catalonia, Spain, July 17-21, 2011}, 2011.
+
+\bibitem{yang}
+Y.~Yang, T.~Pierce, and J.~G. Carbonell.
+\newblock A study of retrospective and on-line event detection.
+\newblock In {\em SIGIR '98: Proceedings of the 21st Annual International (ACM)
+  (SIGIR) Conference on Research and Development in Information Retrieval,
+  August 24-28 1998, Melbourne, Australia}, pages 28--36, 1998.
+
+\bibitem{zhaoSports}
+S.~Zhao, L.~Zhong, J.~Wickramasuriya, and V.~Vasudevan.
+\newblock Human as real-time sensors of social and physical events: {A} case
+  study of twitter and sports games.
+\newblock {\em Technical Report TR0620-2011, Rice University and Motorola
+  Mobility}, abs/1106.4300, 2011.
+
+\end{thebibliography}

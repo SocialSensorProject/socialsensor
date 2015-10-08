@@ -1,0 +1,518 @@
+\begin{thebibliography}{74}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abbasi et~al.(2014)Abbasi, Zafarani, Tang, and Liu]{zafarani}
+Mohammad~Ali Abbasi, Reza Zafarani, Jiliang Tang, and Huan Liu.
+\newblock Am i more similar to my followers or followees?: analyzing homophily
+  effect in directed social networks.
+\newblock In \emph{25th {ACM} Conference on Hypertext and Social Media, {HT}
+  '14, Santiago, Chile, September 1-4, 2014}, pages 200--205, 2014.
+
+\bibitem[Albakour et~al.(2013)Albakour, Macdonald, and Ounis]{albakour}
+M-Dyaa Albakour, Craig Macdonald, and Iadh Ounis.
+\newblock Identifying local events by using microblogs as social sensors.
+\newblock In \emph{Proceedings of the 10th Conference on Open Research Areas in
+  Information Retrieval}, OAIR '13, pages 173--180, Paris, France, France,
+  2013. LE CENTRE DE HAUTES ETUDES INTERNATIONALES D'INFORMATIQUE DOCUMENTAIRE.
+\newblock ISBN 978-2-905450-09-8.
+
+\bibitem[Aramaki et~al.(2011)Aramaki, Maskawa, and Morita]{aramaki}
+Eiji Aramaki, Sachiko Maskawa, and Mizuki Morita.
+\newblock Twitter catches the flu: Detecting influenza epidemics using twitter.
+\newblock In \emph{Proceedings of the Conference on Empirical Methods in
+  Natural Language Processing}, EMNLP '11, pages 1568--1576, Stroudsburg, PA,
+  USA, 2011. Association for Computational Linguistics.
+\newblock ISBN 978-1-937284-11-4.
+
+\bibitem[Aronson(2001)]{aronson}
+Alan~R. Aronson.
+\newblock Effective mapping of biomedical text to the {UMLS} metathesaurus: the
+  metamap program.
+\newblock In \emph{{AMIA} 2001, American Medical Informatics Association Annual
+  Symposium, Washington, DC, USA, November 3-7, 2001}, 2001.
+
+\bibitem[Bakliwal et~al.(2013)Bakliwal, Foster, van~der Puil, O'Brien, Tounsi,
+  and Hughes]{bakliwal}
+Akshat Bakliwal, Jennifer Foster, Jennifer van~der Puil, Ron O'Brien, Lamia
+  Tounsi, and Mark Hughes.
+\newblock Sentiment analysis of political tweets: Towards an accurate
+  classifier.
+\newblock Association for Computational Linguistics, 2013.
+
+\bibitem[Bermingham and Smeaton(2011)]{bermingham}
+Adam Bermingham and Alan~F Smeaton.
+\newblock On using twitter to monitor political sentiment and predict election
+  results.
+\newblock \emph{In Proceeding of IJCNLP conference, Chiang Mai, Thailand},
+  2011.
+
+\bibitem[Bian et~al.(2012)Bian, Topaloglu, and Yu]{bian}
+Jiang Bian, Umit Topaloglu, and Fan Yu.
+\newblock Towards large-scale twitter mining for drug-related adverse events.
+\newblock In \emph{Proceedings of the 2012 International Workshop on Smart
+  Health and Wellbeing, {SHB} 2012, October 29, 2012, Maui, HI, {USA}}, pages
+  25--32, 2012.
+
+\bibitem[Bloom(2011)]{bloom}
+Kenneth Bloom.
+\newblock \emph{Sentiment analysis based on appraisal theory and functional
+  local grammars}.
+\newblock PhD thesis, Illinois Institute of Technology, 2011.
+
+\bibitem[Blum and Mitchell(1998)]{blum}
+Avrim Blum and Tom Mitchell.
+\newblock Combining labeled and unlabeled data with co-training.
+\newblock In \emph{Proceedings of the eleventh annual conference on
+  Computational learning theory}, pages 92--100. ACM, 1998.
+
+\bibitem[Bollen et~al.(2011)Bollen, Mao, and Zeng]{bollen}
+Johan Bollen, Huina Mao, and Xiao{-}Jun Zeng.
+\newblock Twitter mood predicts the stock market.
+\newblock \emph{J. Comput. Science}, 2\penalty0 (1):\penalty0 1--8, 2011.
+
+\bibitem[Brede(2012)]{newman}
+Markus Brede.
+\newblock \emph{Networks - An Introduction}. mark e. j. newman. (2010, oxford
+  university press.) {\textdollar}65.38, {\textsterling}35.96 (hardcover), 772
+  pages. {ISBN-978-0-19-920665-0}.
+\newblock \emph{Artificial Life}, 18\penalty0 (2):\penalty0 241--242, 2012.
+
+\bibitem[Budak et~al.(2011)Budak, Agrawal, and {El Abbadi}]{budak}
+Ceren Budak, Divyakant Agrawal, and Amr {El Abbadi}.
+\newblock Structural trend analysis for online social networks.
+\newblock \emph{{PVLDB}}, 4\penalty0 (10):\penalty0 646--656, 2011.
+
+\bibitem[Bull(2010)]{sarah}
+Sarah Bull.
+\newblock Automatic parody detection in sentiment analysis.
+\newblock 2010.
+
+\bibitem[Can et~al.(2013)Can, Oktay, and Manmatha]{can}
+Ethem~F. Can, H{\"{u}}seyin Oktay, and R.~Manmatha.
+\newblock Predicting retweet count using visual cues.
+\newblock In \emph{22nd {ACM} International Conference on Information and
+  Knowledge Management, CIKM'13, San Francisco, CA, USA, October 27 - November
+  1, 2013}, pages 1481--1484, 2013.
+
+\bibitem[CDC()]{cdcEpidemic}
+CDC.
+\newblock Principles of epidemiology, second edition.
+\newblock \emph{Centers for Disease Control and Prevention}.
+
+\bibitem[Cheong and Cheong(2011)]{cheong}
+France Cheong and Christopher Cheong.
+\newblock Social media data mining: {A} social network analysis of tweets
+  during the 2010-2011 australian floods.
+\newblock In \emph{Pacific Asia Conference on Information Systems, {PACIS}
+  2011: Quality Research in Pacific Asia, Brisbane, Queensland, Australia, 7-11
+  July 2011}, page~46, 2011.
+
+\bibitem[Cui et~al.(2012)Cui, Zhang, Liu, Ma, and Zhang]{cuiZhang}
+Anqi Cui, Min Zhang, Yiqun Liu, Shaoping Ma, and Kuo Zhang.
+\newblock Discover breaking events with popular hashtags in twitter.
+\newblock In \emph{21st {ACM} International Conference on Information and
+  Knowledge Management, CIKM'12, Maui, HI, USA, October 29 - November 02,
+  2012}, pages 1794--1798, 2012.
+
+\bibitem[Culotta(2010)]{culotta}
+Aron Culotta.
+\newblock Towards detecting influenza epidemics by analyzing twitter messages.
+\newblock In \emph{Proceedings of the First Workshop on Social Media
+  Analytics}, SOMA '10, pages 115--122, New York, NY, USA, 2010. ACM.
+\newblock ISBN 978-1-4503-0217-3.
+
+\bibitem[Dave et~al.(2003)Dave, Lawrence, and Pennock]{davelawrence}
+Kushal Dave, Steve Lawrence, and David~M. Pennock.
+\newblock Mining the peanut gallery: Opinion extraction and semantic
+  classification of product reviews.
+\newblock In \emph{Proceedings of the 12th International Conference on World
+  Wide Web}, WWW '03, pages 519--528, New York, NY, USA, 2003. ACM.
+\newblock ISBN 1-58113-680-3.
+
+\bibitem[Easley and Kleinberg(2010)]{kleinberg}
+David~A. Easley and Jon~M. Kleinberg.
+\newblock \emph{Networks, Crowds, and Markets - Reasoning About a Highly
+  Connected World}.
+\newblock Cambridge University Press, 2010.
+
+\bibitem[Eubank et~al.(2004)Eubank, Guclu, Kumar, Marathe, Srinivasan,
+  Toroczkai, and Wang]{eubank}
+Stephen Eubank, Hasan Guclu, VS~Anil Kumar, Madhav~V Marathe, Aravind
+  Srinivasan, Zoltan Toroczkai, and Nan Wang.
+\newblock Modelling disease outbreaks in realistic urban social networks.
+\newblock \emph{Nature}, 429\penalty0 (6988):\penalty0 180--184, 2004.
+
+\bibitem[Feld(1991)]{feld}
+Scott~L Feld.
+\newblock Why your friends have more friends than you do.
+\newblock \emph{American Journal of Sociology}, pages 1464--1477, 1991.
+
+\bibitem[Feng and Wang(2013)]{feng}
+Wei Feng and Jianyong Wang.
+\newblock Retweet or not?: personalized tweet re-ranking.
+\newblock In \emph{Sixth {ACM} International Conference on Web Search and Data
+  Mining, {WSDM} 2013, Rome, Italy, February 4-8, 2013}, pages 577--586, 2013.
+
+\bibitem[Garc{\'{\i}}a{-}Herranz et~al.(2012)Garc{\'{\i}}a{-}Herranz, Egido,
+  Cebri{\'{a}}n, Christakis, and Fowler]{garcia}
+Manuel Garc{\'{\i}}a{-}Herranz, Esteban~Moro Egido, Manuel Cebri{\'{a}}n,
+  Nicholas~A. Christakis, and James~H. Fowler.
+\newblock Using friends as sensors to detect global-scale contagious outbreaks.
+\newblock \emph{PloS one}, abs/1211.6512, 2012.
+
+\bibitem[Ghiassi et~al.(2013)Ghiassi, Skinner, and Zimbra]{ghiassi}
+M.~Ghiassi, J.~Skinner, and D.~Zimbra.
+\newblock Twitter brand sentiment analysis: {A} hybrid system using n-gram
+  analysis and dynamic artificial neural network.
+\newblock \emph{Expert Syst. Appl.}, 40\penalty0 (16):\penalty0 6266--6282,
+  2013.
+
+\bibitem[Golbeck and Hansen(2014)]{golbeck}
+Jennifer Golbeck and Derek~L. Hansen.
+\newblock A method for computing political preference among twitter followers.
+\newblock \emph{Social Networks}, 36:\penalty0 177--184, 2014.
+
+\bibitem[Gottipati et~al.(2013)Gottipati, Qiu, Yang, Zhu, and Jiang]{gottipati}
+Swapna Gottipati, Minghui Qiu, Liu Yang, Feida Zhu, and Jing Jiang.
+\newblock Predicting user's political party using ideological stances.
+\newblock In \emph{Social Informatics - 5th International Conference, SocInfo
+  2013, Kyoto, Japan, November 25-27, 2013, Proceedings}, pages 177--191, 2013.
+
+\bibitem[Heise(2007)]{heise}
+David~R Heise.
+\newblock \emph{Expressive order: Confirming sentiments in social actions}.
+\newblock Springer Science \& Business Media, 2007.
+
+\bibitem[Hong et~al.(2011)Hong, Dan, and Davison]{hong}
+Liangjie Hong, Ovidiu Dan, and Brian~D. Davison.
+\newblock Predicting popular messages in twitter.
+\newblock In \emph{Proceedings of the 20th International Conference on World
+  Wide Web, {WWW} 2011, Hyderabad, India, March 28 - April 1, 2011 (Companion
+  Volume)}, pages 57--58, 2011.
+
+\bibitem[Hovy(2015)]{hovy}
+Eduard~H Hovy.
+\newblock What are sentiment, affect, and emotion? applying the methodology of
+  michael zock to sentiment analysis.
+\newblock In \emph{Language Production, Cognition, and the Lexicon}, pages
+  13--24. Springer, 2015.
+
+\bibitem[H{\"{u}}llermeier et~al.(2008)H{\"{u}}llermeier, F{\"{u}}rnkranz,
+  Cheng, and Brinker]{hullermeier}
+Eyke H{\"{u}}llermeier, Johannes F{\"{u}}rnkranz, Weiwei Cheng, and Klaus
+  Brinker.
+\newblock Label ranking by learning pairwise preferences.
+\newblock \emph{Artif. Intell.}, 172\penalty0 (16-17):\penalty0 1897--1916,
+  2008.
+\newblock \doi{10.1016/j.artint.2008.08.002}.
+\newblock URL \url{http://dx.doi.org/10.1016/j.artint.2008.08.002}.
+
+\bibitem[Jansen et~al.(2009)Jansen, Zhang, Sobel, and Chowdury]{jensen}
+Bernard~J. Jansen, Mimi Zhang, Kate Sobel, and Abdur Chowdury.
+\newblock Twitter power: Tweets as electronic word of mouth.
+\newblock \emph{{JASIST}}, 60\penalty0 (11):\penalty0 2169--2188, 2009.
+
+\bibitem[Jiang and Zheng(2013)]{jiang}
+Keyuan Jiang and Yujing Zheng.
+\newblock Mining twitter data for potential drug effects.
+\newblock In \emph{Advanced Data Mining and Applications, 9th International
+  Conference, {ADMA} 2013, Hangzhou, China, December 14-16, 2013, Proceedings,
+  Part {I}}, pages 434--443, 2013.
+
+\bibitem[Kamps et~al.(2001)Kamps, Marx, Mokken, and de~Rijke]{kamps}
+Jaap Kamps, Maarten Marx, Robert~J Mokken, and Marten de~Rijke.
+\newblock \emph{Words with attitude}.
+\newblock Citeseer, 2001.
+
+\bibitem[Kermack and McKendrick(1927)]{kermack}
+William~O Kermack and Anderson~G McKendrick.
+\newblock A contribution to the mathematical theory of epidemics.
+\newblock In \emph{Proceedings of the Royal Society of London A: Mathematical,
+  Physical and Engineering Sciences}, volume 115, pages 700--721. The Royal
+  Society, 1927.
+
+\bibitem[Kosinski et~al.(2013)Kosinski, Stillwell, and
+  Graepel]{kosinski2013private}
+Michal Kosinski, David Stillwell, and Thore Graepel.
+\newblock Private traits and attributes are predictable from digital records of
+  human behavior.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 110\penalty0
+  (15):\penalty0 5802--5805, 2013.
+
+\bibitem[Kryvasheyeu et~al.(2014)Kryvasheyeu, Chen, Moro, Hentenryck, and
+  Cebri{\'{a}}n]{sandy}
+Yury Kryvasheyeu, Haohui Chen, Esteban Moro, Pascal~Van Hentenryck, and Manuel
+  Cebri{\'{a}}n.
+\newblock Performance of social network sensors during hurricane sandy.
+\newblock \emph{PLoS one}, abs/1402.2482, 2014.
+
+\bibitem[Liu(2009)]{liu09}
+Bing Liu.
+\newblock Opinion mining.
+\newblock In \emph{Encyclopedia of Database Systems}, pages 1986--1990. 2009.
+
+\bibitem[Martin and White(2003)]{martin}
+James~R Martin and Peter~R White.
+\newblock \emph{The language of evaluation}.
+\newblock Palgrave Macmillan, 2003.
+
+\bibitem[Mathioudakis and Koudas(2010)]{mathioudakis}
+Michael Mathioudakis and Nick Koudas.
+\newblock Twittermonitor: trend detection over the twitter stream.
+\newblock In \emph{Proceedings of the {ACM} {SIGMOD} International Conference
+  on Management of Data, {SIGMOD} 2010, Indianapolis, Indiana, USA, June 6-10,
+  2010}, pages 1155--1158, 2010.
+
+\bibitem[Mejova et~al.(2013)Mejova, Srinivasan, and Boynton]{mejova}
+Yelena Mejova, Padmini Srinivasan, and Bob Boynton.
+\newblock {GOP} primary season on twitter: "popular" political sentiment in
+  social media.
+\newblock In \emph{Sixth {ACM} International Conference on Web Search and Data
+  Mining, {WSDM} 2013, Rome, Italy, February 4-8, 2013}, pages 517--526, 2013.
+
+\bibitem[Moreno et~al.(2002)Moreno, Pastor-Satorras, and Vespignani]{pastor}
+Yamir Moreno, Romualdo Pastor-Satorras, and Alessandro Vespignani.
+\newblock Epidemic outbreaks in complex heterogeneous networks.
+\newblock \emph{The European Physical Journal B-Condensed Matter and Complex
+  Systems}, 26\penalty0 (4):\penalty0 521--529, 2002.
+
+\bibitem[Mullen and Collier(2004)]{mullen}
+Tony Mullen and Nigel Collier.
+\newblock Sentiment analysis using support vector machines with diverse
+  information sources.
+\newblock In \emph{EMNLP}, volume~4, pages 412--418, 2004.
+
+\bibitem[Nichols et~al.(2012)Nichols, Mahmud, and Drews]{nichols}
+Jeffrey Nichols, Jalal Mahmud, and Clemens Drews.
+\newblock Summarizing sporting events using twitter.
+\newblock In \emph{17th International Conference on Intelligent User
+  Interfaces, IUI '12, Lisbon, Portugal, February 14-17, 2012}, pages 189--198,
+  2012.
+
+\bibitem[O'Connor et~al.(2010)O'Connor, Balasubramanyan, Routledge, and
+  Smith]{oconnorPolitics}
+Brendan O'Connor, Ramnath Balasubramanyan, Bryan~R. Routledge, and Noah~A.
+  Smith.
+\newblock From tweets to polls: Linking text sentiment to public opinion time
+  series.
+\newblock In \emph{Proceedings of the Fourth International Conference on
+  Weblogs and Social Media, {ICWSM} 2010, Washington, DC, USA, May 23-26,
+  2010}, 2010.
+
+\bibitem[Osgood(1952)]{osgood}
+Charles~E Osgood.
+\newblock The nature and measurement of meaning.
+\newblock \emph{Psychological bulletin}, 49\penalty0 (3):\penalty0 197, 1952.
+
+\bibitem[O’Connor et~al.(2014)O’Connor, Pimpalkhute, Nikfarjam, Ginn,
+  Smith, and Gonzalez]{oconnor}
+Karen O’Connor, Pranoti Pimpalkhute, Azadeh Nikfarjam, Rachel Ginn, Karen~L
+  Smith, and Graciela Gonzalez.
+\newblock Pharmacovigilance on twitter? mining tweets for adverse drug
+  reactions.
+\newblock In \emph{AMIA Annual Symposium Proceedings}, volume 2014, page 924.
+  American Medical Informatics Association, 2014.
+
+\bibitem[Pang et~al.(2002)Pang, Lee, and Vaithyanathan]{panglee}
+Bo~Pang, Lillian Lee, and Shivakumar Vaithyanathan.
+\newblock Thumbs up? sentiment classification using machine learning
+  techniques.
+\newblock \emph{Proceedings of the ACL-02 conference on Empirical methods in
+  natural language processing-Volume 10}, cs.CL/0205070, 2002.
+
+\bibitem[Pennebaker et~al.(2007)Pennebaker, Chung, Ireland, Gonzales, and
+  Booth]{LWIC07}
+James~W Pennebaker, Cindy~K Chung, Molly Ireland, Amy Gonzales, and Roger~J
+  Booth.
+\newblock The development and psychometric properties of liwc2007, 2007.
+
+\bibitem[Petrovic et~al.(2010)Petrovic, Osborne, and Lavrenko]{petrovic}
+Sasa Petrovic, Miles Osborne, and Victor Lavrenko.
+\newblock Streaming first story detection with application to twitter.
+\newblock In \emph{Human Language Technologies: Conference of the North
+  American Chapter of the Association of Computational Linguistics,
+  Proceedings, June 2-4, 2010, Los Angeles, California, {USA}}, pages 181--189,
+  2010.
+
+\bibitem[Petrovic et~al.(2011)Petrovic, Osborne, and Lavrenko]{petrovicOsborne}
+Sasa Petrovic, Miles Osborne, and Victor Lavrenko.
+\newblock Rt to win! predicting message propagation in twitter.
+\newblock In \emph{ICWSM}, 2011.
+
+\bibitem[Platanios et~al.(2014)Platanios, Blum, and Mitchell]{platanios}
+A~Platanios, Avrim Blum, and Tom~M Mitchell.
+\newblock Estimating accuracy from unlabeled data.
+\newblock In \emph{In Proceedings of UAI}, 2014.
+
+\bibitem[Quercia et~al.(2011)Quercia, Kosinski, Stillwell, and
+  Crowcroft]{quercia}
+Daniele Quercia, Michal Kosinski, David Stillwell, and Jon Crowcroft.
+\newblock Our twitter profiles, our selves: Predicting personality with
+  twitter.
+\newblock In \emph{PASSAT/SocialCom 2011, Privacy, Security, Risk and Trust
+  (PASSAT), 2011 {IEEE} Third International Conference on and 2011 {IEEE} Third
+  International Conference on Social Computing (SocialCom), Boston, MA, USA,
+  9-11 Oct., 2011}, pages 180--185, 2011.
+
+\bibitem[Sadilek et~al.(2012)Sadilek, Kautz, and Silenzio]{sadilek}
+Adam Sadilek, Henry~A. Kautz, and Vincent Silenzio.
+\newblock Modeling spread of disease from social interactions.
+\newblock In \emph{Proceedings of the Sixth International Conference on Weblogs
+  and Social Media, Dublin, Ireland, June 4-7, 2012}, 2012.
+
+\bibitem[Sakaki et~al.(2012)Sakaki, Matsuo, Yanagihara, Chandrasiri, and
+  Nawa]{sakakiDrive}
+T.~Sakaki, Y.~Matsuo, T.~Yanagihara, N.P. Chandrasiri, and K.~Nawa.
+\newblock Real-time event extraction for driving information from social
+  sensors.
+\newblock In \emph{Cyber Technology in Automation, Control, and Intelligent
+  Systems (CYBER), 2012 IEEE International Conference on}, pages 221--226, May
+  2012.
+\newblock \doi{10.1109/CYBER.2012.6392557}.
+
+\bibitem[Sakaki et~al.(2013)Sakaki, Okazaki, and Matsuo]{sakakiEq2}
+T.~Sakaki, M.~Okazaki, and Y.~Matsuo.
+\newblock Tweet analysis for real-time event detection and earthquake reporting
+  system development.
+\newblock \emph{Knowledge and Data Engineering, IEEE Transactions on},
+  25\penalty0 (4):\penalty0 919--931, April 2013.
+\newblock ISSN 1041-4347.
+\newblock \doi{10.1109/TKDE.2012.29}.
+
+\bibitem[Sedhain et~al.(2013)Sedhain, Sanner, Xie, Kidd, Tran, and
+  Christen]{suvash}
+Suvash Sedhain, Scott Sanner, Lexing Xie, Riley Kidd, Khoi{-}Nguyen Tran, and
+  Peter Christen.
+\newblock Social affinity filtering: recommendation through fine-grained
+  analysis of user interactions and activities.
+\newblock In \emph{Conference on Online Social Networks, COSN'13, Boston, MA,
+  USA, October 7-8, 2013}, pages 51--62, 2013.
+
+\bibitem[Sedhain et~al.(2014)Sedhain, Sanner, Braziunas, Xie, and
+  Christensen]{sedhain}
+Suvash Sedhain, Scott Sanner, Darius Braziunas, Lexing Xie, and Jordan
+  Christensen.
+\newblock Social collaborative filtering for cold-start recommendations.
+\newblock In \emph{Eighth {ACM} Conference on Recommender Systems, RecSys '14,
+  Foster City, Silicon Valley, CA, {USA} - October 06 - 10, 2014}, pages
+  345--348, 2014.
+
+\bibitem[Somasundaran and Wiebe(2010)]{somasundaran}
+Swapna Somasundaran and Janyce Wiebe.
+\newblock Recognizing stances in ideological on-line debates.
+\newblock In \emph{Proceedings of the NAACL HLT 2010 Workshop on Computational
+  Approaches to Analysis and Generation of Emotion in Text}, pages 116--124.
+  Association for Computational Linguistics, 2010.
+
+\bibitem[Starbird and Palen(2010)]{starbird}
+Kate Starbird and Leysia Palen.
+\newblock \emph{Pass it on?: Retweeting in mass emergency}.
+\newblock International Community on Information Systems for Crisis Response
+  and Management, 2010.
+
+\bibitem[Tausczik and Pennebaker(2010)]{liwc}
+Yla~R Tausczik and James~W Pennebaker.
+\newblock The psychological meaning of words: Liwc and computerized text
+  analysis methods.
+\newblock \emph{Journal of language and social psychology}, 29\penalty0
+  (1):\penalty0 24--54, 2010.
+
+\bibitem[Tumasjan et~al.(2010)Tumasjan, Sprenger, Sandner, and Welpe]{tumasjan}
+Andranik Tumasjan, Timm~Oliver Sprenger, Philipp~G. Sandner, and Isabell~M.
+  Welpe.
+\newblock Predicting elections with twitter: What 140 characters reveal about
+  political sentiment.
+\newblock In \emph{Proceedings of the Fourth International Conference on
+  Weblogs and Social Media, {ICWSM} 2010, Washington, DC, USA, May 23-26,
+  2010}, 2010.
+
+\bibitem[Vieweg et~al.(2010)Vieweg, Hughes, Starbird, and Palen]{vieweg}
+Sarah Vieweg, Amanda~L. Hughes, Kate Starbird, and Leysia Palen.
+\newblock Microblogging during two natural hazards events: what twitter may
+  contribute to situational awareness.
+\newblock In \emph{Proceedings of the 28th International Conference on Human
+  Factors in Computing Systems, {CHI} 2010, Atlanta, Georgia, USA, April 10-15,
+  2010}, pages 1079--1088, 2010.
+
+\bibitem[Walker et~al.(2012)Walker, Anand, Abbott, Tree, Martell, and
+  King]{walker}
+Marilyn~A. Walker, Pranav Anand, Rob Abbott, Jean E.~Fox Tree, Craig~H.
+  Martell, and Joseph King.
+\newblock That is your evidence?: Classifying stance in online political
+  debate.
+\newblock \emph{Decision Support Systems}, 53\penalty0 (4):\penalty0 719--729,
+  2012.
+
+\bibitem[Wang et~al.(2012)Wang, Can, Kazemzadeh, Bar, and Narayanan]{wangCan}
+Hao Wang, Dogan Can, Abe Kazemzadeh, Fran{\c{c}}ois Bar, and Shrikanth
+  Narayanan.
+\newblock A system for real-time twitter sentiment analysis of 2012 us
+  presidential election cycle.
+\newblock In \emph{Proceedings of the ACL 2012 System Demonstrations}, pages
+  115--120. Association for Computational Linguistics, 2012.
+
+\bibitem[Wang and Chen(2003)]{wangStructure}
+Xiao~Fan Wang and Guanrong Chen.
+\newblock Complex networks: small-world, scale-free and beyond.
+\newblock \emph{Circuits and Systems Magazine, IEEE}, 3\penalty0 (1):\penalty0
+  6--20, 2003.
+
+\bibitem[Weng and Lee(2011)]{wangLee}
+Jianshu Weng and Bu{-}Sung Lee.
+\newblock Event detection in twitter.
+\newblock In \emph{Proceedings of the Fifth International Conference on Weblogs
+  and Social Media, Barcelona, Catalonia, Spain, July 17-21, 2011}, 2011.
+
+\bibitem[Whitelaw et~al.(2005)Whitelaw, Garg, and Argamon]{whitelaw}
+Casey Whitelaw, Navendu Garg, and Shlomo Argamon.
+\newblock Using appraisal groups for sentiment analysis.
+\newblock In \emph{Proceedings of the 2005 {ACM} {CIKM} International
+  Conference on Information and Knowledge Management, Bremen, Germany, October
+  31 - November 5, 2005}, pages 625--631, 2005.
+
+\bibitem[Xu and Yang(2012)]{xu}
+Zhiheng Xu and Qing Yang.
+\newblock Analyzing user retweet behavior on twitter.
+\newblock In \emph{International Conference on Advances in Social Networks
+  Analysis and Mining, {ASONAM} 2012, Istanbul, Turkey, 26-29 August 2012},
+  pages 46--50, 2012.
+
+\bibitem[Yang et~al.(1998)Yang, Pierce, and Carbonell]{yang}
+Yiming Yang, Thomas Pierce, and Jaime~G. Carbonell.
+\newblock A study of retrospective and on-line event detection.
+\newblock In \emph{SIGIR '98: Proceedings of the 21st Annual International
+  (ACM) (SIGIR) Conference on Research and Development in Information
+  Retrieval, August 24-28 1998, Melbourne, Australia}, pages 28--36, 1998.
+
+\bibitem[Zhang et~al.(2011)Zhang, Fuehres, and Gloor]{zhangxue}
+Xue Zhang, Hauke Fuehres, and Peter~A Gloor.
+\newblock Predicting stock market indicators through twitter “i hope it is
+  not as bad as i fear”.
+\newblock \emph{Procedia-Social and Behavioral Sciences}, 26:\penalty0 55--62,
+  2011.
+
+\bibitem[Zhang and Pennacchiotti(2013{\natexlab{a}})]{zhangPenn}
+Yongzheng Zhang and Marco Pennacchiotti.
+\newblock Predicting purchase behaviors from social media.
+\newblock In \emph{22nd International World Wide Web Conference, {WWW} '13, Rio
+  de Janeiro, Brazil, May 13-17, 2013}, pages 1521--1532, 2013{\natexlab{a}}.
+
+\bibitem[Zhang and Pennacchiotti(2013{\natexlab{b}})]{zhangPenn2}
+Yongzheng Zhang and Marco Pennacchiotti.
+\newblock Recommending branded products from social media.
+\newblock In \emph{Seventh {ACM} Conference on Recommender Systems, RecSys '13,
+  Hong Kong, China, October 12-16, 2013}, pages 77--84, 2013{\natexlab{b}}.
+
+\bibitem[Zhao et~al.(2011)Zhao, Zhong, Wickramasuriya, and
+  Vasudevan]{zhaoSports}
+Siqi Zhao, Lin Zhong, Jehan Wickramasuriya, and Venu Vasudevan.
+\newblock Human as real-time sensors of social and physical events: {A} case
+  study of twitter and sports games.
+\newblock \emph{Technical Report TR0620-2011, Rice University and Motorola
+  Mobility}, abs/1106.4300, 2011.
+
+\end{thebibliography}

@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Qualifier_Report.aux
+The style file: plainnat.bst
+Database file #1: mybib.bib.bib
+Warning--I didn't find a database entry for "sadelik"
+Warning--empty booktitle in bakliwal
+Warning--empty journal in sarah
+Warning--empty year in cdcEpidemic
+Warning--empty year in cdcEpidemic
+Warning--can't use both volume and number fields in kermack
+Warning--empty publisher in liu09
+You've used 74 entries,
+            2773 wiz_defined-function locations,
+            1019 strings with 20306 characters,
+and the built_in function-call counts, 39629 in all, are:
+= -- 3595
+> -- 2198
+< -- 69
++ -- 741
+- -- 666
+* -- 3038
+:= -- 5737
+add.period$ -- 241
+call.type$ -- 74
+change.case$ -- 438
+chr.to.int$ -- 73
+cite$ -- 154
+duplicate$ -- 1956
+empty$ -- 3292
+format.name$ -- 778
+if$ -- 8642
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 77
+newline$ -- 386
+num.names$ -- 296
+pop$ -- 997
+preamble$ -- 1
+purify$ -- 370
+quote$ -- 0
+skip$ -- 1580
+stack$ -- 0
+substring$ -- 1616
+swap$ -- 435
+text.length$ -- 39
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 789
+warning$ -- 6
+while$ -- 355
+width$ -- 0
+write$ -- 987
+(There were 7 warnings)
