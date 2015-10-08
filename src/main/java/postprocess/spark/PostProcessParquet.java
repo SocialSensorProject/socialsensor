@@ -48,10 +48,10 @@ public class PostProcessParquet implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = false;
+        boolean convertParquet = true;
         boolean fixNumbers = false;
         boolean runScript = false;
-        boolean makeScatterFiles = true;
+        boolean makeScatterFiles = false;
         boolean cleanTerms = false;
         boolean buildLists = false;
 
@@ -69,7 +69,7 @@ public class PostProcessParquet implements Serializable {
             //writeHeader();
             SparkConf sparkConfig;
             if (local) {
-                outputCSVPath = "ClusterResults/";
+                outputCSVPath = "/Volumes/SocSensor/Zahra/SocialSensor/MI/";
                 //outputCSVPath = "ClusterResults/DisasterTerm/disaster_term/";
                 //outputCSVPath = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
@@ -85,16 +85,14 @@ public class PostProcessParquet implements Serializable {
             int ind = -1;
             int[] lineNumbers = new int[fileNames.size()];
             for (String filename : fileNames) {
-                if(!filename.equals("mention_tweetCount_parquet"))
-                    continue;
                 ind++;
                 //if(ind > 53) continue;
                 if (filename.contains(".csv"))
                     continue;
                 System.out.println(outputCSVPath +"/"+ filename);
                 res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
-                lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
-                //lineNumbers[ind] = readResults1(null, sqlContext, ind, filename);
+                //lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
+                lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
                 //lineNumbers[ind] = readLocationResults(null, sqlContext, ind, filename);
                 //writeLocationResults(filename);
             }
@@ -265,7 +263,8 @@ public class PostProcessParquet implements Serializable {
                     System.out.println(row);
                     return "";
                 }
-                return row.get(0).toString() + "," + row.get(1).toString();
+                return row.get(0).toString() + "," + row.getDouble(1) + "," + row.getDouble(2) + "," + row.getDouble(3)
+                        + "," + row.getDouble(4);
             }
         });
         strRes.coalesce(1).saveAsTextFile("ClusterResults/" + "out_" + filename + "_csv");

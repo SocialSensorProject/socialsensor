@@ -159,6 +159,10 @@ public class FeatureStatistics2 {
       * (tweet_Contain_topical_Hashtag | Mention_user)
     */
     public static void calcTweetCondToUserConditionalEntropy(final int groupNum) {
+        StructField[] fields1 = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("prob", DataTypes.DoubleType, true)
+        };
         StructField[] fields = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("first", DataTypes.DoubleType, true),
@@ -174,7 +178,7 @@ public class FeatureStatistics2 {
         System.out.println("LOOOOOOOOK-ToUSER: " + tweet_mention_hashtag_grouped.count());
         //==============================================================================================================
         JavaRDD<Row> probContainTweet = calcProb(tweet_mention_hashtag_grouped, groupNum, true, tweetCount);
-        DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields));
+        DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields1));
         results2.registerTempTable("condEntropyTweetTrueToUserTrue");
 
         //CE_P(Y = true|  ToUser = true)
@@ -189,15 +193,17 @@ public class FeatureStatistics2 {
             }
         });*/
         //MI_P(Y = true|  ToUser = true)
+        toresults2.show();
         JavaRDD<Row> toresMI = toresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
                 else
                     return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
             }
         }).coalesce(numPart);
+        toresMI.count();
         //toresults2 = sqlContext.createDataFrame(tores.coalesce(numPart), new StructType(fields));
         //output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueToUserTrue_" + groupNum, false);
         /*results2=sqlContext.createDataFrame(toresults2.javaRDD().map(new Function<Row, Row>() {
@@ -213,7 +219,7 @@ public class FeatureStatistics2 {
         //System.out.println("SIZE 1 TO =================" + toresMI.count() + "================");
         //==============================================================================================================
         JavaRDD<Row> probNotContainTweet = calcProb(tweet_mention_hashtag_grouped, groupNum, false, tweetCount);
-        results2 = (sqlContext.createDataFrame(probNotContainTweet.coalesce(numPart).distinct(), new StructType(fields)));
+        results2 = (sqlContext.createDataFrame(probNotContainTweet.coalesce(numPart).distinct(), new StructType(fields1)));
         results2.registerTempTable("condEntropyTweetFalseToUserTrue");
         //CE_P(Y = False|  ToUser = true)
         toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
@@ -231,7 +237,7 @@ public class FeatureStatistics2 {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
                 else
                     return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetNotContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * row.getDouble(2))));
             }
@@ -244,20 +250,20 @@ public class FeatureStatistics2 {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
                 else
                     return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-row.getDouble(2)))));
             }
         })).coalesce(numPart);
         System.out.println("SIZE 3 to =================" + toresMI.count() + "================");
         //==============================================================================================================
-        //results2 = sqlContext.sql("select username, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseToUserTrue");
-        //toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
+        results2 = sqlContext.sql("select username, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseToUserTrue");
+        toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
         toresMI = toresMI.union(toresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
                 else
                     return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetNotContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1-row.getDouble(2)))));
             }
