@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/socialsensor.iml" filepath="$PROJECT_DIR$/.idea/socialsensor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Artifact1.iml" filepath="$PROJECT_DIR$/Artifact1.iml" />
     </modules>
   </component>
 </project>

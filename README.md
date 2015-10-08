@@ -12,6 +12,8 @@ LICENSE.txt:  GPLv3 license information for SocialSensorProject source and alter
 
 Using the code
 ===================
+See USE
+
 1. Change settings in config.properties file in src/main/resources/config folder
 2. Main function in preprocess.spark.Preprocess builds necessary tables from raw JSON files
 3. Main function in sensoreval.spark.LagTimeAnalyzer computes the lagTimes for 4 different groups A, B, C, and D which will generate the output as PARQUET files
