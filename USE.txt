@@ -1,0 +1,16 @@
+Using the code
+===================
+1. Change settings in config.properties file in src/main/resources/config folder
+2. Main function in preprocess.spark.Preprocess builds necessary tables from raw JSON files
+3. Main function in sensoreval.spark.LagTimeAnalyzer computes the lagTimes for 4 different groups A, B, C, and D which will generate the output as PARQUET files
+4. Main function in postprocess.spark.PostProcessParquet reads each parquet file, converts them to CSV files, merges all iterations for each group and generates the formula to use for the final output in Excel
+
+Dependencies
+------------
+json-simple: https://code.google.com/p/json-simple/
+JSON.simple is a simple Java toolkit for JSON. You can use JSON.simple to encode or decode JSON text.
+
+Twitter-text Repository: https://github.com/twitter/twitter-text
+This repo is a collection of libraries and conformance tests to standardize parsing of tweet text
+
+The other necessary libraries are added to pom.xml as maven dependencies
