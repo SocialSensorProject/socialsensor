@@ -278,7 +278,7 @@ public class LearnTopical {
                 hashtagSetDate.put(splitSt[0], Long.valueOf(splitSt[1]));
         }
         //build test/train data and hashtag lists
-        int classInd = -1;
+        int classInd = -1, firstLabel;
         for(String classname : classNames) {
             classInd++;
             switch (classname) {
@@ -293,6 +293,7 @@ public class LearnTopical {
                     break;
             }
             for (int i = 0; i < numOfFolds; i++) {
+                firstLabel = -1;
                 trainFileSize = 0;testFileSize = 0;trainValFileSize = 0;
                 splitTimestamps[i] = format.parse(dates[i]).getTime();
                 fileReaderA = new FileReader(path + classFileName);
@@ -312,20 +313,18 @@ public class LearnTopical {
                 while ((line = bufferedReaderA.readLine()) != null) {
                     splitSt = line.split(" ");
                     cleanLine = splitSt[0];
-
-
                     for (int j = 1; j < splitSt.length - 1; j++) {
                         cleanLine += " " + splitSt[j];
                     }
                     if (Long.valueOf(splitSt[splitSt.length - 1]) <= splitTimestamps[i]) {
-                        /*if(i > 0)
-                            valSplit = splitTimestamps[i-1];
-                        else
-                            valSplit = format.parse(dates0).getTime() ;*/
                         if(Long.valueOf(splitSt[splitSt.length - 1]) >= format.parse(valDates[i]).getTime()){
                             bwVal.write(cleanLine + "\n");
                             trainValFileSize++;
                         }else {
+                            if(firstLabel == -1) {
+                                firstLabel = (int) cleanLine.charAt(0);
+                                System.out.println("XXXXXXXXXXXXXXXXXXX Fix the first label to be zero XXXXXXXXXXXXXX");
+                            }
                             total[classInd][i]++;
                             if(cleanLine.charAt(0) == '1')
                                 positives[classInd][i]++;
