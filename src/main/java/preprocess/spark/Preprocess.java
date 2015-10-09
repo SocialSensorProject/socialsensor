@@ -37,12 +37,13 @@ public class Preprocess implements Serializable {
     private static ConfigRead configRead;
     private static int groupNum = 1;
     private static final double userCountThreshold = 10;
-    private static final double featureNum = 1000000;
-    private static final double sampleNum = 2000000;
+    private static double featureNum = 1000000;
+    private static double sampleNum = 2000000;
     private static final double featureNumWin = 1000;
     private static final boolean allInnerJoin = false;
     private static final TweetUtil tweetUtil = new TweetUtil();
     private static boolean localRun;
+    private static int numOfGroups;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
@@ -52,6 +53,8 @@ public class Preprocess implements Serializable {
 
     public static void main(String args[]) throws IOException {
         loadConfig();
+        numOfGroups = configRead.getNumOfGroups();
+        //groupNames = configRead.getGroupNames();
         numPart = configRead.getNumPart();
         hdfsPath = configRead.getHdfsPath();
         dataPath = hdfsPath + configRead.getDataPath(); //configRead.getTestDataPath();
@@ -72,6 +75,8 @@ public class Preprocess implements Serializable {
         SparkConf sparkConfig;
         if(localRun) {
             numPart = 4;
+            featureNum = 20;
+            sampleNum = 50;
             dataPath = configRead.getTestDataPath();
             outputPath = dataPath;
             sparkConfig = new SparkConf().setAppName("SparkTest").setMaster("local[2]");
@@ -81,9 +86,6 @@ public class Preprocess implements Serializable {
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConfig);
         SQLContext sqlContext = new SQLContext(sparkContext);
         sqlContext.sql("SET spark.sql.shuffle.partitions=" + numPart);
-
-        //readCompleteRaw(sqlContext);
-        getFeatures(null, sqlContext);
 
         DataFrame mainData = null;
         if(localRun) {
@@ -142,9 +144,16 @@ public class Preprocess implements Serializable {
             getTermFeatures(sqlContext);
 
         if(configRead.isWriteHashtagSetBirthday()){
-            List<String> hashtagSet = tweetUtil.getGroupHashtagList(3, localRun);
-            hashtagSet.addAll(tweetUtil.getGroupHashtagList(4, localRun));
+            List<String> hashtagSet = new ArrayList<>();
+            for(int i = 1; i <= numOfGroups; i++) {
+                hashtagSet.addAll(tweetUtil.getGroupHashtagList(i, localRun));
+            }
             writeHashtagBirthday(sqlContext, hashtagSet);
+        }
+
+        if(configRead.isUserFeatures()){
+            //readCompleteRaw(sqlContext);
+            getFeatures(null, sqlContext);
         }
 
         if(configRead.getTestTrainData()) {
@@ -152,11 +161,12 @@ public class Preprocess implements Serializable {
             //thresholdMentionHashtagTermFeatures(sqlContext, sparkContext);
             //getGroupedMentionHashtagTermList(sqlContext, sparkContext);
             //getTweetTerm(sqlContext);
-
-            getGroupedMentionHashtagTerm(sqlContext, sparkContext);
             //getTestTrainData(sqlContext);
 
-            /*for (int gNum = 1; gNum <= 4; gNum++) {
+            //getGroupedMentionHashtagTerm(sqlContext, sparkContext);
+
+
+            for (int gNum = 1; gNum <= numOfGroups; gNum++) {
                 groupNum = gNum;
                 System.out.println("==================== Group Num: "+groupNum+"===================");
                 System.out.println("==================== ENTERING TWEET TOPICAL===================");
@@ -164,7 +174,7 @@ public class Preprocess implements Serializable {
                 getTestTrainData(sqlContext);
                 System.out.println("==================== ENTERING TEST TRAIN DATA WITH TOPICAL===================");
                 //getTestTrainDataSet(sqlContext);
-            }*/
+            }
 
             //writeAsCSV(sqlContext);
         }
@@ -229,7 +239,7 @@ public class Preprocess implements Serializable {
                     return RowFactory.create(v1.getLong(0), 0);
             }
         }), new StructType(fields));
-        df.write().parquet(outputPath + "tweet_topical_" + groupNum + "_parquet");
+        df.write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_topical_" + groupNum + "_parquet");
         //DataFrame negativeSamples, positiveSamples;
         // negativeSamples = df.filter(df.col("topical").$eq$eq$eq(0)).coalesce(numPart);
         // positiveSamples = df.filter(df.col("topical").$greater(0)).coalesce(numPart);
@@ -474,11 +484,21 @@ public class Preprocess implements Serializable {
         output(df1, "tweet_hashtag_user_mention_term_time_location_"+groupNum+"_allInnerJoins", false);
         df2 = sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "FeaturesList_csv").coalesce(numPart);
         df2.printSchema();
-        df1 = df1.join(df2, df1.col("hashtag").equalTo(df2.col("C1"))).drop(df2.col("C1")).coalesce(numPart)
+        df1 = df1.join(df2, df1.col("hashtag").equalTo(df2.col("C1"))).drop(df2.col("C1")).drop(df1.col("hashtag")).coalesce(numPart);
+        df1 = df1.select(df1.col("tid"), df1.col("user"), df1.col("term"), df1.apply("C0").as("hashtag"), df1.col("mentionee"), df1.col("location"), df1.col("time"));
+        df1 = df1.join(df2, df1.col("user").equalTo(df2.col("C1"))).drop(df2.col("C1")).drop(df1.col("user")).coalesce(numPart);
+        df1 = df1.select(df1.col("tid"), df1.apply("C0").as("user"), df1.col("term"), df1.col("hashtag"), df1.col("mentionee"), df1.col("location"), df1.col("time"));
+        df1 = df1.join(df2, df1.col("mentionee").equalTo(df2.col("C1"))).drop(df2.col("C1")).drop(df1.col("mentionee")).coalesce(numPart);
+        df1 = df1.select(df1.col("tid"), df1.col("user"), df1.col("term"), df1.col("hashtag"), df1.apply("C0").as("mentionee"), df1.col("location"), df1.col("time"));
+        df1 = df1.join(df2, df1.col("term").equalTo(df2.col("C1"))).drop(df2.col("C1")).drop(df1.col("term")).coalesce(numPart);
+        df1 = df1.select(df1.col("tid"), df1.col("user"), df1.apply("C0").as("term"), df1.col("hashtag"), df1.col("mentionee"), df1.col("location"), df1.col("time"));
+        df1 = df1.join(df2, df1.col("location").equalTo(df2.col("C1"))).drop(df2.col("C1")).drop(df1.col("location")).coalesce(numPart);
+        df1 = df1.select(df1.col("tid"), df1.col("user"), df1.col("term"), df1.col("hashtag"), df1.col("mentionee"), df1.apply("C0").as("location"), df1.col("time"));
+        /*df1 = df1.join(df2, df1.col("hashtag").equalTo(df2.col("C1"))).drop(df2.col("C1")).drop(df1.col("hashtag")).apply("C0").alias("hashtag")
                 .join(df2, df1.col("user").equalTo(df2.col("C1"))).drop(df2.col("C1")).coalesce(numPart)
                 .join(df2, df1.col("mentionee").equalTo(df2.col("C1"))).drop(df2.col("C1")).coalesce(numPart)
                 .join(df2, df1.col("term").equalTo(df2.col("C1"))).drop(df2.col("C1")).coalesce(numPart)
-                .join(df2, df1.col("location").equalTo(df2.col("C1"))).drop(df2.col("C1")).coalesce(numPart);
+                .join(df2, df1.col("location").equalTo(df2.col("C1"))).drop(df2.col("C1")).coalesce(numPart);*/
         output(df1, "tweet_hashtag_user_mention_term_time_location_strings_"+groupNum+"_allInnerJoins", false);
 
         //System.out.println("================== Only tweets with chosen features TWEET TOPICAL COUNT: " + df1.count() + "========================");
@@ -719,14 +739,14 @@ public class Preprocess implements Serializable {
         long ind = 1;DataFrame df2;
         final long ind1 = ind;
         DataFrame featuresList;
+
         final int fromThreshold= 159, mentionThreshold= 159, hashtagThreshold= 50, termThreshold= 159;
+        //final int fromThreshold = 2, mentionThreshold = 1,  hashtagThreshold = 0, termThreshold = 2;
+
         DataFrame fromNumberMap;
         DataFrame df1;
-        df2 = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
-        df2.show();
-        df2.select(df2.col("tid").equalTo(785573287l)).show();
+        //df2 = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
         df2 = sqlContext.read().parquet(dataPath + "tweet_user_parquet").coalesce(numPart);
-        df2.show();
         df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
             @Override
             public Tuple2<String, Double> call(Row row) throws Exception {//tid, username, id

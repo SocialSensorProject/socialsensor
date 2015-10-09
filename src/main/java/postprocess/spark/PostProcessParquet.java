@@ -27,7 +27,7 @@ public class PostProcessParquet implements Serializable {
     private static ConfigRead configRead;
     private static boolean findTopMiddle = false;
     public  static String[] topics = {"Politics", "Disaster"};
-    public  static String[] features = {"From", "Mention"};//, "Hashtag", "Term"};
+    public  static String[] features = {"Mention", "From"};//, "Hashtag", "Term", "UserFeatures"};
     public  static String[] subAlgs = { "MI", "CP"};//, "CE_Suvash","JP",};//"CE"
     public static String ceName = "CE_Suvash";
     public static String clusterResultsPath = "/Volumes/SocSensor/Zahra/SocialSensor/FeatureStatisticsRun_Sept1/ClusterResults/";
@@ -48,10 +48,10 @@ public class PostProcessParquet implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = true;
+        boolean convertParquet = false;
         boolean fixNumbers = false;
         boolean runScript = false;
-        boolean makeScatterFiles = false;
+        boolean makeScatterFiles = true;
         boolean cleanTerms = false;
         boolean buildLists = false;
 
@@ -70,7 +70,7 @@ public class PostProcessParquet implements Serializable {
             SparkConf sparkConfig;
             if (local) {
                 outputCSVPath = "/Volumes/SocSensor/Zahra/SocialSensor/MI/";
-                //outputCSVPath = "ClusterResults/DisasterTerm/disaster_term/";
+                //outputCSVPath = "ClusterResults/";
                 //outputCSVPath = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
             } else
@@ -85,6 +85,8 @@ public class PostProcessParquet implements Serializable {
             int ind = -1;
             int[] lineNumbers = new int[fileNames.size()];
             for (String filename : fileNames) {
+                if(!filename.equals("mutualEntropyTweetToUser_2_parquet"))
+                    continue;
                 ind++;
                 //if(ind > 53) continue;
                 if (filename.contains(".csv"))
@@ -263,11 +265,10 @@ public class PostProcessParquet implements Serializable {
                     System.out.println(row);
                     return "";
                 }
-                return row.get(0).toString() + "," + row.getDouble(1) + "," + row.getDouble(2) + "," + row.getDouble(3)
-                        + "," + row.getDouble(4);
+                return row.get(0).toString() + "," + Double.valueOf(row.get(1).toString());// + "," + row.getDouble(2) + "," + row.getDouble(3)+ "," + row.getDouble(4);
             }
         });
-        strRes.coalesce(1).saveAsTextFile("ClusterResults/" + "out_" + filename + "_csv");
+        strRes.coalesce(1).saveAsTextFile("/Volumes/SocSensor/Zahra/SocialSensor/" + "out_" + filename + "_csv");
         return 0;
     }
 
@@ -422,8 +423,8 @@ public class PostProcessParquet implements Serializable {
     public static void makeScatterFiles() throws IOException {
 
         String[] hashtagCounts = {"CSVOut_hashtag_tweetCount_parquet.csv", "CSVOut_hashtag_userCount_parquet.csv"};
-        //String[] userCounts = {"CSVOut_user_hashtagCount_parquet.csv", "CSVOut_user_tweetCount_parquet.csv"};
-        String[] userCounts = {"CSVOut_user_favoriteCount_parquet.csv", "CSVOut_user_friendsCount_parquet.csv", "CSVOut_user_followerCount_parquet.csv", "CSVOut_user_statusesCount_parquet.csv"};
+        String[] userCounts = {"CSVOut_mention_tweetCount_parquet.csv", "CSVOut_user_hashtagCount_parquet.csv", "CSVOut_user_tweetCount_parquet.csv"};
+        String[] userFeatureCounts = {"CSVOut_user_favoriteCount_parquet.csv", "CSVOut_user_friendsCount_parquet.csv", "CSVOut_user_followerCount_parquet.csv", "CSVOut_user_statusesCount_parquet.csv"};
         String[] termCounts = {"CSVOut_term_tweetCount_parquet.csv"};
         String hashtagProbPath, hashtagUniqueCountPath, outputPath, outputPath2, commonPath, countName;
         HashMap<String, String[]> hashMap;
@@ -449,12 +450,15 @@ public class PostProcessParquet implements Serializable {
                             case "Term":
                                 countName =  termCounts[c];
                                 break;
+                            case "UserFeatures":
+                                countName = userFeatureCounts[c];
+                                break;
                             default:
                                 countName =  userCounts[c];
                                 break;
                         }
                         //hashtagUniqueCountPath = "/Volumes/SocSensor/Zahra/Sept16/ClusterResults/counts/name_numbers/" + countName;
-                        hashtagUniqueCountPath = "ClusterResults/userFeaturesCounts/" + countName;
+                        hashtagUniqueCountPath = "/Volumes/SocSensor/Zahra/SocialSensor/userFeaturesCounts/" + countName;
                         outputPath = commonPath + feature + "_" + countName.split("[._]")[2] + "_" + subAlg + ".csv";
                         outputPath2 = commonPath + feature + "_" + countName.split("[._]")[2] + "_" + subAlg + ".csv";
                         FileReader fileReaderA = new FileReader(hashtagProbPath);
@@ -479,7 +483,7 @@ public class PostProcessParquet implements Serializable {
                             strs[1] = line.split(",")[0].toLowerCase();
                             if(strs.length <2)
                                 continue;
-                            if(Double.valueOf(strs[0]) < 1000)
+                            if(Double.valueOf(strs[0]) < 5)
                                 break;
                             if (!hashMap.containsKey(strs[1])) {
                                 value = new String[2];
@@ -502,7 +506,7 @@ public class PostProcessParquet implements Serializable {
                                     value = hashMap.get(strs[1]);
                                     value[1] = new BigDecimal(strs[0]).toPlainString();
                                     if(strs[0].equals("9.115169284401823E-11"))
-                                        System.out.println(value[0] + value[1]);
+                                        System.out.println(value[0] + " "+value[1]);
                                     hashMap.put(strs[1], value);
                                 }
                             }else if(strs.length == 3){
@@ -511,7 +515,7 @@ public class PostProcessParquet implements Serializable {
                                     value = hashMap.get(strs[2]);
                                     value[1] = new BigDecimal(strs[1]).toPlainString();
                                     if(strs[1].equals("9.115169284401823E-11"))
-                                        System.out.println(value[0] + value[1]);
+                                        System.out.println(value[0] + " " +value[1]);
                                     hashMap.put(strs[2], value);
                                 }
                             }else {

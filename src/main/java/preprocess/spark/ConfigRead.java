@@ -146,4 +146,12 @@ public class ConfigRead {
     public boolean isHashtagBirthdays() {
         return Boolean.valueOf(prop.getProperty("hashtagPairBirthday"));
     }
+
+    public boolean isUserFeatures() { return Boolean.valueOf(prop.getProperty("userFeatures")); }
+
+    public String[] getGroupNames() { return prop.getProperty("groupNames").split(",");  }
+
+    public int getNumOfGroups(){
+        return Integer.valueOf(prop.getProperty("numOfGroups"));
+    }
 }

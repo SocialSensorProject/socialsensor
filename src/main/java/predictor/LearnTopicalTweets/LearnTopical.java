@@ -43,16 +43,23 @@ public class LearnTopical {
     private static String modelFileName = "model_disaster";
     private static String solverType;
     private static int numOfFolds = 10;
-    private static int numOfTopics = 2;
-    private static String[] classNames = {"naturaldisaster"};//, "disaster", "politics"};
+    private static int numOfTopics;
+    private static String[] classNames;
     private static int[][] positives = new int[classNames.length][numOfFolds];
     private static int[][] total = new int[classNames.length][numOfFolds];
+    private static ConfigRead configRead;
+
+    public static void loadConfig() throws IOException {
+        configRead = new ConfigRead();
+    }
 
 
     /*
      * Run tests on data
      */
     public static void main(String[] args) throws IOException, InvalidInputDataException, ParseException, InterruptedException {
+        numOfTopics = configRead.getNumOfGroups();
+        classNames = configRead.getGroupNames();
         String time1 = "2013-06-20 15:08:01";
         String time2 = "Thu Jun 20 15:08:01 +0001 2013";
         long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
