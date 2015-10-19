@@ -48,10 +48,10 @@ public class PostProcessParquet implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = false;
+        boolean convertParquet = true;
         boolean fixNumbers = false;
         boolean runScript = false;
-        boolean makeScatterFiles = true;
+        boolean makeScatterFiles = false;
         boolean cleanTerms = false;
         boolean buildLists = false;
 
@@ -69,9 +69,11 @@ public class PostProcessParquet implements Serializable {
             //writeHeader();
             SparkConf sparkConfig;
             if (local) {
-                outputCSVPath = "/Volumes/SocSensor/Zahra/SocialSensor/MI/";
-                //outputCSVPath = "ClusterResults/";
-                //outputCSVPath = "TestSet/Data/";
+                //outputCSVPath = "/Volumes/SocSensor/Zahra/FeatureTables/tweet_termFeature_grouped_parquet/";
+                //outputCSVPath = "/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_oct7/socialsensor/ClusterResults/TestTrainData/";
+                outputCSVPath = "ClusterResults/";
+                //outputCSVPat
+                // h = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
             } else
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet");
@@ -85,11 +87,9 @@ public class PostProcessParquet implements Serializable {
             int ind = -1;
             int[] lineNumbers = new int[fileNames.size()];
             for (String filename : fileNames) {
-                if(!filename.equals("mutualEntropyTweetToUser_2_parquet"))
-                    continue;
                 ind++;
                 //if(ind > 53) continue;
-                if (filename.contains(".csv"))
+                if (filename.contains(".csv") || filename.equals("out") || filename.equals("tweet_hashtagSets_time_CSV"))
                     continue;
                 System.out.println(outputCSVPath +"/"+ filename);
                 res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
@@ -265,10 +265,12 @@ public class PostProcessParquet implements Serializable {
                     System.out.println(row);
                     return "";
                 }
-                return row.get(0).toString() + "," + Double.valueOf(row.get(1).toString());// + "," + row.getDouble(2) + "," + row.getDouble(3)+ "," + row.getDouble(4);
+                //return row.toString();
+                return row.getLong(0)+ "," + row.getString(1) + "," + row.get(2).toString();
+                //return row.get(0).toString() + "," + Double.valueOf(row.get(1).toString());// + "," + row.getDouble(2) + "," + row.getDouble(3)+ "," + row.getDouble(4);
             }
         });
-        strRes.coalesce(1).saveAsTextFile("/Volumes/SocSensor/Zahra/SocialSensor/" + "out_" + filename + "_csv");
+        strRes.coalesce(1).saveAsTextFile("/Volumes/SocSensor/Zahra/FeatureTables/out/" + "out_" + filename + "_csv");
         return 0;
     }
 
