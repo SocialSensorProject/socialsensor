@@ -177,9 +177,9 @@ public class Preprocess implements Serializable {
                 groupNum = gNum;
                 System.out.println("==================== Group Num: "+groupNum+"===================");
                 System.out.println("==================== ENTERING TWEET TOPICAL===================");
-                getTweetTopical(sqlContext);
+                getTweetTopical(sqlContext, true);
                 //getTestTrainData(sqlContext);
-                getLearningBaseline(sqlContext);
+                //getLearningBaseline(sqlContext);
                 getBaseline(sqlContext);
                 System.out.println("==================== ENTERING TEST TRAIN DATA WITH TOPICAL===================");
                 //getTestTrainDataSet(sqlContext);
@@ -228,9 +228,14 @@ public class Preprocess implements Serializable {
         t.write().mode(SaveMode.Overwrite).parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet");
     }
 
-    private static void getTweetTopical(SQLContext sqlContext) {
+    private static void getTweetTopical(SQLContext sqlContext, boolean testTopical) throws IOException {
         //TODO just include test hashtags for the baselines
-        final List<String> hashtagList = tweetUtil.getGroupHashtagList(groupNum, localRun);
+        List<String> hashtagListTmp;
+        if(testTopical)
+            hashtagListTmp = tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, false);
+        else
+            hashtagListTmp =  tweetUtil.getGroupHashtagList(groupNum, localRun);
+        final List<String> hashtagList = hashtagListTmp;
         StructField[] fields = {
                 DataTypes.createStructField("tid", DataTypes.LongType, true),
                 DataTypes.createStructField("topical", DataTypes.IntegerType, true)
@@ -1860,7 +1865,7 @@ public class Preprocess implements Serializable {
 
         int returnNum = 10000;
         DataFrame topFeatures;
-        String[] algNames = { "MILog"};//, "CP", "CPLog","MI", "topical", "topicalLog"};
+        String[] algNames = { "MILog", "CP", "CPLog","MI", "topical", "topicalLog"};
 
         DataFrame tweetTime = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
         StructField[] timeField = {
@@ -2223,6 +2228,7 @@ public class Preprocess implements Serializable {
 
 
         df2 = sqlContext.read().parquet(dataPath + "tweet_fromFeature_grouped_parquet").coalesce(numPart);
+        System.out.println("================================================ LOOK: " + df2.distinct().count() + "================================");
         df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         for(String algName1:algNames) {
             String featureName = "featureWeights_from";

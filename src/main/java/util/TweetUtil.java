@@ -83,8 +83,12 @@ public class TweetUtil {
             hashtagList.add("h9");
         }else {
             String hashtagStrList = "";
-            if (groupNum == 1)      //NATURAL DISASTER
-                hashtagStrList = "earthquake,storm,tornado,prayforthephilippines,ukstorm,sandy,flood,drought,hurricane,arthur,tsunami,hurricanes,quake,typhoon,eqnz,katrina,bertha,julio,manuel,cholera,hurricanesandy,odile,ukfloods,abfloods,hurricaneseason,hurricaneseason,laquake,hurricanekatrina,floodwarning,tsunami2004,tsunamimarch";
+            if (groupNum == 1) {      //NATURAL DISASTER
+                if(train)
+                    hashtagStrList = "earthquake,storm,tornado,prayforthephilippines,ukstorm,sandy,flood,drought,hurricane,arthur,tsunami,hurricanes,quake,typhoon,eqnz,katrina,bertha,julio,manuel,cholera,hurricanesandy,odile,ukfloods,abfloods,hurricaneseason,hurricaneseason,laquake,hurricanekatrina,floodwarning,tsunami2004,tsunamimarch";
+                else
+                    hashtagStrList = "haiyan,kashmirfloods,phailin,prayforchile,typhoonhaiyan,serbiafloods,hurricanearthur,napaquake,earthquakeph,typhoonaid,chileearthquake,hurricaneprep,hurricanegonzalo,typhoonhagupit,corkfloods,hurricaneodile,laearthquake,napaearthquake";
+            }
             else if (groupNum == 2) // EPIDEMICS
                 hashtagStrList = "";
             else if (groupNum == 3) //IRAN TALK
@@ -94,7 +98,11 @@ public class TweetUtil {
             else if (groupNum == 5) // LBGT
                 hashtagStrList = "";
             else if(groupNum == 6){ // HUMAN CAUSED DISASTER
-                hashtagStrList ="syria,gaza,isis,israel,gazaunderattack,palestine,freepalestine,is,prayforgaza,iss,hamas,isil,taliban,syrian,southsudan,bds,israeli,palestinian,idf,malala,malaysiaairlines,sudan,bokoharam,palestinians,jamesfoley,jamesfoley,alqaeda,childrenofsyria,rafah,notinmyname,gazaunderfire,freesyria,abuja,farc,drugwar,stopwar,bombsquad,malnutrition,juba,cholera,antiwar,realsyria,savesyria,alshabab,iraqwar,famine,bronxbombers,igad,bombthreat";
+                if(train)
+                    hashtagStrList ="syria,gaza,isis,israel,gazaunderattack,palestine,freepalestine,is,prayforgaza,iss,hamas,isil,taliban,syrian,southsudan,bds,israeli,palestinian,idf,malala,malaysiaairlines,sudan,bokoharam,palestinians,jamesfoley,jamesfoley,alqaeda,childrenofsyria,rafah,notinmyname,gazaunderfire,freesyria,abuja,farc,drugwar,stopwar,bombsquad,malnutrition,juba,cholera,antiwar,realsyria,savesyria,alshabab,iraqwar,famine,bronxbombers,igad,bombthreat";
+                else
+                    hashtagStrList = "mh370,mh17,bringbackourgirls,prayformh370,icc4israel,younusalgohar,chibokgirls,daesh,ajagaza,withsyria,nowarwithsyria,ripmh370,syriawarcrimes,handsoffsyria,chibok,bringourgirlsback,southsudannow,whereisthefuckingplane,isismediablackout,nigerianschoolgirls,ripjamesfoley,bringbackourdaughters,bringbackourgirl,helpsyriasrefugees,bostonmarathonbombing,redefinenigeria,234whitegirls,stayoutofsyria,bentiu";
+
             }else if(groupNum == 7) // CELEBRITY DEATH
                 hashtagStrList = "";
             else if(groupNum == 8) // SPACE
