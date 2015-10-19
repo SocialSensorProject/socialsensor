@@ -1,7 +1,8 @@
 package util;
 
-import java.io.File;
-import java.io.IOException;
+import preprocess.spark.ConfigRead;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,4 +74,53 @@ public class TweetUtil {
         }
         return hashtagList ;
     }
+
+    public List<String> getTestTrainGroupHashtagList(int groupNum, boolean localRun, boolean train) throws IOException {
+        List<String> hashtagList = new ArrayList<>();
+        if(localRun){
+            hashtagList.add("h1");
+            hashtagList.add("h5");
+            hashtagList.add("h9");
+        }else {
+            String hashtagStrList = "";
+            if (groupNum == 1)      //NATURAL DISASTER
+                hashtagStrList = "earthquake,storm,tornado,prayforthephilippines,ukstorm,sandy,flood,drought,hurricane,arthur,tsunami,hurricanes,quake,typhoon,eqnz,katrina,bertha,julio,manuel,cholera,hurricanesandy,odile,ukfloods,abfloods,hurricaneseason,hurricaneseason,laquake,hurricanekatrina,floodwarning,tsunami2004,tsunamimarch";
+            else if (groupNum == 2) // EPIDEMICS
+                hashtagStrList = "";
+            else if (groupNum == 3) //IRAN TALK
+                hashtagStrList = "";
+            else if (groupNum == 4) // SOCIAL ISSUES
+                hashtagStrList = "";
+            else if (groupNum == 5) // LBGT
+                hashtagStrList = "";
+            else if(groupNum == 6){ // HUMAN CAUSED DISASTER
+                hashtagStrList ="syria,gaza,isis,israel,gazaunderattack,palestine,freepalestine,is,prayforgaza,iss,hamas,isil,taliban,syrian,southsudan,bds,israeli,palestinian,idf,malala,malaysiaairlines,sudan,bokoharam,palestinians,jamesfoley,jamesfoley,alqaeda,childrenofsyria,rafah,notinmyname,gazaunderfire,freesyria,abuja,farc,drugwar,stopwar,bombsquad,malnutrition,juba,cholera,antiwar,realsyria,savesyria,alshabab,iraqwar,famine,bronxbombers,igad,bombthreat";
+            }else if(groupNum == 7) // CELEBRITY DEATH
+                hashtagStrList = "";
+            else if(groupNum == 8) // SPACE
+                hashtagStrList = "";
+            else if(groupNum == 9) // TENNIS
+                hashtagStrList = "";
+            else if(groupNum == 10) // SOCCOR
+                hashtagStrList = "";
+            Collections.addAll(hashtagList, hashtagStrList.split(","));
+
+            /*ConfigRead configRead = new ConfigRead();
+            String fName = "testHashtaglist.csv";
+            if(train)
+                fName = "trainHashtagList.csv";
+            FileReader fileReaderA = new FileReader(configRead.getLearningPath() + "Topics/" + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + fName);
+            BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+            String line;
+            String[] strs;
+            double val;
+            String hashtags = "";
+            while ((line = bufferedReaderA.readLine()) != null) {
+                hashtagList.add(line);
+            }*/
+        }
+        return hashtagList;
+    }
+
+
 }

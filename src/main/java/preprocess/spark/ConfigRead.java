@@ -154,4 +154,7 @@ public class ConfigRead {
     public int getNumOfGroups(){
         return Integer.valueOf(prop.getProperty("numOfGroups"));
     }
+
+    public String getLearningPath() { return prop.getProperty("learningPath"); }
+
 }
