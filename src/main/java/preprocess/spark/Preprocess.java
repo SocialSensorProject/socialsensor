@@ -753,7 +753,7 @@ public class Preprocess implements Serializable {
         };
         StructField[] tmp2 = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
-                DataTypes.createStructField("count", DataTypes.DoubleType, true)
+                DataTypes.createStructField("count", DataTypes.LongType, true)
         };
         StructField[] tweetTimeField = {
                 DataTypes.createStructField("tid", DataTypes.LongType, true),
@@ -781,27 +781,29 @@ public class Preprocess implements Serializable {
         */
         //df2 = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
         df2 = sqlContext.read().parquet(dataPath + "tweet_user_parquet").coalesce(numPart);
-        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+        System.out.println("******************************TWEET USER COUNT: " + df2.count());
+        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Long>() {
             @Override
-            public Tuple2<String, Double> call(Row row) throws Exception {//tid, username, id
-                return new Tuple2<String, Double>(row.getString(1), 1.0);
+            public Tuple2<String, Long> call(Row row) throws Exception {//tid, username, id
+                return new Tuple2<String, Long>(row.getString(1), 1l);
             }
-        }).reduceByKey(new Function2<Double, Double, Double>() {
+        }).reduceByKey(new Function2<Long, Long, Long>() {
             @Override
-            public Double call(Double aDouble, Double aDouble2) throws Exception {
-                return aDouble + aDouble2;
+            public Long call(Long aLong, Long aLong2) throws Exception {
+                return aLong + aLong2;
             }
-        }).map(new Function<Tuple2<String, Double>, Row>() {
+        }).map(new Function<Tuple2<String, Long>, Row>() {
             @Override
-            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<String, Long> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
         }).filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return v1.getDouble(1) >= fromThreshold;
+                return v1.getLong(1) >= fromThreshold;
             }
         }), new StructType(tmp2));
+        System.out.println("******************************TWEET USER THRE   SHOLDED COUNT: " + df1.count());
 
         fromNumberMap = sqlContext.createDataFrame(df1.drop("count").javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, Row>() {
             @Override
@@ -811,7 +813,7 @@ public class Preprocess implements Serializable {
         }), new StructType(tmp)).coalesce(numPart);
         ind += fromNumberMap.count();
         featuresList = fromNumberMap;
-        /*df2 = sqlContext.createDataFrame(df2.join(fromNumberMap, df2.col("username").equalTo(fromNumberMap.col("username"))).drop(fromNumberMap.col("username")).drop(df2.col("username")).coalesce(numPart).javaRDD().map(new Function<Row, Row>() {
+        /*df2 = sqlContext.createDataFrame(df1.join(fromNumberMap, df1.col("username").equalTo(fromNumberMap.col("username"))).drop(fromNumberMap.col("username")).drop(df1.col("username")).coalesce(numPart).javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
                 return RowFactory.create(v1.getLong(0), String.valueOf(v1.getLong(1)));
@@ -819,35 +821,38 @@ public class Preprocess implements Serializable {
         }), new StructType(fieldsFrom));*/
         //df2 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         //df2.printSchema();
-        output(df2, "tweet_fromFeature_grouped", false);
-        System.out.println("==================DOUBLE CHECK SIZES=================: " + df2.count());
-        System.out.println("================== IND VALUE AFTER FROM_FEATURE=================: " + ind);
+        //df1 = df1.join(df2, df1.col("username").equalTo(df2.col("username")), "inner").drop(df1.col("count")).drop(df1.col("username")).distinct().coalesce(numPart);
+        //df1.printSchema();
+        //System.out.println("==================Long CHECK SIZES=================: " + df1.count());
+        //output(df1, "tweet_thsh_fromFeature_grouped", false);
+        System.err.println("================== IND VALUE AFTER FROM_FEATURE=================: " + ind);
 
 
         final long ind2 = ind;
         df2 = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").distinct().coalesce(numPart);
-
-        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+        //System.out.println("******************************TWEET TTERM COUNT: " + df2.count());
+        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Long>() {
             @Override
-            public Tuple2<String, Double> call(Row row) throws Exception {//tid, username, id
-                return new Tuple2<String, Double>(row.getString(1), 1.0);
+            public Tuple2<String, Long> call(Row row) throws Exception {//tid, username, id
+                return new Tuple2<String, Long>(row.getString(1), 1l);
             }
-        }).reduceByKey(new Function2<Double, Double, Double>() {
+        }).reduceByKey(new Function2<Long, Long, Long>() {
             @Override
-            public Double call(Double aDouble, Double aDouble2) throws Exception {
-                return aDouble + aDouble2;
+            public Long call(Long aLong, Long aLong2) throws Exception {
+                return aLong + aLong2;
             }
-        }).map(new Function<Tuple2<String, Double>, Row>() {
+        }).map(new Function<Tuple2<String, Long>, Row>() {
             @Override
-            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<String, Long> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
         }).filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return v1.getDouble(1) >= termThreshold;
+                return v1.getLong(1) >= termThreshold;
             }
-        }), new StructType(tmp2));
+        }), new StructType(tmp2));//term , freq
+        System.out.println("******************************TWEET TTERM THRESHOLDED COUNT: " + df1.count());
         fromNumberMap = sqlContext.createDataFrame(df1.drop("count").distinct().javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, Row>() {
             @Override
             public Row call(Tuple2<Row, Long> v1) throws Exception {
@@ -856,48 +861,51 @@ public class Preprocess implements Serializable {
         }), new StructType(tmp)).coalesce(numPart);
         ind += fromNumberMap.count();
         featuresList = featuresList.unionAll(fromNumberMap).coalesce(numPart);
-        df2 = sqlContext.createDataFrame(df2.distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
+        /*df2 = sqlContext.createDataFrame(df1.distinct().coalesce(numPart).join(df2, df1.col("username").equalTo(df2.col("term"))).drop(df1.col("username")).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
             @Override
             public Tuple2<Long, String> call(Row row) throws Exception {
                 return new Tuple2<Long, String>(row.getLong(0), row.getString(1));
             }
         }).reduceByKey(new Function2<String, String, String>() {
             @Override
-            public String call(String aDouble, String aDouble2) throws Exception {
-                return aDouble + " " + aDouble2;
+            public String call(String aLong, String aLong2) throws Exception {
+                return aLong + " " + aLong2;
             }
         }).map(new Function<Tuple2<Long, String>, Row>() {
             @Override
-            public Row call(Tuple2<Long, String> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<Long, String> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
-        }), new StructType(fieldsTerm)).coalesce(numPart);
+        }), new StructType(fieldsTerm)).coalesce(numPart);*/
         //df2 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
-        output(df2, "tweet_termFeature_grouped", false);
+        df1 = df1.distinct().join(df2, df1.col("username").equalTo(df2.col("term"))).drop(df1.col("count")).drop(df1.col("username")).distinct().coalesce(numPart);
+        df1.printSchema();
+        output(df1, "tweet_thsh_termFeature_grouped", false);
+        System.err.println("==================DOUBLE CHECK SIZES=================: " + df1.count());
         //System.out.println("==========FINAL TERM COUNT============= " + df2.count());
-        System.out.println("================== IND VALUE AFTER TERM_FEATURE=================: " + ind);
+        System.err.println("================== IND VALUE AFTER TERM_FEATURE=================: " + ind);
 
         final long ind3 = ind;
         df2 = sqlContext.read().parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet").drop("hashtagGrouped").coalesce(numPart);
-        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Long>() {
             @Override
-            public Tuple2<String, Double> call(Row row) throws Exception {//tid, username, id
-                return new Tuple2<String, Double>(row.getString(1), 1.0);
+            public Tuple2<String, Long> call(Row row) throws Exception {//tid, username, id
+                return new Tuple2<String, Long>(row.getString(1), 1l);
             }
-        }).reduceByKey(new Function2<Double, Double, Double>() {
+        }).reduceByKey(new Function2<Long, Long, Long>() {
             @Override
-            public Double call(Double aDouble, Double aDouble2) throws Exception {
-                return aDouble + aDouble2;
+            public Long call(Long aLong, Long aLong2) throws Exception {
+                return aLong + aLong2;
             }
-        }).map(new Function<Tuple2<String, Double>, Row>() {
+        }).map(new Function<Tuple2<String, Long>, Row>() {
             @Override
-            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<String, Long> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
         }).filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return v1.getDouble(1) >= hashtagThreshold;
+                return v1.getLong(1) >= hashtagThreshold;
             }
         }), new StructType(tmp2));
         fromNumberMap = sqlContext.createDataFrame(df1.drop("count").distinct().javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, Row>() {
@@ -908,49 +916,51 @@ public class Preprocess implements Serializable {
         }), new StructType(tmp)).coalesce(numPart);
         ind += fromNumberMap.count();
         featuresList = featuresList.unionAll(fromNumberMap).coalesce(numPart);
-        df2 = sqlContext.createDataFrame(df2.distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
+        /*df2 = sqlContext.createDataFrame(df1.distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
             @Override
             public Tuple2<Long, String> call(Row row) throws Exception {
                 return new Tuple2<Long, String>(row.getLong(0), row.getString(1));
             }
         }).reduceByKey(new Function2<String, String, String>() {
             @Override
-            public String call(String aDouble, String aDouble2) throws Exception {
-                return aDouble + " " + aDouble2;
+            public String call(String aLong, String aLong2) throws Exception {
+                return aLong + " " + aLong2;
             }
         }).map(new Function<Tuple2<Long, String>, Row>() {
             @Override
-            public Row call(Tuple2<Long, String> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<Long, String> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
-        }), new StructType(fieldsHashtag)).coalesce(numPart);
+        }), new StructType(fieldsHashtag)).coalesce(numPart);*/
+        df1 = df1.distinct().join(df2, df1.col("username").equalTo(df2.col("hashtag"))).drop(df1.col("count")).drop(df1.col("username")).distinct().coalesce(numPart);
+        System.err.println("==================DOUBLE CHECK SIZES=================: " + df1.count());
         //df2 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
-        output(df2, "tweet_hashtagFeature_grouped", false);
+        output(df1, "tweet_thsh_hashtagFeature_grouped", false);
 
         final long ind4 = ind;
-        //System.out.println("==========FINAL HASHTAG COUNT============= " + df2.count());
-        System.out.println("================== IND VALUE AFTER HASHTAG_FEATURE=================: " + ind);
+        //System.err.println("==========FINAL HASHTAG COUNT============= " + df2.count());
+        System.err.println("================== IND VALUE AFTER HASHTAG_FEATURE=================: " + ind);
 
         df2 = sqlContext.read().parquet(dataPath + "tweet_mention_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart);//.registerTempTable("tweetMention");
-        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Long>() {
             @Override
-            public Tuple2<String, Double> call(Row row) throws Exception {//tid, username, id
-                return new Tuple2<String, Double>(row.getString(1), 1.0);
+            public Tuple2<String, Long> call(Row row) throws Exception {//tid, username, id
+                return new Tuple2<String, Long>(row.getString(1), 1l);
             }
-        }).reduceByKey(new Function2<Double, Double, Double>() {
+        }).reduceByKey(new Function2<Long, Long, Long>() {
             @Override
-            public Double call(Double aDouble, Double aDouble2) throws Exception {
-                return aDouble + aDouble2;
+            public Long call(Long aLong, Long aLong2) throws Exception {
+                return aLong + aLong2;
             }
-        }).map(new Function<Tuple2<String, Double>, Row>() {
+        }).map(new Function<Tuple2<String, Long>, Row>() {
             @Override
-            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<String, Long> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
         }).filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return v1.getDouble(1) >= mentionThreshold;
+                return v1.getLong(1) >= mentionThreshold;
             }
         }), new StructType(tmp2));
         fromNumberMap = sqlContext.createDataFrame(df1.drop("count").distinct().javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, Row>() {
@@ -959,28 +969,30 @@ public class Preprocess implements Serializable {
                 return RowFactory.create(v1._1().getString(0), v1._2() + ind4);
             }
         }), new StructType(tmp)).coalesce(numPart);
-        double mentionCount = fromNumberMap.count();
+        Long mentionCount = fromNumberMap.count();
         ind += mentionCount;
         featuresList = featuresList.unionAll(fromNumberMap).coalesce(numPart);
-        df2 = sqlContext.createDataFrame(df2.distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
+        /*df2 = sqlContext.createDataFrame(df1.distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
             @Override
             public Tuple2<Long, String> call(Row row) throws Exception {
                 return new Tuple2<Long, String>(row.getLong(0), row.getString(1));
             }
         }).reduceByKey(new Function2<String, String, String>() {
             @Override
-            public String call(String aDouble, String aDouble2) throws Exception {
-                return aDouble + " " + aDouble2;
+            public String call(String aLong, String aLong2) throws Exception {
+                return aLong + " " + aLong2;
             }
         }).map(new Function<Tuple2<Long, String>, Row>() {
             @Override
-            public Row call(Tuple2<Long, String> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<Long, String> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
-        }), new StructType(fieldsMention)).coalesce(numPart);
+        }), new StructType(fieldsMention)).coalesce(numPart);*/
+        df1 = df1.distinct().join(df2, df1.col("username").equalTo(df2.col("mentionee"))).drop(df1.col("count")).drop(df1.col("username")).distinct().coalesce(numPart);
         //df2 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
-        output(df2, "tweet_mentionFeature_grouped", false);
-        System.out.println("==========FINAL Mention COUNT============= " + mentionCount);
+        output(df1, "tweet_thsh_mentionFeature_grouped", false);
+        System.err.println("==================DOUBLE CHECK SIZES=================: " + df1.count());
+        System.err.println("==========FINAL Mention COUNT============= " + mentionCount);
 
         final long ind5 = ind;
         df2 = sqlContext.read().parquet(dataPath + "tweet_user_parquet").coalesce(numPart);
@@ -988,20 +1000,20 @@ public class Preprocess implements Serializable {
         df1.printSchema();
         df1.show();
         df2 = df2.join(df1, df2.col("username").equalTo(df1.col("C0"))).drop(df2.col("username")).drop(df1.col("C0"));//tid, location
-        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+        df1 = sqlContext.createDataFrame(df2.javaRDD().mapToPair(new PairFunction<Row, String, Long>() {
             @Override
-            public Tuple2<String, Double> call(Row row) throws Exception {//tid, username, id
-                return new Tuple2<String, Double>(row.getString(1), 1.0);
+            public Tuple2<String, Long> call(Row row) throws Exception {//tid, username, id
+                return new Tuple2<String, Long>(row.getString(1), 1l);
             }
-        }).reduceByKey(new Function2<Double, Double, Double>() {
+        }).reduceByKey(new Function2<Long, Long, Long>() {
             @Override
-            public Double call(Double aDouble, Double aDouble2) throws Exception {
-                return aDouble + aDouble2;
+            public Long call(Long aLong, Long aLong2) throws Exception {
+                return aLong + aLong2;
             }
-        }).map(new Function<Tuple2<String, Double>, Row>() {
+        }).map(new Function<Tuple2<String, Long>, Row>() {
             @Override
-            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<String, Long> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
         }), new StructType(tmp2));
         fromNumberMap = sqlContext.createDataFrame(df1.drop("count").distinct().javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, Row>() {
@@ -1012,29 +1024,30 @@ public class Preprocess implements Serializable {
         }), new StructType(tmp)).coalesce(numPart);
         ind += fromNumberMap.count();
         featuresList = featuresList.unionAll(fromNumberMap).coalesce(numPart);
-        df2 = sqlContext.createDataFrame(df2.distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
+        /*df2 = sqlContext.createDataFrame(df1.distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
             @Override
             public Tuple2<Long, String> call(Row row) throws Exception {
                 return new Tuple2<Long, String>(row.getLong(0), row.getString(1));
             }
         }).reduceByKey(new Function2<String, String, String>() {
             @Override
-            public String call(String aDouble, String aDouble2) throws Exception {
-                return aDouble + " " + aDouble2;
+            public String call(String aLong, String aLong2) throws Exception {
+                return aLong + " " + aLong2;
             }
         }).map(new Function<Tuple2<Long, String>, Row>() {
             @Override
-            public Row call(Tuple2<Long, String> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            public Row call(Tuple2<Long, String> stringLongTuple2) throws Exception {
+                return RowFactory.create(stringLongTuple2._1(), stringLongTuple2._2());
             }
-        }), new StructType(fieldsLocation)).coalesce(numPart);
+        }), new StructType(fieldsLocation)).coalesce(numPart);*/
         //df2 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
-        output(df2, "tweet_locationFeature_grouped", false);
-        //System.out.println("==========FINAL TERM COUNT============= " + df2.count());
-        System.out.println("================== IND VALUE AFTER Location_FEATURE=================: " + ind);
+        df1 = df1.distinct().join(df2, df1.col("username").equalTo(df2.col("C1"))).drop(df1.col("count")).drop(df1.col("username")).distinct().coalesce(numPart);
+        output(df1, "tweet_thsh_locationFeature_grouped", false);
+        System.err.println("==========FINAL LOCATION COUNT============= " + df1.count());
+        System.err.println("================== IND VALUE AFTER Location_FEATURE=================: " + ind);
 
 
-        System.out.println("==========FINAL Feature COUNT============= " + (ind - 1));
+        System.err.println("==========FINAL Feature COUNT============= " + (ind - 1));
         featuresList.coalesce(1).write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(outputPath + "FeaturesList_csv");
     }
 
@@ -1865,7 +1878,7 @@ public class Preprocess implements Serializable {
 
         int returnNum = 10000;
         DataFrame topFeatures;
-        String[] algNames = { "MILog", "CP", "CPLog","MI", "topical", "topicalLog"};
+        String[] algNames = { "topical", "topicalLog","MILog", "CP","CPLog","MI"};
 
         DataFrame tweetTime = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
         StructField[] timeField = {
@@ -1881,19 +1894,26 @@ public class Preprocess implements Serializable {
         tweetTime.cache();
 
 
-        df2 = sqlContext.read().parquet(dataPath + "tweet_fromFeature_grouped_parquet").coalesce(numPart);
+        df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_fromFeature_grouped_parquet").coalesce(numPart);
+        System.out.println("============================ FROM FEATURE : " + df2.count() + "===============================================");
         df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+        System.out.println("============================ FROM FEATURE IN TEST SET: " + df1.count() + "===============================================");
         for(String algName1:algNames) {
             final String featureName = "From";
             final String algName = algName1;
             //topFeatures = sqlContext.createDataFrame(sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "Baselines/" + groupNames[groupNum] + "/" + algName + "/top1000_" + featureName + ".csv").javaRDD(), new StructType(fieldsFrom)).coalesce(numPart);
-            topFeatures = sqlContext.createDataFrame(sqlContext.read().parquet(outputPath + "Baselines/" + groupNames[groupNum - 1] + "/" + algName + "/top1000_" + featureName + "_parquet").javaRDD(), new StructType(fieldsFrom)).coalesce(numPart);
+            System.out.println("*************" + outputPath + "Baselines/" + groupNames[groupNum - 1] + "/" + algName + "/top1000_" + featureName + "_parquet");
+            String ffName = "/top1000_" + featureName + "_parquet";
+            if(algName.contains("topical"))
+                ffName = "/top1000_" + featureName;
+            topFeatures = sqlContext.createDataFrame(sqlContext.read().parquet(outputPath + "Baselines/" + groupNames[groupNum - 1] + "/" + algName + ffName).javaRDD(), new StructType(fieldsFrom)).coalesce(numPart);
             df2 = df1;
             df2 = topFeatures.join(df2, df2.col("username").equalTo(topFeatures.col("username"))).drop(df2.col("username")).coalesce(numPart);
             df2 = df2.sort(df2.col("prob").desc()).limit(returnNum);
             df2 = df2.join(tweetTopical, df2.col("tid").equalTo(tweetTopical.col("tid"))).drop(tweetTopical.col("tid")).coalesce(numPart);
-            df2.printSchema();
-            final int grNum = groupNum;
+            df2.cache();
+            df2.write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qrel_top_" + featureName);
+            /*final int grNum = groupNum;
             sqlContext.createDataFrame(df2.select("tid", "topical").javaRDD().map(new Function<Row, Row>() {
                 @Override
                 public Row call(Row v1) throws Exception {
@@ -1910,11 +1930,12 @@ public class Preprocess implements Serializable {
                 }
             }), new StructType(qTopicsField)).coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qtop_" + featureName);
             //df2.write().mode(SaveMode.Overwrite).
-            //output(df2, algName + "_" + featureName)
+            //output(df2, algName + "_" + featureName)*/
         }
         System.out.println("=====================FROM DONE======================");
 
-        df2 = sqlContext.read().parquet(dataPath + "tweet_hashtagFeature_grouped_parquet").coalesce(numPart);
+        algNames = new String[] {"CPLog","MI", "topical", "topicalLog", "MILog", "CP"};
+        df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_hashtagFeature_grouped_parquet").coalesce(numPart);
         df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         df1 = sqlContext.createDataFrame(df1.javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
             @Override
@@ -1952,7 +1973,8 @@ public class Preprocess implements Serializable {
             }), new StructType(fieldsMap));
             df2 = df2.sort(df2.col("prob").desc()).limit(returnNum);
             df2 = df2.join(tweetTopical, df2.col("tid").equalTo(tweetTopical.col("tid"))).drop(tweetTopical.col("tid")).coalesce(numPart);
-            df2.printSchema();
+            df2.write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qrel_top_" + featureName1);
+            /*df2.printSchema();
             final int grNum = groupNum;
             sqlContext.createDataFrame(df2.select("tid", "topical").javaRDD().map(new Function<Row, Row>() {
                 @Override
@@ -1970,11 +1992,11 @@ public class Preprocess implements Serializable {
                 }
             }), new StructType(qTopicsField)).coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qtop_" + featureName1);
             //df2.write().mode(SaveMode.Overwrite).
-            //output(df2, algName + "_" + featureName)
+            //output(df2, algName + "_" + featureName)*/
         }
         System.out.println("=====================HASHTAG DONE======================");
 
-        df2 = sqlContext.read().parquet(dataPath + "tweet_mentionFeature_grouped_parquet").coalesce(numPart);
+        df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_mentionFeature_grouped_parquet").coalesce(numPart);
         df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         df1 = sqlContext.createDataFrame(df1.javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
             @Override
@@ -2011,7 +2033,8 @@ public class Preprocess implements Serializable {
             }), new StructType(fieldsMap));
             df2 = df2.sort(df2.col("prob").desc()).limit(returnNum);
             df2 = df2.join(tweetTopical, df2.col("tid").equalTo(tweetTopical.col("tid"))).drop(tweetTopical.col("tid")).coalesce(numPart);
-            df2.printSchema();
+            df2.write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qrel_top_" + featureName1);
+            /*df2.printSchema();
             final int grNum = groupNum;
             sqlContext.createDataFrame(df2.select("tid", "topical").javaRDD().map(new Function<Row, Row>() {
                 @Override
@@ -2029,11 +2052,11 @@ public class Preprocess implements Serializable {
                 }
             }), new StructType(qTopicsField)).coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qtop_" + featureName1);
             //df2.write().mode(SaveMode.Overwrite).
-            //output(df2, algName + "_" + featureName)
+            //output(df2, algName + "_" + featureName)*/
         }
         System.out.println("=====================Mention DONE======================");
 
-        df2 = sqlContext.read().parquet(dataPath + "tweet_locationFeature_grouped_parquet").coalesce(numPart);
+        df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_locationFeature_grouped_parquet").coalesce(numPart);
         df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         df1 = sqlContext.createDataFrame(df1.javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
             @Override
@@ -2070,7 +2093,8 @@ public class Preprocess implements Serializable {
             }), new StructType(fieldsMap));
             df2 = df2.sort(df2.col("prob").desc()).limit(returnNum);
             df2 = df2.join(tweetTopical, df2.col("tid").equalTo(tweetTopical.col("tid"))).drop(tweetTopical.col("tid")).coalesce(numPart);
-            df2.printSchema();
+            df2.write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qrel_top_" + featureName1);
+            /*df2.printSchema();
             final int grNum = groupNum;
             sqlContext.createDataFrame(df2.select("tid", "topical").javaRDD().map(new Function<Row, Row>() {
                 @Override
@@ -2088,11 +2112,11 @@ public class Preprocess implements Serializable {
                 }
             }), new StructType(qTopicsField)).coalesce(numPart).write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qtop_" + featureName1);
             //df2.write().mode(SaveMode.Overwrite).
-            //output(df2, algName + "_" + featureName)
+            //output(df2, algName + "_" + featureName)*/
         }
         System.out.println("=====================LOCATION DONE======================");
 
-        df2 = sqlContext.read().parquet(dataPath + "tweet_termFeature_grouped_parquet").coalesce(numPart);
+        df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_termFeature_grouped_parquet").coalesce(numPart);
         df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         df1 = sqlContext.createDataFrame(df1.javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
             @Override
