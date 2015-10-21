@@ -46,15 +46,15 @@ public class ComputeBaselinesCPMI {
     private static String dataPath;
     private static String outputPath; //"Local_Results/out/";
     private static final boolean calcFromUser = true;
-    private static final boolean calcToUser = false;
-    private static final boolean calcContainHashtag = false;
-    private static final boolean calcContainTerm = false;
-    private static final boolean calcContainLocation = false;
-    private static final boolean writeTopicalLocation = false;
-    private static final boolean writeTopicalTerm = false;
+    private static final boolean calcToUser = true;
+    private static final boolean calcContainHashtag = true;
+    private static final boolean calcContainTerm = true;
+    private static final boolean calcContainLocation = true;
+    private static final boolean writeTopicalLocation = true;
+    private static final boolean writeTopicalTerm = true;
     private static final boolean writeTopicalFrom = true;
-    private static final boolean writeTopicalHashtag = false;
-    private static final boolean writeTopicalMention = false;
+    private static final boolean writeTopicalHashtag = true;
+    private static final boolean writeTopicalMention = true;
     private static int groupNum;
     private static int numOfGroups;
     private static String[] groupNames;
@@ -81,7 +81,7 @@ public class ComputeBaselinesCPMI {
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
 
-        for(groupNum = 6; groupNum <= 6; groupNum++) {
+        for(groupNum = 1; groupNum <= 1; groupNum++) {
             if(groupNum > 1 && groupNum != 6)
                 continue;
             initializeSqlContext();

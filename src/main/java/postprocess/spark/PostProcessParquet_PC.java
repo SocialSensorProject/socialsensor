@@ -492,7 +492,7 @@ public class PostProcessParquet_PC implements Serializable {
         final String emo_regex2 = "([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee])";
         List<String[]> availLocs = new ArrayList<>();
 
-        HashSet<String> st = new HashSet<String>();
+        /*HashSet<String> st = new HashSet<String>();
         String [] usSet = new String[] {"Alabama","AL","Alaska","AK","Arizona","AZ","Arkansas","AR","California","CA","Colorado","CO","Connecticut","CT","Delaware","DE","Florida","FL","Georgia","GA","Hawaii","HI","Idaho","ID","Illinois","IL","Indiana","IN","Iowa","IA","Kansas","KS","Kentucky","KY","Louisiana","LA","Maine","ME","Maryland","MD","Massachusetts","MA","Michigan","MI","Minnesota","MN","Mississippi","MS","Missouri","MO","Montana","MT","Nebraska","NE","Nevada","NV","NewHampshire","NH","NewJersey","NJ","NewMexico","NM","NewYork","NY","NorthCarolina","NC","NorthDakota","ND","Ohio","OH","Oklahoma","OK","Oregon","OR","Pennsylvania","PA","RhodeIsland","RI","SouthCarolina","SC","SouthDakota","SD","Tennessee","TN","Texas","TX","Utah","UT","Vermont","VT","Virginia","VA","Washington","WA","WestVirginia","WV","Wisconsin","WI","Wyoming","WY",
                 "ca","la", "indiana", "denver", "massachusetts", "southcarolina", "portland", "detroit", "minneapolis", "louisiana", "kansas", "orlando", "bc", "kentucky", "missouri", "nashville", "pennsylvania", "wisconsin", "ph", "oregon", "dc", "tennessee", "iowa","miami", "brooklyn", "maryland", "newjersey", "alabama", "virgina", "lasvegas", "philadelphia", "ky", "austin", "newyorkcity", "minnesota","michigan", "arizona", "colorado", "sandiego", "houston", "tn", "atlanta","boston", "nyc", "wa", "usa", "us", "tx", "texas", "california", "ny", "chicago", "losangeles", "fl", "ohio", "unitedstates", "florida", "il"};
         for(String sus : usSet)
@@ -501,13 +501,16 @@ public class PostProcessParquet_PC implements Serializable {
         int ius = 0;
         for(String state : st) {
             usSet2[ius] = state;
+            System.out.println(state + ",");
             ius++;
         }
-        availLocs.add(usSet2);
+
+        availLocs.add(usSet2);*/    
+        availLocs.add(new String[] {"newyorkcity","nyc","ny","ga","nv","wy","washington","minnesota","fl","florida","nashville","ok","virginia","arkansas","oh","iowa","wi","portland","virgina","california","newmexico","or","miami","delaware","wv","pa","nevada","wa","ph","nebraska","brooklyn","austin","wisconsin","indiana","oklahoma","losangeles","vt","usa","de","idaho","northcarolina","boston","ohio","md","minneapolis","ma","montana","arizona","denver","me","va","newjersey","mi","mn","mo","mt","sandiego","ms","louisiana","tennessee","us","pennsylvania","philadelphia","ut","newyork","michigan","tx","westvirginia","nc","utah","nd","ne","nh","vermont","nj","kansas","nm","oregon","tn","ca","rhodeisland","wyoming","atlanta","unitedstates","southcarolina","orlando","maryland","chicago","dc","ky","ks","alaska","sd","georgia","sc","ct","mississippi","co","la","lasvegas","illinois","texas","ri","alabama","hi","kentucky","id","southdakota","ia","northdakota","hawaii","newhampshire","az","maine","houston","colorado","ar","il","massachusetts","in","ak","al","missouri","connecticut","detroit"});
         availLocs.add(new String[] {"london", "uk", "england", "manchester", "unitedkingdom", "newcastle"});
         availLocs.add(new String[] {"indonesia"});
         availLocs.add(new String[] {"philippines"});
-        availLocs.add(new String[] {"canada", "ca", "toronto", "ontario", "vancouver", "ottawa"});
+        availLocs.add(new String[] {"canada", "ca", "toronto", "ontario", "vancouver", "ottawa", "bc"});
         availLocs.add(new String[] {"india", "mumbai"});
         availLocs.add(new String[] {"southafrica", "capetown"});
         availLocs.add(new String[] {"nigeria"});
@@ -518,7 +521,7 @@ public class PostProcessParquet_PC implements Serializable {
         availLocs.add(new String[] {"mexico", "méxico"});
         availLocs.add(new String[] {"france", "paris"});
         availLocs.add(new String[] {"thailand", "kualalumpur"});
-        availLocs.add(new String[] {"italy"});
+        availLocs.add(new String[] {"italy", "milan"});
         String[] locNames = {"US", "UK", "Indonesia", "Philippines", "Canada", "India", "South Africa", "Nigeria", "Argentina", "Brasil", "Egypt", "Japan", "Mexico", "France", "Thailand", "Italy"};
         String locName;
         boolean flagLoc;
