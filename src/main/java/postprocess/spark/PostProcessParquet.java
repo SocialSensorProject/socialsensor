@@ -40,7 +40,7 @@ public class PostProcessParquet implements Serializable {
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {
-
+        testFunc();
         loadConfig();
         scriptPath = configRead.getScriptPath();
         int itNum = configRead.getSensorEvalItNum();
@@ -114,21 +114,52 @@ public class PostProcessParquet implements Serializable {
         }
     }
 
-    public static void readHashtagSetDateResuts(String filename) throws IOException {
-        FileReader fileReaderA = new FileReader(clusterResultsPath + filename);
+    public static void testFunc() throws IOException {
+        String path = "Data/Learning/Topics/naturaldisaster/fold0/l2_lr/";
+        FileReader fileReaderA = new FileReader(path + "featureWeights.csv");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
         String line;
-        FileWriter fw = new FileWriter(outputCSVPath + filename +".csv");
-        BufferedWriter bw = new BufferedWriter(fw);
+        FileWriter fwFrom = new FileWriter(path + "featureWeights_from.csv");
+        BufferedWriter bwFrom = new BufferedWriter(fwFrom);
+        FileWriter fwTerm = new FileWriter(path + "featureWeights_term.csv");
+        BufferedWriter bwTerm = new BufferedWriter(fwTerm);
+        FileWriter fwHashtag = new FileWriter(path + "featureWeights_hashtag.csv");
+        BufferedWriter bwHashtag = new BufferedWriter(fwHashtag);
+        FileWriter fwMention = new FileWriter(path + "featureWeights_mention.csv");
+        BufferedWriter bwMention = new BufferedWriter(fwMention);
+        FileWriter fwLocation = new FileWriter(path + "featureWeights_location.csv");
+        BufferedWriter bwLocation = new BufferedWriter(fwLocation);
         String[] strs;
-        Map<String, Long> hashtagDate = new HashMap<>();
+        String st;
+        int featCount = -1;
+        while((line = bufferedReaderA.readLine()) != null) {
+            featCount++;
+            st = line.split(",")[0];
+            if(st.equals("from"))
+                bwFrom.write(line + "\n");
+            else if(st.equals("term"))
+                bwTerm.write(line + "\n");
+            else if(st.equals("hashtag"))
+                bwHashtag.write(line + "\n");
+            else if(st.equals("mention"))
+                bwMention.write(line + "\n");
+            else
+                bwLocation.write(line + "\n");
+        }
+        bwFrom.close();
+        bwHashtag.close();
+        bwMention.close();
+        bwTerm.close();
+        bwLocation.close();
+
+/*
         while((line = bufferedReaderA.readLine()) != null){
             strs = line.split(",");
-        /*    if(hashtagDate.containsKey(strs[1])){
-                if(hashtagDate.get(strs[1]) < strs[2])
-                    hashtagDate.put(strs[1], strs[2]);
-            }*/
+            if(Double.valueOf(strs[1]) > 100)
+                fw.write(strs[0] + ","  + Double.valueOf(strs[1]).intValue() + "\n");
         }
+        fw.close();*/
+        bufferedReaderA.close();
     }
 
     public static void writeHeader() throws IOException {
