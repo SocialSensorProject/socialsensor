@@ -33,6 +33,8 @@ public class PostProcessParquet2 implements Serializable {
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
     private static Map<String, Long> hashtagMap = new HashMap<>();
+    final static int groupNum = 1;
+    private static BufferedWriter bwTrec;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
@@ -47,12 +49,14 @@ public class PostProcessParquet2 implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = true;
+        boolean convertParquet = false;
         boolean fixNumbers = false;
         boolean runScript = false;
         boolean makeScatterFiles = false;
         boolean cleanTerms = false;
         boolean buildLists = false;
+        boolean readBaselineResults = false;
+        boolean readLearningResults = true;
 
         //if(local)
         //    clusterResultsPath = outputCSVPath;
@@ -64,12 +68,23 @@ public class PostProcessParquet2 implements Serializable {
         if(cleanTerms)
             cleanTerms();
 
+        if(readBaselineResults){
+            readBaselineResults(local);
+        }
+
+        if(readLearningResults){
+            readLearningResults(local);
+        }
+
         if(convertParquet) {
-            //writeHeader();
             boolean readTestTrain = false;
+            String topic = configRead.getGroupNames()[groupNum-1];
             SparkConf sparkConfig;
             if (local) {
-                outputCSVPath = "ClusterResults/Baselines/naturaldisaster/MILog/";
+                tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV");
+                tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic);
+
+                ///outputCSVPath = "ClusterResults/BaselinesRes/"+topic+"/";
                 FileReader fileReaderA;
                 BufferedReader bufferedReaderA;
                 fileReaderA = new FileReader("Data/Learning/Topics/featureData/featureIndex_bu.csv");
@@ -94,9 +109,6 @@ public class PostProcessParquet2 implements Serializable {
                     //hashtagMap.put(line.split(",")[0], Long.valueOf(line.split(",")[1]));
                 }
                 bufferedReaderA.close();
-                //outputCSVPath = "/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_oct7/socialsensor/ClusterResults/TestTrainData/";
-                //outputCSVPath = "ClusterResults/";
-                //outputCSVPath = "TestSet/Data/";
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
             } else
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet");
@@ -104,51 +116,45 @@ public class PostProcessParquet2 implements Serializable {
             SQLContext sqlContext = new SQLContext(sparkContext);
 
             // Read all parquet part by part results files and combine them into 1 csv file for each iteration per group
-            File folder = new File(outputCSVPath);
-            ArrayList<String> fileNames = listFilesForFolder(folder);
-            DataFrame res;
-            int ind = -1;
-            int[] lineNumbers = new int[fileNames.size()];
-            for (String filename : fileNames) {
-                ind++;
-                //if(ind > 53) continue;
-                if (filename.contains(".csv") || filename.contains("_csv") || filename.equals("out"))
-                    continue;
-                System.out.println(outputCSVPath+"/"+ filename);
-                res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
-                if(readTestTrain) {
-                    if (filename.contains("strings"))// && !filename.contains("_4_")&& !filename.contains("_5_")&& !filename.contains("_6_"))
-                        lineNumbers[ind] = readResults2Strings(res, sparkContext, ind, filename);
-                    else {
-                        lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
-                        lineNumbers[ind] = readResults2Index(res, sparkContext, ind, filename);
-                        String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
-                        FileReader fileReaderA = new FileReader(outputCSVPath2 + "out_" + filename + "_index.csv");
-                        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-                        FileReader fileReaderB = new FileReader(outputCSVPath2 + "out_" + filename + ".csv");
-                        BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
-                        FileWriter fw = new FileWriter(outputCSVPath2 + "out_" + filename + "_all.csv");
-                        BufferedWriter bw = new BufferedWriter(fw);
-                        String line = "", line2 = "";
-                        while ((line = bufferedReaderA.readLine()) != null) {
-                            line2 = bufferedReaderB.readLine();
-                            bw.write(line + "\n" + line2 + "\n");
+            File folder1 = new File(outputCSVPath);
+            ArrayList<String> fileNames1 = listFilesForFolder(folder1);
+            for (String filename1 : fileNames1) {
+                tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic +"/"+filename1);
+                File folder = new File(outputCSVPath+"/"+filename1);
+                ArrayList<String> fileNames = listFilesForFolder(folder);
+                DataFrame res;
+                int ind = -1;
+                int[] lineNumbers = new int[fileNames.size()];
+                for (String filename : fileNames) {
+                    ind++;
+                    if (filename.contains(".csv") || filename.contains("_csv") || filename.equals("out") || filename.contains("trecout_all_"))
+                        continue;
+                    System.out.println(outputCSVPath + "/" + filename1+"/" + filename);
+                    res = sqlContext.read().parquet(outputCSVPath + "/" + filename1 + "/" + filename);
+                    if (readTestTrain) {
+                        if (filename.contains("strings"))// && !filename.contains("_4_")&& !filename.contains("_5_")&& !filename.contains("_6_"))
+                            lineNumbers[ind] = readResults2Strings(res, sparkContext, ind, filename);
+                        else {
+                            lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
+                            lineNumbers[ind] = readResults2Index(res, sparkContext, ind, filename);
+                            String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
+                            FileReader fileReaderA = new FileReader(outputCSVPath2 + "out_" + filename + "_index.csv");
+                            BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+                            FileReader fileReaderB = new FileReader(outputCSVPath2 + "out_" + filename + ".csv");
+                            BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
+                            FileWriter fw = new FileWriter(outputCSVPath2 + "out_" + filename + "_all.csv");
+                            BufferedWriter bw = new BufferedWriter(fw);
+                            String line = "", line2 = "";
+                            while ((line = bufferedReaderA.readLine()) != null) {
+                                line2 = bufferedReaderB.readLine();
+                                bw.write(line + "\n" + line2 + "\n");
+                            }
+                            bw.close();
+                            bufferedReaderA.close();
+                            bufferedReaderB.close();
                         }
-                        bw.close();
-                        bufferedReaderA.close();
-                        bufferedReaderB.close();
                     }
-                }else{
-                    lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
                 }
-                //lineNumbers[ind] = readResults1(res, sqlContext, ind, filename);
-                //lineNumbers[ind] = readLocationResults(null, sqlContext, ind, filename);
-                //writeLocationResults(filename);
-            }
-            ind = 0;
-            for (String filename : fileNames) {
-                System.out.println("FileName: " + filename + " #lines: " + lineNumbers[ind]);
-                ind++;
             }
         }
 
@@ -159,6 +165,93 @@ public class PostProcessParquet2 implements Serializable {
             tweetUtil.runScript("chmod +x " + outputCSVPath + "mergeFiles.sh");
             tweetUtil.runScript("./" + outputCSVPath + "mergeFiles.sh");
         }
+    }
+
+    private static void readBaselineResults(boolean local) throws IOException, InterruptedException {
+        boolean readTrecResults = false;
+        String topic = configRead.getGroupNames()[groupNum-1];
+        SparkConf sparkConfig;
+        if (local) {
+            tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV");
+            tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic);
+            outputCSVPath = "ClusterResults/BaselinesRes_Tmp/"+topic+"/";
+            if(readTrecResults) {
+                FileWriter fwTrec = new FileWriter("ClusterResults/BaselinesResCSV/" + topic + "/" + "trecout_all_" + topic + ".csv");
+                bwTrec = new BufferedWriter(fwTrec);
+            }
+            sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
+        } else
+            sparkConfig = new SparkConf().setAppName("PostProcessParquet");
+        JavaSparkContext sparkContext = new JavaSparkContext(sparkConfig);
+        SQLContext sqlContext = new SQLContext(sparkContext);
+        File folder1 = new File(outputCSVPath);
+        ArrayList<String> fileNames1 = listFilesForFolder(folder1);
+        for (String filename1 : fileNames1) {
+            tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic +"/"+filename1);
+            File folder = new File(outputCSVPath+"/"+filename1);
+            ArrayList<String> fileNames = listFilesForFolder(folder);
+            DataFrame res;
+            int ind = -1;
+            int[] lineNumbers = new int[fileNames.size()];
+            for (String filename : fileNames) {
+                ind++;
+                if (filename.contains(".csv") || filename.contains("_csv") || filename.equals("out"))
+                    continue;
+                System.out.println(outputCSVPath + "/" + filename1+"/" + filename);
+                if(readTrecResults){
+                    readTrecResults("ClusterResults/BaselinesResCSV/"+topic+"/" + filename1+"/",filename, bwTrec, topic, filename1);
+                }else {
+                    res = sqlContext.read().parquet(outputCSVPath + "/" + filename1 + "/" + filename);
+                    System.out.println("LOOK: ");
+                    res.printSchema();
+                    lineNumbers[ind] = readResults1(res, sqlContext, ind, filename, "ClusterResults/BaselinesResCSV/" + topic + "/" + filename1 + "/");
+                }
+            }
+        }
+        if(readTrecResults)
+            bwTrec.close();
+    }
+    private static void readLearningResults(boolean local) throws IOException, InterruptedException {
+        boolean readTrecResults = false;
+        String topic = configRead.getGroupNames()[groupNum-1];
+        SparkConf sparkConfig;
+        if (local) {
+            //tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningRes");
+            tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningResCSV/" + topic);
+            outputCSVPath = "ClusterResults/BaselinesRes_Tmp/Learning/Topics/"+topic+"/";
+            if(readTrecResults) {
+                FileWriter fwTrec = new FileWriter("ClusterResults/LearningResCSV/" + topic + "/" + "trecout_all_" + topic + ".csv");
+                bwTrec = new BufferedWriter(fwTrec);
+            }
+            sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
+        } else
+            sparkConfig = new SparkConf().setAppName("PostProcessParquet");
+        JavaSparkContext sparkContext = new JavaSparkContext(sparkConfig);
+        SQLContext sqlContext = new SQLContext(sparkContext);
+        File folder1 = new File(outputCSVPath);
+        ArrayList<String> fileNames1 = listFilesForFolder(folder1);
+        for (String filename1 : fileNames1) {
+            tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningResCSV/" + topic +"/"+filename1);
+            DataFrame res;
+            int ind = -1;
+            int[] lineNumbers = new int[fileNames1.size()];
+            ind++;
+
+            System.out.println(outputCSVPath + "/" + filename1+"/" + filename1);
+            if(readTrecResults){
+                readTrecResults("ClusterResults/LearningResCSV/"+topic+"/",filename1, bwTrec, topic, filename1);
+            }else {
+                if(!filename1.contains("_all"))
+                    continue;
+                res = sqlContext.read().parquet(outputCSVPath + "/" + filename1);
+                System.out.println("LOOK: ");
+                res.printSchema();
+                lineNumbers[ind] = readResults1(res, sqlContext, ind, filename1, "ClusterResults/LearningResCSV/" + topic + "/");
+            }
+
+        }
+        if(readTrecResults)
+            bwTrec.close();
     }
 
     public static void readHashtagSetDateResuts(String filename) throws IOException {
@@ -420,7 +513,7 @@ public class PostProcessParquet2 implements Serializable {
         strRes.coalesce(1).saveAsTextFile(outputCSVPath2 + "out_" + filename + "_csv");
         System.out.println("Count: " + strRes.count());
         tweetUtil.runStringCommand("mv " + outputCSVPath2 + "out_" + filename + "_csv/part-00000 " + outputCSVPath2 + "out_" + filename + ".csv");
-        tweetUtil.runStringCommand("rm -rf "+ outputCSVPath2 + "out_" + filename + "_csv");
+        tweetUtil.runStringCommand("rm -rf " + outputCSVPath2 + "out_" + filename + "_csv");
         int numberOfLines = accumulator.value().intValue();
         return numberOfLines;
     }
@@ -459,33 +552,105 @@ public class PostProcessParquet2 implements Serializable {
         return numberOfLines;
     }
 
-    public static int readResults1(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException, InterruptedException {
+    public static int readResults1(DataFrame results, SQLContext sqlContext, int index, final String filename, String outPath) throws IOException, InterruptedException {
         /**/
+        boolean flagFromTmp = false;
+        final boolean flagLearningRes = false;
+        if(filename.contains("From"))
+            flagFromTmp = true;
+        final boolean flagFrom = flagFromTmp;
+        /*JavaRDD strRes1 = results.javaRDD().map(new Function<Row, String>() {//.distinct()
+            @Override
+            public String call(Row row) throws Exception {
+                return row.toString();
+            }
+        });
+        strRes1.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_csv");
+        tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_csv/part-00000" + " " + outPath + "out_" + filename + ".csv");
+        tweetUtil.runStringCommand("rm -rf "+outPath + "out_" + filename  + "_csv");*/
         JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {//.distinct()
             @Override
             public String call(Row row) throws Exception {
-                if(row.get(0) == null || row.get(1) == null) {
-                    System.out.println(row);
-                    return "";
-                }
-                String out = "";
-                for(int i = 0; i < row.size(); i++)
-                    out += row.get(i).toString() + " ";
-                out = out.substring(0,out.length()-1);
-                return out;
-                //return row.getLong(0)+ "," + row.getString(1) + "," + row.get(2).toString();
-                //return row.get(0).toString() + "," + Double.valueOf(row.get(1).toString());// + "," + row.getDouble(2) + "," + row.getDouble(3)+ "," + row.getDouble(4);
+                String s = "Q0";
+                if(flagFrom)
+                    return groupNum + " " + s + " " + row.getLong(2) + " " + row.getInt(4);
+                else if (flagLearningRes)
+                    return groupNum + " " + s + " " + row.getLong(0) + " " + row.getInt(2);
+                else
+                    return groupNum + " " + s + " " + row.getLong(0) + " " + row.getInt(2);
             }
         });
-        strRes.coalesce(1).saveAsTextFile(outputCSVPath + "out_" + filename + "_csv");
-        tweetUtil.runStringCommand("mv " + outputCSVPath + "out_" + filename + "_csv/part-00000" + " " + outputCSVPath + "out_" + filename + ".csv");
-        tweetUtil.runStringCommand("rm -rf "+outputCSVPath + "out_" + filename + "_csv");
+        strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qrel" + "_csv");
+        tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_qrel" + "_csv/part-00000" + " " + outPath + "out_" + filename + "_qrel" + ".csv");
+        tweetUtil.runStringCommand("rm -rf "+outPath + "out_" + filename + "_qrel" + "_csv");
+
+        strRes = results.javaRDD().map(new Function<Row, String>() {//.distinct()
+            @Override
+            public String call(Row row) throws Exception {
+                String s = "Q0";
+                int rank = 0;
+                if(flagFrom)
+                    return groupNum + " " + s + " " + row.getLong(2) + " " + rank + " " + new BigDecimal(row.getDouble(1)).toPlainString() + " " + filename;
+                else if(flagLearningRes)
+                    return groupNum + " " + s + " " + row.getLong(0) + " " + rank + " " + new BigDecimal(row.getDouble(1)).toPlainString() + " " + filename;
+                else
+                    return groupNum + " " + s + " " + row.getLong(0) + " " + rank + " " + new BigDecimal(row.getDouble(1)).toPlainString() + " " + filename;
+            }
+        });
+        strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qtop1" + "_csv");
+        tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_qtop1" + "_csv/part-00000" + " " + outPath + "out_" + filename + "_qtop1" + ".csv");
+        tweetUtil.runStringCommand("rm -rf "+outPath + "out_" + filename + "_qtop1" + "_csv");
+        tweetUtil.runStringCommand("sort -rn -k5,5 " + outPath + "out_" + filename + "_qtop1" + ".csv > " + outPath + "out_" + filename + "_qtop2" + ".csv");
+        tweetUtil.runStringCommand("rm -rf "+outPath + "out_" + filename + "_qtop1" + ".csv");
+        FileReader fileReaderA = new FileReader(outPath + "out_" + filename + "_qtop2" + ".csv");
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        String line;
+        FileWriter fw = new FileWriter(outPath + "out_" + filename + "_qtop" + ".csv");
+        BufferedWriter bw = new BufferedWriter(fw);
+        int numberOfLines = 0;
+        String [] strs; int ind = 0;
+        while((line = bufferedReaderA.readLine()) != null){
+            strs = line.split(" ");
+            bw.write(strs[0] + " " + strs[1] + " " + strs[2] + " " + ind + " " + strs[4] + " " + strs[5] + "\n");
+        }
+        bw.close();
+        bufferedReaderA.close();
+        tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_qtop2" + ".csv");
+        return 0;
+    }
+
+    public static int readTrecResults(String outPath, String filename, BufferedWriter bw, String topic, String folderName) throws IOException, InterruptedException {
+        /**/
+        filename = filename.split("_")[2];
+        FileReader fileReaderA = new FileReader(outPath + "out_" + filename + ".csv");
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        String line;
+        int ind = 0;
+        bw.write(topic + "," + folderName + "," + filename + ",");
+        while((line = bufferedReaderA.readLine()) != null){
+            ind++;
+            if(ind == 2)
+                bw.write(line.split("num_ret        \tall\t")[1] + ",");
+            if(ind == 3)
+                bw.write(line.split("num_rel        \tall\t")[1] + ",");
+            if(ind == 5)
+                bw.write(line.split("map            \tall\t")[1] + ",");
+            if(ind == 20)
+                bw.write(line.split("map_at_R       \tall\t")[1] + ",");
+            if(ind == 60)
+                bw.write(line.split("P100           \tall\t")[1] + ",");
+            if(ind == 63)
+                bw.write(line.split("P1000          \tall\t")[1] + ",");
+        }
+        bw.write("\n");
+        bw.flush();
+        bufferedReaderA.close();
         return 0;
     }
 
     public static int readLocationResults(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException, InterruptedException {
         /**/
-        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee])";//"\\p{InEmoticons}";
+        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]\\)";//"\\p{InEmoticons}";
         FileReader fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
         FileWriter fw = new FileWriter(outputCSVPath +"location_freq1.csv");

@@ -45,16 +45,16 @@ public class ComputeBaselinesCPMI {
     private static long [] containNotContainCounts;
     private static String dataPath;
     private static String outputPath; //"Local_Results/out/";
-    private static final boolean calcFromUser = true;
-    private static final boolean calcToUser = true;
-    private static final boolean calcContainHashtag = true;
+    private static final boolean calcFromUser = false;
+    private static final boolean calcToUser = false;
+    private static final boolean calcContainHashtag = false;
     private static final boolean calcContainTerm = true;
-    private static final boolean calcContainLocation = true;
-    private static final boolean writeTopicalLocation = true;
+    private static final boolean calcContainLocation = false;
+    private static final boolean writeTopicalLocation = false;
     private static final boolean writeTopicalTerm = true;
-    private static final boolean writeTopicalFrom = true;
-    private static final boolean writeTopicalHashtag = true;
-    private static final boolean writeTopicalMention = true;
+    private static final boolean writeTopicalFrom = false;
+    private static final boolean writeTopicalHashtag = false;
+    private static final boolean writeTopicalMention = false;
     private static int groupNum;
     private static int numOfGroups;
     private static String[] groupNames;
@@ -81,7 +81,7 @@ public class ComputeBaselinesCPMI {
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
 
-        for(groupNum = 1; groupNum <= 1; groupNum++) {
+        for(groupNum = 6; groupNum <= 6; groupNum++) {
             if(groupNum > 1 && groupNum != 6)
                 continue;
             initializeSqlContext();
@@ -928,7 +928,7 @@ public class ComputeBaselinesCPMI {
         }).coalesce(numPart), new StructType(fields)).registerTempTable("MITable6");
         resMI = sqlContext.sql("SELECT mt1.term, (mt1.prob+mt2.prob) AS mutualEntropy FROM MITable5 mt1, MITable6 mt2 where mt1.term = mt2.term").coalesce(numPart);
         resMI = resMI.sort(resMI.col("mutualEntropy").desc()).limit(topFeatureNum).coalesce(numPart);
-        output(fromresults2, "Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_Term", false);
+        output(resMI, "Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_Term", false);
         resMI.cache();
         resMI=sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
@@ -936,7 +936,7 @@ public class ComputeBaselinesCPMI {
                 return RowFactory.create(row.getString(0), Math.log(Double.valueOf(row.get(1).toString())));
             }
         }), new StructType(fields)).coalesce(numPart);
-        output(fromresults2, "Baselines/" + groupNames[groupNum - 1] + "/MILog/top1000_Term", false);
+        output(resMI, "Baselines/" + groupNames[groupNum - 1] + "/MILog/top1000_Term", false);
     }
 
 }
