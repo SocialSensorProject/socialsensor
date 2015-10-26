@@ -216,9 +216,9 @@ public class PostProcessParquet2 implements Serializable {
         String topic = configRead.getGroupNames()[groupNum-1];
         SparkConf sparkConfig;
         if (local) {
-            //tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningRes");
+            tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningResCSV");
             tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningResCSV/" + topic);
-            outputCSVPath = "ClusterResults/BaselinesRes_Tmp/Learning/Topics/"+topic+"/";
+            outputCSVPath = "ClusterResults/LearningRes/"+topic+"/";
             if(readTrecResults) {
                 FileWriter fwTrec = new FileWriter("ClusterResults/LearningResCSV/" + topic + "/" + "trecout_all_" + topic + ".csv");
                 bwTrec = new BufferedWriter(fwTrec);

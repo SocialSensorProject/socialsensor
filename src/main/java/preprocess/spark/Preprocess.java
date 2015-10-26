@@ -46,6 +46,7 @@ public class Preprocess implements Serializable {
     private static boolean localRun;
     private static int numOfGroups;
     private static String[] groupNames;
+    private static int returnNum = 10000;
     private static final long[] timestamps= {1377897403000l, 1362146018000l, 1391295058000l, 1372004539000l, 1359920993000l, 1364938764000l, 1378911100000l, 1360622109000l, 1372080004000l, 1360106035000l};;
 
     public static void loadConfig() throws IOException {
@@ -1877,7 +1878,7 @@ public class Preprocess implements Serializable {
         DataFrame positiveSamples, negativeSamples, df1 = null, df2;
         DataFrame tweetTopical = sqlContext.read().parquet(outputPath + "tweet_topical_" + groupNum + "_parquet").coalesce(numPart);
 
-        int returnNum = 10000;
+
         DataFrame topFeatures;
         String[] algNames = {"topical", "topicalLog", "MILog", "CP", "CPLog", "MI"};
 
@@ -2296,8 +2297,10 @@ public class Preprocess implements Serializable {
     }
 
     public static void writeAllTweetFeatures(SQLContext sqlContext){
+
         DataFrame df1,df2,df3;
         df3 = sqlContext.read().parquet(outputPath + "BaselinesRes/Learning/Topics/" + groupNames[groupNum - 1] + "/top1000Tweets.csv");
+        df3 = df3.sort(df3.col("prob").desc()).limit(returnNum);
 
         df2 = sqlContext.read().parquet(outputPath + "tweet_topical_" + groupNum + "_parquet").coalesce(numPart);
         df2.printSchema();
