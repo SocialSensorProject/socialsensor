@@ -1,4 +1,4 @@
-package predictor.LearnTopicalTweets;
+package predictor;
 
 import predictor.de.bwaldvogel.liblinear.InvalidInputDataException;
 import predictor.de.bwaldvogel.liblinear.Predict;
