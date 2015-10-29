@@ -3,10 +3,7 @@ package util;
 import preprocess.spark.ConfigRead;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by zahraiman on 9/29/15.
@@ -45,9 +42,11 @@ public class TweetUtil {
     public List<String> getGroupHashtagList(int groupNum, boolean localRun) {
         List<String> hashtagList = new ArrayList<>();
         if(localRun){
-            hashtagList.add("h1");
-            hashtagList.add("h5");
-            hashtagList.add("h9");
+            String testHashtags= "trainHashtag0,trainHashtag1,trainHashtag2,trainHashtag3,trainHashtag4,trainHashtag5,trainHashtag6,trainHashtag7,trainHashtag8,trainHashtag9,trainHashtag10,trainHashtag11,trainHashtag12,trainHashtag13,trainHashtag14,trainHashtag15,trainHashtag16,trainHashtag17,trainHashtag18,trainHashtag19,trainHashtag20,trainHashtag21,trainHashtag22,trainHashtag23,trainHashtag24,trainHashtag25,trainHashtag26,trainHashtag27,trainHashtag28,trainHashtag29,valHashtag0,valHashtag1,valHashtag2,valHashtag3,valHashtag4,valHashtag5,testHashtag0,testHashtag1,testHashtag2,testHashtag3,testHashtag4,testHashtag5,testHashtag6,testHashtag7,testHashtag8,testHashtag9,testHashtag10,testHashtag11,testHashtag12,testHashtag13,testHashtag14,testHashtag15,testHashtag16,testHashtag17,testHashtag18,testHashtag19,testHashtag20,testHashtag21,testHashtag22,testHashtag23";
+            hashtagList.addAll(Arrays.asList(testHashtags.split(",")));
+            //hashtagList.add("h1");
+            //hashtagList.add("h5");
+            //hashtagList.add("h9");
         }else {
             String hashtagStrList = "";
             if (groupNum == 1)      //NATURAL DISASTER
@@ -94,8 +93,12 @@ public class TweetUtil {
                 hashtagStrList = "";
             else if (groupNum == 3) //IRAN TALK
                 hashtagStrList = "";
-            else if (groupNum == 4) // SOCIAL ISSUES
-                hashtagStrList = "";
+            else if (groupNum == 4) { // SOCIAL ISSUES
+                if(train)
+                    hashtagStrList = "racism,mikebrown,shutitdown,icantbreathe,ferguson,nojusticenopeace,moa,policebrutality,antoniomartin,thesystemisbroken,justice4all,michaelbrown,abortion,debt,gunlaws,legalize,legalizemarijuana,nationaldebt,abortions,debts,endabortion,debtceiling,legalizecannabis,legalweed,stopabortion,legalized,freetheweed,abortionaccess,abortionismurder,newnjgunlaws,newnjgunlaw";
+                else
+                    hashtagStrList = "blacklivesmatter,blackxmas,ericgarner,justiceformikebrown,handsupdontshoot,alllivesmatter,thisstopstoday,fergusondecision,tamirrice,policelivesmatter,berkeleyprotests,millionsmarchnyc,aurarosser,nypdlivesmatter,abortionvote,44millionabortions,safeabortion,legalize420,nonewnjgunlaws";
+            }
             else if (groupNum == 5) // LBGT
                 hashtagStrList = "";
             else if(groupNum == 6){ // HUMAN CAUSED DISASTER
