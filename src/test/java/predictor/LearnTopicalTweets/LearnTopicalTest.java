@@ -1,5 +1,6 @@
 package predictor.LearnTopicalTweets;
 
+import org.json.simple.JSONObject;
 import util.TweetUtil;
 
 import java.io.BufferedWriter;
@@ -13,6 +14,9 @@ import java.util.*;
  * Created by imanz on 10/27/15.
  */
 public class LearnTopicalTest {
+    private static String path = "Data/test/Learning/Topics/";
+    private static String classname = "naturaldisaster";
+    private static SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
 
     public static void makeFakeTweets() throws ParseException, IOException, InterruptedException {
         int numOfFeatures = 1000;
@@ -29,13 +33,12 @@ public class LearnTopicalTest {
         int tweetNum = 0;
 
         TweetUtil tweetUtil = new TweetUtil();
-        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
+
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         String[] days2013 = {"Sun", "Wed", "Wed", "Sat", "Mon", "Thu", "Sat", "Tue", "Fri", "Sun", "Wed", "Fri"};
         String[] days2014 = {"Mon", "Thu", "Thu", "Sun", "Tue", "Wed", "Sun", "Wed", "Sat", "Mon", "Thu", "Sat"};
 
-        String path = "Data/test/Learning/Topics/";
-        String classname = "naturaldisaster";
+
         tweetUtil.runStringCommand("mkdir " + path + classname + "/");
         tweetUtil.runStringCommand("mkdir " + path + "/featureData/");
 
@@ -122,15 +125,15 @@ public class LearnTopicalTest {
             }
             else if (i % 5 == 0) {
                 features.add("noiseHashtag" + numOfNoiseHashtags);
-                bw4.write("noiseHashtag" + i + "," + featureNum+"\n");
-                bw.write("noiseHashtag" + i+"\n");
+                bw4.write("noiseHashtag" +numOfNoiseHashtags + "," + featureNum+"\n");
+                bw.write("noiseHashtag" + numOfNoiseHashtags+"\n");
                 index = tweetUtil.randInt(0, 23);
                 if(index < 12) {
-                    bw3.write("noiseHashtag" + i + "," + format.parse(days2013[index] + " " + months[index] + " 20 15:08:01 +0001 2013").getTime() + "\n");
-                    bw33.write("noiseHashtag" + i + "," + format.parse(days2013[index] + " " + months[index] + " 20 15:08:01 +0001 2013").getTime() + ","+ days2013[index] + " " + months[index] + " 20 15:08:01 +0001 2013" + "\n");
+                    bw3.write("noiseHashtag" + numOfNoiseHashtags + "," + format.parse(days2013[index] + " " + months[index] + " 20 15:08:01 +0001 2013").getTime() + "\n");
+                    bw33.write("noiseHashtag" + numOfNoiseHashtags + "," + format.parse(days2013[index] + " " + months[index] + " 20 15:08:01 +0001 2013").getTime() + ","+ days2013[index] + " " + months[index] + " 20 15:08:01 +0001 2013" + "\n");
                 }else {
-                    bw3.write("noiseHashtag" + i + "," + format.parse(days2014[index - 12] + " " + months[index - 12] + " 20 15:08:01 +0001 2014").getTime() + "\n");
-                    bw33.write("noiseHashtag" + i + "," + format.parse(days2014[index - 12] + " " + months[index - 12] + " 20 15:08:01 +0001 2014").getTime()+","+days2014[index - 12] + " " + months[index - 12] + " 20 15:08:01 +0001 2014" + "\n");
+                    bw3.write("noiseHashtag" + numOfNoiseHashtags + "," + format.parse(days2014[index - 12] + " " + months[index - 12] + " 20 15:08:01 +0001 2014").getTime() + "\n");
+                    bw33.write("noiseHashtag" + numOfNoiseHashtags + "," + format.parse(days2014[index - 12] + " " + months[index - 12] + " 20 15:08:01 +0001 2014").getTime()+","+days2014[index - 12] + " " + months[index - 12] + " 20 15:08:01 +0001 2014" + "\n");
                 }
                 numOfNoiseHashtags++;
             }else if(i % 7 == 0) {
@@ -208,12 +211,13 @@ public class LearnTopicalTest {
 
 
         int ind = 0;
-        for(int i = 0; i < 5; i++){//topical val tweets
+        int posNum = 2;
+        for(int i = 0; i < posNum; i++){//topical val tweets
             tweet = "";
             fromNum = tweetUtil.randInt(0, numOfUsers-1);
             locationNum = tweetUtil.randInt(0, numOfLocations-1);
 
-            tweet += "1 " + "from: " + "user"+fromNum + " term: " + "termgoldenFeature" + " hashtag: " + "valHashtag"+i + " hashtag: " + "valHashtag"+((i+5)%valHashtagNum);
+            tweet += "1 " + "from: " + "user"+fromNum + " term: " + "termgoldenFeature" + " hashtag: " + "valHashtag"+i + " hashtag: " + "valHashtag"+((i+posNum)%valHashtagNum);
             for(int j = 0; j < 5; j++) {
                 termNum = tweetUtil.randInt(0, numOfTerms-1);
                 tweet += " term: " + "term" + termNum;
@@ -238,7 +242,7 @@ public class LearnTopicalTest {
             tweetNum++;
         }
 
-        for(int i = 0; i < 199; i++){//topical val tweets
+        for(int i = 0; i < 204-posNum; i++){//topical val tweets
             tweet = "";
             fromNum = tweetUtil.randInt(0, numOfUsers-1);
             locationNum = tweetUtil.randInt(0, numOfLocations-1);
@@ -361,6 +365,7 @@ public class LearnTopicalTest {
         bw6.close();
         //=======================================================================================
         System.out.println("TWeetNum1: " + tweetNum);
+        generateTestDataJson(tweets);
         /*tweetNum = 0;
         for(int i = 0; i < 14; i++){//topical train tweets
             tweet = "";
@@ -547,5 +552,64 @@ public class LearnTopicalTest {
 
     public static void main(String[] args) throws ParseException, IOException, InterruptedException {
         makeFakeTweets();
+    }
+
+    public static void generateTestDataJson(List<String> tweets) throws IOException {
+        //0 from: user45 term: term168 term: term56 term: term305 term: term200 term: term286 hashtag: noiseHashtag4 hashtag: noiseHashtag89 hashtag: noiseHashtag104 mention: mentionuser271 mention: mentionuser164 location: loc7 1419088021000 465 Sat Dec 20 07:07:01 PST 2014
+        //{"screen_name":"avonsafety","created_at":"Fri Feb 28 13:00:00 +0000 2014","id":506187072,"text":"rt @kidrauhlsaussie: justin is a teenageri'm saying it while i can"}
+        String tweetStr; int k;
+        FileWriter file = new FileWriter(path + "testset_learning.json");
+        FileWriter file2 = new FileWriter(path + "user_location_clean.csv");
+        HashMap<String, String> userLoc = new HashMap<>();
+        int tid = 0;
+        JSONObject obj;
+        String [] splits;
+        String st, time, st2, username = "";
+        for(String tweet: tweets){
+            k = 0;
+            splits = tweet.split(" ");
+            k+=2;
+            obj = new JSONObject();
+            obj.put("screen_name", splits[k]);
+            username = splits[k];
+            k++;
+            st = splits[k];k++;
+            tweetStr="";
+            time = "";
+            while(!st.equals("location:")) {
+                switch (st) {
+                    case "hashtag:":
+                        tweetStr += "#" + splits[k]+ " ";
+                        break;
+                    case "mention:":
+                        tweetStr += "@" + splits[k]+ " ";
+                        break;
+                    case "term:":
+                        tweetStr += splits[k]+ " ";
+                        break;
+                }
+                k++;
+                st = splits[k];k++;
+            }
+            userLoc.put(username, splits[k]);
+            //tweetStr += splits[k]; //location
+            k++;
+            time = format.format(new Date(Long.valueOf(splits[k])));
+            k++;
+            obj.put("id", Long.valueOf(splits[k]));
+            k++;
+            obj.put("created_at", time);
+            obj.put("text", tweetStr);
+            file.write(obj.toJSONString());
+            file.write("\n");
+            file.flush();
+
+        }
+        for(String username1: userLoc.keySet()){
+            file2.write(username1 + ","+ userLoc.get(username1)+"\n");
+        }
+        file.close();
+        file2.close();
+        //.mode(SaveMode.Overwrite).json("TestSet/testset1_json");
     }
 }

@@ -43,7 +43,7 @@ public class TweetUtil {
         List<String> hashtagList = new ArrayList<>();
         if(localRun){
             String testHashtags= "trainHashtag0,trainHashtag1,trainHashtag2,trainHashtag3,trainHashtag4,trainHashtag5,trainHashtag6,trainHashtag7,trainHashtag8,trainHashtag9,trainHashtag10,trainHashtag11,trainHashtag12,trainHashtag13,trainHashtag14,trainHashtag15,trainHashtag16,trainHashtag17,trainHashtag18,trainHashtag19,trainHashtag20,trainHashtag21,trainHashtag22,trainHashtag23,trainHashtag24,trainHashtag25,trainHashtag26,trainHashtag27,trainHashtag28,trainHashtag29,valHashtag0,valHashtag1,valHashtag2,valHashtag3,valHashtag4,valHashtag5,testHashtag0,testHashtag1,testHashtag2,testHashtag3,testHashtag4,testHashtag5,testHashtag6,testHashtag7,testHashtag8,testHashtag9,testHashtag10,testHashtag11,testHashtag12,testHashtag13,testHashtag14,testHashtag15,testHashtag16,testHashtag17,testHashtag18,testHashtag19,testHashtag20,testHashtag21,testHashtag22,testHashtag23";
-            hashtagList.addAll(Arrays.asList(testHashtags.split(",")));
+            hashtagList.addAll(Arrays.asList(testHashtags.toLowerCase().split(",")));
             //hashtagList.add("h1");
             //hashtagList.add("h5");
             //hashtagList.add("h9");
@@ -70,7 +70,7 @@ public class TweetUtil {
             else if(groupNum == 10) // SOCCOR
                 hashtagStrList = "soccer,football,worldcup,sports,futbol,fifa,mls,worldcup2014,epl,sportsroadhouse,sport,adidas,messi,usmnt,arsenal,manchesterunited,nike,ronaldo,manutd,fifaworldcup,foot,ussoccer,sportsbetting,realmadrid,aleague,chelsea,manchester,cr7,footballnews,championsleague,youthsoccer,eplleague,barcelona,brazil2014,soccerproblems,premierleague,brasil2014,soccerlife,cristianoronaldo,uefa,fifa2014,beckham,fifa14,neymar,fussball,soccergirls,barca,manchestercity,league,fútbol,halamadrid,bayern,women,lfc,goalkeeper,everton,bayernmunich,soccerprobs,league1,juventus,nufc,mcfc,cristiano,eurosoccercup,platini,socce,mancity,torontofc,dortmund,derbyday,fifa15,liverpool,league2,ilovesoccer,fcbarcelona,maradona,intermilan,futebol,soccergirlprobs,soccersixfanplayer,realfootball,gunners,confederationscup,worldcupproblems,ballondor,collegesoccer,rooney,flagfootball,realsaltlake,lionelmessi,usavsportugal,europaleague,soccernews,uefachampionsleague,psg,gobrazil,uslpro,wc2014,suarez,bvb,soccerprobz,worldcupqualifiers,torres,footbal,balotelli,nashville,inter,milano,cardiff,jleague,nwsl,ozil,worldcup2014brazil,nycfc,mess,soccernation,pelé,tottenham,ligue1,landondonovan,atletico,worldcup14,torino,soccerislife,fernandotorres,ronaldinho,goldenball,wembley,brazilvscroatia,collegefootball,elclassico,footba,fifa13,soccersunday,englandsoccercup,usasoccer,womensfootball,fcbayern,fifaworldcup2014,usavsgermany,neymarjr,soccersucks,arturovidal,zidane,ballislife,usavsger,mlscup,worldcupfinal,ajax,soccerball,lovesoccer,euro2013,soccergame,premiereleague,mu,lionel,soccermanager,mundial2014,portugalvsgermany,soccerseason,mondiali2014,davidbeckham,redbulls,argvsned,selecao,usavsmex,soccergirlproblems,soccerlove,2014worldcup,soccergrlprobs,germanyvsargentina,zlatan,napoli,muller,confederations_cup,championsleaguefinal,worldcuppredictions,clasico,liverpoolvsrealmadrid,mundialsub17,worldcupbrazil,leaguechamps,arsenalfans,germanyvsalgeria,netherlandsvsargentina,belvsusa,bravsned,mexicovsusa,englandvsuruguay,germanyvsbrazil,brazilvsnetherlands,gervsarg,engvsita,brazilvsgermany,englandvsitaly,espvsned,crcvsned,ghanavsusa,francevsswitzerland,argentinavsgermany,spainvsnetherlands,usavscan,worldcupbrazil2014,brazil2014worldcup,fifaworldcupbrazil,worldcup2018,championleague";
 
-            Collections.addAll(hashtagList, hashtagStrList.split(","));
+            Collections.addAll(hashtagList, hashtagStrList.toLowerCase().split(","));
         }
         return hashtagList ;
     }
@@ -78,9 +78,15 @@ public class TweetUtil {
     public List<String> getTestTrainGroupHashtagList(int groupNum, boolean localRun, boolean train) throws IOException {
         List<String> hashtagList = new ArrayList<>();
         if(localRun){
-            hashtagList.add("h1");
-            hashtagList.add("h5");
-            hashtagList.add("h9");
+            String hashtagStrList;
+            if(train)
+                hashtagStrList= "trainHashtag0,trainHashtag1,trainHashtag2,trainHashtag3,trainHashtag4,trainHashtag5,trainHashtag6,trainHashtag7,trainHashtag8,trainHashtag9,trainHashtag10,trainHashtag11,trainHashtag12,trainHashtag13,trainHashtag14,trainHashtag15,trainHashtag16,trainHashtag17,trainHashtag18,trainHashtag19,trainHashtag20,trainHashtag21,trainHashtag22,trainHashtag23,trainHashtag24,trainHashtag25,trainHashtag26,trainHashtag27,trainHashtag28,trainHashtag29,valHashtag0,valHashtag1,valHashtag2,valHashtag3,valHashtag4,valHashtag5";
+            else
+                hashtagStrList= "testHashtag0,testHashtag1,testHashtag2,testHashtag3,testHashtag4,testHashtag5,testHashtag6,testHashtag7,testHashtag8,testHashtag9,testHashtag10,testHashtag11,testHashtag12,testHashtag13,testHashtag14,testHashtag15,testHashtag16,testHashtag17,testHashtag18,testHashtag19,testHashtag20,testHashtag21,testHashtag22,testHashtag23";
+            Collections.addAll(hashtagList, hashtagStrList.toLowerCase().split(","));
+            //hashtagList.add("h1");
+            //hashtagList.add("h5");
+            //hashtagList.add("h9");
         }else {
             String hashtagStrList = "";
             if (groupNum == 1) {      //NATURAL DISASTER
@@ -115,7 +121,7 @@ public class TweetUtil {
                 hashtagStrList = "";
             else if(groupNum == 10) // SOCCOR
                 hashtagStrList = "";
-            Collections.addAll(hashtagList, hashtagStrList.split(","));
+            Collections.addAll(hashtagList, hashtagStrList.toLowerCase().split(","));
 
             /*ConfigRead configRead = new ConfigRead();
             String fName = "testHashtaglist.csv";

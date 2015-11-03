@@ -12,6 +12,9 @@ import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
 import preprocess.spark.ConfigRead;
 import scala.Function1;
 import scala.Tuple2;
@@ -41,6 +44,7 @@ public class PostProcessParquet2 implements Serializable {
     private static Map<String, Long> hashtagMap = new HashMap<>();
     final static int groupNum = 1;
     private static BufferedWriter bwTrec;
+    private static boolean testFlag = true;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
@@ -179,23 +183,24 @@ public class PostProcessParquet2 implements Serializable {
     }
 
     private static void readNonzeroLearningWeights() throws IOException, InterruptedException {
-        String logisticMethod = "l2_lrd";
+        String path = "TestSet/Data/Data/Learning/Topics/";
+        String logisticMethod = "l2_lr";
         if(groupNum == 6)
             logisticMethod = "l1_lr";
-        FileReader fileReaderA = new FileReader("Data/Learning/Topics/" + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights.csv");
+        FileReader fileReaderA = new FileReader(path+ configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights.csv");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
         String line;
-        FileWriter fw = new FileWriter("Data/Learning/Topics/" + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/nonZero_featureWeights.csv");
+        FileWriter fw = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/nonZero_featureWeights.csv");
         BufferedWriter bw = new BufferedWriter(fw);
-        FileWriter fw1 = new FileWriter("Data/Learning/Topics/" + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_from.csv");
+        FileWriter fw1 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_from.csv");
         BufferedWriter bwFrom = new BufferedWriter(fw1);
-        FileWriter fw2 = new FileWriter("Data/Learning/Topics/" + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_hashtag.csv");
+        FileWriter fw2 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_hashtag.csv");
         BufferedWriter bwHashtag = new BufferedWriter(fw2);
-        FileWriter fw3 = new FileWriter("Data/Learning/Topics/" + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_location.csv");
+        FileWriter fw3 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_location.csv");
         BufferedWriter bwLocation = new BufferedWriter(fw3);
-        FileWriter fw4 = new FileWriter("Data/Learning/Topics/" + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_mention.csv");
+        FileWriter fw4 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_mention.csv");
         BufferedWriter bwMention = new BufferedWriter(fw4);
-        FileWriter fw5 = new FileWriter("Data/Learning/Topics/" + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_term.csv");
+        FileWriter fw5 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights_term.csv");
         BufferedWriter bwTerm = new BufferedWriter(fw5);
         while((line = bufferedReaderA.readLine()) != null){
             if(!line.split(",")[2].equals("0")) {
@@ -215,9 +220,10 @@ public class PostProcessParquet2 implements Serializable {
         bw.close();
         bwFrom.close();bwMention.close();bwHashtag.close();bwLocation.close();bwTerm.close();
         fileReaderA.close();
-        tweetUtil.runScript("sort -t',' -rn -k3,3 " + "Data/Learning/Topics/" + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv > " + "Data/Learning/Topics/" + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv");
-        tweetUtil.runScript("rm -f " + "Data/Learning/Topics/" + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
-        tweetUtil.runScript("mv " + "Data/Learning/Topics/" + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv > " + "Data/Learning/Topics/" + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
+        TweetUtil.runScript("chmod +x " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv");
+        TweetUtil.runScript("sort -t',' -rn -k3,3 " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv");
+        TweetUtil.runScript("rm -f " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
+        TweetUtil.runScript("mv " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
     }
 
     private static void readBaselineResults(boolean local) throws IOException, InterruptedException {
@@ -265,15 +271,21 @@ public class PostProcessParquet2 implements Serializable {
             bwTrec.close();
     }
     private static void readLearningResults(boolean local) throws IOException, InterruptedException {
+        String clusterPath = "ClusterResults/LearningResCSV";
+        String clusterOutPath = "ClusterResults/LearningRes_new/Topics/";
+        if(testFlag) {
+            clusterPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
+            clusterOutPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
+        }
         boolean readTrecResults = false;
         String topic = configRead.getGroupNames()[groupNum-1];
         SparkConf sparkConfig;
         if (local) {
-            tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningResCSV");
-            tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningResCSV/" + topic);
-            outputCSVPath = "ClusterResults/LearningRes_new/Topics/"+topic+"/";
+            tweetUtil.runStringCommand("mkdir " + clusterPath);
+            tweetUtil.runStringCommand("mkdir " + clusterPath + topic);
+            outputCSVPath = clusterOutPath+topic+"/";
             if(readTrecResults) {
-                FileWriter fwTrec = new FileWriter("ClusterResults/LearningResCSV/" + topic + "/" + "trecout_all_" + topic + ".csv");
+                FileWriter fwTrec = new FileWriter(clusterPath+ topic + "/" + "trecout_all_" + topic + ".csv");
                 bwTrec = new BufferedWriter(fwTrec);
             }
             sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
@@ -284,7 +296,7 @@ public class PostProcessParquet2 implements Serializable {
         File folder1 = new File(outputCSVPath);
         ArrayList<String> fileNames1 = listFilesForFolder(folder1);
         for (String filename1 : fileNames1) {
-            tweetUtil.runStringCommand("mkdir " + "ClusterResults/LearningResCSV2/" + topic +"/"+filename1);
+            tweetUtil.runStringCommand("mkdir " + clusterOutPath + topic +"/"+filename1);
             DataFrame res;
             int ind = -1;
             int[] lineNumbers = new int[fileNames1.size()];
@@ -292,14 +304,14 @@ public class PostProcessParquet2 implements Serializable {
 
             System.out.println(outputCSVPath + "/" + filename1+"/" + filename1);
             if(readTrecResults){
-                readTrecResults("ClusterResults/LearningResCSV/"+topic+"/",filename1, bwTrec, topic, filename1);
+                readTrecResults(clusterPath+topic+"/",filename1, bwTrec, topic, filename1);
             }else {
                 if(!filename1.contains("_all"))
                     continue;
                 res = sqlContext.read().parquet(outputCSVPath + "/" + filename1);
                 System.out.println("LOOK: ");
                 res.printSchema();
-                lineNumbers[ind] = readResults1(res, sqlContext, ind, filename1, "ClusterResults/LearningResCSV/" + topic + "/");
+                lineNumbers[ind] = readResults1(res, sqlContext, ind, filename1, clusterPath+ topic + "/");
             }
 
         }
@@ -612,20 +624,32 @@ public class PostProcessParquet2 implements Serializable {
         if(filename.contains("From"))
             flagFromTmp = true;
         final boolean flagFrom = flagFromTmp;
-        /*if(flagLearningRes) {
-            JavaRDD<Row> results1 = results.javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
+        if(flagLearningRes) {
+            StructField[] fieldsMap = {
+                    DataTypes.createStructField("tid", DataTypes.LongType, true),
+                    DataTypes.createStructField("text", DataTypes.StringType, true),
+                    DataTypes.createStructField("prob", DataTypes.DoubleType, true)
+            };
+            DataFrame results1 = sqlContext.createDataFrame(results.javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
                 @Override
                 public Tuple2<Long, String> call(Row row) throws Exception {
                     String out = "";
                     int ind = 1;
-                    if(row.get(ind) != null) out += " - prob: " + row.get(ind).toString(); ind++;
-                    if(row.get(ind) != null) out += " - topical: " + row.get(ind).toString(); ind++;
-                    if(row.get(ind) != null) out += " - username: " + row.getString(ind); ind++;
-                    if(row.get(ind) != null) out += " - term: " + row.getString(ind); ind++;
-                    if(row.get(ind) != null) out += " - hashtag: " + row.getString(ind); ind++;
-                    if(row.get(ind) != null) out += " - mention: " + row.getString(ind); ind++;
-                    if(row.get(ind) != null) out += " - location: " + row.getString(ind); ind++;
-                    return new Tuple2<Long, String>(row.getLong(0),out);
+                    if (row.get(ind) != null) out += " - prob: " + row.get(ind).toString();
+                    ind++;
+                    if (row.get(ind) != null) out += " - topical: " + row.get(ind).toString();
+                    ind++;
+                    if (row.get(ind) != null) out += " - username: " + row.getString(ind);
+                    ind++;
+                    if (row.get(ind) != null) out += " - term: " + row.getString(ind);
+                    ind++;
+                    if (row.get(ind) != null) out += " - hashtag: " + row.getString(ind);
+                    ind++;
+                    if (row.get(ind) != null) out += " - mention: " + row.getString(ind);
+                    ind++;
+                    if (row.get(ind) != null) out += " - location: " + row.getString(ind);
+                    ind++;
+                    return new Tuple2<Long, String>(row.getLong(0), out);
                 }
             }).reduceByKey(new Function2<String, String, String>() {
                 @Override
@@ -634,28 +658,22 @@ public class PostProcessParquet2 implements Serializable {
                     settmp.addAll(Arrays.asList(v1.split(" - ")));
                     settmp.addAll(Arrays.asList(v2.split(" - ")));
                     String out = "";
-                    for(Object s : settmp.toArray())
+                    for (Object s : settmp.toArray())
                         out += " - " + s.toString();
                     return out;
                 }
-            }).map(new Function<Tuple2<Long,String>, Row>() {
+            }).map(new Function<Tuple2<Long, String>, Row>() {
                 @Override
                 public Row call(Tuple2<Long, String> v1) throws Exception {
-                    return RowFactory.create(v1._1(), v1._2());
+                    return RowFactory.create(v1._1(), v1._2(), Double.valueOf(v1._2().split(" - prob: ")[1].split(" -")[0]));
                 }
-            });
-            JavaRDD strRes1 = results1.map(new Function<Row, String>() {//.distinct()
-                @Override
-                public String call(Row row) throws Exception {
-                    return row.toString();
-                }
-            });
-            strRes1.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_csv");
+            }), new StructType(fieldsMap));
+            results1.sort(results1.col("prob").desc()).javaRDD().coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_csv");
             tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_csv/part-00000" + " " + outPath + "out_" + filename + ".csv");
             tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_csv");
         }
         System.out.println("DONE");
-        JavaRDD strRes = results.select("tid", "topical").distinct().javaRDD().map(new Function<Row, String>() {//.distinct()
+        JavaRDD strRes = results.select("tid", "topical", "prob").distinct().sort(results.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
             @Override
             public String call(Row row) throws Exception {
                 String s = "Q0";
@@ -667,19 +685,19 @@ public class PostProcessParquet2 implements Serializable {
         });
         strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qrel" + "_csv");
         tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_qrel" + "_csv/part-00000" + " " + outPath + "out_" + filename + "_qrel" + ".csv");
-        tweetUtil.runStringCommand("rm -rf "+outPath + "out_" + filename + "_qrel" + "_csv");*/
+        tweetUtil.runStringCommand("rm -rf "+outPath + "out_" + filename + "_qrel" + "_csv");
 
         DataFrame results1 = results.select("tid").distinct();
-        results = results.select("tid", "prob").distinct().join(results1, results.col("tid").equalTo(results1.col("tid"))).drop(results.col("tid")).distinct();
-        JavaRDD strRes = results.join(results).javaRDD().map(new Function<Row, String>() {//.distinct()
+        results = results.select("tid", "prob").distinct().join(results1, results.col("tid").equalTo(results1.col("tid")), "right").drop(results.col("tid")).distinct().sort(results.col("prob").desc());
+        strRes = results.javaRDD().map(new Function<Row, String>() {//.distinct()
             @Override
             public String call(Row row) throws Exception {
                 String s = "Q0";
                 int rank = 0;
-                if(flagFrom)
-                    return groupNum + " " + s + " " + row.getLong(0) + " " + rank + " " + new BigDecimal(row.getDouble(1)).toPlainString() + " " + filename;
-               else
-                    return groupNum + " " + s + " " + row.getLong(0) + " " + rank + " " + new BigDecimal(row.getDouble(1)).toPlainString() + " " + filename;
+                if (flagFrom)
+                    return groupNum + " " + s + " " + row.getLong(1) + " " + rank + " " + new BigDecimal(row.getDouble(0)).toPlainString() + " " + filename;
+                else
+                    return groupNum + " " + s + " " + row.getLong(1) + " " + rank + " " + new BigDecimal(row.getDouble(0)).toPlainString() + " " + filename;
             }
         });
         strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qtop1" + "_csv");

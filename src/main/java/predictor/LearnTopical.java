@@ -173,10 +173,10 @@ public class LearnTopical {
                 bestc = -1;
                 bestError = -1;
                 System.out.println("========================foldNum: " + i + "============================");
-                //String trainName = classname + "/fold" + i + "/" + trainFileName + "_t.csv";
-                //String testName = classname + "/fold" + i + "/" + trainFileName + "_v.csv";
-                String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
-                String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
+                String trainName = classname + "/fold" + i + "/" + trainFileName + "_t.csv";
+                String testName = classname + "/fold" + i + "/" + trainFileName + "_v.csv";
+                //String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
+                //String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
                 for (double c : cValues) {
                     ind = remInd;
                     predInd = remPredInd;
@@ -185,8 +185,9 @@ public class LearnTopical {
                     arguments[ind] = String.valueOf(c);ind++;
                     arguments[ind] = "-w1";ind++;
                     //arguments[ind] = String.valueOf(c);ind++;
-                    //d = ((double)total[classInd][i]-positives[classInd][i])/positives[classInd][i];
-                    d = (double)((total[classInd][i]+totalVal[classInd][i])-(positives[classInd][i]+positivesVal[classInd][i]))/(positives[classInd][i]+positivesVal[classInd][i]);
+                    d = ((double)total[classInd][i]-positives[classInd][i])/positives[classInd][i];
+                    //d = (double)((total[classInd][i]+totalVal[classInd][i])-(positives[classInd][i]+positivesVal[classInd][i]))/(positives[classInd][i]+positivesVal[classInd][i]);
+                    //d  = 1.0;
                     arguments[ind] = String.valueOf(c*d);ind++;
                     arguments[ind] = path + trainName;
                     ind++;
@@ -229,6 +230,7 @@ public class LearnTopical {
                 arguments[ind] = "-w1";ind++;
                 //arguments[ind] = String.valueOf(c);ind++;
                 d = ((total[classInd][i]+totalVal[classInd][i])-(positives[classInd][i]+positivesVal[classInd][i]))/(positives[classInd][i]+positivesVal[classInd][i]);
+                //d  = 1.0;
                 arguments[ind] = String.valueOf(c*d);ind++;
                 arguments[ind] = path + trainName;
                 ind++;
@@ -279,8 +281,8 @@ public class LearnTopical {
                 FileWriter fw = new FileWriter(path + classname +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
                 BufferedWriter bw = new BufferedWriter(fw);
                 String line = "", line2;String [] splits;int ind = 0;
-                for(int kk = 0; kk < 7; kk++)//read header
-                    bufferedReaderA.readLine();
+                for(int kk = 0; kk < 6; kk++)//read header
+                    line = bufferedReaderA.readLine();
                 List<String> featureWeights = new ArrayList<>();
                 while ((line = bufferedReaderA.readLine()) != null) {//last line of model is the bias feature
                     featureWeights.add(new BigDecimal(Double.valueOf(line)).toPlainString());
@@ -289,7 +291,7 @@ public class LearnTopical {
                     line2 = bufferedReaderB.readLine();
                     ind++;
                     splits = line2.split(",");
-                    bw.write(splits[0] + "," + splits[1] + "," + featureWeights.get(ik) + "\n");
+                    bw.write(splits[0].toLowerCase() + "," + splits[1].toLowerCase() + "," + featureWeights.get(ik) + "\n");
                 }
                 fileReaderA.close();
                 fileReaderB.close();
@@ -367,7 +369,7 @@ public class LearnTopical {
         Map<String, Long> hashtagDate = new HashMap<>();
         while ((line = bufferedReaderA.readLine()) != null) {
             splitSt = line.split(",");
-            hashtagDate.put(splitSt[0], Long.valueOf(splitSt[1]));
+            hashtagDate.put(splitSt[0].toLowerCase(), Long.valueOf(splitSt[1]));
         }
         bufferedReaderA.close();
         Map<String, Long>[] hashtagSetDate = new Map[numOfTopics];
@@ -416,18 +418,18 @@ public class LearnTopical {
                 bwVal = new BufferedWriter(fwVal);
                 fwAllTrain = new FileWriter(path + classname + "/fold" + i + "/" +  trainFileName + ".csv");
                 bwAllTrain = new BufferedWriter(fwAllTrain);
-                fwName = new FileWriter(path + classname + "/fold" + i + "/" + trainFileName + "_t_strings.csv");
+                /*fwName = new FileWriter(path + classname + "/fold" + i + "/" + trainFileName + "_t_strings.csv");
                 bwName = new BufferedWriter(fwName);
                 fwValName = new FileWriter(path + classname + "/fold" + i + "/" + trainFileName + "_v_strings.csv");
                 bwValName = new BufferedWriter(fwValName);
                 fwAllTrainName = new FileWriter(path + classname + "/fold" + i + "/" + trainFileName + "_strings.csv");
                 bwAllTrainName = new BufferedWriter(fwAllTrainName);
                 fwTestName = new FileWriter(path + classname + "/fold" + i + "/" + testFileName + "_strings.csv");
-                bwTestName = new BufferedWriter(fwTestName);
+                bwTestName = new BufferedWriter(fwTestName);*/
                 //WRITE THE HASHTAG LIST BASED ON TIMESTAMP
                 String cleanLine = "", lineName;
                 while ((line = bufferedReaderA.readLine()) != null) {
-                    lineName = getFeatureNames(line);
+                    //lineName = getFeatureNames(line);
                     splitSt = line.split(" ");
                     cleanLine = splitSt[0];
                     for (int j = 1; j < splitSt.length - 2; j++) {
@@ -438,20 +440,20 @@ public class LearnTopical {
                         tweets2014Num++;
                     if (cDate <= splitTimestamps[i]) {
                         if(cDate >= Long.valueOf(splitDates.get(classInd)[0])){
-                            //bwVal.write(cleanLine + "\n");
+                            bwVal.write(cleanLine + "\n");
                             //bwValName.write(lineName + "\n");
                             trainValFileSize++;
                         }else {
                             trainFileSize++;
-                            //bw.write(cleanLine + "\n");
+                            bw.write(cleanLine + "\n");
                             //bwName.write(lineName + "\n");
                         }
-                        //bwAllTrain.write(cleanLine + "\n");
+                        bwAllTrain.write(cleanLine + "\n");
                         //bwAllTrainName.write(lineName + "\n");
                     }
                     else {
                         testFileSize++;
-                        //bwTest.write(cleanLine + "\n");
+                        bwTest.write(cleanLine + "\n");
                         //bwTestName.write(lineName + "\n");
                     }
                 }
@@ -460,6 +462,10 @@ public class LearnTopical {
                 bwTest.close();
                 bwVal.close();
                 bwAllTrain.close();
+                /*bwName.close();
+                bwTestName.close();
+                bwValName.close();
+                bwAllTrainName.close();*/
                 int totSize = trainFileSize+trainValFileSize+testFileSize;
                 System.out.println("FileName: " + classFileName + " - Number of Tweets in 2013: " + (totSize-tweets2014Num) + "/" + totSize + " Number of Tweets in 2014: "  + tweets2014Num + "/" + totSize);
                 System.out.println("FileName: " + classFileName + " - TrainFileLine: " + trainFileSize + " - TrainValFileLine: " + trainValFileSize + " - TestFileLine: " + testFileSize);
@@ -497,10 +503,6 @@ public class LearnTopical {
                 bwTest.close();
                 bwVal.close();
                 bwAllTrain.close();
-                bwName.close();
-                bwTestName.close();
-                bwValName.close();
-                bwAllTrainName.close();
                 bufferedReaderA.close();
                 totSize = trainFileSize + trainValFileSize+testFileSize;
                 System.out.println("FileName: " + classFileName + " - TrainHashtagLine: " + trainFileSize + " - TrainValHashtagLine: " + trainValFileSize + " - TestHashtagLine: " + testFileSize);
@@ -531,7 +533,7 @@ public class LearnTopical {
             length50 = (int) Math.ceil((double)length*0.7);
             if(Objects.equals(hashtagSet.get(length50), hashtagSet.get(length50 + 1)))
                 System.out.println("Equal");
-            length60 = (int)Math.ceil((double)length*0.2);
+            length60 = (int)Math.ceil((double)length*0.8);
             if(Objects.equals(hashtagSet.get(length60), hashtagSet.get(length60 + 1)))
                 System.out.println("Equal");
             date50 = hashtagSet.get(length50);
@@ -620,10 +622,13 @@ public class LearnTopical {
                         flag = true;
                         line2 = line;
                     }
+                    line2 = line;
                     line = line.substring(2, line.length());
                     splits = line.split(":1 ");
                     splits[splits.length-1] = splits[splits.length-1].split(":1")[0];
                     for(int k = 0; k < splits.length; k++) {
+                        if(splits[k].equals("400287:"))
+                            continue;
                         if (testHashtagIndexes.contains(Long.valueOf(splits[k]))) {
                             topical = true;
                             if(hashtagListName.equals("testTrain_train__t") && total[classInd][i] == 1)
@@ -668,7 +673,8 @@ public class LearnTopical {
         int ind = 1;
         if(testFlag){
             while ((line = bufferedReaderA.readLine()) != null) {
-                if (line.contains("Hashtag")){
+                line = line.toLowerCase();
+                if (line.contains("hashtag")){
                     bwTest.write("hashtag," + line + "\n");
                     bw.write(line + "\n");
                 }else if (line.contains("mentionuser"))
@@ -683,6 +689,7 @@ public class LearnTopical {
             }
         }else {
             while ((line = bufferedReaderA.readLine()) != null) {
+                line = line.toLowerCase();
                 if (ind <= 361789)
                     bwTest.write("from," + line + "\n");
                 else if (ind <= 676753)
