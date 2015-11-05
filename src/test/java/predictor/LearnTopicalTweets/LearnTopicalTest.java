@@ -147,6 +147,13 @@ public class LearnTopicalTest {
             featureNum++;
         }
 
+        HashMap<String, String> userLoc = new HashMap<>();
+        for(int i = 0; i < numOfUsers; i++){
+            index = tweetUtil.randInt(0, numOfLocations-1);
+            if(!userLoc.containsKey("user"+i))
+                userLoc.put("user"+i, "loc"+index);
+        }
+
         bw.close();
         bw4.close();
         bw3.close();
@@ -174,7 +181,7 @@ public class LearnTopicalTest {
                 tweet += " mention: " + "mentionuser" + mentionNum;
             }
 
-            tweet += " location: " + "loc"+locationNum;
+            tweet += " location: " + userLoc.get("user"+fromNum);
             index = tweetUtil.randInt(0, 9);
             tweet += " " + format.parse(days2013[index]+" "+months[index]+" 20 15:08:01 +0001 2013").getTime();
             tweet += " " + tweetNum;
@@ -201,7 +208,7 @@ public class LearnTopicalTest {
                 tweet += " mention: " + "mentionuser" + mentionNum;
             }
 
-            tweet += " location: " + "loc"+locationNum;
+            tweet += " location: " + userLoc.get("user"+fromNum);
             index =tweetUtil.randInt(0, 9);
             tweet += " " + format.parse(days2013[index]+" "+months[index]+" 20 15:08:01 +0001 2013").getTime();
             tweet += " " + tweetNum;
@@ -231,7 +238,7 @@ public class LearnTopicalTest {
                 tweet += " mention: " + "mentionuser" + mentionNum;
             }
 
-            tweet += " location: " + "loc"+locationNum;
+            tweet += " location: " + userLoc.get("user"+fromNum);
             ind = tweetUtil.randInt(10, 13);
             if(ind < 12)
                 tweet += " " + format.parse(days2013[ind]+" "+months[ind]+" 20 15:08:01 +0001 2013").getTime();
@@ -261,7 +268,7 @@ public class LearnTopicalTest {
                 tweet += " mention: " + "mentionuser" + mentionNum;
             }
 
-            tweet += " location: " + "loc"+locationNum;
+            tweet += " location: " + userLoc.get("user"+fromNum);
             ind = tweetUtil.randInt(10, 13);
             if(ind < 12)
                 tweet += " " + format.parse(days2013[ind]+" "+months[ind]+" 20 15:08:01 +0001 2013").getTime();
@@ -291,7 +298,7 @@ public class LearnTopicalTest {
                 tweet += " mention: " + "mentionuser" + mentionNum;
             }
 
-            tweet += " location: " + "loc"+locationNum;
+            tweet += " location: " + userLoc.get("user"+fromNum);
             index = tweetUtil.randInt(2, 11);
             tweet += " " + format.parse(days2014[index]+" "+months[index]+" 20 15:08:01 +0001 2014").getTime();
             tweet += " " + tweetNum;
@@ -318,7 +325,7 @@ public class LearnTopicalTest {
                 tweet += " mention: " + "mentionuser" + mentionNum;
             }
 
-            tweet += " location: " + "loc"+locationNum;
+            tweet += " location: " + userLoc.get("user"+fromNum);
             index = tweetUtil.randInt(2, 11);
             tweet += " " + format.parse(days2014[index]+" "+months[index]+" 20 15:08:01 +0001 2014").getTime();
             tweet += " " + tweetNum;

@@ -45,22 +45,24 @@ public class ComputeBaselinesCPMI {
     private static long [] containNotContainCounts;
     private static String dataPath;
     private static String outputPath; //"Local_Results/out/";
-    private static final boolean calcFromUser = false;
-    private static final boolean calcToUser = false;
-    private static final boolean calcContainHashtag = false;
+    private static final boolean calcFromUser = true;
+    private static final boolean calcToUser = true;
+    private static final boolean calcContainHashtag = true;
     private static final boolean calcContainTerm = true;
-    private static final boolean calcContainLocation = false;
-    private static final boolean writeTopicalLocation = false;
+    private static final boolean calcContainLocation = true;
+    private static final boolean writeTopicalLocation = true;
     private static final boolean writeTopicalTerm = true;
-    private static final boolean writeTopicalFrom = false;
-    private static final boolean writeTopicalHashtag = false;
-    private static final boolean writeTopicalMention = false;
+    private static final boolean writeTopicalFrom = true;
+    private static final boolean writeTopicalHashtag = true;
+    private static final boolean writeTopicalMention = true;
     private static int groupNum;
     private static int numOfGroups;
     private static String[] groupNames;
     private static TweetUtil tweetUtil = new TweetUtil();
     private static DataFrame tweetTime;
     private static final int topFeatureNum = 1000;
+    private static final boolean testFlag = true;
+    private static boolean computeTweetLocation = false;
 
     private static final long[] timestamps= {1377897403000l, 1362146018000l, 1391295058000l, 1372004539000l, 1359920993000l, 1364938764000l, 1378911100000l, 1360622109000l, 1372080004000l, 1360106035000l};;
 
@@ -70,6 +72,10 @@ public class ComputeBaselinesCPMI {
     }
 
     public static void main(String[] args) throws IOException, ParseException {
+        final SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
+        if(testFlag){
+            timestamps[0] = format.parse("Thu Feb 20 15:08:01 +0001 2014").getTime();
+        }
         loadConfig();
         //long t1 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse("Fri Feb 28 11:00:00 +0000 2014").getTime();
         numOfGroups = configRead.getNumOfGroups();
@@ -81,7 +87,7 @@ public class ComputeBaselinesCPMI {
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
 
-        for(groupNum = 6; groupNum <= 6; groupNum++) {
+        for(groupNum = 1; groupNum <= 1; groupNum++) {
             if(groupNum > 1 && groupNum != 6)
                 continue;
             initializeSqlContext();
@@ -98,8 +104,9 @@ public class ComputeBaselinesCPMI {
             if(calcContainTerm)
                 calcContainTermProb(tweetCount);
 
-            if(calcContainLocation)
+            if(calcContainLocation) {
                 calcContainLocationProb(tweetCount);
+            }
 
             containNotContainCounts = getContainNotContainCounts(groupNum);
 
@@ -154,13 +161,25 @@ public class ComputeBaselinesCPMI {
         tweetCount = tweetTime.count();
         System.out.println("=================================Tweet Time Size: " + tweetCount);
         tweet_user_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
+        if(computeTweetLocation){
+            StructField[] fieldsLocation = {
+                    DataTypes.createStructField("tid", DataTypes.LongType, true),
+                    DataTypes.createStructField("location", DataTypes.StringType, true),
+                    DataTypes.createStructField("hashtag", DataTypes.StringType, true)
+            };
+            DataFrame df1 = sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "user_location_clean.csv").coalesce(numPart);
+            //tweet hashtagGrouped location
+            sqlContext.createDataFrame(tweet_user_hashtag_grouped.join(df1, tweet_user_hashtag_grouped.col("username").equalTo(df1.col("C0"))).drop(tweet_user_hashtag_grouped.col("username")).drop(df1.col("C0")).javaRDD().map(new Function<Row, Row>() {
+                @Override
+                public Row call(Row v1) throws Exception {
+                    return RowFactory.create(v1.getLong(0), v1.getString(2), v1.getString(1));
+                }
+            }), new StructType(fieldsLocation)).write().parquet(dataPath + "tweet_location_hashtag_grouped_parquet");
+
+        }
         tweet_user_hashtag_grouped = tweet_user_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_user_hashtag_grouped.col("tid")), "inner").drop(tweetTime.col("tid")).coalesce(numPart);
-        //tweet_user_hashtag_grouped.drop("time").write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_user_hashtag_grouped_parquet" + "_time");
-        //tweet_user_hashtag_grouped.cache();
-        //System.out.println("LOOOOOOOOK-FromUSER: " + tweet_user_hashtag_grouped.count());
         System.out.println(" HAS READ THE TWEET_HASHTAG ");
-        //TweetUtil tutil = new TweetUtil();
-        //tutil.runStringCommand("mkdir "+groupNames[groupNum-1]+"/");
+
     }
 
     public static DataFrame calcFromToProb(final double tweetNum, DataFrame df, String colName, String probName, String tableName){

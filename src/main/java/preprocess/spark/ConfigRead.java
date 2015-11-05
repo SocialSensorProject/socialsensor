@@ -157,4 +157,7 @@ public class ConfigRead {
 
     public String getLearningPath() { return prop.getProperty("learningPath"); }
 
+    public double getTrainPercentage(){
+        return Double.valueOf(prop.getProperty("trainPercentage"));
+    }
 }

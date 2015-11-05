@@ -49,6 +49,8 @@ public class LearnTopical {
     private static ConfigRead configRead;
     private static boolean testFlag = false;
     private static Map<Integer, String> invFeatures;
+    private static double percentageTrain = 0.5;
+    private static double percentageVal = 0.6;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
@@ -60,6 +62,10 @@ public class LearnTopical {
      */
     public static void main(String[] args) throws IOException, InvalidInputDataException, ParseException, InterruptedException {
         loadConfig();
+        if(configRead.getTrainPercentage() == 0.7){
+            percentageTrain = 0.7;
+            percentageVal = 0.8;
+        }
         tweetUtil = new TweetUtil();
         if(testFlag){
             path = "Data/test/Learning/Topics/";
@@ -160,7 +166,6 @@ public class LearnTopical {
         //for (int classname = 1; classname <= numOfTopics; classname++) {
         double d;
         for (String classname : classNames) {
-
             bw.write("================================ " + classname + " ============================\n");
             classInd++;
             accuracies = new ArrayList<Double>();
@@ -173,10 +178,10 @@ public class LearnTopical {
                 bestc = -1;
                 bestError = -1;
                 System.out.println("========================foldNum: " + i + "============================");
-                String trainName = classname + "/fold" + i + "/" + trainFileName + "_t.csv";
-                String testName = classname + "/fold" + i + "/" + trainFileName + "_v.csv";
-                //String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
-                //String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
+                //String trainName = classname + "/fold" + i + "/" + trainFileName + "_t.csv";
+                //String testName = classname + "/fold" + i + "/" + trainFileName + "_v.csv";
+                String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
+                String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
                 for (double c : cValues) {
                     ind = remInd;
                     predInd = remPredInd;
@@ -185,8 +190,8 @@ public class LearnTopical {
                     arguments[ind] = String.valueOf(c);ind++;
                     arguments[ind] = "-w1";ind++;
                     //arguments[ind] = String.valueOf(c);ind++;
-                    d = ((double)total[classInd][i]-positives[classInd][i])/positives[classInd][i];
-                    //d = (double)((total[classInd][i]+totalVal[classInd][i])-(positives[classInd][i]+positivesVal[classInd][i]))/(positives[classInd][i]+positivesVal[classInd][i]);
+                    //d = ((double)total[classInd][i]-positives[classInd][i])/positives[classInd][i];
+                    d = (double)((total[classInd][i]+totalVal[classInd][i])-(positives[classInd][i]+positivesVal[classInd][i]))/(positives[classInd][i]+positivesVal[classInd][i]);
                     //d  = 1.0;
                     arguments[ind] = String.valueOf(c*d);ind++;
                     arguments[ind] = path + trainName;
@@ -251,7 +256,7 @@ public class LearnTopical {
                 recalls.add(measures[2]);
                 fscores.add(measures[3]);
 
-                writeFeatureFile(LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + modelFileName + "_" + c);
+                writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + modelFileName + "_" + c);
                 bw.write("****** TEST DATA with C value: " + c + " accuracy: " + df3.format(measures[0]) + " - precision: " + df3.format(measures[1]) + " - recall: " + df3.format(measures[2]) + " - f-score: " + df3.format(measures[3]) + "\n");
                 bw.flush();
             }
@@ -269,37 +274,35 @@ public class LearnTopical {
         }
         bw.close();
     }
-    public static void writeFeatureFile(String modelName) throws IOException, InterruptedException {
+    public static void writeFeatureFile(String classname, String modelName) throws IOException, InterruptedException {
 
         //build test/train data and hashtag lists
-        for(String classname : classNames) {
-            for (int i = 0; i < numOfFolds; i++) {
-                FileReader fileReaderA = new FileReader(modelName);
-                BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-                FileReader fileReaderB = new FileReader(path + featurepath + indexFileName);
-                BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
-                FileWriter fw = new FileWriter(path + classname +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
-                BufferedWriter bw = new BufferedWriter(fw);
-                String line = "", line2;String [] splits;int ind = 0;
-                for(int kk = 0; kk < 6; kk++)//read header
-                    line = bufferedReaderA.readLine();
-                List<String> featureWeights = new ArrayList<>();
-                while ((line = bufferedReaderA.readLine()) != null) {//last line of model is the bias feature
-                    featureWeights.add(new BigDecimal(Double.valueOf(line)).toPlainString());
-                }
-                for(int ik = 0; ik < featureWeights.size()-1; ik++) {
-                    line2 = bufferedReaderB.readLine();
-                    ind++;
-                    splits = line2.split(",");
-                    bw.write(splits[0].toLowerCase() + "," + splits[1].toLowerCase() + "," + featureWeights.get(ik) + "\n");
-                }
-                fileReaderA.close();
-                fileReaderB.close();
-                bw.close();
-                tweetUtil.runStringCommand("sort -t',' -rn -k3,3 " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv > " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights1.csv");
-                tweetUtil.runStringCommand("rm -rf " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv");
-                tweetUtil.runStringCommand("mv " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights1.csv " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv");
+        for (int i = 0; i < numOfFolds; i++) {
+            FileReader fileReaderA = new FileReader(modelName);
+            BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+            FileReader fileReaderB = new FileReader(path + featurepath + indexFileName);
+            BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
+            FileWriter fw = new FileWriter(path + classname +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
+            BufferedWriter bw = new BufferedWriter(fw);
+            String line = "", line2;String [] splits;int ind = 0;
+            for(int kk = 0; kk < 6; kk++)//read header
+                line = bufferedReaderA.readLine();
+            List<String> featureWeights = new ArrayList<>();
+            while ((line = bufferedReaderA.readLine()) != null) {//last line of model is the bias feature
+                featureWeights.add(new BigDecimal(Double.valueOf(line)).toPlainString());
             }
+            for(int ik = 0; ik < featureWeights.size()-1; ik++) {
+                line2 = bufferedReaderB.readLine();
+                ind++;
+                splits = line2.split(",");
+                bw.write(splits[0].toLowerCase() + "," + splits[1].toLowerCase() + "," + featureWeights.get(ik) + "\n");
+            }
+            fileReaderA.close();
+            fileReaderB.close();
+            bw.close();
+            tweetUtil.runStringCommand("sort -t',' -rn -k3,3 " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv > " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights1.csv");
+            tweetUtil.runStringCommand("rm -rf " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv");
+            tweetUtil.runStringCommand("mv " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights1.csv " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv");
         }
     }
 
@@ -530,10 +533,10 @@ public class LearnTopical {
             hashtagSet.addAll(hashtagSetDate[groupNum - 1].values());
             Collections.sort(hashtagSet);
             length = hashtagSet.size();
-            length50 = (int) Math.ceil((double)length*0.7);
+            length50 = (int) Math.ceil((double)length*percentageTrain);
             if(Objects.equals(hashtagSet.get(length50), hashtagSet.get(length50 + 1)))
                 System.out.println("Equal");
-            length60 = (int)Math.ceil((double)length*0.8);
+            length60 = (int)Math.ceil((double)length*percentageVal);
             if(Objects.equals(hashtagSet.get(length60), hashtagSet.get(length60 + 1)))
                 System.out.println("Equal");
             date50 = hashtagSet.get(length50);

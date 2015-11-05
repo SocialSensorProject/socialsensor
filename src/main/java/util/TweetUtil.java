@@ -9,6 +9,7 @@ import java.util.*;
  * Created by zahraiman on 9/29/15.
  */
 public class TweetUtil {
+    public static ConfigRead configRead;
 
     public static void runStringCommand(final String command) throws IOException, InterruptedException {
         final int returncode = Runtime.getRuntime().exec(new String[] { "bash", "-c", command }).waitFor();
@@ -77,6 +78,7 @@ public class TweetUtil {
 
     public List<String> getTestTrainGroupHashtagList(int groupNum, boolean localRun, boolean train) throws IOException {
         List<String> hashtagList = new ArrayList<>();
+        configRead = new ConfigRead();
         if(localRun){
             String hashtagStrList;
             if(train)
@@ -90,28 +92,44 @@ public class TweetUtil {
         }else {
             String hashtagStrList = "";
             if (groupNum == 1) {      //NATURAL DISASTER
-                if(train)
-                    hashtagStrList = "earthquake,storm,tornado,prayforthephilippines,ukstorm,sandy,flood,drought,hurricane,arthur,tsunami,hurricanes,quake,typhoon,eqnz,katrina,bertha,julio,manuel,cholera,hurricanesandy,odile,ukfloods,abfloods,hurricaneseason,hurricaneseason,laquake,hurricanekatrina,floodwarning,tsunami2004,tsunamimarch";
-                else
-                    hashtagStrList = "haiyan,kashmirfloods,phailin,prayforchile,typhoonhaiyan,serbiafloods,hurricanearthur,napaquake,earthquakeph,typhoonaid,chileearthquake,hurricaneprep,hurricanegonzalo,typhoonhagupit,corkfloods,hurricaneodile,laearthquake,napaearthquake";
+                if(configRead.getTrainPercentage() == 0.7){
+                    if(train)
+                        hashtagStrList = "earthquake,haiyan,storm,tornado,prayforthephilippines,ukstorm,sandy,flood,drought,hurricane,arthur,tsunami,phailin,hurricanes,quake,typhoon,eqnz,prayforchile,katrina,bertha,typhoonhaiyan,julio,manuel,cholera,hurricanesandy,odile,earthquakeph,ukfloods,typhoonaid,abfloods,hurricaneseason,hurricaneseason,chileearthquake,hurricaneprep,laquake,hurricanekatrina,corkfloods,laearthquake,floodwarning,tsunami2004,tsunamimarch";
+                    else
+                        hashtagStrList = "kashmirfloods,serbiafloods,hurricanearthur,napaquake,hurricanegonzalo,typhoonhagupit,hurricaneodile,napaearthquake";
+                }else if(configRead.getTrainPercentage() == 0.5) {
+                    if(train)
+                        hashtagStrList = "earthquake,storm,tornado,prayforthephilippines,ukstorm,sandy,flood,drought,hurricane,arthur,tsunami,hurricanes,quake,typhoon,eqnz,katrina,bertha,julio,manuel,cholera,hurricanesandy,odile,ukfloods,abfloods,hurricaneseason,hurricaneseason,laquake,hurricanekatrina,floodwarning,tsunami2004,tsunamimarch";
+                    else
+                        hashtagStrList = "haiyan,kashmirfloods,phailin,prayforchile,typhoonhaiyan,serbiafloods,hurricanearthur,napaquake,earthquakeph,typhoonaid,chileearthquake,hurricaneprep,hurricanegonzalo,typhoonhagupit,corkfloods,hurricaneodile,laearthquake,napaearthquake";
+                }
             }
             else if (groupNum == 2) // EPIDEMICS
                 hashtagStrList = "";
             else if (groupNum == 3) //IRAN TALK
                 hashtagStrList = "";
             else if (groupNum == 4) { // SOCIAL ISSUES
-                if(train)
-                    hashtagStrList = "racism,mikebrown,shutitdown,icantbreathe,ferguson,nojusticenopeace,moa,policebrutality,antoniomartin,thesystemisbroken,justice4all,michaelbrown,abortion,debt,gunlaws,legalize,legalizemarijuana,nationaldebt,abortions,debts,endabortion,debtceiling,legalizecannabis,legalweed,stopabortion,legalized,freetheweed,abortionaccess,abortionismurder,newnjgunlaws,newnjgunlaw";
-                else
-                    hashtagStrList = "blacklivesmatter,blackxmas,ericgarner,justiceformikebrown,handsupdontshoot,alllivesmatter,thisstopstoday,fergusondecision,tamirrice,policelivesmatter,berkeleyprotests,millionsmarchnyc,aurarosser,nypdlivesmatter,abortionvote,44millionabortions,safeabortion,legalize420,nonewnjgunlaws";
+                if(configRead.getTrainPercentage() == 0.5) {
+                    if (train)
+                        hashtagStrList = "racism,mikebrown,shutitdown,icantbreathe,ferguson,nojusticenopeace,moa,policebrutality,antoniomartin,thesystemisbroken,justice4all,michaelbrown,abortion,debt,gunlaws,legalize,legalizemarijuana,nationaldebt,abortions,debts,endabortion,debtceiling,legalizecannabis,legalweed,stopabortion,legalized,freetheweed,abortionaccess,abortionismurder,newnjgunlaws,newnjgunlaw";
+                    else
+                        hashtagStrList = "blacklivesmatter,blackxmas,ericgarner,justiceformikebrown,handsupdontshoot,alllivesmatter,thisstopstoday,fergusondecision,tamirrice,policelivesmatter,berkeleyprotests,millionsmarchnyc,aurarosser,nypdlivesmatter,abortionvote,44millionabortions,safeabortion,legalize420,nonewnjgunlaws";
+                }
             }
             else if (groupNum == 5) // LBGT
                 hashtagStrList = "";
             else if(groupNum == 6){ // HUMAN CAUSED DISASTER
-                if(train)
-                    hashtagStrList ="syria,gaza,isis,israel,gazaunderattack,palestine,freepalestine,is,prayforgaza,iss,hamas,isil,taliban,syrian,southsudan,bds,israeli,palestinian,idf,malala,malaysiaairlines,sudan,bokoharam,palestinians,jamesfoley,jamesfoley,alqaeda,childrenofsyria,rafah,notinmyname,gazaunderfire,freesyria,abuja,farc,drugwar,stopwar,bombsquad,malnutrition,juba,cholera,antiwar,realsyria,savesyria,alshabab,iraqwar,famine,bronxbombers,igad,bombthreat";
-                else
-                    hashtagStrList = "mh370,mh17,bringbackourgirls,prayformh370,icc4israel,younusalgohar,chibokgirls,daesh,ajagaza,withsyria,nowarwithsyria,ripmh370,syriawarcrimes,handsoffsyria,chibok,bringourgirlsback,southsudannow,whereisthefuckingplane,isismediablackout,nigerianschoolgirls,ripjamesfoley,bringbackourdaughters,bringbackourgirl,helpsyriasrefugees,bostonmarathonbombing,redefinenigeria,234whitegirls,stayoutofsyria,bentiu";
+                if(configRead.getTrainPercentage() == 0.7) {
+                    if (train)
+                        hashtagStrList = "syria,gaza,isis,israel,mh370,gazaunderattack,mh17,palestine,freepalestine,is,prayforgaza,iss,hamas,prayformh370,isil,taliban,syrian,southsudan,bds,younusalgohar,israeli,palestinian,idf,malala,malaysiaairlines,sudan,bokoharam,palestinians,jamesfoley,jamesfoley,daesh,alqaeda,childrenofsyria,rafah,notinmyname,gazaunderfire,freesyria,withsyria,abuja,nowarwithsyria,farc,ripmh370,drugwar,syriawarcrimes,stopwar,bombsquad,handsoffsyria,malnutrition,juba,whereisthefuckingplane,cholera,antiwar,realsyria,savesyria,alshabab,iraqwar,famine,bronxbombers,igad,helpsyriasrefugees,bostonmarathonbombing,bombthreat,stayoutofsyria,bentiu";
+                    else
+                        hashtagStrList = "bringbackourgirls,icc4israel,chibokgirls,ajagaza,chibok,bringourgirlsback,southsudannow,isismediablackout,nigerianschoolgirls,ripjamesfoley,bringbackourdaughters,bringbackourgirl,redefinenigeria,234whitegirls";
+                }else if(configRead.getTrainPercentage() == 0.5) {
+                    if (train)
+                        hashtagStrList = "syria,gaza,isis,israel,gazaunderattack,palestine,freepalestine,is,prayforgaza,iss,hamas,isil,taliban,syrian,southsudan,bds,israeli,palestinian,idf,malala,malaysiaairlines,sudan,bokoharam,palestinians,jamesfoley,jamesfoley,alqaeda,childrenofsyria,rafah,notinmyname,gazaunderfire,freesyria,abuja,farc,drugwar,stopwar,bombsquad,malnutrition,juba,cholera,antiwar,realsyria,savesyria,alshabab,iraqwar,famine,bronxbombers,igad,bombthreat";
+                    else
+                        hashtagStrList = "mh370,mh17,bringbackourgirls,prayformh370,icc4israel,younusalgohar,chibokgirls,daesh,ajagaza,withsyria,nowarwithsyria,ripmh370,syriawarcrimes,handsoffsyria,chibok,bringourgirlsback,southsudannow,whereisthefuckingplane,isismediablackout,nigerianschoolgirls,ripjamesfoley,bringbackourdaughters,bringbackourgirl,helpsyriasrefugees,bostonmarathonbombing,redefinenigeria,234whitegirls,stayoutofsyria,bentiu";
+                }
 
             }else if(groupNum == 7) // CELEBRITY DEATH
                 hashtagStrList = "";

@@ -106,18 +106,19 @@ public class Preprocess implements Serializable {
             getTweetTime(mainData.select("id", "created_at"), sqlContext);
         if(tweetHashtagTime)
             getTweetHashtagTime(mainData.select("id", "text", "created_at"), sqlContext);
-        if(uniqueUserHashtagBirthday)
-            getUniqueUsersHashtagsAndBirthdays1(mainData.select("screen_name", "text", "created_at"), sqlContext);
-        if(directedUserNet)
-            getDirectedUserNetwork(mainData.select("screen_name", "text"), sqlContext);
-        if(groupedUserMention)
-            getGroupedUserMention(sqlContext);
         if(tweetUser) {
             getTweetUser(mainData.select("id", "screen_name"), sqlContext);
             //DataFrame tweet_user = sqlContext.read().parquet(outputPath + "tweet_user_parquet");
             //tweet_user.distinct();
             //tweet_user.write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_user_distinct_parquet");
         }
+
+        if(uniqueUserHashtagBirthday)
+            getUniqueUsersHashtagsAndBirthdays1(mainData.select("screen_name", "text", "created_at"), sqlContext);
+        if(directedUserNet)
+            getDirectedUserNetwork(mainData.select("screen_name", "text"), sqlContext);
+        if(groupedUserMention)
+            getGroupedUserMention(sqlContext);
         if(tweetUserHashtag) {
             getTweetUserHashtag(mainData.select("id", "screen_name", "text"), sqlContext);
             //getTweetUserHashtag(sqlContext.read().json(dataPath + "*.bz2").coalesce(3 * 16).select("id", "screen_name", "text"), sqlContext);
@@ -174,8 +175,8 @@ public class Preprocess implements Serializable {
 
             //getGroupedMentionHashtagTerm(sqlContext, sparkContext);
 
-            for (int gNum = 1; gNum <= 1; gNum++) {
-                if(gNum > 1 && gNum != 4)
+            for (int gNum = 1; gNum <= 6; gNum++) {
+                if(gNum > 1 && gNum != 6)
                     continue;
                 groupNum = gNum;
                 System.out.println("==================== Group Num: "+groupNum+"===================");
@@ -208,8 +209,6 @@ public class Preprocess implements Serializable {
         JavaRDD < Row > t1 = tweet_text.coalesce(numPart).javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
             @Override
             public Iterable<Row> call(Row row) throws Exception {
-                if(row.getLong(0) == 399l)
-                    System.out.println(row);
                 ArrayList<Row> list = new ArrayList<>();
                 String hashtag = "";
                 for (String word : hmExtractor.extractHashtags(row.get(1).toString())) {
@@ -266,7 +265,7 @@ public class Preprocess implements Serializable {
         // positiveSamples = df.filter(df.col("topical").$greater(0)).coalesce(numPart);
 
         //System.out.println("================== TWEET TOPICAL COUNT: " + df.count() + "========================");
-        //System.out.println("================== TWEET TOPICAL POSITIVE COUNT: " + positiveSamples.count() + "========================");
+        System.out.println("================== TWEET TOPICAL POSITIVE COUNT: " + df.filter(df.col("topical").$greater(0)).coalesce(numPart).count() + "========================");
         //System.out.println("================== TWEET TOPICAL NEGATIVE COUNT: " + negativeSamples.count() + "========================");
         //df.write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_topical_allTweets_" + groupNum + "_parquet");
 
@@ -770,9 +769,9 @@ public class Preprocess implements Serializable {
         DataFrame featuresList;
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd HH':'mm':'ss Z");
         sdf.setTimeZone(TimeZone.getTimeZone("UCT"));
-        //final int fromThreshold= 159, mentionThreshold= 159, hashtagThreshold= 50, termThreshold= 159;
+        final int fromThreshold= 159, mentionThreshold= 159, hashtagThreshold= 50, termThreshold= 159;
         //final int fromThreshold = 2, mentionThreshold = 1,  hashtagThreshold = 0, termThreshold = 2;
-        final int fromThreshold = 13, mentionThreshold = 10,  hashtagThreshold = 0, termThreshold = 17;
+        //final int fromThreshold = 13, mentionThreshold = 10,  hashtagThreshold = 0, termThreshold = 17;
 
         DataFrame fromNumberMap;
         DataFrame df1;
@@ -1880,7 +1879,7 @@ public class Preprocess implements Serializable {
                 DataTypes.createStructField("runId", DataTypes.StringType, true)
         };
 
-        DataFrame positiveSamples, negativeSamples, df1 = null, df2;
+        DataFrame df1 = null, df2;
         DataFrame tweetTopical = sqlContext.read().parquet(outputPath + "tweet_topical_" + groupNum + "_parquet").coalesce(numPart);
 
 
@@ -1900,10 +1899,10 @@ public class Preprocess implements Serializable {
         }), new StructType(timeField)).coalesce(numPart);
         tweetTime.cache();
 
-        boolean calcFrom = true, calcHashtag = false, calcTerm = false, calcMention = false, calcLocation = false;
+        boolean calcFrom = true, calcHashtag = true, calcTerm = true, calcMention = true, calcLocation = true;
 
         if (calcFrom) {
-            algNames = new String[]{"CPLog", "CP"};
+            algNames = new String[]{"topical", "topicalLog", "MILog", "CP", "CPLog", "MI"};
             df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_fromFeature_grouped_parquet").coalesce(numPart);
             df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
 
@@ -1922,7 +1921,6 @@ public class Preprocess implements Serializable {
                 System.out.println("===================== TOP FEATURES JOIN FROM: " + df2.count() + "==================");
                 df2 = df2.sort(df2.col("prob").desc()).limit(returnNum);
                 df2 = df2.join(tweetTopical, df2.col("tid").equalTo(tweetTopical.col("tid"))).drop(tweetTopical.col("tid")).coalesce(numPart);
-                df2.cache();
                 df2.write().mode(SaveMode.Overwrite).parquet(outputPath + "BaselinesRes/" + groupNames[groupNum - 1] + "/" + algName + "/qrel_top_" + featureName);
             }
             System.out.println("=====================FROM DONE======================");
@@ -1973,7 +1971,7 @@ public class Preprocess implements Serializable {
             df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_mentionFeature_grouped_parquet").coalesce(numPart);
             df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
             System.out.println("============================ MENTION FEATURE IN TEST SET: " + df1.count() + "===============================================");
-            algNames = new String[]{"CPLog", "CP"};
+            algNames = new String[]{"topical", "topicalLog", "MILog", "CP", "CPLog", "MI"};
             for (String algName : algNames) {
                 final String featureName1 = "Mention";
                 System.out.println("====================================== " + algName + " - " + featureName1 + "=======================================");
@@ -2010,8 +2008,8 @@ public class Preprocess implements Serializable {
 
             df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_locationFeature_grouped_parquet").coalesce(numPart);
             df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+            algNames = new String[]{"topical", "topicalLog", "MILog", "CP", "CPLog", "MI"};
             for (String algName : algNames) {
-                algNames = new String[]{"CPLog", "MI", "topical", "topicalLog"};
                 final String featureName1 = "Location";
                 System.out.println("====================================== " + algName + " - " + featureName1 + "=======================================");
                 String fName = "location";
@@ -2045,7 +2043,7 @@ public class Preprocess implements Serializable {
         }
 
         if(calcTerm) {//ONLY MI FOR GNUM = 6
-            algNames = new String[]{ "topicalLog", "MILog", "CP","CPLog"};//"MI", "topical",
+            algNames = new String[]{ "topicalLog", "MILog", "CP","CPLog", "MI", "topical"};
             df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_termFeature_grouped_parquet").coalesce(numPart);
             df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
             df1.cache();
@@ -2120,7 +2118,7 @@ public class Preprocess implements Serializable {
         tweetTime = sqlContext.createDataFrame(tweetTime.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                if(testFlag)
+                if (testFlag)
                     return v1.getLong(1) > splitTime;
                 else
                     return v1.getLong(1) > timestamps[groupNum - 1];
@@ -2131,7 +2129,6 @@ public class Preprocess implements Serializable {
 
         df2 = sqlContext.read().parquet(dataPath + "tweet_thsh_fromFeature_grouped_parquet").coalesce(numPart);
         df1 = df2.join(tweetTime, df2.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid")).drop("time").coalesce(numPart);
-        //System.out.printf("********************* TOTAL SIZE 1: " + df1.count() + "***************************");
 
 
         String featureName = "featureWeights_from";
@@ -2147,8 +2144,6 @@ public class Preprocess implements Serializable {
                 return v1.getDouble(1) != 0.0;
             }
         }), new StructType(fieldsFrom)).coalesce(numPart);
-        topFeatures.printSchema();
-        topFeatures.show();
         System.out.println("********************* " +topFeatures.count());
         df2 = df1;
         df3 = topFeatures.join(df2, df2.col("username").equalTo(topFeatures.col("username"))).drop(topFeatures.col("username")).drop("username").coalesce(numPart);df1.registerTempTable("fromFeature");
@@ -2190,8 +2185,6 @@ public class Preprocess implements Serializable {
         df3 = sqlContext.createDataFrame(df1.join(df3, df1.col("tid").equalTo(df3.col("tid")), "outer").javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                if(v1.get(0) != null && v1.get(0).toString().equals("1955"))
-                    System.out.println(v1);
                 if (v1.get(0) == null)
                     return RowFactory.create(v1.getLong(3), v1.getDouble(2));
                 else if (v1.get(3) == null)
@@ -2242,8 +2235,6 @@ public class Preprocess implements Serializable {
         df3 = sqlContext.createDataFrame(df1.join(df3, df1.col("tid").equalTo(df3.col("tid")), "outer").javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                if(v1.get(0) != null && v1.get(0).toString().equals("1955"))
-                    System.out.println(v1);
                 if (v1.get(0) == null)
                     return RowFactory.create(v1.getLong(2), v1.getDouble(3));
                 else if (v1.get(2) == null)
@@ -2292,8 +2283,6 @@ public class Preprocess implements Serializable {
         df3 = sqlContext.createDataFrame(df1.join(df3, df1.col("tid").equalTo(df3.col("tid")), "outer").coalesce(numPart).javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                if(v1.get(0) != null && v1.get(0).toString().equals("1955"))
-                    System.out.println(v1);
                 if (v1.get(0) == null)
                     return RowFactory.create(v1.getLong(2), v1.getDouble(3));
                 else if (v1.get(2) == null)
@@ -2345,8 +2334,6 @@ public class Preprocess implements Serializable {
         df3 = sqlContext.createDataFrame(df1.join(df3, df1.col("tid").equalTo(df3.col("tid")), "outer").coalesce(numPart).javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                if(v1.get(0) != null && v1.get(0).toString().equals("1955"))
-                    System.out.println(v1);
                 if (v1.get(0) == null)
                     return RowFactory.create(v1.getLong(2), -v1.getDouble(3));
                 else if (v1.get(2) == null)
