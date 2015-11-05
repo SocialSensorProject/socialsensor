@@ -28,6 +28,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static postprocess.spark.TrecEvaluation.readTrecResults;
+
 
 public class PostProcessParquet2 implements Serializable {
     private static String outputCSVPath;
@@ -66,7 +68,7 @@ public class PostProcessParquet2 implements Serializable {
         boolean cleanTerms = false;
         boolean buildLists = false;
         boolean readBaselineResults = false;
-        boolean readLearningResults = true;
+        boolean readLearningResults = false;
         boolean readNonzeroLearningWeights = false;
 
         //if(local)
@@ -258,7 +260,7 @@ public class PostProcessParquet2 implements Serializable {
                     continue;
                 System.out.println(outputCSVPath + "/" + filename1+"/" + filename);
                 if(readTrecResults){
-                    readTrecResults("ClusterResults/BaselinesResCSV/"+topic+"/" + filename1+"/",filename, bwTrec, topic, filename1);
+                    readTrecResults("ClusterResults/BaselinesResCSV/" + topic + "/" + filename1 + "/", filename, bwTrec, topic, filename1);
                 }else {
                     res = sqlContext.read().parquet(outputCSVPath + "/" + filename1 + "/" + filename);
                     System.out.println("LOOK: ");
@@ -723,130 +725,12 @@ public class PostProcessParquet2 implements Serializable {
         return 0;
     }
 
-    public static int readTrecResults(String outPath, String filename, BufferedWriter bw, String topic, String folderName) throws IOException, InterruptedException {
-        /**/
-        filename = filename.split("_")[2];
-        FileReader fileReaderA = new FileReader(outPath + "out_" + filename + ".csv");
-        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-        String line;
-        int ind = 0;
-        bw.write(topic + "," + folderName + "," + filename + ",");
-        while((line = bufferedReaderA.readLine()) != null){
-            ind++;
-            if(ind == 2)
-                bw.write(line.split("num_ret        \tall\t")[1] + ",");
-            if(ind == 3)
-                bw.write(line.split("num_rel        \tall\t")[1] + ",");
-            if(ind == 5)
-                bw.write(line.split("map            \tall\t")[1] + ",");
-            if(ind == 20)
-                bw.write(line.split("map_at_R       \tall\t")[1] + ",");
-            if(ind == 60)
-                bw.write(line.split("P100           \tall\t")[1] + ",");
-            if(ind == 63)
-                bw.write(line.split("P1000          \tall\t")[1] + ",");
-        }
-        bw.write("\n");
-        bw.flush();
-        bufferedReaderA.close();
-        return 0;
-    }
-
-    public static int readLocationResults(DataFrame results, SQLContext sqlContext, int index, String filename) throws IOException, InterruptedException {
-        /**/
-        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]\\)";//"\\p{InEmoticons}";
-        FileReader fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
-        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-        FileWriter fw = new FileWriter(outputCSVPath +"location_freq1.csv");
-        BufferedWriter bw = new BufferedWriter(fw);
-        //FileWriter fwUserLoc = new FileWriter(outputCSVPath +"user_location_clean.csv");
-        //BufferedWriter bwUserLoc = new BufferedWriter(fwUserLoc);
-        String line;
-        int numberOfLines = 0;
-        String username, loc;
-        String [] splits;
-        Map<String, Set<String>> usernameLocMap = new HashMap<>();
-        Map<String, Double> locMap = new HashMap<>();
-        ValueComparator bvc = new ValueComparator(locMap);
-        TreeMap<String, Double> sorted_map = new TreeMap(bvc);
-        while((line = bufferedReaderA.readLine()) != null){
-            Matcher matcher = Pattern.compile(emo_regex2).matcher(line);
-            line = matcher.replaceAll("").trim();
-            splits = line.split(",");
-            if(splits.length < 2)
-                continue;
-            username = splits[0];
-            for(int i = 1; i < splits.length; i++) {
-                loc = splits[i].toLowerCase().replace(" ", "");
-                if (locMap.containsKey(loc)) {
-                    locMap.put(loc, locMap.get(loc) + 1);
-                } else
-                    locMap.put(loc, 1.0);
-                numberOfLines++;
-            }
-        }
-        sorted_map.putAll(locMap);
-        for(Map.Entry<String, Double> entry : sorted_map.entrySet()) {
-            bw.write(entry.getKey() + "," + entry.getValue() + "\n");
-        }
-        bw.close();
-        return 0;
-    }
 
 
-    public static int writeLocationResults(String filename) throws IOException, InterruptedException {
-        /**/
-        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]\\)";//"\\p{InEmoticons}";
-        FileReader fileReaderA = new FileReader(outputCSVPath +"location_frequency.csv");
-        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-        FileWriter fwUserLoc = new FileWriter(outputCSVPath +"user_location_clean.csv");
-        BufferedWriter bwUserLoc = new BufferedWriter(fwUserLoc);
-        String line;
-        int numberOfLines = 0;
-        String username, loc;
-        String [] splits;
-        Map<String, Set<String>> usernameLocMap = new HashMap<>();
-        Map<String, Double> locMap = new HashMap<>();
-        while((line = bufferedReaderA.readLine()) != null) {
-            splits = line.split(",");
-            if (Double.valueOf(splits[1]) > configRead.getUserLocThreshold())
-                locMap.put(splits[0], Double.valueOf(splits[1]));
-        }
-        fileReaderA.close();
-        fileReaderA = new FileReader(outputCSVPath +"out_"+filename+"_csv/part-00000");
-        bufferedReaderA = new BufferedReader(fileReaderA);
-        while((line = bufferedReaderA.readLine()) != null) {
-            Matcher matcher = Pattern.compile(emo_regex2).matcher(line);
-            line = matcher.replaceAll("").trim();
-            splits = line.split(",");
-            if(splits.length < 2)
-                continue;
-            username = splits[0];
-            for(int i = 1; i < splits.length; i++) {
-                loc = splits[i].toLowerCase().replace(" ", "");
-                if (locMap.containsKey(loc)) {
-                    if (!usernameLocMap.containsKey(loc)) {
-                        Set<String> users = new HashSet<>();
-                        users.add(username);
-                        usernameLocMap.put(loc, users);
-                    } else {
-                        Set<String> users = usernameLocMap.get(loc);
-                        users.add(username);
-                        usernameLocMap.put(loc, users);
-                    }
-                }
-            }
-        }
-        for(String key : usernameLocMap.keySet()) {
-            if(key.equals(""))
-                continue;
-            for(String user : usernameLocMap.get(key))
-                bwUserLoc.write(user + "," + key + "\n");
-        }
-        fileReaderA.close();
-        bwUserLoc.close();
-        return 0;
-    }
+
+
+
+
 
     public static ArrayList<String> listFilesForFolder(final File folder) {
         ArrayList<String> fileNames = new ArrayList<String>();
