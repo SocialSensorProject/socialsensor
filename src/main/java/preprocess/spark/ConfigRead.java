@@ -160,4 +160,8 @@ public class ConfigRead {
     public double getTrainPercentage(){
         return Double.valueOf(prop.getProperty("trainPercentage"));
     }
+
+    public boolean getTestFlag() {
+        return Boolean.valueOf(prop.getProperty("testFlag"));
+    }
 }

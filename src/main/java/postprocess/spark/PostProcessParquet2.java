@@ -42,9 +42,10 @@ public class PostProcessParquet2 implements Serializable {
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
     private static Map<String, Long> hashtagMap = new HashMap<>();
-    final static int groupNum = 1;
+    final static int groupNum = 1
+            ;
     private static BufferedWriter bwTrec;
-    private static boolean testFlag = false;
+    private static boolean testFlag ;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
@@ -53,6 +54,7 @@ public class PostProcessParquet2 implements Serializable {
     public static void main(String args[]) throws IOException, InterruptedException {
 
         loadConfig();
+        testFlag = configRead.getTestFlag();
         scriptPath = configRead.getScriptPath();
         int itNum = configRead.getSensorEvalItNum();
         int hashtagNum = configRead.getSensorEvalHashtagNum();
@@ -66,8 +68,8 @@ public class PostProcessParquet2 implements Serializable {
         boolean cleanTerms = false;
         boolean buildLists = false;
         boolean readBaselineResults = false;
-        boolean readLearningResults = false;
-        boolean readNonzeroLearningWeights = true;
+        boolean readLearningResults = true;
+        boolean readNonzeroLearningWeights = false;
 
         //if(local)
         //    clusterResultsPath = outputCSVPath;
@@ -272,8 +274,8 @@ public class PostProcessParquet2 implements Serializable {
             bwTrec.close();
     }
     private static void readLearningResults(boolean local) throws IOException, InterruptedException {
-        String clusterPath = "ClusterResults/Nov3/BaselinesRes/Learning/Topics/";
-        String clusterOutPath = "ClusterResults/Nov3/Out/Topics/";
+        String clusterPath = "ClusterResults/Nov3_learning70percent/BaselinesRes/Learning/Topics/";
+        String clusterOutPath = "ClusterResults/Nov3_learning70percent/Out/Topics/";
         if(testFlag) {
             clusterPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
             clusterOutPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
@@ -620,6 +622,7 @@ public class PostProcessParquet2 implements Serializable {
 
     public static int readResults1(DataFrame results, SQLContext sqlContext, int index, final String filename, String outPath, boolean flagLearningRes) throws IOException, InterruptedException {
         /**/
+        final boolean noTrainFlag = false;
         StructField[] fieldsIDHashtag = {
                 DataTypes.createStructField("tid", DataTypes.LongType, true),
                 DataTypes.createStructField("hashtag", DataTypes.StringType, true)
@@ -647,8 +650,18 @@ public class PostProcessParquet2 implements Serializable {
                     int topical = 0;
                     if(row.get(5) != null) {
                         List<String> hashtags = new ArrayList<String>(Arrays.asList(row.getString(5).split(" ")));
-                        hashtags.retainAll(testHashtags);
-                        topical = (hashtags.size() > 0) ? 1 : 0;
+                        if(noTrainFlag) {
+                            List<String> hashtags2 = new ArrayList<String>();
+                            hashtags2.addAll(hashtags);
+                            hashtags.retainAll(trainHashtags);
+                            hashtags2.retainAll(testHashtags);
+                            topical = (hashtags2.size() > 0) ? 1 : 0;
+                            if (hashtags.size() > 0)
+                                return new Tuple2<Long, String>(row.getLong(0), "-1");
+                        }else{
+                            hashtags.retainAll(testHashtags);
+                            topical = (hashtags.size() > 0) ? 1 : 0;
+                        }
                     }
                     if (row.get(ind) != null) out += " - topical: " + topical;
                     ind++;
@@ -663,6 +676,11 @@ public class PostProcessParquet2 implements Serializable {
                     if (row.get(ind) != null) out += " - location: " + row.getString(ind);
                     ind++;
                     return new Tuple2<Long, String>(row.getLong(0), out);
+                }
+            }).filter(new Function<Tuple2<Long, String>, Boolean>() {
+                @Override
+                public Boolean call(Tuple2<Long, String> v1) throws Exception {
+                    return !v1._2().equals("-1");
                 }
             }).reduceByKey(new Function2<String, String, String>() {
                 @Override
@@ -687,7 +705,7 @@ public class PostProcessParquet2 implements Serializable {
         }
         System.out.println("DONE");
 
-        /*results1 = sqlContext.createDataFrame(results.select("tid", "hashtag").javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
+        results1 = sqlContext.createDataFrame(results.select("tid", "hashtag").javaRDD().mapToPair(new PairFunction<Row, Long, String>() {
             @Override
             public Tuple2<Long, String> call(Row row) throws Exception {
                 return new Tuple2<Long, String>(row.getLong(0), row.getString(1));
@@ -717,11 +735,28 @@ public class PostProcessParquet2 implements Serializable {
         JavaRDD strRes = df.sort(df.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
             @Override
             public String call(Row row) throws Exception {
-                List<String> hashtags = new ArrayList<String>(Arrays.asList(row.getString(3).split(" ")));
-                hashtags.retainAll(testHashtags);
-                int topical = (hashtags.size() > 0)? 1:0;
                 String s = "Q0";
-                return groupNum + " " + s + " " + row.getLong(0) + " " + topical;
+                List<String> hashtags = new ArrayList<String>(Arrays.asList(row.getString(3).split(" ")));
+                if(noTrainFlag) {
+                    List<String> hashtags2 = new ArrayList<String>();
+                    hashtags2.addAll(hashtags);
+                    hashtags.retainAll(trainHashtags);
+                    hashtags2.retainAll(testHashtags);
+                    int topical = (hashtags2.size() > 0) ? 1 : 0;
+                    if (hashtags.size() > 0)
+                        return "-1";
+                    else
+                        return groupNum + " " + s + " " + row.getLong(0) + " " + topical;
+                }else {
+                    hashtags.retainAll(testHashtags);
+                    int topical = (hashtags.size() > 0) ? 1 : 0;
+                    return groupNum + " " + s + " " + row.getLong(0) + " " + topical;
+                }
+            }
+        }).filter(new Function<String, Boolean>() {
+            @Override
+            public Boolean call(String v1) throws Exception {
+                return !v1.equals("-1");
             }
         });
         strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qrel" + "_csv");
@@ -739,14 +774,24 @@ public class PostProcessParquet2 implements Serializable {
                     hashtags2.addAll(hashtags);
                     hashtags.retainAll(trainHashtags);
                     hashtags2.retainAll(testHashtags);
-                    int topical = (hashtags2.size() > 0)? 1:0;
-                    if(hashtags.size() > 0 && hashtags2.size() > 0) //containsTrain
-                        return groupNum + " " + s + " " + row.getLong(0) + " " + "0";
-                    else
+                    if(noTrainFlag) {
+                        int topical = (hashtags2.size() > 0) ? 1 : 0;
+                        if (hashtags.size() > 0) //containsTrain
+                            return "-1";//return groupNum + " " + s + " " + row.getLong(0) + " " + "0";
+                        else
+                            return groupNum + " " + s + " " + row.getLong(0) + " " + topical;
+                    }else{
+                        int topical = (hashtags.size() > 0 || hashtags2.size() > 0) ? 1 : 0;
                         return groupNum + " " + s + " " + row.getLong(0) + " " + topical;
+                    }
                 }else {
                     return groupNum + " " + s + " " + row.getLong(0) + " " + "0";
                 }
+            }
+        }).filter(new Function<String, Boolean>() {
+            @Override
+            public Boolean call(String v1) throws Exception {
+                return !v1.equals("-1");
             }
         });
         strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_withoutTestTrainOverlap_qrel" + "_csv");
@@ -754,17 +799,33 @@ public class PostProcessParquet2 implements Serializable {
         tweetUtil.runStringCommand("rm -rf "+outPath + "out_" + filename + "_withoutTestTrainOverlap_qrel" + "_csv");
 
         //.join(results1, results.col("tid").equalTo(results1.col("tid")), "right").drop(results.col("tid")).distinct()
-        results1 = results.select("tid").distinct();
-        results = results.select("prob", "tid").distinct().join(results1, results.col("tid").equalTo(results1.col("tid")), "right").drop(results.col("tid")).distinct().sort(results.col("prob").desc());
-        strRes = results.javaRDD().map(new Function<Row, String>() {//.distinct()
+        df = results.select("tid").distinct();
+        df = results.select("prob", "tid").distinct().join(df, results.col("tid").equalTo(df.col("tid")), "right").drop(results.col("tid")).distinct().sort(results.col("prob").desc());
+        df = df.join(results1, df.col("tid").equalTo(results1.col("tid"))).drop(results1.col("tid"));;
+        strRes = df.javaRDD().map(new Function<Row, String>() {//.distinct()
             @Override
             public String call(Row row) throws Exception {
                 String s = "Q0";
                 int rank = 0;
+                if(noTrainFlag) {
+                    List<String> hashtags = new ArrayList<String>(Arrays.asList(row.getString(2).split(" ")));
+                    List<String> hashtags2 = new ArrayList<String>();
+                    hashtags2.addAll(hashtags);
+                    hashtags.retainAll(trainHashtags);
+                    hashtags2.retainAll(testHashtags);
+                    if (hashtags.size() > 0) //containsTrain
+                        return "-1";//return groupNum + " " + s + " " + row.getLong(0) + " " + "0";
+                }
                 if (row.get(0).toString().contains("NaN") || row.get(0).toString().contains("Inf"))
                     return groupNum + " " + s + " " + row.getLong(1) + " " + rank + " " + row.get(0).toString() + " " + filename;
                 else
                     return groupNum + " " + s + " " + row.getLong(1) + " " + rank + " " + new BigDecimal(row.getDouble(0)).toPlainString() + " " + filename;
+
+            }
+        }).filter(new Function<String, Boolean>() {
+            @Override
+            public Boolean call(String v1) throws Exception {
+                return !v1.equals("-1");
             }
         });
         strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qtop1" + "_csv");
@@ -786,7 +847,7 @@ public class PostProcessParquet2 implements Serializable {
         }
         bw.close();
         bufferedReaderA.close();
-        tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_qtop1" + ".csv");*/
+        tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_qtop1" + ".csv");
         return 0;
     }
 
