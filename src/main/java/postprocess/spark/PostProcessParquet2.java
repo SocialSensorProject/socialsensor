@@ -42,8 +42,7 @@ public class PostProcessParquet2 implements Serializable {
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
     private static Map<String, Long> hashtagMap = new HashMap<>();
-    final static int groupNum = 1
-            ;
+    final static int groupNum = 6;
     private static BufferedWriter bwTrec;
     private static boolean testFlag ;
 
@@ -67,8 +66,8 @@ public class PostProcessParquet2 implements Serializable {
         boolean makeScatterFiles = false;
         boolean cleanTerms = false;
         boolean buildLists = false;
-        boolean readBaselineResults = false;
-        boolean readLearningResults = true;
+        boolean readBaselineResults = true;
+        boolean readLearningResults = false;
         boolean readNonzeroLearningWeights = false;
 
         //if(local)
@@ -235,7 +234,7 @@ public class PostProcessParquet2 implements Serializable {
         if (local) {
             tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV");
             tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic);
-            outputCSVPath = "TestSet/Out/BaselinesRes/"+topic+"/";
+            outputCSVPath = "/data/ClusterData/Output/BaselinesRes/Topics/"+topic+"/";
             if(readTrecResults) {
                 FileWriter fwTrec = new FileWriter("ClusterResults/BaselinesResCSV/" + topic + "/" + "trecout_all_" + topic + ".csv");
                 bwTrec = new BufferedWriter(fwTrec);
@@ -255,19 +254,27 @@ public class PostProcessParquet2 implements Serializable {
             int ind = -1;
             int[] lineNumbers = new int[fileNames.size()];
             for (String filename : fileNames) {
-                if(filename.equals("CP")) continue;
                 ind++;
-                if (filename.contains(".csv") || filename.contains("_csv") || filename.equals("out"))
-                    continue;
+                //if (filename.contains(".csv") || filename.contains("_csv") || filename.equals("out")) continue;
                 System.out.println(outputCSVPath + "/" + filename1+"/" + filename);
+
+                if(filename.contains("_TestTrainTweets_")) {
+                    res = sqlContext.read().parquet(outputCSVPath + "/" + filename1 + "/" + filename);
+                    readBaselineResultFiles(res, null, filename, "ClusterResults/BaselinesResCSV/" + topic + "/" + filename1 + "/");
+                }else if(filename.contains("_noTrainTweet_")) {
+                    res = sqlContext.read().parquet(outputCSVPath + "/" + filename1 + "/" + filename);
+                    readBaselineResultFiles(null, res, filename, "ClusterResults/BaselinesResCSV/" + topic + "/" + filename1 + "/");
+                }
+
+/*
                 if(readTrecResults){
-                    readTrecResults("ClusterResults/BaselinesResCSV/"+topic+"/" + filename1+"/",filename, bwTrec, topic, filename1);
+                    readTrecResults("ClusterResults/BaselinesResCSV/" + topic + "/" + filename1 + "/", filename, bwTrec, topic, filename1);
                 }else {
                     res = sqlContext.read().parquet(outputCSVPath + "/" + filename1 + "/" + filename);
                     System.out.println("LOOK: ");
                     res.printSchema();
                     lineNumbers[ind] = readResults1(res, sqlContext, ind, filename, "ClusterResults/BaselinesResCSV/" + topic + "/" + filename1 + "/", false);
-                }
+                }*/
             }
         }
         if(readTrecResults)
@@ -618,6 +625,65 @@ public class PostProcessParquet2 implements Serializable {
         }
         System.out.println("Filename: " + filename + " #lines: " + numberOfLines);
         return numberOfLines;
+    }
+
+    public static void readBaselineResultFiles(DataFrame resultsTestTrain, DataFrame resultsNoTrain, final String filename, String outPath) throws IOException, InterruptedException {
+        JavaRDD<String> strRes;
+        if(resultsTestTrain != null) {
+            strRes = resultsTestTrain.select("tid", "topical", "prob").distinct().sort(resultsTestTrain.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
+                @Override
+                public String call(Row row) throws Exception {
+                    String s = "Q0";
+                    return groupNum + " " + s + " " + row.getLong(0) + " " + row.getInt(1);
+                }
+            });
+            strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qrel" + "_csv");
+            tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_qrel" + "_csv/part-00000" + " " + outPath + "out_" + filename + "_qrel" + ".csv");
+            tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_qrel" + "_csv");
+
+
+            strRes = resultsTestTrain.select("prob", "tid").sort(resultsTestTrain.col("prob").desc()).javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, String>() {
+                @Override
+                public String call(Tuple2<Row, Long> v1) throws Exception {
+                    String s = "Q0";
+                    if (v1._1.get(0).toString().contains("NaN") || v1._1.get(0).toString().contains("Inf"))
+                        return groupNum + " " + s + " " + v1._1.getLong(1) + " " + v1._2 + " " + v1._1.get(0).toString() + " " + filename;
+                    else
+                        return groupNum + " " + s + " " + v1._1.getLong(1) + " " + v1._2 + " " + new BigDecimal(v1._1.getDouble(0)).toPlainString() + " " + filename;
+                }
+            });
+            strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qtop" + "_csv");
+            tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_qtop" + "_csv/part-00000" + " " + outPath + "out_" + filename + "_qtop" + ".csv");
+            tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_qtop" + "_csv");
+        }
+
+        if(resultsNoTrain != null) {
+            strRes = resultsNoTrain.select("tid", "topical", "prob").distinct().sort(resultsNoTrain.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
+                @Override
+                public String call(Row row) throws Exception {
+                    String s = "Q0";
+                    return groupNum + " " + s + " " + row.getLong(0) + " " + row.getInt(1);
+                }
+            });
+            strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_withoutTestTrainOverlap_qrel" + "_csv");
+            tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qrel" + "_csv/part-00000" + " " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qrel" + ".csv");
+            tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qrel" + "_csv");
+
+
+            strRes = resultsNoTrain.select("prob", "tid").sort(resultsNoTrain.col("prob").desc()).javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, String>() {
+                @Override
+                public String call(Tuple2<Row, Long> v1) throws Exception {
+                    String s = "Q0";
+                    if (v1._1.get(0).toString().contains("NaN") || v1._1.get(0).toString().contains("Inf"))
+                        return groupNum + " " + s + " " + v1._1.getLong(1) + " " + v1._2 + " " + v1._1.get(0).toString() + " " + filename;
+                    else
+                        return groupNum + " " + s + " " + v1._1.getLong(1) + " " + v1._2 + " " + new BigDecimal(v1._1.getDouble(0)).toPlainString() + " " + filename;
+                }
+            });
+            strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_withoutTestTrainOverlap_qtop" + "_csv");
+            tweetUtil.runStringCommand("mv " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qtop" + "_csv/part-00000" + " " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qtop" + ".csv");
+            tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qtop" + "_csv");
+        }
     }
 
     public static int readResults1(DataFrame results, SQLContext sqlContext, int index, final String filename, String outPath, boolean flagLearningRes) throws IOException, InterruptedException {
