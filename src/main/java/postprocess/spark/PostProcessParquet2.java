@@ -42,7 +42,7 @@ public class PostProcessParquet2 implements Serializable {
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
     private static Map<String, Long> hashtagMap = new HashMap<>();
-    final static int groupNum = 6;
+    final static int groupNum = 1;
     private static BufferedWriter bwTrec;
     private static boolean testFlag ;
 
@@ -66,12 +66,15 @@ public class PostProcessParquet2 implements Serializable {
         boolean makeScatterFiles = false;
         boolean cleanTerms = false;
         boolean buildLists = false;
-        boolean readBaselineResults = true;
+        boolean readBaselineResults = false;
         boolean readLearningResults = false;
         boolean readNonzeroLearningWeights = false;
+        boolean readNonzeroBaselineMixedWeights = true;
 
         //if(local)
         //    clusterResultsPath = outputCSVPath;
+        if(readNonzeroBaselineMixedWeights)
+            readNonzeroBaselineMixedWeights();
 
         if(buildLists)
             getLists();
@@ -225,6 +228,74 @@ public class PostProcessParquet2 implements Serializable {
         TweetUtil.runScript("sort -t',' -rn -k3,3 " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv");
         TweetUtil.runScript("rm -f " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
         TweetUtil.runScript("mv " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
+    }
+
+
+
+    private static void readNonzeroBaselineMixedWeights() throws IOException, InterruptedException {
+        String path = "TestSet/Data/Data/Learning/Topics/";
+        if(!testFlag)
+            path = "/data/ClusterData/Output/BaselinesRes/Mixed/";
+        TweetUtil.runStringCommand("mkdir " + path);
+        String outputPath = "/data/ClusterData/Output/";
+
+        String logisticMethod = "l2_lr";
+        String[] algNames = new String[]{"topical", "topicalLog", "MILog", "CP", "CPLog", "MI"};
+
+        for (String algName : algNames) {
+            path = "/data/ClusterData/Output/BaselinesRes/Mixed/" + algName + "/";
+            TweetUtil.runStringCommand("mkdir " + path);
+            path += "Data/";
+            TweetUtil.runStringCommand("mkdir " + path);
+            path+= "Learning/";
+            TweetUtil.runStringCommand("mkdir " + path);
+            path += "Topics/";
+            TweetUtil.runStringCommand("mkdir " + path);
+            TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1]);
+            TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/");
+            TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod);;
+            FileReader fileReaderA = new FileReader(outputPath + "Baselines/" + configRead.getGroupNames()[groupNum - 1] + "/" + algName + "/Mixed/featureWeights.csv/part-00000");
+
+            BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+            String line;
+            FileWriter fw = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv");
+            BufferedWriter bw = new BufferedWriter(fw);
+            FileWriter fw1 = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featureWeights_from.csv");
+            BufferedWriter bwFrom = new BufferedWriter(fw1);
+            FileWriter fw2 = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featureWeights_hashtag.csv");
+            BufferedWriter bwHashtag = new BufferedWriter(fw2);
+            FileWriter fw3 = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featureWeights_location.csv");
+            BufferedWriter bwLocation = new BufferedWriter(fw3);
+            FileWriter fw4 = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featureWeights_mention.csv");
+            BufferedWriter bwMention = new BufferedWriter(fw4);
+            FileWriter fw5 = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featureWeights_term.csv");
+            BufferedWriter bwTerm = new BufferedWriter(fw5);
+            while ((line = bufferedReaderA.readLine()) != null) {
+                if (!line.split(",")[2].equals("0")) {
+                    bw.write(line + "\n");
+                    if (line.split(",")[0].equals("From"))
+                        bwFrom.write(line + "\n");
+                    if (line.split(",")[0].equals("Hashtag"))
+                        bwHashtag.write(line + "\n");
+                    if (line.split(",")[0].equals("Location"))
+                        bwLocation.write(line + "\n");
+                    if (line.split(",")[0].equals("Mention"))
+                        bwMention.write(line + "\n");
+                    if (line.split(",")[0].equals("Term"))
+                        bwTerm.write(line + "\n");
+                }
+            }
+            bw.close();
+            bwFrom.close();
+            bwMention.close();
+            bwHashtag.close();
+            bwLocation.close();
+            bwTerm.close();
+            fileReaderA.close();
+        }
+        //TweetUtil.runScript("sort -t',' -rn -k3,3 " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv");
+        //TweetUtil.runScript("rm -f " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
+        //TweetUtil.runScript("mv " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
     }
 
     private static void readBaselineResults(boolean local) throws IOException, InterruptedException {
