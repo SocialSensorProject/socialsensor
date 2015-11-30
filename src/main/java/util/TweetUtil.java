@@ -131,14 +131,22 @@ public class TweetUtil {
                         hashtagStrList = "mh370,mh17,bringbackourgirls,prayformh370,icc4israel,younusalgohar,chibokgirls,daesh,ajagaza,withsyria,nowarwithsyria,ripmh370,syriawarcrimes,handsoffsyria,chibok,bringourgirlsback,southsudannow,whereisthefuckingplane,isismediablackout,nigerianschoolgirls,ripjamesfoley,bringbackourdaughters,bringbackourgirl,helpsyriasrefugees,bostonmarathonbombing,redefinenigeria,234whitegirls,stayoutofsyria,bentiu";
                 }
 
-            }else if(groupNum == 7) // CELEBRITY DEATH
-                hashtagStrList = "";
+            }else if(groupNum == 7) { // CELEBRITY DEATH
+                if(configRead.getTrainPercentage() == 0.5){
+                    if(train)
+                        hashtagStrList = "jamesavery,freshprince,unclephil,freshprinceofbelair,rip,thefreshprinceofbelair,robinwilliams,nelsonmandela,philipseymourhoffman,paulwalker,mandela,prayforap,madiba,mayaangelou,ripnelsonmandela,ripcorymonteith,ripmandela,riptalia,riplilsnupe,ripleerigby,ripshain,riplarryshippers,riptrayvonmartin,ripmadiba,ripunclephil,ripmitchlucker,riprogerebert,ripshaingandee";
+                    else
+                        hashtagStrList = "ripjamesavery,rippaulwalker,riprobinwilliams,ripjoanrivers,riprise,ripmaeyoung,ripeunb,riposcardelarenta,ripkelcey,riptitovilanova,ripsimone,ripmayaangelou,ripallisonargent,ripjamesfoley,ripphilipseymourhoffman,riplaurenbacall";
+                }else {
+                    return null;
+                }
+            }
             else if(groupNum == 8) // SPACE
-                hashtagStrList = "";
+                return null;
             else if(groupNum == 9) // TENNIS
-                hashtagStrList = "";
+                return null;
             else if(groupNum == 10) // SOCCOR
-                hashtagStrList = "";
+                return null;
             Collections.addAll(hashtagList, hashtagStrList.toLowerCase().split(","));
 
             /*ConfigRead configRead = new ConfigRead();
