@@ -28,8 +28,8 @@ public class LearnTopical {
     private static String path = "Data/Learning/Topics/";
     private static String LRPath = "Data/Learning/LogisticRegression/";
     private static String featurepath = "featureData/";
-    private static String hashtagFileName = "hashtagIndex.csv";
-    private static String indexFileName = "featureIndex.csv";
+    private static String hashtagFileName = "hashtagIndex";
+    private static String indexFileName = "featureIndex";
     private static String allHashtagList = "allHashtag";
     private static String hashtagSetDate = "hashtagSet_Date.csv";
     private static String testHashtagList = "testHashtagList";
@@ -62,6 +62,7 @@ public class LearnTopical {
      */
     public static void main(String[] args) throws IOException, InvalidInputDataException, ParseException, InterruptedException {
         loadConfig();
+        testFlag = configRead.getTestFlag();
         if(configRead.getTrainPercentage() == 0.7){
             percentageTrain = 0.7;
             percentageVal = 0.8;
@@ -91,29 +92,35 @@ public class LearnTopical {
                 tweetUtil.runStringCommand("mkdir " + path + classname);
                 tweetUtil.runStringCommand("mkdir " + LRPath);
                 tweetUtil.runStringCommand("mkdir " + LRPath + classname);
-                for(int ifold = 0; ifold < numOfFolds; ifold++) {
+                for (int ifold = 0; ifold < numOfFolds; ifold++) {
                     tweetUtil.runStringCommand("mkdir " + path + classname + "/" + "fold" + ifold);
-                    tweetUtil.runStringCommand("mkdir " + path + classname + "/" + "fold" + ifold +"/l2_lr");
+                    tweetUtil.runStringCommand("mkdir " + path + classname + "/" + "fold" + ifold + "/l2_lr");
                     tweetUtil.runStringCommand("mkdir " + path + classname + "/" + "fold" + ifold + "/l1_lr");
                     tweetUtil.runStringCommand("mkdir " + path + classname + "/" + "fold" + ifold + "/l2_lrd");
                     tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lr");
-                    tweetUtil.runStringCommand("mkdir " + LRPath + classname +"/l2_lr"+ "/" + "fold" + ifold );
-                    tweetUtil.runStringCommand("mkdir " + LRPath + classname +"/l2_lr"+ "/" + "fold" + ifold +"/bestc");
+                    tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lr" + "/" + "fold" + ifold);
+                    tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lr" + "/" + "fold" + ifold + "/bestc");
                     tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l1_lr");
-                    tweetUtil.runStringCommand("mkdir " + LRPath + classname +"/l1_lr"+ "/" + "fold" + ifold );
-                    tweetUtil.runStringCommand("mkdir " + LRPath + classname +"/l1_lr"+ "/" + "fold" + ifold +"/bestc");
+                    tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l1_lr" + "/" + "fold" + ifold);
+                    tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l1_lr" + "/" + "fold" + ifold + "/bestc");
                     tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lrd");
-                    tweetUtil.runStringCommand("mkdir " + LRPath + classname +"/l2_lrd"+ "/" + "fold" + ifold );
-                    tweetUtil.runStringCommand("mkdir " + LRPath + classname +"/l2_lrd"+ "/" + "fold" + ifold +"/bestc");
+                    tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lrd" + "/" + "fold" + ifold);
+                    tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lrd" + "/" + "fold" + ifold + "/bestc");
                 }
             }
             prepareTestTrainSplits();
-            //modifyFeatureList();
-            findTestTrain();
-            findTopicalTest(trainFileName, trainHashtagList);
-            findTopicalTest(testFileName, testHashtagList);
-            findTopicalTest(trainFileName + "_t", trainHashtagList + "_t");
-            findTopicalTest(trainFileName + "_v", trainHashtagList + "_v");
+            int classInd=0;
+            for(String classname : classNames) {
+                classInd++;
+                if(classInd != 1)// && classInd!= 7)
+                    continue;
+                //modifyFeatureList();
+                findTestTrain(classInd);
+                findTopicalTest(trainFileName, trainHashtagList, classname, classInd-1);
+                findTopicalTest(testFileName, testHashtagList, classname, classInd-1);
+                findTopicalTest(trainFileName + "_t", trainHashtagList + "_t", classname, classInd-1);
+                findTopicalTest(trainFileName + "_v", trainHashtagList + "_v", classname, classInd-1);
+            }
         }
 
         ArrayList<Double> accuracies = new ArrayList<Double>();
@@ -168,6 +175,8 @@ public class LearnTopical {
         for (String classname : classNames) {
             bw.write("================================ " + classname + " ============================\n");
             classInd++;
+            if(classInd != 0)// && classInd != 6)
+                continue;
             accuracies = new ArrayList<Double>();
             precisions = new ArrayList<Double>();
             recalls = new ArrayList<Double>();
@@ -178,10 +187,10 @@ public class LearnTopical {
                 bestc = -1;
                 bestError = -1;
                 System.out.println("========================foldNum: " + i + "============================");
-                //String trainName = classname + "/fold" + i + "/" + trainFileName + "_t.csv";
-                //String testName = classname + "/fold" + i + "/" + trainFileName + "_v.csv";
-                String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
-                String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
+                String trainName = classname + "/fold" + i + "/" + trainFileName + "_t.csv";
+                String testName = classname + "/fold" + i + "/" + trainFileName + "_v.csv";
+                //String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
+                //String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
                 for (double c : cValues) {
                     ind = remInd;
                     predInd = remPredInd;
@@ -256,7 +265,7 @@ public class LearnTopical {
                 recalls.add(measures[2]);
                 fscores.add(measures[3]);
 
-                writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + modelFileName + "_" + c);
+                writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + i + "/bestc/" + modelFileName + "_" + c, classInd+1);
                 bw.write("****** TEST DATA with C value: " + c + " accuracy: " + df3.format(measures[0]) + " - precision: " + df3.format(measures[1]) + " - recall: " + df3.format(measures[2]) + " - f-score: " + df3.format(measures[3]) + "\n");
                 bw.flush();
             }
@@ -274,13 +283,13 @@ public class LearnTopical {
         }
         bw.close();
     }
-    public static void writeFeatureFile(String classname, String modelName) throws IOException, InterruptedException {
+    public static void writeFeatureFile(String classname, String modelName, int groupNum) throws IOException, InterruptedException {
 
         //build test/train data and hashtag lists
         for (int i = 0; i < numOfFolds; i++) {
             FileReader fileReaderA = new FileReader(modelName);
             BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-            FileReader fileReaderB = new FileReader(path + featurepath + indexFileName);
+            FileReader fileReaderB = new FileReader(path + featurepath + indexFileName + "_" + groupNum+".csv");
             BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
             FileWriter fw = new FileWriter(path + classname +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
             BufferedWriter bw = new BufferedWriter(fw);
@@ -306,10 +315,10 @@ public class LearnTopical {
         }
     }
 
-    public static String getFeatureNames(String featureLine) throws IOException {
+    public static String getFeatureNames(String featureLine, int groupNum) throws IOException {
         String[] splits;
         if(invFeatures == null) {
-            FileReader fileReaderB = new FileReader(path + featurepath + indexFileName);
+            FileReader fileReaderB = new FileReader(path + featurepath + indexFileName + "_" + groupNum + ".csv");
             BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
             invFeatures = new HashMap<>();
             String line;
@@ -370,48 +379,68 @@ public class LearnTopical {
         fileReaderA = new FileReader(path +featurepath + hashtagSetDate);
         bufferedReaderA = new BufferedReader(fileReaderA);
         Map<String, Long> hashtagDate = new HashMap<>();
+        Map<String, Long> featureMap;
         while ((line = bufferedReaderA.readLine()) != null) {
             splitSt = line.split(",");
             hashtagDate.put(splitSt[0].toLowerCase(), Long.valueOf(splitSt[1]));
         }
         bufferedReaderA.close();
-        Map<String, Long>[] hashtagSetDate = new Map[numOfTopics];
-        for(int groupNum = 1; groupNum <= classNames.length; groupNum++) {
-            fw = new FileWriter(path + classNames[groupNum-1] + "/" +"allHashtag_"+classNames[groupNum-1]+".csv");
-            bw = new BufferedWriter(fw);
-            hashtagSetDate[groupNum-1] = new HashMap<String, Long>();
-            for(String s: tweetUtil.getGroupHashtagList(groupNum, testFlag)){
-                bw.write(s + "\n");
-                if (hashtagDate.containsKey(s))
-                    hashtagSetDate[groupNum-1].put(s, hashtagDate.get(s));
-                else
-                    System.out.println("ERROR: " + s);
-            }
-            bw.close();
-        }
+
         //build test/train data and hashtag lists
         int classInd = -1, firstLabel;
         List<String[]> splitDates;
-        if(!testFlag)
-            splitDates = findSplitDates(hashtagSetDate);
-        else {
-            splitDates = new ArrayList<>();
-            splitDates.add(new String[]{String.valueOf(format.parse("Wed Nov 20 14:08:01 +0001 2013").getTime()), String.valueOf(format.parse("Thu Feb 20 15:08:01 +0001 2014").getTime())});
-        }
+
         int tweets2014Num = 0;long cDate;
         for(String classname : classNames) {
             System.out.println("==============================="+classname+"=============================");
             classInd++;
+            if(classInd != 0)// && classInd != 6)
+                continue;
+            featureMap = new HashMap<>();
+            fileReaderA = new FileReader(path +featurepath + indexFileName + "_"+(classInd+1)+".csv");
+            bufferedReaderA = new BufferedReader(fileReaderA);
+
+            while ((line = bufferedReaderA.readLine()) != null) {
+                splitSt = line.split(",");
+                if(splitSt[0].toLowerCase().equals("hashtag"))
+                    featureMap.put(splitSt[1].toLowerCase(), Long.valueOf(splitSt[2]));
+            }
+            bufferedReaderA.close();
+
+
+            fw = new FileWriter(path + classNames[classInd] + "/" +"allHashtag_"+classNames[classInd]+".csv");
+            bw = new BufferedWriter(fw);
+            HashMap<String, Long> hashtagSetDate = new HashMap<String, Long>();
+            for(String s: tweetUtil.getGroupHashtagList(classInd+1, testFlag)){
+                if (hashtagDate.containsKey(s)){// && featureMap.containsKey(s)) {
+                    hashtagSetDate.put(s, hashtagDate.get(s));
+                    bw.write(s + "\n");
+                }else
+                    System.out.println("ERROR: " + s);
+            }
+            bw.close();
+
+            String[] splitDatesStr = null;
+            if(!testFlag)
+                splitDatesStr = findSplitDates(hashtagSetDate, classInd+1);
+            else {
+                splitDates = new ArrayList<>();
+                splitDates.add(new String[]{String.valueOf(format.parse("Wed Nov 20 14:08:01 +0001 2013").getTime()), String.valueOf(format.parse("Thu Feb 20 15:08:01 +0001 2014").getTime())});
+                splitDatesStr = splitDates.get(0);
+            }
+
+            if(classInd != 0)// && classInd != 6)
+                continue;
             for (int i = 0; i < numOfFolds; i++) {
                 tweets2014Num = 0;
                 firstLabel = -1;
                 trainFileSize = 0;testFileSize = 0;trainValFileSize = 0;
                 //splitTimestamps[i] = format.parse(splitDates.get(classInd)[0]).getTime();
-                splitTimestamps[i] = Long.valueOf(splitDates.get(classInd)[1]);
-                tweetUtil.runStringCommand("perl -MList::Util -e 'print List::Util::shuffle <>' " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_index.csv" + " > " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_index1.csv");
-                tweetUtil.runStringCommand("rm -f " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_index.csv");
-                tweetUtil.runStringCommand("mv " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_index1.csv" + " " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_index.csv");
-                fileReaderA = new FileReader(path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_index.csv");
+                splitTimestamps[i] = Long.valueOf(splitDatesStr[1]);
+//                tweetUtil.runStringCommand("perl -MList::Util -e 'print List::Util::shuffle <>' " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_all.csv" + " > " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_all1.csv");
+//                tweetUtil.runStringCommand("rm -f " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_all.csv");
+//                tweetUtil.runStringCommand("mv " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_all1.csv" + " " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet_all.csv");
+                fileReaderA = new FileReader(path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_allTrainData_parquet_all.csv");
                 bufferedReaderA = new BufferedReader(fileReaderA);
                 fw = new FileWriter(path + classname + "/fold" + i + "/" + trainFileName+ "_t.csv");
                 bw = new BufferedWriter(fw);
@@ -442,7 +471,7 @@ public class LearnTopical {
                     if(cDate > 1388534339000l)
                         tweets2014Num++;
                     if (cDate <= splitTimestamps[i]) {
-                        if(cDate >= Long.valueOf(splitDates.get(classInd)[0])){
+                        if(cDate >= Long.valueOf(splitDatesStr[0])){
                             bwVal.write(cleanLine + "\n");
                             //bwValName.write(lineName + "\n");
                             trainValFileSize++;
@@ -488,8 +517,8 @@ public class LearnTopical {
 
                 trainFileSize = 0; testFileSize = 0; trainValFileSize = 0;
                 while ((line = bufferedReaderA.readLine()) != null) {
-                    if (hashtagSetDate[classInd].get(line) <= splitTimestamps[i]) {
-                        if(hashtagSetDate[classInd].get(line) >= Long.valueOf(splitDates.get(classInd)[0])){
+                    if (hashtagSetDate.get(line) != null && hashtagSetDate.get(line) <= splitTimestamps[i]) {
+                        if(hashtagSetDate.get(line) >= Long.valueOf(splitDatesStr[0])){
                             bwVal.write(line + "\n");
                             trainValFileSize++;
                         }else {
@@ -513,7 +542,7 @@ public class LearnTopical {
                 fw = new FileWriter(path + classname + "/fold" + i + "/" + splitTimestamps[i] + ".timestamp");
                 bw = new BufferedWriter(fw);
                 bw.write(splitTimestamps[i] + "\n");
-                bw.write(splitDates.get(classInd)[0] + "\n");
+                bw.write(splitDatesStr[0] + "\n");
                 bw.close();
             }
         }
@@ -521,38 +550,38 @@ public class LearnTopical {
             System.out.println(splitTimestamps[i]);
     }
 
-    private static List<String[]> findSplitDates(Map<String, Long>[] hashtagSetDate) {
+    private static String[] findSplitDates(Map<String, Long> hashtagSetDate, int groupNum) {
         long date50, date60;
         String[] dates;
         List<String[]> splitDates = new ArrayList<>(numOfTopics);
         int length, length50, length60, length100;
         List<Long> hashtagSet = new ArrayList<>();
-        for(int groupNum = 1; groupNum <= numOfTopics; groupNum++) {
-            hashtagSet = new ArrayList<>();
-            dates = new String[2];
-            hashtagSet.addAll(hashtagSetDate[groupNum - 1].values());
-            Collections.sort(hashtagSet);
-            length = hashtagSet.size();
-            length50 = (int) Math.ceil((double)length*percentageTrain);
-            if(Objects.equals(hashtagSet.get(length50), hashtagSet.get(length50 + 1)))
-                System.out.println("Equal");
-            length60 = (int)Math.ceil((double)length*percentageVal);
-            if(Objects.equals(hashtagSet.get(length60), hashtagSet.get(length60 + 1)))
-                System.out.println("Equal");
-            date50 = hashtagSet.get(length50);
-            date60 = hashtagSet.get(length60);
 
-            dates[0] = String.valueOf(date50);
-            dates[1] = String.valueOf(date60);
-            splitDates.add(dates);
-        }
-        return splitDates;
+        hashtagSet = new ArrayList<>();
+        dates = new String[2];
+        hashtagSet.addAll(hashtagSetDate.values());
+        Collections.sort(hashtagSet);
+        length = hashtagSet.size();
+        length50 = (int) Math.ceil((double)length*percentageTrain);
+        if(Objects.equals(hashtagSet.get(length50), hashtagSet.get(length50 + 1)))
+            System.out.println("Equal");
+        length60 = (int)Math.ceil((double)length*percentageVal);
+        if(Objects.equals(hashtagSet.get(length60), hashtagSet.get(length60 + 1)))
+            System.out.println("Equal");
+        date50 = hashtagSet.get(length50);
+        date60 = hashtagSet.get(length60);
+
+        dates[0] = String.valueOf(date50);
+        dates[1] = String.valueOf(date60);
+        return dates;
+        //splitDates.add(dates);
+        //return splitDates;
     }
 
-    public static void findTestTrain() throws IOException, ParseException {
+    public static void findTestTrain(int groupNum) throws IOException, ParseException {
         FileReader fileReaderA;
         BufferedReader bufferedReaderA;
-        fileReaderA = new FileReader(path + featurepath + hashtagFileName);
+        fileReaderA = new FileReader(path + featurepath + hashtagFileName + "_"+groupNum + ".csv");
         bufferedReaderA = new BufferedReader(fileReaderA);
         hashtagMap = new HashMap<>();
         String line;
@@ -572,92 +601,95 @@ public class LearnTopical {
     }
 
 
-    public static void findTopicalTest(String fileName, String hashtagListName) throws IOException, InterruptedException {
+    public static void findTopicalTest(String fileName, String hashtagListName, String classname, int classInd) throws IOException, InterruptedException {
         FileReader fileReaderA;
         BufferedReader bufferedReaderA;
         String line;
-        Set<Long> testHashtagIndexes;
+        //Set<Long> testHashtagIndexes;
+        Set<String> testHashtagTexts;
         String[] splits;
         FileWriter fwTest;
         BufferedWriter bwTest;
         boolean topical = false;
-        int classInd = -1;
         int counter = 0;
         String line2 = "";
         boolean flag = false;
         //String classname = "socialissues";{
-        for(String classname : classNames) {
-            classInd++;
-            counter = 0;
-            for (int i = 0; i < numOfFolds; i++) {
-                if(fileName.equals("testTrain_train__t")) {
-                    total[classInd][i] = 0;
-                    positives[classInd][i] = 0;
-                }else if(fileName.equals("testTrain_train__v")){
-                    totalVal[classInd][i] = 0;
-                    positivesVal[classInd][i] = 0;
-                }
-                fileReaderA = new FileReader(path + classname + "/fold" + i + "/" + hashtagListName +".csv");
-                bufferedReaderA = new BufferedReader(fileReaderA);
-                testHashtagIndexes = new HashSet<>();
-                while ((line = bufferedReaderA.readLine()) != null) {
-                    testHashtagIndexes.add(hashtagMap.get(line));
-                    //System.out.println(hashtagMap.get(line));
-                }
-                bufferedReaderA.close();
-                System.out.println("========================ClassName - foldNum: " + classname +"-"+ i + "-" + fileName +  "============================");
-                fileReaderA = new FileReader(path + classname + "/fold" + i + "/" +  fileName  + ".csv");
-                bufferedReaderA = new BufferedReader(fileReaderA);
-                fwTest = new FileWriter(path + classname + "/fold" + i + "/" +  fileName  + "_edited.csv");
-                bwTest = new BufferedWriter(fwTest);
-                while ((line = bufferedReaderA.readLine()) != null) {
-                    if(fileName.equals("testTrain_train__t"))
-                        total[classInd][i]++;
-                    else if(fileName.equals("testTrain_train__v"))
-                        totalVal[classInd][i]++;
-
-                    topical = false;
-                    if(line.length() == 1) {
-                        bwTest.write(line + "\n");
-                        continue;
-                    }
-                    if(line.substring(0,1).equals("1")){
-                        flag = true;
-                        line2 = line;
-                    }
-                    line2 = line;
-                    line = line.substring(2, line.length());
-                    splits = line.split(":1 ");
-                    splits[splits.length-1] = splits[splits.length-1].split(":1")[0];
-                    for(int k = 0; k < splits.length; k++) {
-                        if(splits[k].equals("400287:"))
-                            continue;
-                        if (testHashtagIndexes.contains(Long.valueOf(splits[k]))) {
-                            topical = true;
-                            if(hashtagListName.equals("testTrain_train__t") && total[classInd][i] == 1)
-                                System.out.println("Error: First label is 1");
-                            break;
-                        }
-                    }
-                    //if(flag != topical) System.out.println(line2);
-                    flag = false;
-                    if(topical) {
-                        counter++;
-                        bwTest.write("1 ");
-                        if(fileName.equals("testTrain_train__t"))
-                            positives[classInd][i]++;
-                        else if(fileName.equals("testTrain_train__v"))
-                            positivesVal[classInd][i]++;
-                    }else
-                        bwTest.write("0 ");
-                    bwTest.write(line + "\n");
-                }
-                System.out.println(counter);
-                bufferedReaderA.close();
-                bwTest.close();
-                tweetUtil.runStringCommand("rm -f " + path + classname + "/fold" + i + "/" + fileName + ".csv");
-                tweetUtil.runStringCommand("mv " + path + classname + "/fold" + i + "/" +  fileName  + "_edited.csv " + path + classname + "/fold" + i + "/" +  fileName  + ".csv");
+        counter = 0;
+        String textLine = "";
+        for (int i = 0; i < numOfFolds; i++) {
+            if(fileName.equals("testTrain_train__t")) {
+                total[classInd][i] = 0;
+                positives[classInd][i] = 0;
+            }else if(fileName.equals("testTrain_train__v")){
+                totalVal[classInd][i] = 0;
+                positivesVal[classInd][i] = 0;
             }
+            fileReaderA = new FileReader(path + classname + "/fold" + i + "/" + hashtagListName +".csv");
+            bufferedReaderA = new BufferedReader(fileReaderA);
+            //testHashtagIndexes = new HashSet<>();
+            testHashtagTexts = new HashSet<>();
+            while ((line = bufferedReaderA.readLine()) != null) {
+                testHashtagTexts.add(line);
+                //testHashtagIndexes.add(hashtagMap.get(line));
+                //System.out.println(hashtagMap.get(line));
+            }
+            bufferedReaderA.close();
+            System.out.println("========================ClassName - foldNum: " + classname +"-"+ i + "-" + fileName +  "============================");
+            fileReaderA = new FileReader(path + classname + "/fold" + i + "/" +  fileName  + ".csv");
+            bufferedReaderA = new BufferedReader(fileReaderA);
+            fwTest = new FileWriter(path + classname + "/fold" + i + "/" +  fileName  + "_edited.csv");
+            bwTest = new BufferedWriter(fwTest);
+            while ((line = bufferedReaderA.readLine()) != null) {
+                textLine = bufferedReaderA.readLine();
+                if(fileName.equals("testTrain_train__t"))
+                    total[classInd][i]++;
+                else if(fileName.equals("testTrain_train__v"))
+                    totalVal[classInd][i]++;
+
+                topical = false;
+                if(line.length() == 1) {
+                    bwTest.write(line + "\n");
+                    continue;
+                }
+                if(line.substring(0,1).equals("1")){
+                    flag = true;
+                    line2 = line;
+                }
+                line2 = line;
+                line = line.substring(2, line.length());
+                textLine = textLine.substring(2, textLine.length());
+                splits = textLine.split(" ");
+                //splits[splits.length-1] = splits[splits.length-1].split(":")[0];
+                for(int k = 0; k < splits.length; k++) {
+                    if(splits[k].split(":").length < 2)
+                        continue;
+                    //if (testHashtagIndexes.contains(Long.valueOf(splits[k]))) {
+                    if (testHashtagTexts.contains(splits[k].split(":")[1])) {
+                        topical = true;
+                        if(hashtagListName.equals("testTrain_train__t") && total[classInd][i] == 1)
+                            System.out.println("Error: First label is 1");
+                        break;
+                    }
+                }
+                //if(flag != topical) System.out.println(line2);
+                flag = false;
+                if(topical) {
+                    counter++;
+                    bwTest.write("1 ");
+                    if(fileName.equals("testTrain_train__t"))
+                        positives[classInd][i]++;
+                    else if(fileName.equals("testTrain_train__v"))
+                        positivesVal[classInd][i]++;
+                }else
+                    bwTest.write("0 ");
+                bwTest.write(line + "\n");
+            }
+            System.out.println(counter);
+            bufferedReaderA.close();
+            bwTest.close();
+            tweetUtil.runStringCommand("rm -f " + path + classname + "/fold" + i + "/" + fileName + ".csv");
+            tweetUtil.runStringCommand("mv " + path + classname + "/fold" + i + "/" + fileName + "_edited.csv " + path + classname + "/fold" + i + "/" + fileName + ".csv");
         }
     }
 

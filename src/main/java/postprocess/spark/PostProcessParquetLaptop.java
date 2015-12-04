@@ -60,7 +60,7 @@ public class PostProcessParquetLaptop implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = false;
+        boolean convertParquet = true;
         boolean fixNumbers = false;
         boolean runScript = false;
         boolean makeScatterFiles = false;
@@ -70,8 +70,8 @@ public class PostProcessParquetLaptop implements Serializable {
         boolean readLearningResults = false;
         boolean readNonzeroLearningWeights = false;
         boolean readTables = false;
-        boolean readNonzeroBaselineMixedWeights = true;
-        boolean readNonzeroBaselineMixedWeights2 = true;
+        boolean readNonzeroBaselineMixedWeights = false;
+        boolean readNonzeroBaselineMixedWeights2 = false;
 
         if(readTables) {
             SparkConf sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
@@ -107,38 +107,50 @@ public class PostProcessParquetLaptop implements Serializable {
         }
 
         if(convertParquet) {
-            boolean readTestTrain = false;
+            boolean readTestTrain = true;
             String topic = configRead.getGroupNames()[groupNum-1];
             SparkConf sparkConfig;
             if (local) {
                 tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV");
                 tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic);
 
-                ///outputCSVPath = "ClusterResults/BaselinesRes/"+topic+"/";
+                outputCSVPath = "/Volumes/SocSensor/Zahra/Dec3/";
                 FileReader fileReaderA;
                 BufferedReader bufferedReaderA;
-                fileReaderA = new FileReader("Data/Learning/Topics/featureData/featureIndex_bu.csv");
+
+                if(testFlag){
+                    fileReaderA = new FileReader("TestSet/Data/Data/Learning/Topics/"+topic+"/featureData/featureIndex_"+groupNum+".csv");
+                    outputCSVPath = "TestSet/Out/TestTrainData/"+topic+"/";
+                }else
+                    fileReaderA = new FileReader("Data/Learning/Topics/"+topic+"/featureData/featureIndex_"+groupNum+".csv");
                 bufferedReaderA = new BufferedReader(fileReaderA);
                 hashtagMap = new HashMap<>();
                 String line;
                 int featCount = 0;
                 String[] feats;
+                int featureInd = 1, numberInd = 2;
                 while ((line = bufferedReaderA.readLine()) != null) {
                     featCount++;
                     feats = line.split(",");
-                    if(featCount < 361789)
-                        hashtagMap.put("from:"+feats[0], Long.valueOf(feats[1]));
-                    else if(featCount < 676753)
-                        hashtagMap.put("term:"+feats[0], Long.valueOf(feats[1]));
-                    else if(featCount < 864339)
-                        hashtagMap.put("hashtag:"+feats[0], Long.valueOf(feats[1]));
-                    else if(featCount < 864339+244478)
-                        hashtagMap.put("mention:"+feats[0], Long.valueOf(feats[1]));
-                    else
-                        hashtagMap.put("location:"+feats[0], Long.valueOf(feats[1]));
+                    switch (feats[0]) {
+                        case "from":
+                            hashtagMap.put("from:" + feats[featureInd], Long.valueOf(feats[numberInd]));
+                            break;
+                        case "term":
+                            hashtagMap.put("term:" + feats[featureInd], Long.valueOf(feats[numberInd]));
+                            break;
+                        case "hashtag":
+                            hashtagMap.put("hashtag:" + feats[featureInd], Long.valueOf(feats[numberInd]));
+                            break;
+                        case "mention":
+                            hashtagMap.put("mention:" + feats[featureInd], Long.valueOf(feats[numberInd]));
+                            break;
+                        case "location":
+                            hashtagMap.put("location:" + feats[featureInd], Long.valueOf(feats[numberInd]));
+                            break;
+                    }
                     //hashtagMap.put(line.split(",")[0], Long.valueOf(line.split(",")[1]));
                 }
-                bufferedReaderA.close();
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
             } else
                 sparkConfig = new SparkConf().setAppName("PostProcessParquet");
@@ -149,7 +161,10 @@ public class PostProcessParquetLaptop implements Serializable {
             File folder1 = new File(outputCSVPath);
             ArrayList<String> fileNames1 = listFilesForFolder(folder1);
             for (String filename1 : fileNames1) {
-                tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic +"/"+filename1);
+                if(testFlag)
+                    tweetUtil.runStringCommand("mkdir " + "TestSet/Out/TestTrainData/" + topic +"/"+filename1);
+                else
+                    tweetUtil.runStringCommand("mkdir " + "/Volumes/SocSensor/Zahra/Dec3/BaselinesResCSV/" +filename1);
                 File folder = new File(outputCSVPath+"/"+filename1);
                 ArrayList<String> fileNames = listFilesForFolder(folder);
                 DataFrame res;
@@ -165,9 +180,10 @@ public class PostProcessParquetLaptop implements Serializable {
                         if (filename.contains("strings"))// && !filename.contains("_4_")&& !filename.contains("_5_")&& !filename.contains("_6_"))
                             lineNumbers[ind] = readResults2Strings(res, sparkContext, ind, filename);
                         else {
-                            lineNumbers[ind] = readResults2(res, sparkContext, ind, filename);
-                            lineNumbers[ind] = readResults2Index(res, sparkContext, ind, filename);
-                            String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
+                            lineNumbers[ind] = readResults2(res, sparkContext, ind, filename, outputCSVPath + "TestTrainDataCSV");
+                            lineNumbers[ind] = readResults2Index(res, sparkContext, ind, filename, outputCSVPath + "TestTrainDataCSV");
+                            String outputCSVPath2 = "";
+                            outputCSVPath2 = "/Volumes/SocSensor/Zahra/Dec3/TestTrainDataCSV/";
                             FileReader fileReaderA = new FileReader(outputCSVPath2 + "out_" + filename + "_index.csv");
                             BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
                             FileReader fileReaderB = new FileReader(outputCSVPath2 + "out_" + filename + ".csv");
@@ -200,7 +216,7 @@ public class PostProcessParquetLaptop implements Serializable {
     private static void readNonzeroLearningWeights() throws IOException, InterruptedException {
         String path = "TestSet/Data/Data/Learning/Topics/";
         if(!testFlag)
-            path = "ClusterResults/Nov27Res/Baselines/";
+            path = "Data/Learning/Topics/";
         String logisticMethod = "l2_lr";
         FileReader fileReaderA = new FileReader(path+ configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"/featureWeights.csv");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
@@ -242,15 +258,15 @@ public class PostProcessParquetLaptop implements Serializable {
     }
 
     private static void readBaselineResults(boolean local) throws IOException, InterruptedException {
-        boolean readTrecResults = false;
+        boolean readTrecResults = true;
         String outputPath = "";
         String topic = configRead.getGroupNames()[groupNum-1];
         SparkConf sparkConfig;
         if (local) {
             tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV");
             tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic);
-            outputCSVPath = "ClusterResults/Nov27Res/Out/BaselinesRes_G7/Baselines/Topics/"+topic+"/";
-            outputPath = "ClusterResults/Nov27Res/Out/BaselinesRes_G7/BaselinesOut/Topics/";
+            outputCSVPath = "ClusterResults/Nov30/BaselinesRes/Baselines/Topics/"+topic+"/";
+            outputPath = "ClusterResults/Nov30/BaselinesRes/Out/Baselines/Topics/";
             if(readTrecResults) {
                 FileWriter fwTrec = new FileWriter(outputPath + "/" + "trecout_all_" + topic + ".csv");
                 bwTrec = new BufferedWriter(fwTrec);
@@ -263,7 +279,6 @@ public class PostProcessParquetLaptop implements Serializable {
         File folder1 = new File(outputCSVPath);
         ArrayList<String> fileNames1 = listFilesForFolder(folder1);
         for (String filename1 : fileNames1) {
-            if(filename1.equals("MI")) continue;
             tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic +"/"+filename1);
             File folder = new File(outputCSVPath+"/"+filename1);
             ArrayList<String> fileNames = listFilesForFolder(folder);
@@ -272,7 +287,7 @@ public class PostProcessParquetLaptop implements Serializable {
             int[] lineNumbers = new int[fileNames.size()];
             for (String filename : fileNames) {
                 ind++;
-                if(filename.contains("_realCSV") || filename.contains("_all")) continue;
+                if(filename.contains("_realCSV")) continue;
                 //if (filename.contains(".csv") || filename.contains("_csv") || filename.equals("out")) continue;
                 System.out.println(outputCSVPath + "/" + filename1+"/" + filename);
                 if(readTrecResults){
@@ -300,8 +315,8 @@ public class PostProcessParquetLaptop implements Serializable {
             bwTrec.close();
     }
     private static void readLearningResults(boolean local) throws IOException, InterruptedException {
-        String clusterPath = "ClusterResults/Nov10_50percentSplit/LearningRes/Learning/Topics/";
-        String clusterOutPath = "ClusterResults/Nov10_50percentSplit/Out/LearningRes/Topics/";
+        String clusterPath = "ClusterResults/Nov30/BaselinesRes/Mixed5000/Topics/";
+        String clusterOutPath = "ClusterResults/Nov30/BaselinesRes/Out/Mixed5000/Topics/";
         if(testFlag) {
             clusterPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
             clusterOutPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
@@ -334,14 +349,14 @@ public class PostProcessParquetLaptop implements Serializable {
             if(readTrecResults){
                 readTrecResults(clusterPath+topic+"/",filename1, bwTrec, topic, filename1);
             }else {
-                if(!filename1.contains("_all")) continue;
+                //if(!filename1.contains("_all")) continue;
                 res = sqlContext.read().parquet(outputCSVPath + "/" + filename1);
                 if(filename1.contains("_noTrainTweet_")) {
-                    //readBaselineResultFiles(null, res, filename1, clusterOutPath + topic + "/");
-                    readLearningResultFiles(sqlContext, null, res, filename1, clusterOutPath + topic + "/", true);
+                    readBaselineResultFiles(null, res, filename1, clusterOutPath + topic + "/");
+                    //readLearningResultFiles(sqlContext, null, res, filename1, clusterOutPath + topic + "/", true);
                 }else{
-                    //readBaselineResultFiles(res, null, filename1, clusterOutPath + topic + "/");
-                    readLearningResultFiles(sqlContext, res, null, filename1, clusterOutPath + topic + "/", true);
+                    readBaselineResultFiles(res, null, filename1, clusterOutPath + topic + "/");
+                    //readLearningResultFiles(sqlContext, res, null, filename1, clusterOutPath + topic + "/", true);
                 }
                 /*res = sqlContext.read().parquet(outputCSVPath + "/" + filename1);
                 System.out.println("LOOK: ");
@@ -383,7 +398,7 @@ public class PostProcessParquetLaptop implements Serializable {
         bw.close();
     }
 
-    public static int readResults2(DataFrame results, JavaSparkContext sc, int index, String filename) throws IOException, InterruptedException {
+    public static int readResults2(DataFrame results, JavaSparkContext sc, int index, String filename, String outputCSVPath2) throws IOException, InterruptedException {
         /*
         * root
          |-- username: string (nullable = true)
@@ -396,10 +411,10 @@ public class PostProcessParquetLaptop implements Serializable {
          |-- topical: integer (nullable = true)
 
         */
-        String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
+        //String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
 
         final Accumulator<Integer> accumulator = sc.accumulator(0);
-        JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {
+        JavaRDD strRes = results.select("username", "term", "hashtag", "mentionee", "location", "time", "tid").javaRDD().map(new Function<Row, String>() {
             @Override
             public String call(Row row) throws Exception {
                 String topical = "";
@@ -435,7 +450,7 @@ public class PostProcessParquetLaptop implements Serializable {
                 }
 
                 if (row.length() == 7)
-                    return out + " " + time;
+                    return "-1" + out + " " + time + " " + tid;
                 if (topical.equals("1"))
                     accumulator.add(1);
                 if (out.length() > 0) {
@@ -473,7 +488,7 @@ public class PostProcessParquetLaptop implements Serializable {
         return numberOfLines;
     }
 
-    public static int readResults2Index(DataFrame results, JavaSparkContext sc, int index, String filename) throws IOException, InterruptedException {
+    public static int readResults2Index(DataFrame results, JavaSparkContext sc, int index, String filename, String outputCSVPath2) throws IOException, InterruptedException {
         /*
         * root
          |-- username: string (nullable = true)
@@ -487,13 +502,13 @@ public class PostProcessParquetLaptop implements Serializable {
 
         */
         final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]\\)";//"\\p{InEmoticons}";
-        String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
+        //String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
 
         final Accumulator<Integer> accumulator = sc.accumulator(0);
-        JavaRDD strRes = results.javaRDD().map(new Function<Row, String>() {
+        JavaRDD strRes = results.select("username", "term", "hashtag", "mentionee", "location", "time", "tid", "topical").javaRDD().map(new Function<Row, String>() {
             @Override
             public String call(Row row) throws Exception {
-                String topical = ""; String[] features;
+                String topical = "-1"; String[] features;
                 String out = "", time = "", tid = "", out2 = "";
                 if(row.length() > 7 && row.get(7) != null) {
                     topical = row.get(7).toString();
@@ -652,7 +667,7 @@ public class PostProcessParquetLaptop implements Serializable {
         return numberOfLines;
     }
 
-    public static void readLearningResultFiles(SQLContext sqlContext, DataFrame resultsTestTrain, final DataFrame resultsNoTrain, final String filename, String outPath, final boolean flagLearningRes) throws IOException, InterruptedException {
+    public static void readLearningResultFiles(SQLContext sqlContext, DataFrame resultsTestTrain, final DataFrame resultsNoTrain, final String filename, String outPath, boolean flagLearningRes) throws IOException, InterruptedException {
         JavaRDD<String> strRes;
         final List<String> trainHashtags = tweetUtil.getTestTrainGroupHashtagList(groupNum, testFlag, true);
         final List<String> testHashtags = tweetUtil.getTestTrainGroupHashtagList(groupNum, testFlag, false);
@@ -1695,14 +1710,14 @@ public class PostProcessParquetLaptop implements Serializable {
             TweetUtil.runStringCommand("mkdir " + path);
             path += "Data/";
             TweetUtil.runStringCommand("mkdir " + path);
-            path+= "Learning/";
+            path+= "Mixed5000/";
             TweetUtil.runStringCommand("mkdir " + path);
             path += "Topics/";
             TweetUtil.runStringCommand("mkdir " + path);
             TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1]);
             TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/");
             TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod);;
-            FileReader fileReaderA = new FileReader(outputPath + "Baselines/" + configRead.getGroupNames()[groupNum - 1] + "/" + algName + "/Mixed/featureWeights.csv/part-00000");
+            FileReader fileReaderA = new FileReader(outputPath + "Baselines/" + configRead.getGroupNames()[groupNum - 1] + "/" + algName + "/Mixed5000/featureWeights.csv/part-00000");
 
             BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
             String line;
@@ -1747,13 +1762,19 @@ public class PostProcessParquetLaptop implements Serializable {
     }
 
     private static void readNonzeroBaselineMixedWeights2() throws IOException, InterruptedException {
+        boolean flag5000 = true;
+        String logisticMethod;
+        if(flag5000)
+            logisticMethod = "learningFeatures5000";
+        else
+            logisticMethod = "learningFeatures";
         String path = "TestSet/Data/Data/Learning/Topics/";
         if(!testFlag)
             path = "ClusterResults/Nov27Res/Baselines/Out/";
         TweetUtil.runStringCommand("mkdir " + path);
         String outputPath = "ClusterResults/Nov27Res/";
 
-        String logisticMethod = "learningFeatures";
+
         String[] algNames = new String[]{ "MI"};//"topical", "topicalLog", "MILog", "CP", "CPLog",
 
         for (String algName : algNames) {
@@ -1768,11 +1789,11 @@ public class PostProcessParquetLaptop implements Serializable {
             TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1]);
             TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/");
             TweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod);;
-            FileReader fileReaderA = new FileReader(outputPath + "Baselines/" + configRead.getGroupNames()[groupNum - 1] + "/" + algName + "/Mixed/featureWeights.csv/part-00000");
+            FileReader fileReaderA = new FileReader(outputPath + "Baselines/" + configRead.getGroupNames()[groupNum - 1] + "/" + algName + "/Mixed"+((flag5000 == true)? 5000:"")+"/featureWeights.csv/part-00000");
 
             BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
             String line;
-            FileWriter fw = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv");
+            FileWriter fw = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featuresList_"+groupNum+".csv");
             BufferedWriter bw = new BufferedWriter(fw);
             FileWriter fw1 = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featureWeights_from.csv");
             BufferedWriter bwFrom = new BufferedWriter(fw1);
@@ -1784,9 +1805,10 @@ public class PostProcessParquetLaptop implements Serializable {
             BufferedWriter bwMention = new BufferedWriter(fw4);
             FileWriter fw5 = new FileWriter(path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/featureWeights_term.csv");
             BufferedWriter bwTerm = new BufferedWriter(fw5);
+            int counter = 1;
             while ((line = bufferedReaderA.readLine()) != null) {
                 if (!line.split(",")[2].equals("0")) {
-                    bw.write(line + "\n");
+                    bw.write(line.split(",")[0].toLowerCase() + "," + line.split(",")[1]+ "," + counter +  "\n");
                     if (line.split(",")[0].equals("From"))
                         bwFrom.write(line.split(",")[1] + ",");
                     if (line.split(",")[0].equals("Hashtag"))
@@ -1797,6 +1819,7 @@ public class PostProcessParquetLaptop implements Serializable {
                         bwMention.write(line.split(",")[1] + ",");
                     if (line.split(",")[0].equals("Term"))
                         bwTerm.write(line.split(",")[1] + ",");
+                    counter++;
                 }
             }
             bw.close();
