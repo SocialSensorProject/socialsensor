@@ -5,13 +5,11 @@ import org.apache.spark.Accumulator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
-import org.apache.spark.sql.DataFrame;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
@@ -42,7 +40,7 @@ public class PostProcessParquetLaptop implements Serializable {
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
     private static Map<String, Long> hashtagMap = new HashMap<>();
-    final static int groupNum = 1;
+    final static int groupNum = 7;
     private static BufferedWriter bwTrec;
     private static boolean testFlag ;
 
@@ -60,7 +58,7 @@ public class PostProcessParquetLaptop implements Serializable {
         outputCSVPath = configRead.getOutputCSVPath();
         boolean local = configRead.isLocal();
         boolean calcNoZero = false;
-        boolean convertParquet = true;
+        boolean convertParquet = false;
         boolean fixNumbers = false;
         boolean runScript = false;
         boolean makeScatterFiles = false;
@@ -72,12 +70,16 @@ public class PostProcessParquetLaptop implements Serializable {
         boolean readTables = false;
         boolean readNonzeroBaselineMixedWeights = false;
         boolean readNonzeroBaselineMixedWeights2 = false;
+        boolean findTestTrainDataTids = true;
 
-        if(readTables) {
+        if(readTables || findTestTrainDataTids) {
             SparkConf sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
             JavaSparkContext sparkContext = new JavaSparkContext(sparkConfig);
             SQLContext sqlContext = new SQLContext(sparkContext);
-            readResultsCSV2(sqlContext);
+            if(readTables)
+                readResultsCSV2(sqlContext);
+            else if(findTestTrainDataTids)
+                findTestTrainDataFeatures(sqlContext);//findTestTrainDataTids();
         }
 
         if(readNonzeroBaselineMixedWeights)
@@ -114,7 +116,7 @@ public class PostProcessParquetLaptop implements Serializable {
                 tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV");
                 tweetUtil.runStringCommand("mkdir " + "ClusterResults/BaselinesResCSV/" + topic);
 
-                outputCSVPath = "/Volumes/SocSensor/Zahra/Dec3/";
+                outputCSVPath = "ClusterResults/Nov30/TestTrainData/" + topic + "/";
                 FileReader fileReaderA;
                 BufferedReader bufferedReaderA;
 
@@ -122,7 +124,7 @@ public class PostProcessParquetLaptop implements Serializable {
                     fileReaderA = new FileReader("TestSet/Data/Data/Learning/Topics/"+topic+"/featureData/featureIndex_"+groupNum+".csv");
                     outputCSVPath = "TestSet/Out/TestTrainData/"+topic+"/";
                 }else
-                    fileReaderA = new FileReader("Data/Learning/Topics/"+topic+"/featureData/featureIndex_"+groupNum+".csv");
+                    fileReaderA = new FileReader("Data/Learning/Topics/featureData/featureIndex_"+groupNum+".csv");
                 bufferedReaderA = new BufferedReader(fileReaderA);
                 hashtagMap = new HashMap<>();
                 String line;
@@ -160,30 +162,31 @@ public class PostProcessParquetLaptop implements Serializable {
             // Read all parquet part by part results files and combine them into 1 csv file for each iteration per group
             File folder1 = new File(outputCSVPath);
             ArrayList<String> fileNames1 = listFilesForFolder(folder1);
-            for (String filename1 : fileNames1) {
-                if(testFlag)
-                    tweetUtil.runStringCommand("mkdir " + "TestSet/Out/TestTrainData/" + topic +"/"+filename1);
-                else
-                    tweetUtil.runStringCommand("mkdir " + "/Volumes/SocSensor/Zahra/Dec3/BaselinesResCSV/" +filename1);
-                File folder = new File(outputCSVPath+"/"+filename1);
-                ArrayList<String> fileNames = listFilesForFolder(folder);
+            //for (String filename1 : fileNames1) {
+                //if(!filename1.equals("TestTrainData")) continue;
+//                if(testFlag)
+//                    tweetUtil.runStringCommand("mkdir " + "TestSet/Out/TestTrainData/" + topic +"/"+filename1);
+//                else
+//                    tweetUtil.runStringCommand("mkdir " + "ClusterResults/Nov30/BaselinesResCSV/" +filename1);
+//                File folder = new File(outputCSVPath+"/"+filename1);
+//                ArrayList<String> fileNames = listFilesForFolder(folder);
                 DataFrame res;
                 int ind = -1;
-                int[] lineNumbers = new int[fileNames.size()];
-                for (String filename : fileNames) {
+                int[] lineNumbers = new int[fileNames1.size()];
+                for (String filename : fileNames1) {
                     ind++;
                     if (filename.contains(".csv") || filename.contains("_csv") || filename.equals("out") || filename.contains("trecout_all_"))
                         continue;
-                    System.out.println(outputCSVPath + "/" + filename1+"/" + filename);
-                    res = sqlContext.read().parquet(outputCSVPath + "/" + filename1 + "/" + filename);
+                    System.out.println(outputCSVPath + "/" + filename);
+                    res = sqlContext.read().parquet(outputCSVPath + "/" + filename);
                     if (readTestTrain) {
                         if (filename.contains("strings"))// && !filename.contains("_4_")&& !filename.contains("_5_")&& !filename.contains("_6_"))
                             lineNumbers[ind] = readResults2Strings(res, sparkContext, ind, filename);
                         else {
-                            lineNumbers[ind] = readResults2(res, sparkContext, ind, filename, outputCSVPath + "TestTrainDataCSV");
-                            lineNumbers[ind] = readResults2Index(res, sparkContext, ind, filename, outputCSVPath + "TestTrainDataCSV");
+                            lineNumbers[ind] = readResults2(res, sparkContext, ind, filename, outputCSVPath + "TestTrainDataCSV/");
+                            lineNumbers[ind] = readResults2Index(res, sparkContext, ind, filename, outputCSVPath + "TestTrainDataCSV/");
                             String outputCSVPath2 = "";
-                            outputCSVPath2 = "/Volumes/SocSensor/Zahra/Dec3/TestTrainDataCSV/";
+                            outputCSVPath2 = outputCSVPath + "/TestTrainDataCSV/";
                             FileReader fileReaderA = new FileReader(outputCSVPath2 + "out_" + filename + "_index.csv");
                             BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
                             FileReader fileReaderB = new FileReader(outputCSVPath2 + "out_" + filename + ".csv");
@@ -201,7 +204,7 @@ public class PostProcessParquetLaptop implements Serializable {
                         }
                     }
                 }
-            }
+            //}
         }
 
         if(runScript) {
@@ -214,7 +217,7 @@ public class PostProcessParquetLaptop implements Serializable {
     }
 
     private static void readNonzeroLearningWeights() throws IOException, InterruptedException {
-        String path = "TestSet/Data/Data/Learning/Topics/";
+        String path = "Data/Learning/Topics/";
         if(!testFlag)
             path = "Data/Learning/Topics/";
         String logisticMethod = "l2_lr";
@@ -315,8 +318,8 @@ public class PostProcessParquetLaptop implements Serializable {
             bwTrec.close();
     }
     private static void readLearningResults(boolean local) throws IOException, InterruptedException {
-        String clusterPath = "ClusterResults/Nov30/BaselinesRes/Mixed5000/Topics/";
-        String clusterOutPath = "ClusterResults/Nov30/BaselinesRes/Out/Mixed5000/Topics/";
+        String clusterPath = "ClusterResults/Nov30/MixedLearning/Topics/";
+        String clusterOutPath = "ClusterResults/Nov30/MixedLearning/Out/Topics/";
         if(testFlag) {
             clusterPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
             clusterOutPath = "TestSet/Out/BaselinesRes/Learning/Topics/";
@@ -412,6 +415,7 @@ public class PostProcessParquetLaptop implements Serializable {
 
         */
         //String outputCSVPath2 = "ClusterResults/TestTrainDataCSV/";
+        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]\\)";//"\\p{InEmoticons}";
 
         final Accumulator<Integer> accumulator = sc.accumulator(0);
         JavaRDD strRes = results.select("username", "term", "hashtag", "mentionee", "location", "time", "tid").javaRDD().map(new Function<Row, String>() {
@@ -438,7 +442,11 @@ public class PostProcessParquetLaptop implements Serializable {
                         out += "mention:" + ss + " ";
                 }
                 if (row.get(4) != null && !row.get(4).toString().equals("null")) { // LOCATION Feature
-                    out += "location:" + row.getString(4) + " ";
+                    String loc = row.getString(4);
+                    Matcher matcher = Pattern.compile(emo_regex2).matcher(loc);
+                    loc = matcher.replaceAll("").trim();
+                    loc = loc.toLowerCase().replace(" ", "");
+                    out += "location:"+loc+ " ";
                 }
                 if (row.get(5) != null && !row.get(5).toString().equals("null")) { // TIME Feature
                     //time += " " + format.format(row.getLong(4));
@@ -1833,6 +1841,134 @@ public class PostProcessParquetLaptop implements Serializable {
         //TweetUtil.runScript("sort -t',' -rn -k3,3 " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv");
         //TweetUtil.runScript("rm -f " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
         //TweetUtil.runScript("mv " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod + "/nonZero_featureWeights1.csv > " + path + configRead.getGroupNames()[groupNum - 1] + "/fold0/" + logisticMethod+"/nonZero_featureWeights.csv");
+    }
+
+    public static void findTestTrainDataTids() throws IOException, InterruptedException {
+        String path = "Data/Learning/Topics/";
+        BufferedReader bufferedReader;
+        FileReader fr;
+        String line;
+        String[] splits;
+        FileWriter fw;
+        BufferedWriter bw;
+        int tweetCounter;
+        for (int gNum = 1; gNum <= 10; gNum++){
+            tweetCounter = 0;
+            fr = new FileReader(path + "out_tweet_hashtag_user_mention_term_time_location_"+gNum+"_allInnerJoins_parquet_index.csv");
+            tweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids");
+            fw = new FileWriter(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tids.csv");
+            bw = new BufferedWriter(fw);
+            bufferedReader = new BufferedReader(fr);
+
+            while ((line = bufferedReader.readLine()) != null) {
+                splits = line.split(" ");
+                bw.write(splits[splits.length-1] + "\n");
+                tweetCounter++;
+            }
+            bw.close();
+            bufferedReader.close();
+            System.out.println(" Number of Tweets for " + configRead.getGroupNames()[gNum - 1] + " is : " + tweetCounter);
+        }
+    }
+
+    public static void findTestTrainDataFeatures(SQLContext sqlContext) throws IOException, InterruptedException {
+        DataFrame df;
+        StructField[] fields = {
+                DataTypes.createStructField("tid", DataTypes.LongType, true),
+                DataTypes.createStructField("hashtag", DataTypes.StringType, true),
+                DataTypes.createStructField("hashtagGrouped", DataTypes.StringType, true),
+                DataTypes.createStructField("time", DataTypes.LongType, true)
+        };
+        String path = "Data/Learning/Topics/";
+        for (int gNum = 1; gNum <= 1; gNum++) {
+            df = sqlContext.read().parquet("/Volumes/SocSensor/Zahra/ClusterResults_Oct29/TestTrainData/" + "tweet_hashtag_user_mention_term_time_location_"+gNum+"_allInnerJoins_parquet");
+            df.select("tid", "username", "hashtag", "time").distinct().write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_user_hashtag_grouped_parquet");
+            df.select("tid", "mentionee", "hashtag", "time").distinct().write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_mention_hashtag_grouped_parquet");
+            df.select("tid", "location", "hashtag", "time").distinct().write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_location_hashtag_grouped_parquet");
+            df.select("tid", "term", "hashtag", "time").distinct().write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_term_hashtag_grouped_parquet");
+            sqlContext.createDataFrame(df.select("tid", "hashtag", "time").distinct().javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
+                @Override
+                public Iterable<Row> call(Row row) throws Exception {
+                    List<Row> list = new ArrayList<Row>();
+                    if(row.get(1) == null)
+                        return list;
+                    String[] splits = row.getString(1).split(" ");
+                    if(row.getLong(0) == 18130222l)
+                        System.out.println("ThIS");
+                    for (String s : splits)
+                        list.add(RowFactory.create(row.getLong(0), s, row.getString(1), row.getLong(2)));
+                    return list;
+                }
+            }), new StructType(fields)).write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_hashtag_hashtag_grouped");
+        }
+
+/*
+        BufferedReader bufferedReader;
+        FileReader fr;
+        String line;
+        String[] splits, splits2;
+        FileWriter fwUser, fwLoc, fwMention, fwHashtag, fwTerm;
+        BufferedWriter bwUser, bwLoc, bwMention, bwHashtag, bwTerm;
+        int tweetCounter;
+        final String emo_regex2 = "\\([\\u20a0-\\u32ff\\ud83c\\udc00-\\ud83d\\udeff\\udbb9\\udce5-\\udbb9\\udcee]\\)";//"\\p{InEmoticons}";
+        for (int gNum = 1; gNum <= 10; gNum++){
+            tweetCounter = 0;
+            fr = new FileReader("/Volumes/SocSensor/Zahra/ClusterResults_Oct29/TestTrainDataCSV/" + "out_tweet_hashtag_user_mention_term_time_location_"+gNum+"_allInnerJoins_parquet.csv");
+            tweetUtil.runStringCommand("mkdir " + path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids");
+            fwUser = new FileWriter(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_user_hashtag_grouped.csv");
+            bwUser = new BufferedWriter(fwUser);
+            fwLoc = new FileWriter(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_location_hashtag_grouped.csv");
+            bwLoc = new BufferedWriter(fwLoc);
+            fwMention = new FileWriter(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_mention_hashtag_grouped.csv");
+            bwMention = new BufferedWriter(fwMention);
+            fwHashtag = new FileWriter(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_hashtag_hashtag_grouped.csv");
+            bwHashtag = new BufferedWriter(fwHashtag);
+            fwTerm = new FileWriter(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_term_hashtag_grouped.csv");
+            bwTerm = new BufferedWriter(fwTerm);
+            bufferedReader = new BufferedReader(fr);
+            long tid, time;
+            String str, feature, hashtag;
+            while ((line = bufferedReader.readLine()) != null) {
+                hashtag = "";
+                splits2 = line.split(" hashtag:");
+                if(splits2.length > 1) {
+                    for (int j = 1; j < splits2.length; j += 2) {
+                        hashtag += splits2[j];
+                    }
+                }
+                splits = line.split(" ");
+                tid = Long.valueOf(splits[splits.length - 1]);
+                time = Long.valueOf(splits[splits.length-2]);
+                for(int i = 1; i < splits.length-2; i++) {
+                    str = splits[i];
+                    feature = str.split(":")[1];
+                    switch (str.split(":")[0]) {
+                        case "from":
+                            bwUser.write(tid + "," + feature + "," + hashtag + "," + time + "\n");
+                            break;
+                        case "term":
+                            bwTerm.write(tid + "," + feature + "," + hashtag + "," + time + "\n");
+                            break;
+                        case "hashtag":
+                            bwHashtag.write(tid + "," + feature + "," + hashtag + "," + time + "\n");
+                            break;
+                        case "mention":
+                            bwMention.write(tid + "," + feature + "," + hashtag + "," + time + "\n");
+                            break;
+                        case "location":
+                            Matcher matcher = Pattern.compile(emo_regex2).matcher(feature);
+                            feature = matcher.replaceAll("").trim();
+                            feature = feature.toLowerCase().replace(" ", "");
+                            bwLoc.write(tid + "," + feature + "," + hashtag + "," + time + "\n");
+                            break;
+                    }
+                }
+                tweetCounter++;
+            }
+            bwUser.close(); bwLoc.close(); bwMention.close(); bwHashtag.close(); bwTerm.close();
+            bufferedReader.close();
+            System.out.println(" Number of Tweets for " + configRead.getGroupNames()[gNum - 1] + " is : " + tweetCounter);
+        }*/
     }
 }
 
