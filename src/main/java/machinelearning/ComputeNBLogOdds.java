@@ -63,7 +63,7 @@ public class ComputeNBLogOdds {
     private static int numOfGroups;
     private static String[] groupNames;
     private static TweetUtil tweetUtil = new TweetUtil();
-    private static DataFrame tweetTime;
+    //private static DataFrame tweetTime;
     private static final int topFeatureNum = 1000;
     private static final boolean testFlag = true;
     private static final double lambda1 = 0.001;
@@ -91,7 +91,7 @@ public class ComputeNBLogOdds {
         groupNames = configRead.getGroupNames();
         numPart = configRead.getNumPart();
         hdfsPath = configRead.getHdfsPath();
-        dataPath = hdfsPath + configRead.getDataPath();
+
         outputPath = hdfsPath + configRead.getOutputPath();
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
@@ -99,25 +99,26 @@ public class ComputeNBLogOdds {
         milionFeatureLists = tweetUtil.get1MFeatures(localRun);
 
         for(groupNum = 1; groupNum <= 1; groupNum++) {
+            dataPath = hdfsPath + configRead.getDataPath() + configRead.getGroupNames()[groupNum-1] + "/fold0/Ids/";
             twoMilionIdList = tweetUtil.get2MTweetIds(localRun, configRead.getGroupNames()[groupNum-1]);
             if(groupNum > 1 && groupNum != 6)
                 continue;
             initializeSqlContext();
             System.out.println("============================"+groupNum+"=============================");
             if(calcToUser)
-                calcToUserProb(tweetCount);
+                calcToUserProb(tweetCount, groupNum);
 
             if(calcContainHashtag)
-                calcContainHashtagProb(tweetCount);
+                calcContainHashtagProb(tweetCount, groupNum);
 
             if(calcFromUser)
                 calcFromUserProb(tweetCount);
 
             if(calcContainTerm)
-                calcContainTermProb(tweetCount);
+                calcContainTermProb(tweetCount, groupNum);
 
             if(calcContainLocation) {
-                calcContainLocationProb(tweetCount);
+                calcContainLocationProb(tweetCount, groupNum);
             }
 
 //            containNotContainCounts = getContainNotContainCounts(groupNum);
@@ -159,12 +160,12 @@ public class ComputeNBLogOdds {
         sqlContext = new SQLContext(sparkContext);
         sqlContext.sql("SET spark.sql.shuffle.partitions=" + numPart);
         System.out.println("======================GROUPNUM: " + groupNum + dataPath + "tweet_time_parquet");
-        tweetTime = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
+        final int grNum = groupNum;
+        /*tweetTime = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
         StructField[] timeField = {
                 DataTypes.createStructField("tid", DataTypes.LongType, true),
                 DataTypes.createStructField("time", DataTypes.LongType, true)
         };
-        final int grNum = groupNum;
         tweetTime = sqlContext.createDataFrame(tweetTime.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
@@ -172,15 +173,15 @@ public class ComputeNBLogOdds {
             }
         }), new StructType(timeField)).coalesce(numPart);
         tweetTime.cache();
-        tweetCount = tweetTime.count();
-        System.out.println("=================================Tweet Time Size: " + tweetCount);
+        tweetCount = tweetTime.count();*/
+        //System.out.println("=================================Tweet Time Size: " + tweetCount);
         tweet_user_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
         final List<Long> idList = twoMilionIdList;
-        tweet_user_hashtag_grouped = tweet_user_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_user_hashtag_grouped.col("tid")), "inner").drop(tweetTime.col("tid")).coalesce(numPart);
+//        tweet_user_hashtag_grouped = tweet_user_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_user_hashtag_grouped.col("tid")), "inner").drop(tweetTime.col("tid")).coalesce(numPart);
         tweet_user_hashtag_grouped = sqlContext.createDataFrame(tweet_user_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return idList.contains(v1.getLong(0));
+                return  (v1.getLong(3) <= timestamps[grNum-1]);
             }
         }), tweet_user_hashtag_grouped.schema());
         //Compute topical and notTopical counts before filtering tweet_user_hashtag table
@@ -213,8 +214,14 @@ public class ComputeNBLogOdds {
 
     }
 
-    public static DataFrame calcFromToProb(final double tweetNum, DataFrame df, String colName, String probName, String tableName){
-        df = df.join(tweetTime, tweetTime.col("tid").equalTo(df.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+    public static DataFrame calcFromToProb(final double tweetNum, DataFrame df, String colName, String probName, String tableName, final int grNum){
+        //df = df.join(tweetTime, tweetTime.col("tid").equalTo(df.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+        df = sqlContext.createDataFrame(df.javaRDD().filter(new Function<Row, Boolean>() {
+            @Override
+            public Boolean call(Row v1) throws Exception {
+                return v1.getLong(3) <= timestamps[grNum-1];
+            }
+        }), df.schema());
         //if(probName.equals("locProb"))
         //    df.drop("time").write().mode(SaveMode.Overwrite).parquet(outputPath + tableName + "_time");
         //TODO This is true when a user is only mentioned once in a tweet
@@ -244,7 +251,7 @@ public class ComputeNBLogOdds {
     }
 
 
-    public static void calcContainHashtagProb(final double tweetNum){
+    public static void calcContainHashtagProb(final double tweetNum, final int grNum){
         StructField[] fields1 = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
@@ -255,7 +262,7 @@ public class ComputeNBLogOdds {
         tweet_hashtag_hashtag_grouped = sqlContext.createDataFrame(tweet_hashtag_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (idList.contains(v1.getLong(0)) && hashtagList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum-1] && hashtagList.contains(v1.getString(1)));
             }
         }), tweet_hashtag_hashtag_grouped.schema());
 //        fromHashtagProb = calcFromToProb(tweetCount, tweet_hashtag_hashtag_grouped, "hashtag1", "fromProb", "tweet_hashtag_hashtag_grouped_parquet");
@@ -294,7 +301,7 @@ public class ComputeNBLogOdds {
         }
     }
 
-    public static void calcContainTermProb(final double tweetNum){
+    public static void calcContainTermProb(final double tweetNum, final int grNum){
         StructField[] fields1 = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
@@ -305,7 +312,7 @@ public class ComputeNBLogOdds {
         tweet_term_hashtag_grouped = sqlContext.createDataFrame(tweet_term_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (idList.contains(v1.getLong(0)) && termList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum-1] && termList.contains(v1.getString(1)));
             }
         }), tweet_term_hashtag_grouped.schema());
 //        containTermProb = calcFromToProb(tweetCount, tweet_term_hashtag_grouped, "term1", "containTermProb", "tweet_term_hashtag_grouped_parquet");
@@ -324,7 +331,7 @@ public class ComputeNBLogOdds {
         }
     }
 
-    public static void calcToUserProb(final double tweetNum){
+    public static void calcToUserProb(final double tweetNum, final int grNum){
         StructField[] fields1 = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
@@ -335,7 +342,7 @@ public class ComputeNBLogOdds {
         tweet_mention_hashtag_grouped = sqlContext.createDataFrame(tweet_mention_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (idList.contains(v1.getLong(0)) && mentionList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum-1] && mentionList.contains(v1.getString(1)));
             }
         }), tweet_mention_hashtag_grouped.schema());
         //toUserProb = calcFromToProb(tweetCount, tweet_mention_hashtag_grouped, "username1", "toProb", "tweet_mention_hashtag_grouped_parquet");
@@ -353,7 +360,7 @@ public class ComputeNBLogOdds {
         }
     }
 
-    public static void calcContainLocationProb(final double tweetNum){
+    public static void calcContainLocationProb(final double tweetNum, final int grNum){
         StructField[] fields1 = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
@@ -364,7 +371,7 @@ public class ComputeNBLogOdds {
         tweet_location_hashtag_grouped = sqlContext.createDataFrame(tweet_location_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (idList.contains(v1.getLong(0)) && locationList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum-1] && locationList.contains(v1.getString(1)));
             }
         }), tweet_location_hashtag_grouped.schema());
 //        containLocationProb = calcFromToProb(tweetCount, tweet_location_hashtag_grouped, "username1", "locProb", "tweet_location_hashtag_grouped_parquet");
@@ -392,7 +399,7 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
-        tweet_mention_hashtag_grouped = tweet_mention_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_mention_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+//        tweet_mention_hashtag_grouped = tweet_mention_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_mention_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         tweet_mention_hashtag_grouped.cache();
         //==============================================================================================================
         //F(toUser & topical)
@@ -450,7 +457,7 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
-        tweet_location_hashtag_grouped = tweet_location_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_location_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+//        tweet_location_hashtag_grouped = tweet_location_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_location_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         tweet_location_hashtag_grouped.cache();
         //==============================================================================================================
         DataFrame probFromLocationTopical = sqlContext.createDataFrame(calcProb(tweet_location_hashtag_grouped, groupNum, true, tweetCount), new StructType(fields1));
@@ -570,7 +577,7 @@ public class ComputeNBLogOdds {
             public Tuple2<String, Double> call(Row row) throws Exception {
                 int numHashtags= 0;
                 if(row.get(2) != null) {
-                    List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(","))));
+                    List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(" "))));
                     tH.retainAll(hashtagList);
                     numHashtags = tH.size();
                 }
@@ -607,7 +614,7 @@ public class ComputeNBLogOdds {
         JavaRDD<Row> containNotContainNum = tweet_user_hashtag_grouped.drop("username").coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Integer, Long>() {
             @Override
             public Tuple2<Integer, Long> call(Row row) throws Exception {
-                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(","))));
+                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(" "))));
                 tH.retainAll(hashtagList);
                 if (tH.size() > 0)
                     return new Tuple2<Integer, Long>(1, 1l);
@@ -648,7 +655,7 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("hashtag", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true),
         };
-        tweet_hashtag_hashtag_grouped = tweet_hashtag_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_hashtag_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+//        tweet_hashtag_hashtag_grouped = tweet_hashtag_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_hashtag_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         tweet_hashtag_hashtag_grouped.cache();
         DataFrame probContainHashtagTopical = sqlContext.createDataFrame(calcProb(tweet_hashtag_hashtag_grouped, groupNum, true, tweetCount), new StructType(fields));
         probContainHashtagTopical.registerTempTable("probContainHashtagTopicalTable");
@@ -707,7 +714,7 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("term", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true),
         };
-        tweet_term_hashtag_grouped = tweet_term_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_term_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+//        tweet_term_hashtag_grouped = tweet_term_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_term_hashtag_grouped.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
         tweet_term_hashtag_grouped.cache();
 
         DataFrame probContainTermTopical = sqlContext.createDataFrame(calcProb(tweet_term_hashtag_grouped, groupNum, true, tweetCount), new StructType(fields));
