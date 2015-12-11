@@ -143,13 +143,13 @@ public class ComputeMIForLearning {
             if(calcContainLocation)
                 calcTweetCondContainLocationConditionalEntropy(groupNum);
 
-            DataFrame df1 = sqlContext.read().parquet("Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_Term_parquet");
-            df1 = df1.unionAll(sqlContext.read().parquet("Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_mention_parquet"));
-            df1 = df1.unionAll(sqlContext.read().parquet("Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_location_parquet"));
-            df1 = df1.unionAll(sqlContext.read().parquet("Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_hashtag_parquet"));
-            df1 = df1.unionAll(sqlContext.read().parquet("Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_from_parquet"));
+            DataFrame df1 = sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_Term_parquet");
+            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_mention_parquet"));
+            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_location_parquet"));
+            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_hashtag_parquet"));
+            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_from_parquet"));
             df1 = df1.sort(df1.col("mutualEntropy").desc());
-            df1.write().mode(SaveMode.Overwrite).parquet("FeatureSelection/Topics/"+groupNames[groupNum - 1] + "/MI/featuresMI_parquet");
+            df1.write().mode(SaveMode.Overwrite).parquet("TopMIfeatures/Topics/"+groupNames[groupNum - 1] + "/featuresMI_parquet");
 
         }
     }
@@ -472,7 +472,7 @@ public class ComputeMIForLearning {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (row.getDouble(2)/tweetNum))));
             }
         }).coalesce(numPart);
-        sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
+
         //System.out.println("SIZE 1 TO =================" + toresMI.count() + "================");
         //==============================================================================================================
         JavaRDD<Row> probNotContainTweet =
@@ -490,7 +490,7 @@ public class ComputeMIForLearning {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (row.getDouble(2) / tweetNum))));
             }
         })).coalesce(numPart);
-        sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
+
         //==============================================================================================================
         results2 = sqlContext.sql("select username, (" + containNotContainCounts[0] + "-(prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetTrueToUserTrue");
         toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
@@ -503,7 +503,7 @@ public class ComputeMIForLearning {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-(row.getDouble(2)/tweetNum)))));
             }
         })).coalesce(numPart);
-        sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
+
         //==============================================================================================================
         results2 = sqlContext.sql("select username, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseToUserTrue");
         toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
@@ -529,7 +529,7 @@ public class ComputeMIForLearning {
             }
         }), new StructType(resFields));
         toresults2 = toresults2.sort(toresults2.col("mutualEntropy").desc());//.limit(topFeatureNum).coalesce(numPart);
-        output(toresults2, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_Mention", false);
+        output(toresults2, "TopMIfeatures/" + groupNames[groupNum-1] + "/top_Mention", false);
     }
 
 
@@ -612,7 +612,7 @@ public class ComputeMIForLearning {
             }
         }), new StructType(resFields));
         toresults2 = toresults2.sort(toresults2.col("mutualEntropy").desc());//.limit(topFeatureNum).coalesce(numPart);
-        output(toresults2, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_Location", false);
+        output(toresults2, "TopMIfeatures/" + groupNames[groupNum-1] + "/top_Location", false);
 
     }
 
@@ -709,7 +709,7 @@ public class ComputeMIForLearning {
             }
         }), new StructType(resFields));
         resMI = resMI.sort(resMI.col("mutualEntropy").desc());//.limit(topFeatureNum).coalesce(numPart);
-        output(resMI, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_From", false);
+        output(resMI, "TopMIfeatures/" + groupNames[groupNum-1] + "/top_From", false);
     }
 
 
@@ -883,7 +883,7 @@ public class ComputeMIForLearning {
             }
         }), new StructType(resFields));
         fromresults2 = fromresults2.sort(fromresults2.col("mutualEntropy").desc());//.limit(topFeatureNum).coalesce(numPart);
-        output(fromresults2, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_Hashtag", false);
+        output(fromresults2, "TopMIfeatures/" + groupNames[groupNum-1] + "/top_Hashtag", false);
 
 
     }
@@ -976,6 +976,6 @@ public class ComputeMIForLearning {
             }
         }), new StructType(resFields));
         resMI = resMI.sort(resMI.col("mutualEntropy").desc());//.limit(topFeatureNum).coalesce(numPart);
-        output(resMI, "Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_Term", false);
+        output(resMI, "TopMIfeatures/" + groupNames[groupNum - 1] + "/top_Term", false);
     }
 }
