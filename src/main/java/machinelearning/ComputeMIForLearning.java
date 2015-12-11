@@ -35,6 +35,7 @@ public class ComputeMIForLearning {
     private static DataFrame tweet_mention_hashtag_grouped;
     private static DataFrame tweet_term_hashtag_grouped;
     private static DataFrame tweet_location_hashtag_grouped;
+    private static DataFrame tweetTime;
     private static DataFrame fromUserProb;
     private static DataFrame containTermProb;
     private static DataFrame toUserProb;
@@ -98,10 +99,14 @@ public class ComputeMIForLearning {
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
         TweetUtil tweetUtil = new TweetUtil();
-        milionFeatureLists = tweetUtil.get1MFeatures(inputPath+"/input/", localRun);
+        milionFeatureLists = tweetUtil.get1MFeatures(localRun);
 
-        for(groupNum = 7; groupNum <= 7; groupNum++) {
+        for(groupNum = 1; groupNum <= 1; groupNum++) {
             dataPath = "/data/ClusterData/input/Data/Learning/Topics/" + groupNames[groupNum-1] + "/fold0/Ids/";
+            if(testFlag) {
+                dataPath = "TestSet/Data/";
+                outputPath = "TestSet/Out/";
+            }
             //twoMilionIdList = tweetUtil.get2MTweetIds(inputPath+"/input/", localRun, configRead.getGroupNames()[groupNum-1]);
             if(groupNum > 1 && groupNum != 7)
                 continue;
@@ -151,11 +156,11 @@ public class ComputeMIForLearning {
 //            dataPath = "TestSet/data1Month/";
 //            outputPath = configRead.getTestOutPath();
             sparkConfig = new SparkConf().setAppName("FeatureStatistics").setMaster("local[8]").set("spark.executor.memory", "12g").set("spark.driver.maxResultSize", "6g");
-//            tweetCount = 100;
+            tweetCount = 100;
 //            if(testFlag)
 //                tweetCount = 2000;
         }else {
-            tweetCount = 829026458; //tweet_user.count();
+//            tweetCount = 829026458; //tweet_user.count();
             sparkConfig = new SparkConf().setAppName("FeatureStatistics").setMaster("local[8]");
         }
         sparkContext = new JavaSparkContext(sparkConfig);
@@ -163,30 +168,34 @@ public class ComputeMIForLearning {
         sqlContext.sql("SET spark.sql.shuffle.partitions=" + numPart);
         System.out.println("======================GROUPNUM: " + groupNum + dataPath + "tweet_time_parquet");
         final int grNum = groupNum;
-        /*tweetTime = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
-        StructField[] timeField = {
-                DataTypes.createStructField("tid", DataTypes.LongType, true),
-                DataTypes.createStructField("time", DataTypes.LongType, true)
-        };
-        tweetTime = sqlContext.createDataFrame(tweetTime.javaRDD().filter(new Function<Row, Boolean>() {
-            @Override
-            public Boolean call(Row v1) throws Exception {
-                return v1.getLong(1) <= timestamps[grNum-1];
-            }
-        }), new StructType(timeField)).coalesce(numPart);
-        tweetTime.cache();
-        tweetCount = tweetTime.count();*/
+        if(testFlag) {
+            tweetTime = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
+            StructField[] timeField = {
+                    DataTypes.createStructField("tid", DataTypes.LongType, true),
+                    DataTypes.createStructField("time", DataTypes.LongType, true)
+            };
+            tweetTime = sqlContext.createDataFrame(tweetTime.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return v1.getLong(1) <= timestamps[grNum - 1];
+                }
+            }), new StructType(timeField)).coalesce(numPart);
+            tweetTime.cache();
+            //tweetCount = tweetTime.count();
+        }
         //System.out.println("=================================Tweet Time Size: " + tweetCount);
         System.out.println(dataPath + "tweet_user_hashtag_grouped_parquet");
         tweet_user_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
         final List<Long> idList = twoMilionIdList;
-//        tweet_user_hashtag_grouped = tweet_user_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_user_hashtag_grouped.col("tid")), "inner").drop(tweetTime.col("tid")).coalesce(numPart);
+        if(testFlag)
+            tweet_user_hashtag_grouped = tweet_user_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_user_hashtag_grouped.col("tid")), "inner").drop(tweetTime.col("tid")).coalesce(numPart);
         tweet_user_hashtag_grouped = sqlContext.createDataFrame(tweet_user_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
                 return (v1.getLong(3) <= timestamps[grNum - 1]);
             }
         }), tweet_user_hashtag_grouped.schema());
+        tweetCount = tweet_user_hashtag_grouped.count();
         System.out.println(" \n Number of tweets in train data ("+timestamps[grNum-1]+") : " + tweet_user_hashtag_grouped.count());
         //Compute topical and notTopical counts before filtering tweet_user_hashtag table
         containNotContainCounts = getContainNotContainCounts(groupNum);
@@ -264,14 +273,17 @@ public class ComputeMIForLearning {
         final List<Long> idList = twoMilionIdList;
         System.out.println(dataPath + "tweet_hashtag_hashtag_grouped_parquet *****************");
         tweet_hashtag_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag)
+            tweet_hashtag_hashtag_grouped = tweet_hashtag_hashtag_grouped.join(tweetTime, tweet_hashtag_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
         tweet_hashtag_hashtag_grouped = sqlContext.createDataFrame(tweet_hashtag_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
                 return (v1.getLong(3) <= timestamps[grNum-1] && hashtagList.contains(v1.getString(1)));
             }
         }), tweet_hashtag_hashtag_grouped.schema()).coalesce(numPart);
-//        fromHashtagProb = calcFromToProb(tweetCount, tweet_hashtag_hashtag_grouped, "hashtag1", "fromProb", "tweet_hashtag_hashtag_grouped_parquet");
-//        fromHashtagProb.registerTempTable("fromHashtagProb");
+
+        fromHashtagProb = calcFromToProb(tweetCount, tweet_hashtag_hashtag_grouped, "hashtag1", "fromProb", "tweet_hashtag_hashtag_grouped_parquet");
+        fromHashtagProb.registerTempTable("fromHashtagProb");
         if(writeTopicalHashtag) {
             DataFrame df = fromHashtagProb.sort(fromHashtagProb.col("fromProb").desc()).limit(topFeatureNum).coalesce(numPart);
             df.write().mode(SaveMode.Overwrite).parquet(outputPath + "Baselines/" + groupNames[groupNum - 1] + "/topical/top1000_Hashtag");
@@ -291,8 +303,8 @@ public class ComputeMIForLearning {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
-//        fromUserProb = calcFromToProb(tweetCount, tweet_user_hashtag_grouped, "username1", "fromProb", "tweet_user_hashtag_grouped_parquet");
-//        fromUserProb.registerTempTable("fromUserProb");
+        fromUserProb = calcFromToProb(tweetCount, tweet_user_hashtag_grouped, "username1", "fromProb", "tweet_user_hashtag_grouped_parquet");
+        fromUserProb.registerTempTable("fromUserProb");
         if(writeTopicalFrom) {
             DataFrame df = fromUserProb.sort(fromUserProb.col("fromProb").desc()).limit(topFeatureNum).coalesce(numPart);
             df.write().mode(SaveMode.Overwrite).parquet(outputPath + "Baselines/" + groupNames[groupNum - 1] + "/topical/top1000_From");
@@ -314,14 +326,16 @@ public class ComputeMIForLearning {
         final List<Long> idList = twoMilionIdList;
         final List<String> termList = milionFeatureLists.get(3);
         tweet_term_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag)
+            tweet_term_hashtag_grouped = tweet_term_hashtag_grouped.join(tweetTime, tweet_term_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
         tweet_term_hashtag_grouped = sqlContext.createDataFrame(tweet_term_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
                 return (v1.getLong(3) <= timestamps[grNum-1] && termList.contains(v1.getString(1)));
             }
         }), tweet_term_hashtag_grouped.schema()).coalesce(numPart);
-//        containTermProb = calcFromToProb(tweetCount, tweet_term_hashtag_grouped, "term1", "containTermProb", "tweet_term_hashtag_grouped_parquet");
-//        containTermProb.registerTempTable("containTermProb");
+        containTermProb = calcFromToProb(tweetCount, tweet_term_hashtag_grouped, "term1", "containTermProb", "tweet_term_hashtag_grouped_parquet");
+        containTermProb.registerTempTable("containTermProb");
         if(writeTopicalTerm) {
             DataFrame df = containTermProb.sort(containTermProb.col("containTermProb").desc()).limit(topFeatureNum).coalesce(numPart);
             df.write().mode(SaveMode.Overwrite).parquet(outputPath + "Baselines/" + groupNames[groupNum - 1] + "/topical/top1000_Term");
@@ -344,14 +358,16 @@ public class ComputeMIForLearning {
         final List<String> mentionList = milionFeatureLists.get(2);
         final List<Long> idList = twoMilionIdList;
         tweet_mention_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_mention_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag)
+            tweet_mention_hashtag_grouped = tweet_mention_hashtag_grouped.join(tweetTime, tweet_mention_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
         tweet_mention_hashtag_grouped = sqlContext.createDataFrame(tweet_mention_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
                 return (v1.getLong(3) <= timestamps[grNum - 1] && mentionList.contains(v1.getString(1)));
             }
         }), tweet_mention_hashtag_grouped.schema()).coalesce(numPart);
-        //toUserProb = calcFromToProb(tweetCount, tweet_mention_hashtag_grouped, "username1", "toProb", "tweet_mention_hashtag_grouped_parquet");
-        //toUserProb.registerTempTable("toUserProb");
+        toUserProb = calcFromToProb(tweetCount, tweet_mention_hashtag_grouped, "username1", "toProb", "tweet_mention_hashtag_grouped_parquet");
+        toUserProb.registerTempTable("toUserProb");
         if(writeTopicalMention) {
             DataFrame df = toUserProb.sort(toUserProb.col("toProb").desc()).limit(topFeatureNum).coalesce(numPart);
             df.write().mode(SaveMode.Overwrite).parquet(outputPath + "Baselines/" + groupNames[groupNum - 1] + "/topical/top1000_Mention");
@@ -373,14 +389,16 @@ public class ComputeMIForLearning {
         final List<String> locationList = milionFeatureLists.get(4);
         final List<Long> idList = twoMilionIdList;
         tweet_location_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_location_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag)
+            tweet_location_hashtag_grouped = tweet_location_hashtag_grouped.join(tweetTime, tweet_location_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
         tweet_location_hashtag_grouped = sqlContext.createDataFrame(tweet_location_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
                 return (v1.getLong(3) <= timestamps[grNum-1] && locationList.contains(v1.getString(1)));
             }
         }), tweet_location_hashtag_grouped.schema()).coalesce(numPart);
-//        containLocationProb = calcFromToProb(tweetCount, tweet_location_hashtag_grouped, "username1", "locProb", "tweet_location_hashtag_grouped_parquet");
-//        containLocationProb.registerTempTable("containLocationProb");
+        containLocationProb = calcFromToProb(tweetCount, tweet_location_hashtag_grouped, "username1", "locProb", "tweet_location_hashtag_grouped_parquet");
+        containLocationProb.registerTempTable("containLocationProb");
         if(writeTopicalLocation) {
             DataFrame df = containLocationProb.sort(containLocationProb.col("locProb").desc()).limit(topFeatureNum).coalesce(numPart);
             df.write().mode(SaveMode.Overwrite).parquet(outputPath + "Baselines/" + groupNames[groupNum - 1] + "/topical/top1000_Location");
@@ -394,6 +412,35 @@ public class ComputeMIForLearning {
         }
     }
 
+    public static DataFrame calcFromToProb(final double tweetNum, DataFrame df, String colName, String probName, String tableName){
+        df = df.join(tweetTime, tweetTime.col("tid").equalTo(df.col("tid"))).drop(tweetTime.col("tid")).coalesce(numPart);
+        //if(probName.equals("locProb"))
+        //    df.drop("time").write().mode(SaveMode.Overwrite).parquet(outputPath + tableName + "_time");
+        //TODO This is true when a user is only mentioned once in a tweet
+        System.out.println(colName);
+        JavaRDD<Row> prob = df.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+            @Override
+            public Tuple2<String, Double> call(Row row) throws Exception {
+                return new Tuple2<String, Double>(row.getString(1), 1.0);
+            }
+        }).reduceByKey(new Function2<Double, Double, Double>() {
+            @Override
+            public Double call(Double aDouble, Double aDouble2) throws Exception {
+                return aDouble + aDouble2;
+            }
+        }).map(new Function<Tuple2<String, Double>, Row>() {
+            @Override
+            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
+                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+            }
+        });
+        StructField[] fields = {
+                DataTypes.createStructField(colName, DataTypes.StringType, true),
+                DataTypes.createStructField(probName, DataTypes.DoubleType, true),
+        };
+
+        return sqlContext.createDataFrame(prob, new StructType(fields));
+    }
 
     public static void calcTweetCondToUserConditionalEntropy(final int groupNum) throws IOException {
         final double tweetNum = tweetCount;
@@ -420,6 +467,7 @@ public class ComputeMIForLearning {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (row.getDouble(2)/tweetNum))));
             }
         }).coalesce(numPart);
+        sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
         //System.out.println("SIZE 1 TO =================" + toresMI.count() + "================");
         //==============================================================================================================
         JavaRDD<Row> probNotContainTweet =
@@ -437,6 +485,7 @@ public class ComputeMIForLearning {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (row.getDouble(2) / tweetNum))));
             }
         })).coalesce(numPart);
+        sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
         //==============================================================================================================
         results2 = sqlContext.sql("select username, (" + containNotContainCounts[0] + "-(prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetTrueToUserTrue");
         toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
@@ -449,6 +498,7 @@ public class ComputeMIForLearning {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-(row.getDouble(2)/tweetNum)))));
             }
         })).coalesce(numPart);
+        sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
         //==============================================================================================================
         results2 = sqlContext.sql("select username, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseToUserTrue");
         toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
@@ -462,17 +512,10 @@ public class ComputeMIForLearning {
             }
         })).coalesce(numPart);
         sqlContext.createDataFrame(toresMI, new StructType(fields1)).coalesce(numPart).registerTempTable("mutualEntropyTweetToUser");
-
+        sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
         toresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetToUser GROUP BY username");
         toresults2 = toresults2.sort(toresults2.col("mutualEntropy").desc()).limit(topFeatureNum).coalesce(numPart);
         output(toresults2, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_Mention", false);
-        toresults2=sqlContext.createDataFrame(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                return RowFactory.create(row.getString(0), Math.log(Double.valueOf(row.get(1).toString())));
-            }
-        }), new StructType(fields1)).coalesce(numPart);
-        output(toresults2, "Baselines/" + groupNames[groupNum-1] + "/MILog/top1000_Mention", false);
     }
 
 
@@ -526,7 +569,7 @@ public class ComputeMIForLearning {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
                     return RowFactory.create(row.getString(0), 0.0);
                 else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1 - (row.getDouble(2)/tweetNum)))));
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1 - (row.getDouble(2) / tweetNum)))));
             }
         })).coalesce(numPart);
         //==============================================================================================================
@@ -546,13 +589,6 @@ public class ComputeMIForLearning {
         toresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetContainLocation GROUP BY username").coalesce(numPart);
         toresults2 = toresults2.sort(toresults2.col("mutualEntropy").desc()).limit(topFeatureNum).coalesce(numPart);
         output(toresults2, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_Location", false);
-        toresults2=sqlContext.createDataFrame(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                return RowFactory.create(row.getString(0), Math.log(Double.valueOf(row.get(1).toString())));
-            }
-        }), new StructType(fields1)).coalesce(numPart);
-        output(toresults2, "Baselines/" + groupNames[groupNum-1] + "/MILog/top1000_Location", false);
 
     }
 
@@ -640,13 +676,6 @@ public class ComputeMIForLearning {
         resMI = sqlContext.sql("SELECT mt1.username as username, (mt1.prob+mt2.prob) AS mutualEntropy FROM MITable5 mt1, MITable6 mt2 where mt1.username = mt2.username").coalesce(numPart);
         resMI = resMI.sort(resMI.col("mutualEntropy").desc()).limit(topFeatureNum).coalesce(numPart);
         output(resMI, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_From", false);
-        resMI=sqlContext.createDataFrame(resMI.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                return RowFactory.create(row.getString(0), Math.log(Double.valueOf(row.get(1).toString())));
-            }
-        }), new StructType(fields)).coalesce(numPart);
-        output(resMI, "Baselines/" + groupNames[groupNum-1] + "/MILog/top1000_From", false);
     }
 
 
@@ -659,12 +688,14 @@ public class ComputeMIForLearning {
 
     private static JavaRDD<Row> calcProb(DataFrame df, final int groupNum, final boolean containFlag, final double tweetNum) throws IOException {
         final List<String> hashtagList = tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, true);
+        final boolean testFlag2 = testFlag;
         return df.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
             @Override
             public Tuple2<String, Double> call(Row row) throws Exception {
                 int numHashtags= 0;
                 if(row.get(2) != null) {
-                    List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(" "))));
+                    String delim = (testFlag2)? "," : " ";
+                    List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(delim))));
                     tH.retainAll(hashtagList);
                     numHashtags = tH.size();
                 }
@@ -690,49 +721,42 @@ public class ComputeMIForLearning {
             public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
                 if(tweetNum == 0)
                     System.err.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
+                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2()/tweetNum);
             }
         });
     }
 
     public static long[] getContainNotContainCounts(final int groupNum){
         long[] counts = new long[2];
-        if(groupNum == 1) {
-            counts[0] = 9425;
-            counts[1] = 286355255;
-        }else if(groupNum == 6){
-            counts[0] = 9690;
-            counts[1] = 84100572;
-        }else {
-            JavaRDD<Row> containNotContainNum = tweet_user_hashtag_grouped.drop("username").distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Integer, Long>() {
-                @Override
-                public Tuple2<Integer, Long> call(Row row) throws Exception {
-                    List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(","))));
-                    tH.retainAll(tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, true));
-                    if (tH.size() > 0)
-                        return new Tuple2<Integer, Long>(1, 1l);
-                    else
-                        return new Tuple2<Integer, Long>(2, 1l);
-                }
-            }).reduceByKey(new Function2<Long, Long, Long>() {
-                @Override
-                public Long call(Long aLong, Long aLong2) throws Exception {
-                    return aLong + aLong2;
-                }
-            }).map(new Function<Tuple2<Integer, Long>, Row>() {
-                @Override
-                public Row call(Tuple2<Integer, Long> integerLongTuple2) throws Exception {
-                    return RowFactory.create(integerLongTuple2._1(), integerLongTuple2._2());
-                }
-            });
-            StructField[] fields1 = {
-                    DataTypes.createStructField("key", DataTypes.IntegerType, true),
-                    DataTypes.createStructField("num", DataTypes.LongType, true),
-            };
-            (sqlContext.createDataFrame(containNotContainNum, new StructType(fields1))).registerTempTable("containNumTable");
-            counts[0] = sqlContext.sql("select num from containNumTable where key = 1").head().getLong(0);
-            counts[1] = sqlContext.sql("select num from containNumTable where key = 2").head().getLong(0);
-        }
+        JavaRDD<Row> containNotContainNum = tweet_user_hashtag_grouped.drop("username").distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Integer, Long>() {
+            @Override
+            public Tuple2<Integer, Long> call(Row row) throws Exception {
+                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(","))));
+                tH.retainAll(tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, true));
+                if (tH.size() > 0)
+                    return new Tuple2<Integer, Long>(1, 1l);
+                else
+                    return new Tuple2<Integer, Long>(2, 1l);
+            }
+        }).reduceByKey(new Function2<Long, Long, Long>() {
+            @Override
+            public Long call(Long aLong, Long aLong2) throws Exception {
+                return aLong + aLong2;
+            }
+        }).map(new Function<Tuple2<Integer, Long>, Row>() {
+            @Override
+            public Row call(Tuple2<Integer, Long> integerLongTuple2) throws Exception {
+                return RowFactory.create(integerLongTuple2._1(), integerLongTuple2._2());
+            }
+        });
+        StructField[] fields1 = {
+                DataTypes.createStructField("key", DataTypes.IntegerType, true),
+                DataTypes.createStructField("num", DataTypes.LongType, true),
+        };
+        (sqlContext.createDataFrame(containNotContainNum, new StructType(fields1))).registerTempTable("containNumTable");
+        counts[0] = sqlContext.sql("select num from containNumTable where key = 1").head().getLong(0);
+        counts[1] = sqlContext.sql("select num from containNumTable where key = 2").head().getLong(0);
+
         System.out.println("=============== CONTAIN: " + counts[0] + " ============ NOT CONTAIN: " + counts[1]);
         return counts;
     }
@@ -814,13 +838,6 @@ public class ComputeMIForLearning {
         fromresults2 = sqlContext.sql("SELECT hashtag, sum(prob) AS mutualEntropy FROM mutualEntropyTweetContainHashtag GROUP BY hashtag").coalesce(numPart);
         fromresults2 = fromresults2.sort(fromresults2.col("mutualEntropy").desc()).limit(topFeatureNum).coalesce(numPart);
         output(fromresults2, "Baselines/" + groupNames[groupNum-1] + "/MI/top1000_Hashtag", false);
-        fromresults2=sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                return RowFactory.create(row.getString(0), Math.log(Double.valueOf(row.get(1).toString())));
-            }
-        }), new StructType(fields)).coalesce(numPart);
-        output(fromresults2, "Baselines/" + groupNames[groupNum-1] + "/MILog/top1000_Hashtag", false);;
 
 
     }
@@ -905,13 +922,5 @@ public class ComputeMIForLearning {
         resMI = sqlContext.sql("SELECT mt1.term, (mt1.prob+mt2.prob) AS mutualEntropy FROM MITable5 mt1, MITable6 mt2 where mt1.term = mt2.term").coalesce(numPart);
         resMI = resMI.sort(resMI.col("mutualEntropy").desc()).limit(topFeatureNum).coalesce(numPart);
         output(resMI, "Baselines/" + groupNames[groupNum - 1] + "/MI/top1000_Term", false);
-        resMI.cache();
-        resMI=sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                return RowFactory.create(row.getString(0), Math.log(Double.valueOf(row.get(1).toString())));
-            }
-        }), new StructType(fields)).coalesce(numPart);
-        output(resMI, "Baselines/" + groupNames[groupNum - 1] + "/MILog/top1000_Term", false);
     }
 }
