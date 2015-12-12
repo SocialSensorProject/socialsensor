@@ -98,9 +98,9 @@ public class ComputeMIForLearning {
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
         TweetUtil tweetUtil = new TweetUtil();
-        milionFeatureLists = tweetUtil.get1MFeatures(inputPath, localRun);
+        milionFeatureLists = tweetUtil.get1MFeatures(localRun);
 
-        for(groupNum = 1; groupNum <= 7; groupNum++) {
+        for(groupNum = 1; groupNum <= 1; groupNum++) {
             dataPath = "/data/ClusterData/input/Data/Learning/Topics/" + groupNames[groupNum-1] + "/fold0/Ids/";
             if(testFlag) {
                 dataPath = "TestSet/Data/";
@@ -143,13 +143,13 @@ public class ComputeMIForLearning {
             if(calcContainLocation)
                 calcTweetCondContainLocationConditionalEntropy(groupNum);
 
-            DataFrame df1 = sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_Term_parquet");
-            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_mention_parquet"));
-            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_location_parquet"));
-            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_hashtag_parquet"));
-            df1 = df1.unionAll(sqlContext.read().parquet("TopMIfeatures/" + groupNames[groupNum - 1] + "/top_from_parquet"));
+            DataFrame df1 = sqlContext.read().parquet(outputPath + "TopMIfeatures/" + groupNames[groupNum - 1] + "/top_Term_parquet");
+            df1 = df1.unionAll(sqlContext.read().parquet(outputPath + "TopMIfeatures/" + groupNames[groupNum - 1] + "/top_mention_parquet"));
+            df1 = df1.unionAll(sqlContext.read().parquet(outputPath + "TopMIfeatures/" + groupNames[groupNum - 1] + "/top_location_parquet"));
+            df1 = df1.unionAll(sqlContext.read().parquet(outputPath + "TopMIfeatures/" + groupNames[groupNum - 1] + "/top_hashtag_parquet"));
+            df1 = df1.unionAll(sqlContext.read().parquet(outputPath + "TopMIfeatures/" + groupNames[groupNum - 1] + "/top_from_parquet"));
             df1 = df1.sort(df1.col("mutualEntropy").desc());
-            df1.write().mode(SaveMode.Overwrite).parquet("TopMIfeatures/Topics/"+groupNames[groupNum - 1] + "/featuresMI_parquet");
+            df1.write().mode(SaveMode.Overwrite).parquet(outputPath + "TopMIfeatures/Topics/"+groupNames[groupNum - 1] + "/featuresMI_parquet");
 
         }
     }
@@ -500,10 +500,10 @@ public class ComputeMIForLearning {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
                     return RowFactory.create(row.getString(0), 0.0);
                 else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-(row.getDouble(2)/tweetNum)))));
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1 - (row.getDouble(2) / tweetNum)))));
             }
         })).coalesce(numPart);
-
+        (sqlContext.createDataFrame(toresMI, new StructType(fields1))).show();
         //==============================================================================================================
         results2 = sqlContext.sql("select username, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseToUserTrue");
         toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
@@ -519,6 +519,7 @@ public class ComputeMIForLearning {
         sqlContext.createDataFrame(toresMI, new StructType(fields1)).coalesce(numPart).registerTempTable("mutualEntropyTweetToUser");
         sqlContext.createDataFrame(toresMI, new StructType(fields1)).show();
         StructField[] resFields = {
+                DataTypes.createStructField("feature", DataTypes.StringType, true),
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("mutualEntropy", DataTypes.DoubleType, true)
         };
@@ -602,6 +603,7 @@ public class ComputeMIForLearning {
 
 
         StructField[] resFields = {
+                DataTypes.createStructField("feature", DataTypes.StringType, true),
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("mutualEntropy", DataTypes.DoubleType, true)
         };
@@ -699,6 +701,7 @@ public class ComputeMIForLearning {
         }).coalesce(numPart), new StructType(fields)).registerTempTable("MITable6");
 
         StructField[] resFields = {
+                DataTypes.createStructField("feature", DataTypes.StringType, true),
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("mutualEntropy", DataTypes.DoubleType, true)
         };
@@ -763,12 +766,13 @@ public class ComputeMIForLearning {
     public static long[] getContainNotContainCounts(final int groupNum) throws IOException {
         long[] counts = new long[2];
         final List<String> trainHashtagList =  tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, true);
+        final String delim = (testFlag)? ",": " ";
         JavaRDD<Row> containNotContainNum = tweet_user_hashtag_grouped.drop("username").distinct().coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Integer, Long>() {
             @Override
             public Tuple2<Integer, Long> call(Row row) throws Exception {
                 if(row.get(1) == null)
                     return new Tuple2<Integer, Long>(2, 1l);
-                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(" "))));
+                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(delim))));
                 tH.retainAll(trainHashtagList);
                 if (tH.size() > 0)
                     return new Tuple2<Integer, Long>(1, 1l);
@@ -873,6 +877,7 @@ public class ComputeMIForLearning {
 
         //======================== COMPUTE COND ENTROPY=================================================================
         StructField[] resFields = {
+                DataTypes.createStructField("feature", DataTypes.StringType, true),
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("mutualEntropy", DataTypes.DoubleType, true)
         };
@@ -966,6 +971,7 @@ public class ComputeMIForLearning {
             }
         }).coalesce(numPart), new StructType(fields)).registerTempTable("MITable6");
         StructField[] resFields = {
+                DataTypes.createStructField("feature", DataTypes.StringType, true),
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("mutualEntropy", DataTypes.DoubleType, true)
         };
