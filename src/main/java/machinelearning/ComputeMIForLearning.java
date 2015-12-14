@@ -207,12 +207,12 @@ public class ComputeMIForLearning {
         containNotContainCounts = getContainNotContainCounts(groupNum);
 
         final List<String> fromList = milionFeatureLists.get(0);
-//        tweet_user_hashtag_grouped = sqlContext.createDataFrame(tweet_user_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
-//            @Override
-//            public Boolean call(Row v1) throws Exception {
-//                return fromList.contains(v1.getString(1));
-//            }
-//        }), tweet_user_hashtag_grouped.schema()).coalesce(numPart);
+        tweet_user_hashtag_grouped = sqlContext.createDataFrame(tweet_user_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+            @Override
+            public Boolean call(Row v1) throws Exception {
+                return fromList.contains(v1.getString(1));
+            }
+        }), tweet_user_hashtag_grouped.schema()).coalesce(numPart);
         if(computeTweetLocation){
             StructField[] fieldsLocation = {
                     DataTypes.createStructField("tid", DataTypes.LongType, true),
@@ -284,7 +284,7 @@ public class ComputeMIForLearning {
         tweet_hashtag_hashtag_grouped = sqlContext.createDataFrame(tweet_hashtag_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum-1]);// && hashtagList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum-1] && hashtagList.contains(v1.getString(1)));
             }
         }), tweet_hashtag_hashtag_grouped.schema()).coalesce(numPart);
 
@@ -337,7 +337,7 @@ public class ComputeMIForLearning {
         tweet_term_hashtag_grouped = sqlContext.createDataFrame(tweet_term_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum-1]);// && termList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum-1] && termList.contains(v1.getString(1)));
             }
         }), tweet_term_hashtag_grouped.schema()).coalesce(numPart);
         containTermProb = calcFromToProb(tweetCount, tweet_term_hashtag_grouped, "term1", "containTermProb", "tweet_term_hashtag_grouped_parquet");
@@ -369,7 +369,7 @@ public class ComputeMIForLearning {
         tweet_mention_hashtag_grouped = sqlContext.createDataFrame(tweet_mention_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum - 1]);// && mentionList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum - 1] && mentionList.contains(v1.getString(1)));
             }
         }), tweet_mention_hashtag_grouped.schema()).coalesce(numPart);
         toUserProb = calcFromToProb(tweetCount, tweet_mention_hashtag_grouped, "username1", "toProb", "tweet_mention_hashtag_grouped_parquet");
@@ -400,7 +400,7 @@ public class ComputeMIForLearning {
         tweet_location_hashtag_grouped = sqlContext.createDataFrame(tweet_location_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum-1]);// && locationList.contains(v1.getString(1)));
+                return (v1.getLong(3) <= timestamps[grNum-1] && locationList.contains(v1.getString(1)));
             }
         }), tweet_location_hashtag_grouped.schema()).coalesce(numPart);
         containLocationProb = calcFromToProb(tweetCount, tweet_location_hashtag_grouped, "username1", "locProb", "tweet_location_hashtag_grouped_parquet");
