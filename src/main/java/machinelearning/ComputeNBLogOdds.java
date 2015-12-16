@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ public class ComputeNBLogOdds {
     private static DataFrame tweet_mention_hashtag_grouped;
     private static DataFrame tweet_term_hashtag_grouped;
     private static DataFrame tweet_location_hashtag_grouped;
+    private static DataFrame tweetTime;
     private static DataFrame fromUserProb;
     private static DataFrame containTermProb;
     private static DataFrame toUserProb;
@@ -65,26 +67,37 @@ public class ComputeNBLogOdds {
     private static TweetUtil tweetUtil = new TweetUtil();
     //private static DataFrame tweetTime;
     private static final int topFeatureNum = 1000;
-    private static final boolean testFlag = true;
+    private static final boolean testFlag = false;
     private static final double lambda1 = 0.001;
     private static final double lambda2 = 0.01;
     private static final double lambda3 = 0.1;
     private static boolean computeTweetLocation = false;
     private static List<List<String>> milionFeatureLists;
     private static List<Long> twoMilionIdList;
+    public static double kValue;
+    public static long timestamp;
+    private static String testVal;
+    private static String classname;
+    private static HashSet<String> allHashtags;
 
-    private static final long[] timestamps= {1377897403000l, 1362146018000l, 1391295058000l, 1372004539000l, 1359920993000l, 1364938764000l, 1378911100000l, 1360622109000l, 1372080004000l, 1360106035000l};;
+    //private static final long[] timestamps= {1377897403000l, 1362146018000l, 1391295058000l, 1372004539000l, 1359920993000l, 1364938764000l, 1378911100000l, 1360622109000l, 1372080004000l, 1360106035000l};;
 
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void ComputeLogOdds(String _className, int _groupNum, String featurePath, double _kValue, long _splitTime, String _dataPath, HashSet<String> _hashtagList, String _testVal) throws IOException, ParseException {
+        testVal = _testVal;
+        classname = _className;
+        allHashtags = _hashtagList;
+        timestamp = _splitTime;
+        kValue = _kValue;
         final SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
         if(testFlag){
-            timestamps[0] = format.parse("Thu Feb 20 15:08:01 +0001 2014").getTime();
+            timestamp = format.parse("Thu Feb 20 15:08:01 +0001 2014").getTime();
         }
+        groupNum = _groupNum;
         loadConfig();
         //long t1 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse("Fri Feb 28 11:00:00 +0000 2014").getTime();
         numOfGroups = configRead.getNumOfGroups();
@@ -96,62 +109,60 @@ public class ComputeNBLogOdds {
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
         TweetUtil tweetUtil = new TweetUtil();
-        milionFeatureLists = tweetUtil.get1MFeatures(localRun);
+        milionFeatureLists = tweetUtil.get1MFeatures(localRun, featurePath);
 
-        for(groupNum = 1; groupNum <= 1; groupNum++) {
-            dataPath = hdfsPath + configRead.getDataPath() + configRead.getGroupNames()[groupNum-1] + "/fold0/Ids/";
-            twoMilionIdList = tweetUtil.get2MTweetIds(localRun, configRead.getGroupNames()[groupNum-1]);
-            if(groupNum > 1 && groupNum != 6)
-                continue;
-            initializeSqlContext();
-            System.out.println("============================"+groupNum+"=============================");
-            if(calcToUser)
-                calcToUserProb(tweetCount, groupNum);
+        dataPath = hdfsPath + configRead.getDataPath() + configRead.getGroupNames()[groupNum-1] + "/fold0/Ids/";
+        if(localRun){
+            dataPath = _dataPath;
+            outputPath = "Data/";
+        }
+        twoMilionIdList = tweetUtil.get2MTweetIds(localRun, configRead.getGroupNames()[groupNum-1]);
+        initializeSqlContext();
+        System.out.println("============================"+groupNum+"=============================");
+        if(calcToUser)
+            calcToUserProb(tweetCount, groupNum);
 
-            if(calcContainHashtag)
-                calcContainHashtagProb(tweetCount, groupNum);
+        if(calcContainHashtag)
+            calcContainHashtagProb(tweetCount, groupNum);
 
-            if(calcFromUser)
-                calcFromUserProb(tweetCount);
+        if(calcFromUser)
+            calcFromUserProb(tweetCount);
 
-            if(calcContainTerm)
-                calcContainTermProb(tweetCount, groupNum);
+        if(calcContainTerm)
+            calcContainTermProb(tweetCount, groupNum);
 
-            if(calcContainLocation) {
-                calcContainLocationProb(tweetCount, groupNum);
-            }
+        if(calcContainLocation) {
+            calcContainLocationProb(tweetCount, groupNum);
+        }
 
 //            containNotContainCounts = getContainNotContainCounts(groupNum);
 
-            if (calcToUser)
-                calcTweetCondToUserConditionalEntropy(groupNum);
+        if (calcToUser)
+            calcTweetCondToUserConditionalEntropy(groupNum);
 
-            if (calcContainHashtag)
-                calcTweetCondContainHashtagConditionalEntropy(groupNum);
+        if (calcContainHashtag)
+            calcTweetCondContainHashtagConditionalEntropy(groupNum);
 
-            if (calcFromUser)
-                calcTweetCondFromUserConditionalEntropy(groupNum);
+        if (calcFromUser)
+            calcTweetCondFromUserConditionalEntropy(groupNum);
 
-            if (calcContainTerm)
-                calcTweetCondContainTermConditionalEntropy(groupNum);
+        if (calcContainTerm)
+            calcTweetCondContainTermConditionalEntropy(groupNum);
 
-            if(calcContainLocation)
-                calcTweetCondContainLocationConditionalEntropy(groupNum);
-
-
-        }
+        if(calcContainLocation)
+            calcTweetCondContainLocationConditionalEntropy(groupNum);
+        sparkContext.close();
     }
 
     public static void initializeSqlContext() throws IOException {
         SparkConf sparkConfig;
         if(localRun) {
-            dataPath = configRead.getTestDataPath();
-            //dataPath = "TestSet/data1Month/";
-            outputPath = configRead.getTestOutPath();
+            if(testFlag) {
+                dataPath = configRead.getTestDataPath();
+                //dataPath = "TestSet/data1Month/";
+                outputPath = configRead.getTestOutPath();
+            }
             sparkConfig = new SparkConf().setAppName("FeatureStatistics").setMaster("local[2]").set("spark.executor.memory", "6g").set("spark.driver.maxResultSize", "6g");
-            tweetCount = 100;
-            if(testFlag)
-                tweetCount = 2000;
         }else {
             tweetCount = 829026458; //tweet_user.count();
             sparkConfig = new SparkConf().setAppName("FeatureStatistics");
@@ -175,25 +186,32 @@ public class ComputeNBLogOdds {
         tweetTime.cache();
         tweetCount = tweetTime.count();*/
         //System.out.println("=================================Tweet Time Size: " + tweetCount);
-        tweet_user_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
+        tweet_user_hashtag_grouped = sqlContext.read().parquet(dataPath+ classname + "/fold0/Ids/" + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
         final List<Long> idList = twoMilionIdList;
 //        tweet_user_hashtag_grouped = tweet_user_hashtag_grouped.join(tweetTime, tweetTime.col("tid").equalTo(tweet_user_hashtag_grouped.col("tid")), "inner").drop(tweetTime.col("tid")).coalesce(numPart);
+        if(testFlag){
+            tweetTime = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
+            tweet_user_hashtag_grouped = tweet_user_hashtag_grouped.join(tweetTime, tweet_user_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
+        }
         tweet_user_hashtag_grouped = sqlContext.createDataFrame(tweet_user_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return  (v1.getLong(3) <= timestamps[grNum-1]);
+                return  (v1.getLong(3) <= timestamp);
             }
         }), tweet_user_hashtag_grouped.schema());
         //Compute topical and notTopical counts before filtering tweet_user_hashtag table
         containNotContainCounts = getContainNotContainCounts(groupNum);
+        tweetCount = tweet_user_hashtag_grouped.count();
 
         final List<String> fromList = milionFeatureLists.get(0);
-        tweet_user_hashtag_grouped = sqlContext.createDataFrame(tweet_user_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
-            @Override
-            public Boolean call(Row v1) throws Exception {
-                return fromList.contains(v1.getString(1));
-            }
-        }), tweet_user_hashtag_grouped.schema());
+        if(!testFlag) {
+            tweet_user_hashtag_grouped = sqlContext.createDataFrame(tweet_user_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return fromList.contains(v1.getString(1));
+                }
+            }), tweet_user_hashtag_grouped.schema());
+        }
         if(computeTweetLocation){
             StructField[] fieldsLocation = {
                     DataTypes.createStructField("tid", DataTypes.LongType, true),
@@ -219,7 +237,7 @@ public class ComputeNBLogOdds {
         df = sqlContext.createDataFrame(df.javaRDD().filter(new Function<Row, Boolean>() {
             @Override
             public Boolean call(Row v1) throws Exception {
-                return v1.getLong(3) <= timestamps[grNum-1];
+                return v1.getLong(3) <= timestamp;
             }
         }), df.schema());
         //if(probName.equals("locProb"))
@@ -257,14 +275,23 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
         final List<String> hashtagList = milionFeatureLists.get(1);
-        final List<Long> idList = twoMilionIdList;
-        tweet_hashtag_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet").coalesce(numPart);
-        tweet_hashtag_hashtag_grouped = sqlContext.createDataFrame(tweet_hashtag_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
-            @Override
-            public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum-1] && hashtagList.contains(v1.getString(1)));
-            }
-        }), tweet_hashtag_hashtag_grouped.schema());
+        tweet_hashtag_hashtag_grouped = sqlContext.read().parquet(dataPath+ classname + "/fold0/Ids/" + "tweet_hashtag_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag){
+            tweet_hashtag_hashtag_grouped = tweet_hashtag_hashtag_grouped.join(tweetTime, tweet_hashtag_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
+            tweet_hashtag_hashtag_grouped = sqlContext.createDataFrame(tweet_hashtag_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp);
+                }
+            }), tweet_hashtag_hashtag_grouped.schema());
+        }else{
+            tweet_hashtag_hashtag_grouped = sqlContext.createDataFrame(tweet_hashtag_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp && hashtagList.contains(v1.getString(1)));
+                }
+            }), tweet_hashtag_hashtag_grouped.schema());
+        }
 //        fromHashtagProb = calcFromToProb(tweetCount, tweet_hashtag_hashtag_grouped, "hashtag1", "fromProb", "tweet_hashtag_hashtag_grouped_parquet");
 //        fromHashtagProb.registerTempTable("fromHashtagProb");
         if(writeTopicalHashtag) {
@@ -306,15 +333,24 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
-        final List<Long> idList = twoMilionIdList;
         final List<String> termList = milionFeatureLists.get(3);
-        tweet_term_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").coalesce(numPart);
-        tweet_term_hashtag_grouped = sqlContext.createDataFrame(tweet_term_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
-            @Override
-            public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum-1] && termList.contains(v1.getString(1)));
-            }
-        }), tweet_term_hashtag_grouped.schema());
+        tweet_term_hashtag_grouped = sqlContext.read().parquet(dataPath+ classname + "/fold0/Ids/" + "tweet_term_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag){
+            tweet_term_hashtag_grouped = tweet_term_hashtag_grouped.join(tweetTime, tweet_term_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
+            tweet_term_hashtag_grouped = sqlContext.createDataFrame(tweet_term_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp);
+                }
+            }), tweet_term_hashtag_grouped.schema());
+        }else{
+            tweet_term_hashtag_grouped = sqlContext.createDataFrame(tweet_term_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp && termList.contains(v1.getString(1)));
+                }
+            }), tweet_term_hashtag_grouped.schema());
+        }
 //        containTermProb = calcFromToProb(tweetCount, tweet_term_hashtag_grouped, "term1", "containTermProb", "tweet_term_hashtag_grouped_parquet");
 //        containTermProb.registerTempTable("containTermProb");
         if(writeTopicalTerm) {
@@ -337,14 +373,23 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
         final List<String> mentionList = milionFeatureLists.get(2);
-        final List<Long> idList = twoMilionIdList;
-        tweet_mention_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_mention_hashtag_grouped_parquet").coalesce(numPart);
-        tweet_mention_hashtag_grouped = sqlContext.createDataFrame(tweet_mention_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
-            @Override
-            public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum-1] && mentionList.contains(v1.getString(1)));
-            }
-        }), tweet_mention_hashtag_grouped.schema());
+        tweet_mention_hashtag_grouped = sqlContext.read().parquet(dataPath+ classname + "/fold0/Ids/" + "tweet_mention_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag){
+            tweet_mention_hashtag_grouped = tweet_mention_hashtag_grouped.join(tweetTime, tweet_mention_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
+            tweet_mention_hashtag_grouped = sqlContext.createDataFrame(tweet_mention_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp);
+                }
+            }), tweet_mention_hashtag_grouped.schema());
+        }else{
+            tweet_mention_hashtag_grouped = sqlContext.createDataFrame(tweet_mention_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp && mentionList.contains(v1.getString(1)));
+                }
+            }), tweet_mention_hashtag_grouped.schema());
+        }
         //toUserProb = calcFromToProb(tweetCount, tweet_mention_hashtag_grouped, "username1", "toProb", "tweet_mention_hashtag_grouped_parquet");
         //toUserProb.registerTempTable("toUserProb");
         if(writeTopicalMention) {
@@ -366,14 +411,23 @@ public class ComputeNBLogOdds {
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
         final List<String> locationList = milionFeatureLists.get(4);
-        final List<Long> idList = twoMilionIdList;
-        tweet_location_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_location_hashtag_grouped_parquet").coalesce(numPart);
-        tweet_location_hashtag_grouped = sqlContext.createDataFrame(tweet_location_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
-            @Override
-            public Boolean call(Row v1) throws Exception {
-                return (v1.getLong(3) <= timestamps[grNum-1] && locationList.contains(v1.getString(1)));
-            }
-        }), tweet_location_hashtag_grouped.schema());
+        tweet_location_hashtag_grouped = sqlContext.read().parquet(dataPath + classname + "/fold0/Ids/" + "tweet_location_hashtag_grouped_parquet").coalesce(numPart);
+        if(testFlag){
+            tweet_location_hashtag_grouped = tweet_location_hashtag_grouped.join(tweetTime, tweet_location_hashtag_grouped.col("tid").equalTo(tweetTime.col("tid"))).drop(tweetTime.col("tid"));
+            tweet_location_hashtag_grouped = sqlContext.createDataFrame(tweet_location_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp);
+                }
+            }), tweet_location_hashtag_grouped.schema());
+        }else {
+            tweet_location_hashtag_grouped = sqlContext.createDataFrame(tweet_location_hashtag_grouped.javaRDD().filter(new Function<Row, Boolean>() {
+                @Override
+                public Boolean call(Row v1) throws Exception {
+                    return (v1.getLong(3) <= timestamp && locationList.contains(v1.getString(1)));
+                }
+            }), tweet_location_hashtag_grouped.schema());
+        }
 //        containLocationProb = calcFromToProb(tweetCount, tweet_location_hashtag_grouped, "username1", "locProb", "tweet_location_hashtag_grouped_parquet");
 //        containLocationProb.registerTempTable("containLocationProb");
         if(writeTopicalLocation) {
@@ -430,24 +484,32 @@ public class ComputeNBLogOdds {
         DataFrame res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
             }
         }),new StructType(fields1) );
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/toUser_"+lambda1, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/toUser_"+lambda1, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
             }
         }), new StructType(fields1));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/toUser_"+lambda2, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/toUser_"+lambda2, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
             }
         }), new StructType(fields1));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/toUser_"+lambda3, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/toUser_"+lambda3, false);
+
+        res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row v1) throws Exception {
+                return RowFactory.create(v1.getString(0),v1.getDouble(1));
+            }
+        }), new StructType(fields1));
+        output(res1, "LearningMethods/Rocchio/" +"/" + testVal+"/" + groupNames[groupNum-1] + "/toUser", false);
     }
 
 
@@ -485,24 +547,32 @@ public class ComputeNBLogOdds {
         DataFrame res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
             }
         }),new StructType(fields1) );
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/fromLocation_"+lambda1, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/fromLocation_"+lambda1, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
             }
         }), new StructType(fields1));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/fromLocation_"+lambda2, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/fromLocation_"+lambda2, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
             }
         }), new StructType(fields1));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/fromLocation_"+lambda3, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/fromLocation_"+lambda3, false);
+
+        res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row v1) throws Exception {
+                return RowFactory.create(v1.getString(0),v1.getDouble(1));
+            }
+        }), new StructType(fields1));
+        output(res1, "LearningMethods/Rocchio/" +"/" + testVal+"/" + groupNames[groupNum-1] + "/fromLocation", false);
     }
 
     /*
@@ -542,24 +612,32 @@ public class ComputeNBLogOdds {
         DataFrame res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
             }
         }),new StructType(fields) );
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/fromUser_"+lambda1, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/fromUser_"+lambda1, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
             }
         }), new StructType(fields));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/fromUser_"+lambda2, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/fromUser_"+lambda2, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
             }
         }), new StructType(fields));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/fromUser_"+lambda3, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/fromUser_"+lambda3, false);
+
+        res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row v1) throws Exception {
+                return RowFactory.create(v1.getString(0),v1.getDouble(1));
+            }
+        }), new StructType(fields));
+        output(res1, "LearningMethods/Rocchio/" +"/" + testVal+"/" + groupNames[groupNum-1] + "/fromUser", false);
     }
 
 
@@ -571,13 +649,14 @@ public class ComputeNBLogOdds {
     }
 
     private static JavaRDD<Row> calcProb(DataFrame df, final int groupNum, final boolean containFlag, final double tweetNum) throws IOException {
-        final List<String> hashtagList = tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, true);
+        final HashSet<String> hashtagList = allHashtags; //tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, true);
+        final String delim = (testFlag)? "," : " ";
         return df.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
             @Override
             public Tuple2<String, Double> call(Row row) throws Exception {
                 int numHashtags= 0;
                 if(row.get(2) != null) {
-                    List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(" "))));
+                    List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(delim))));
                     tH.retainAll(hashtagList);
                     numHashtags = tH.size();
                 }
@@ -609,12 +688,15 @@ public class ComputeNBLogOdds {
     }
 
     public static long[] getContainNotContainCounts(final int groupNum) throws IOException {
-        final List<String> hashtagList = tweetUtil.getTestTrainGroupHashtagList(groupNum, localRun, true);
+        final HashSet<String> hashtagList = allHashtags;
         long[] counts = new long[2];
+        final String delim = (testFlag)? "," : " ";
         JavaRDD<Row> containNotContainNum = tweet_user_hashtag_grouped.drop("username").coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Integer, Long>() {
             @Override
             public Tuple2<Integer, Long> call(Row row) throws Exception {
-                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(" "))));
+                if(row.get(1) == null)
+                    return new Tuple2<Integer, Long>(2, 1l);
+                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(delim))));
                 tH.retainAll(hashtagList);
                 if (tH.size() > 0)
                     return new Tuple2<Integer, Long>(1, 1l);
@@ -682,24 +764,32 @@ public class ComputeNBLogOdds {
         DataFrame res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
             }
         }),new StructType(fields) );
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/containHashtag_"+lambda1, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/containHashtag_"+lambda1, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
             }
         }), new StructType(fields));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/containHashtag_"+lambda2, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/containHashtag_"+lambda2, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
             }
         }), new StructType(fields));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/containHashtag_"+lambda3, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/containHashtag_"+lambda3, false);
+
+        res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row v1) throws Exception {
+                return RowFactory.create(v1.getString(0),v1.getDouble(1));
+            }
+        }), new StructType(fields));
+        output(res1, "LearningMethods/Rocchio/" +"/" + testVal+"/" + groupNames[groupNum-1] + "/containHashtag", false);
     }
 
     /*
@@ -742,24 +832,32 @@ public class ComputeNBLogOdds {
         DataFrame res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda1) * (v1.getDouble(4) + lambda1)) / ((v1.getDouble(2) + lambda1) * (v1.getDouble(3) + lambda1))));
             }
         }),new StructType(fields) );
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/containTerm_"+lambda1, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/containTerm_"+lambda1, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda2) * (v1.getDouble(4) + lambda2)) / ((v1.getDouble(2) + lambda2) * (v1.getDouble(3) + lambda2))));
             }
         }), new StructType(fields));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/containTerm_"+lambda2, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/containTerm_"+lambda2, false);
         res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row v1) throws Exception {
-                return RowFactory.create(v1.getString(0), (((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
+                return RowFactory.create(v1.getString(0), Math.log(((v1.getDouble(1) + lambda3) * (v1.getDouble(4) + lambda3)) / ((v1.getDouble(2) + lambda3) * (v1.getDouble(3) + lambda3))));
             }
         }), new StructType(fields));
-        output(res1, "LearningMethods/NB/" + groupNames[groupNum-1] + "/containTerm_"+lambda3, false);
+        output(res1, "LearningMethods/NB/fold" + kValue + "/" + testVal+"/" + groupNames[groupNum-1] + "/containTerm_"+lambda3, false);
+
+        res1 = sqlContext.createDataFrame(res.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row v1) throws Exception {
+                return RowFactory.create(v1.getString(0),v1.getDouble(1));
+            }
+        }), new StructType(fields));
+        output(res1, "LearningMethods/Rocchio/" +"/" + testVal+"/" + groupNames[groupNum-1] + "/containTerm", false);
     }
 
 }
