@@ -156,11 +156,11 @@ public class TweetUtil {
     public List<String> getTestTrainGroupHashtagList(int groupNum, boolean localRun, boolean train) throws IOException {
         List<String> hashtagList = new ArrayList<>();
         configRead = new ConfigRead();
-        if(localRun){
+        if(localRun && configRead.getTestFlag()){
             String hashtagStrList;
             if(train)
-                hashtagStrList = "h1, h5, h9";
-//                hashtagStrList= "trainHashtag0,trainHashtag1,trainHashtag2,trainHashtag3,trainHashtag4,trainHashtag5,trainHashtag6,trainHashtag7,trainHashtag8,trainHashtag9,trainHashtag10,trainHashtag11,trainHashtag12,trainHashtag13,trainHashtag14,trainHashtag15,trainHashtag16,trainHashtag17,trainHashtag18,trainHashtag19,trainHashtag20,trainHashtag21,trainHashtag22,trainHashtag23,trainHashtag24,trainHashtag25,trainHashtag26,trainHashtag27,trainHashtag28,trainHashtag29,valHashtag0,valHashtag1,valHashtag2,valHashtag3,valHashtag4,valHashtag5";
+//                hashtagStrList = "h1,h5,h9";
+                hashtagStrList= "trainHashtag0,trainHashtag1,trainHashtag2,trainHashtag3,trainHashtag4,trainHashtag5,trainHashtag6,trainHashtag7,trainHashtag8,trainHashtag9,trainHashtag10,trainHashtag11,trainHashtag12,trainHashtag13,trainHashtag14,trainHashtag15,trainHashtag16,trainHashtag17,trainHashtag18,trainHashtag19,trainHashtag20,trainHashtag21,trainHashtag22,trainHashtag23,trainHashtag24,trainHashtag25,trainHashtag26,trainHashtag27,trainHashtag28,trainHashtag29,valHashtag0,valHashtag1,valHashtag2,valHashtag3,valHashtag4,valHashtag5";
             else
                 hashtagStrList= "testHashtag0,testHashtag1,testHashtag2,testHashtag3,testHashtag4,testHashtag5,testHashtag6,testHashtag7,testHashtag8,testHashtag9,testHashtag10,testHashtag11,testHashtag12,testHashtag13,testHashtag14,testHashtag15,testHashtag16,testHashtag17,testHashtag18,testHashtag19,testHashtag20,testHashtag21,testHashtag22,testHashtag23";
             Collections.addAll(hashtagList, hashtagStrList.toLowerCase().split(","));
@@ -244,26 +244,29 @@ public class TweetUtil {
         return hashtagList;
     }
 
-    public List<List<String>> get1MFeatures(boolean localRun) throws IOException {
+    public List<List<String>> get1MFeatures(boolean localRun, String featurePath) throws IOException {
+        configRead = new ConfigRead();
         List<String> hashtagList = new ArrayList<>();
         List<String> mentionList = new ArrayList<>();
         List<String> fromList = new ArrayList<>();
         List<String> locationList = new ArrayList<>();
         List<String> termList = new ArrayList<>();
         String logisticMethod = "l2_lr";
-        String path = "Data/Learning/Topics/featureData/featureIndex.csv";
+        if(featurePath.equals(""))
+            featurePath = "Data/Learning/Topics/featureData/featureIndex.csv";
         List<List<String>> output = new ArrayList<>(5);
-        if(localRun){
+        if(localRun && configRead.getTestFlag()){
             fromList = Arrays.asList("user2", "user5");
-            mentionList = Arrays.asList("user2", "user5", "user1");
-            hashtagList = Arrays.asList("h1", "h8");
-//            mentionList = Arrays.asList("mentionuser92", "mentionuser191", "mentionuser243");
-//            hashtagList = Arrays.asList("trainHashtag1", "testHashtag2"); termList = Arrays.asList("term1", "term2);
-            termList = Arrays.asList("abcde");
+//            mentionList = Arrays.asList("user2", "user5", "user1");
+//            hashtagList = Arrays.asList("h1", "h8");
+//            termList = Arrays.asList("abcde");
+            mentionList = Arrays.asList("mentionuser92", "mentionuser191", "mentionuser243");
+            hashtagList = Arrays.asList("trainHashtag1", "testHashtag2");
+            termList = Arrays.asList("term1", "term88");
             locationList = Arrays.asList("loc1", "loc2");
         }else {
             String hashtagStrList = "", mentionStrList = "", fromStrList = "", locationStrList = "", termStrList = "";
-            FileReader fileReaderA = new FileReader(path);
+            FileReader fileReaderA = new FileReader(featurePath);
             BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
             String line, featureType, featureName;
 
