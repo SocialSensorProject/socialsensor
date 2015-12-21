@@ -99,7 +99,7 @@ public class LearnTopical_GroupBased {
         boolean filePrepare = true;
 
         //double[] cValues = {1e-12, 1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 1e4, 1e5, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12};
-        double[] cValues = {0.00001, 0.0001, 0.001, 0.01, 0.1};
+        double[] cValues = {1e-6, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10};
         double[] kValues = {1000, 10000, 100000, totalFeatureNum};
 
         if (filePrepare) {
@@ -136,7 +136,7 @@ public class LearnTopical_GroupBased {
         ArrayList<Double> recalls = new ArrayList<Double>();
         ArrayList<Double> fscores = new ArrayList<Double>();
         solverType = "l2_lr";
-        solverType = "NB";
+//        solverType = "NB";
         //solverType = "l2_lrd";
         //solverType = "l1_lr";
 
@@ -177,7 +177,7 @@ public class LearnTopical_GroupBased {
         //System.out.println("Running " + getName() + " using " + source_file);
 
         //double[] cValues = {1e-5, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 1e7};
-        double bestc = -1, bestK = -1, bestError = -1, bestKError = -1;
+        double bestc = -1, bestK = -1, bestMap = -1, bestKMap = -1, bestAccuracyC, bestAccuracy;
         int classInd = -1, kInd = -1, bestKInd;
         //for (int classname = 1; classname <= numOfTopics; classname++) {
         BufferedReader bufferedReader, bufferedReaderA;
@@ -196,6 +196,7 @@ public class LearnTopical_GroupBased {
         HashMap<String, Double> featureWeights = null;
         List<TweetResult> tweetWeights;
         PostProcessParquetLaptop postProcessParquetLaptop = new PostProcessParquetLaptop();
+        String trainName, testName;
         double d;
         double[] bestCValues;
         //findTestTrain();
@@ -210,51 +211,46 @@ public class LearnTopical_GroupBased {
             fscores = new ArrayList<Double>();
             System.out.println("========================TopicNum: " + classname + "============================");
             bestK = -1;
-            bestKError = -1;
+            bestKMap = -1;
             kInd = 0;
             bestKInd = -1;
+
+            // FOR LOOP ON TRAIN VALIDATION TO FIND BEST COMBINATION OF K AND C
             bestCValues = new double[kValues.length];
             for (double k : kValues) {
                 bestc = -1;
-                bestError = -1;
-                if(k != 1000.0) {
-                    getFeatureList(k, classname);
-                    prepareTopicalTestTrainSplits(classname, k, classInd);
-                }else {
-                    total[0] = 6930;
-                    totalVal[0] = 30977;
-                    positives[0] = 1447;
-                    positivesVal[0] = 951;
-                    splitDatesStr = new String[2];
-                    splitDatesStr[0] = "1363451167000";
-                    splitDatesStr[1] = "1377897403000";
-                }
+                bestMap = -1;
+
+                getFeatureList(k, classname);
+                prepareTopicalTestTrainSplits(classname, k, classInd);
+
                 HashSet<String> trainHashtags1 = new HashSet<>();
                 HashSet<String> trainTrainHashtags1 = new HashSet<>();
                 String[] hNames = {trainHashtagList, testHashtagList, trainHashtagList + "_t", trainHashtagList + "_v"};
                 boolean topicalVal, topicalTrain, topicalTraintrain, topicalTest;
-                for(String hName : hNames) {
+                for (String hName : hNames) {
                     fileReaderA = new FileReader(path + classname + "/fold" + k + "/" + hName + ".csv");
                     bufferedReaderA = new BufferedReader(fileReaderA);
                     while ((line = bufferedReaderA.readLine()) != null) {
-                        switch(hName) {
-                            case("trainHashtagList"):
-                                trainHashtags1.add(line) ;
+                        switch (hName) {
+                            case ("trainHashtagList"):
+                                trainHashtags1.add(line);
                                 break;
-                            case("trainHashtagList_t"):
-                                trainTrainHashtags1.add(line) ;
+                            case ("trainHashtagList_t"):
+                                trainTrainHashtags1.add(line);
                                 break;
                         }
                     }
                     bufferedReaderA.close();
                 }
-
                 System.out.println("========================foldNum: " + k + "============================");
-                String trainName = classname + "/fold" + k + "/" + trainFileName + "_t.csv";
-                String testName = classname + "/fold" + k + "/" + trainFileName + "_v.csv";
-                //String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
-                //String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
-                if(solverType.equals("l2_lr")) {
+
+                //================ TRAIN PART ============================
+                if (solverType.equals("l2_lr")) {
+                    trainName = classname + "/fold" + k + "/" + trainFileName + "_t.csv";
+                    testName = classname + "/fold" + k + "/" + trainFileName + "_v.csv";
+                    //String trainName = classname + "/fold" + i + "/" + trainFileName + ".csv";
+                    //String testName = classname + "/fold" + i + "/" + testFileName + ".csv";
                     for (double c : cValues) {
                         ind = remInd;
                         predInd = remPredInd;
@@ -267,7 +263,7 @@ public class LearnTopical_GroupBased {
                         ind++;
                         //arguments[ind] = String.valueOf(c);ind++;
                         d = ((double) total[classInd] - positives[classInd]) / positives[classInd];
-//                    d = (double)((total[classInd][i]+totalVal[classInd][i])-(positives[classInd][i]+positivesVal[classInd][i]))/(positives[classInd][i]+positivesVal[classInd][i]);
+                        //d = (double)((total[classInd][i]+totalVal[classInd][i])-(positives[classInd][i]+positivesVal[classInd][i]))/(positives[classInd][i]+positivesVal[classInd][i]);
                         //d  = 1.0;
                         arguments[ind] = String.valueOf(c * d);
                         ind++;
@@ -277,6 +273,8 @@ public class LearnTopical_GroupBased {
                         ind++;
                         Arrays.copyOfRange(arguments, 0, ind - 1);
                         train.run(arguments);
+
+                        writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + k + "/" + modelFileName + "_" + c, k, path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", "val", c);
 
                         argumentsPred[predInd] = path + testName;
                         predInd++;
@@ -288,182 +286,55 @@ public class LearnTopical_GroupBased {
 
                         double[] measures = predict.mainPredict(argumentsPred);
                         //if (measures[3] > bestError) { //error
-                        if (measures[0] > bestError) {
-                            bestc = c;
-                            bestError = measures[0];
+                        if (measures[0] > bestMap) {
+                            bestAccuracyC = c;
+                            bestAccuracy = measures[0];
                         }
                         bw.write("C value: " + c + " accuracy: " + df3.format(measures[0]) + " - precision: " + df3.format(measures[1]) + " - recall: " + df3.format(measures[2]) + " - f-score: " + df3.format(measures[3]) + "\n");
                     }
-                }else{
+                } else {
                     trainName = classname + "/fold" + k + "/" + trainFileName + "_t_strings.csv";
                     testName = classname + "/fold" + k + "/" + trainFileName + "_v_strings.csv";
-                    featureWeights = new HashMap<>();
-                    if(solverType.equals("NB"))
-                        cValues = lambdaValues;
-                    if(k != 1000.0)
-                        computeNBLogOdds.ComputeLogOdds(classname, classInd+1, path +featurepath + indexFileName + "_" + classname+"_" + k + ".csv", k, Long.valueOf(splitDatesStr[0]), path, trainTrainHashtags1, "val");
-                    postProcessParquetLaptop.readNBResults(NBPath + solverType + "/fold" + k + "/" + "val" + "/", NBPath + solverType + "/fold" + k + "/" + "val"  + "/", path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", classname, k, solverType);
-                    for (double lambda : cValues) {
-                        tweetWeights = new ArrayList<>();
-                        truePositive = 0;
-                        falsePositive = 0;
-                        falseNegative = 0;
-                        correct = 0;
-                        total2 = 0;
-                        predInd = remPredInd;
-                        System.out.println("========================Lambda Value: " + lambda + "============================");
-                        argumentsPred[predInd] = path + testName;
-                        predInd++;
-                        if (solverType.equals("Rocchio")) {
-                            bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k + "/" + "val"  + "/" + classname + "/model_" + classname + "__features"));
-                        } else
-                            bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k  + "/" + "val" + "/" + classname + "/model_" + classname + "_" + lambda + "_features"));
-                        trainFeaturesNormVal = 0;
-                        double sum = 0;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            val = Double.valueOf(line.split(",")[1]);
-                            sum += val;
-                            featureWeights.put(line.split(",")[0], val);
-                            trainFeaturesNormVal += val * val;
-                        }
-                        System.out.println("SUM: " + sum);
-                        bufferedReader.close();
-                        bufferedReader = new BufferedReader(new FileReader(path + testName));
-                        bufferedWriter = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qrel" + "_csv"));
-                        bufferedWriter2 = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qtop" + "_csv"));
-                        int index = 0;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            tweetFlag = true;
-                            target_label = 0;
-                            featWeight = 0;
-                            featNormVal = 0;
-                            if (line.substring(0, 1).equals("1"))
-                                target_label = 1;
-                            line = line.substring(2, line.length());
-                            splits = line.split(" ");
-                            tid = Long.valueOf(splits[splits.length - 1]);
-                            for (int ij = 0; ij < splits.length - 2; ij++) {
-                                feat = splits[ij].toLowerCase();
-                                if (trainTrainHashtags1.contains(feat)) {
-                                    tweetFlag = false;
-                                    break;
-                                }
-                                if (featureWeights.containsKey(feat)) {
-                                    featWeight += featureWeights.get(feat);
-                                    featNormVal += featureWeights.get(feat) * featureWeights.get(feat);
-                                }
-                            }
-                            if (!tweetFlag)
-                                continue;
-                            if (solverType.equals("Rocchio")) {
-                                if (featNormVal == 0)
-                                    featWeight = 0.0;
-                                else
-                                    featWeight /= (featNormVal * trainFeaturesNormVal);
-                            }
-                            tweetWeights.add(new TweetResult(tid, featWeight, line, target_label));
-                            predict_label = (featWeight > 0) ? 1 : 0;//IS 0 THE THRESHOLD?
-                            //ZAHRA ==============================================================
-                            if (predict_label == target_label && target_label == 1)
-                                truePositive++;
-                            if (predict_label == 1 && target_label == 0)
-                                falsePositive++;
-                            if (predict_label == 0 && target_label == 1)
-                                falseNegative++;
-                            if (predict_label == target_label)
-                                correct++;
-                            total2++;
-                        }
-                        Collections.sort(tweetWeights);
-
-
-                        for (int ij = 0; ij < Math.min(10000, tweetWeights.size()); ij++) {
-//                            bufferedWriter.write(tr.getWeight() + "," + tr.getText() + "\n");
-                            bufferedWriter.write(classInd + " " + "Q0" + " " + tweetWeights.get(ij).getTid() + " " + tweetWeights.get(ij).getTopical() + "\n");
-                            bufferedWriter2.write(classInd + " " + "Q0" + " " + tweetWeights.get(ij).getTid() + " " + index + " " + new BigDecimal(tweetWeights.get(ij).getWeight()).toPlainString() + " " + outputFileName + "\n");
-                            index++;
-                        }
-                        bufferedWriter.close();
-                        bufferedWriter2.close();
-                        tweetUtil.runStringCommand("/Users/zahraiman/University/Term\\ 7/OSU_DocAnalysis_Fall2015_Assign1/trec_eval.8.1/trec_eval -a " + LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qrel" + "_csv " + LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qtop" + "_csv > " + LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" +lambda + ".csv");
-
-                        bufferedReaderA = new BufferedReader(new FileReader(LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" +lambda + ".csv"));
-                        for (int kk = 0; kk < 4; kk++)
-                            bufferedReaderA.readLine();
-                        double map = Double.valueOf(bufferedReaderA.readLine().split("map            \tall\t")[1]);
-                        if (map > bestError) {
-                            bestc = lambda;
-                            bestError = map;
-                        }
-                    }
+                    long splitTime = Long.valueOf(splitDatesStr[0]);
+                    computeNBLogOdds.ComputeLogOdds(classname, classInd + 1, path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", k, splitTime, path, trainTrainHashtags1, "val");
+                    postProcessParquetLaptop.readNBResults(NBPath + solverType + "/fold" + k + "/" + "val" + "/", NBPath + solverType + "/fold" + k + "/" + "val" + "/", path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", classname, k, solverType);
                 }
-                bestCValues[kInd] = bestc;
-                kInd++;
-                //bestc = 1e-6;
-                System.err.println(" For classname: " + classname + " and foldNum: " + k + " , the best C is : " + bestc + " with F-Score value of " + bestError);
-                //Find best K with chosen bestc found on train validation data
-                double c = bestc;
-                predInd = remPredInd;
-                System.out.println("========================Evaluate on Test data with C Value: " + c + "============================");
-                if(solverType.equals("l2_lr")) {
-                    trainName = classname + "/fold" + k + "/" + trainFileName + "_t.csv";
-                    testName = classname + "/fold" + k + "/" + trainFileName + "_v.csv";
-                    ind = remInd;
-                    arguments[ind] = "-w0";
-                    ind++;
-                    arguments[ind] = String.valueOf(c);
-                    ind++;
-                    arguments[ind] = "-w1";
-                    ind++;
-                    //arguments[ind] = String.valueOf(c);ind++;
-                    d = ((double) total[classInd] - positives[classInd]) / positives[classInd];
-//                d = ((total[classInd]+totalVal[classInd])-(positives[classInd]+positivesVal[classInd]))/(positives[classInd]+positivesVal[classInd]);
-                    //d  = 1.0;
-                    arguments[ind] = String.valueOf(c * d);
-                    ind++;
-                    arguments[ind] = path + trainName;
-                    ind++;
-                    arguments[ind] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c;
-                    ind++;
-                    Arrays.copyOfRange(arguments, 0, ind - 1);
-                    train.run(arguments);
-                    argumentsPred[predInd] = path + testName;
-                    predInd++;
-                    argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c;
-                    predInd++;
-                    argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + outputFileName + "_" + c;
-                    predInd++;
-                    Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
-                    double[] measures = predict.mainPredict(argumentsPred);
-                    accuracies.add(measures[0]);
-                    precisions.add(measures[1]);
-                    recalls.add(measures[2]);
-                    fscores.add(measures[3]);
-                    if (measures[0] > bestKError) {
-                        bestK = k;
-                        bestKInd = kInd - 1;
-                        bestKError = measures[0];
-                    }
-                    bw.write("****** VALIDATION DATA with C value: " + bestc + " and K value: " + k + " accuracy: " + df3.format(measures[0]) + " - precision: " + df3.format(measures[1]) + " - recall: " + df3.format(measures[2]) + " - f-score: " + df3.format(measures[3]) + "\n");
-                }else{
-                    trainName = classname + "/fold" + k + "/" + trainFileName + "_strings.csv";
-                    testName = classname + "/fold" + k + "/" + testFileName + "_strings.csv";
+
+                //================ VALIDATAION PART ============================
+                testName = classname + "/fold" + k + "/" + trainFileName + "_v_strings.csv";
+                featureWeights = new HashMap<>();
+
+                if (solverType.equals("NB"))
+                    cValues = lambdaValues;
+
+                else if (solverType.equals("Rocchio"))
+                    cValues = new double[]{1.0};
+
+                for (double lambda : cValues) {
                     tweetWeights = new ArrayList<>();
                     truePositive = 0;
                     falsePositive = 0;
                     falseNegative = 0;
                     correct = 0;
                     total2 = 0;
-                    double lambda = bestc;
-                    computeNBLogOdds.ComputeLogOdds(classname, classInd + 1, path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", k, Long.valueOf(splitDatesStr[1]), path, trainHashtags1, "test");
-                    postProcessParquetLaptop.readNBResults(NBPath + solverType + "/fold" + k + "/" + "test"  + "/", NBPath + solverType + "/fold" + k + "/" + "test"  + "/", path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", classname, k, solverType);
-                    if (solverType.equals("Rocchio")) {
-                        bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k + "/" + "test"  + "/" + classname + "/model_" + classname + "__features"));
-                    } else
-                        bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k  + "/" + "test" + "/" + classname + "/model_" + classname + "_" + lambda + "_features"));
-
+                    predInd = remPredInd;
+                    System.out.println("========================Lambda/C Value: " + lambda + "============================");
+                    argumentsPred[predInd] = path + testName;
+                    predInd++;
+                    switch (solverType) {
+                        case "Rocchio":
+                            bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k + "/" + "val" + "/" + classname + "/model_" + classname + "__features"));
+                            break;
+                        case "NB":
+                            bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k + "/" + "val" + "/" + classname + "/model_" + classname + "_" + lambda + "_features"));
+                            break;
+                        default:
+                            bufferedReader = new BufferedReader(new FileReader(path + classname + "/fold" + k + "/val/" + solverType + "/featureWeights_" + lambda + ".csv"));
+                            break;
+                    }
                     trainFeaturesNormVal = 0;
                     double sum = 0;
+
                     while ((line = bufferedReader.readLine()) != null) {
                         val = Double.valueOf(line.split(",")[1]);
                         sum += val;
@@ -472,9 +343,10 @@ public class LearnTopical_GroupBased {
                     }
                     System.out.println("SUM: " + sum);
                     bufferedReader.close();
+
                     bufferedReader = new BufferedReader(new FileReader(path + testName));
-                    bufferedWriter = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "test_qrel" + "_csv"));
-                    bufferedWriter2 = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "test_qtop" + "_csv"));
+                    bufferedWriter = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qrel" + "_csv"));
+                    bufferedWriter2 = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qtop" + "_csv"));
                     int index = 0;
                     while ((line = bufferedReader.readLine()) != null) {
                         tweetFlag = true;
@@ -488,7 +360,7 @@ public class LearnTopical_GroupBased {
                         tid = Long.valueOf(splits[splits.length - 1]);
                         for (int ij = 0; ij < splits.length - 2; ij++) {
                             feat = splits[ij].toLowerCase();
-                            if (trainHashtags1.contains(feat)) {
+                            if (trainTrainHashtags1.contains(feat)) {
                                 tweetFlag = false;
                                 break;
                             }
@@ -504,7 +376,8 @@ public class LearnTopical_GroupBased {
                                 featWeight = 0.0;
                             else
                                 featWeight /= (featNormVal * trainFeaturesNormVal);
-                        }
+                        }else if(solverType.equals("l2_lr"))
+                            featWeight = -featWeight;
                         tweetWeights.add(new TweetResult(tid, featWeight, line, target_label));
                         predict_label = (featWeight > 0) ? 1 : 0;//IS 0 THE THRESHOLD?
                         //ZAHRA ==============================================================
@@ -518,8 +391,13 @@ public class LearnTopical_GroupBased {
                             correct++;
                         total2++;
                     }
+                    bufferedReader.close();
                     Collections.sort(tweetWeights);
-
+                    BufferedWriter bufferedWriter3 = new BufferedWriter(new FileWriter("Data/test/tweetWeights_" + lambda + "_" + k + ".csv"));
+                    for (TweetResult tr : tweetWeights) {
+                        bufferedWriter3.write(tr.getTid() + "," + tr.getText() + "," + tr.getWeight() + "," + tr.getTopical() + "\n");
+                    }
+                    bufferedWriter3.close();
 
                     for (int ij = 0; ij < Math.min(10000, tweetWeights.size()); ij++) {
 //                            bufferedWriter.write(tr.getWeight() + "," + tr.getText() + "\n");
@@ -527,73 +405,224 @@ public class LearnTopical_GroupBased {
                         bufferedWriter2.write(classInd + " " + "Q0" + " " + tweetWeights.get(ij).getTid() + " " + index + " " + new BigDecimal(tweetWeights.get(ij).getWeight()).toPlainString() + " " + outputFileName + "\n");
                         index++;
                     }
-                    bufferedWriter.close(); bufferedWriter2.close();
-                    tweetUtil.runStringCommand("/Users/zahraiman/University/Term\\ 7/OSU_DocAnalysis_Fall2015_Assign1/trec_eval.8.1/trec_eval -a " + LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qrel" + "_csv " + LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qtop" + "_csv > " + LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" +lambda + "_test.csv");
+                    bufferedWriter.close();
+                    bufferedWriter2.close();
+                    tweetUtil.runStringCommand("/Users/zahraiman/University/Term\\ 7/OSU_DocAnalysis_Fall2015_Assign1/trec_eval.8.1/trec_eval -a " + LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qrel" + "_csv " + LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "_qtop" + "_csv > " + LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" + lambda + ".csv");
 
-                    bufferedReaderA = new BufferedReader(new FileReader(LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" +lambda + ".csv"));
+                    bufferedReaderA = new BufferedReader(new FileReader(LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" + lambda + ".csv"));
                     for (int kk = 0; kk < 4; kk++)
                         bufferedReaderA.readLine();
                     double map = Double.valueOf(bufferedReaderA.readLine().split("map            \tall\t")[1]);
-                    if (map > bestError) {
-                        bestK = k;
-                        bestKInd = kInd - 1;
-                        bestKError = map;
-                    }
-                    bw.write("****** VALIDATION DATA with lambda value: " + bestc + " and K value: " + k + " Map: " + df3.format(map)+ "\n");
+                    if (map > bestMap) {
+                        bestc = lambda;
+                        bestMap = map;
+                    }System.out.println("Map :  " + map);
+                    bufferedReaderA.close(); System.out.println(" MAP: " + map);
                 }
-                //writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c, classInd+1);
+                bestCValues[kInd] = bestc;
+                kInd++;
 
-                bw.flush();
+                if (bestMap > bestKMap) {
+                    bestK = k;
+                    bestKInd = kInd - 1;
+                    bestKMap = bestMap;
+                }
+
+                //bestc = 1e-6;
+                System.err.println("For classname: " + classname + " and foldNum: " + k + " , the best C is : " + bestc + " with F-Score value of " + bestMap);
             }
 
-            System.err.println(" For classname: " + classname + " and best K: " + bestK + " , the best C is : " + bestCValues[bestKInd] + " with F-Score value of " + bestError);
-            double k = bestK; double c = bestCValues[bestKInd];
-            //Evaluate on Test with bestc found on train validation data
-            String testName = classname + "/fold" + k + "/" + testFileName + ".csv";//  + (i+1);
-            String trainName = classname + "/fold" + k + "/" + trainFileName + ".csv";//  + (i+1);
+            // TRAIN ON ALL TRAIN DATA BASED ON BEST CHOSEN COMBINATION OF K AND C
+
+            double k = bestK;
+            double c = bestCValues[bestKInd];
+
+            HashSet<String> trainHashtags1 = new HashSet<>();
+            HashSet<String> trainTrainHashtags1 = new HashSet<>();
+            String[] hNames = {trainHashtagList, testHashtagList, trainHashtagList + "_t", trainHashtagList + "_v"};
+            for (String hName : hNames) {
+                fileReaderA = new FileReader(path + classname + "/fold" + k + "/" + hName + ".csv");
+                bufferedReaderA = new BufferedReader(fileReaderA);
+                while ((line = bufferedReaderA.readLine()) != null) {
+                    switch (hName) {
+                        case ("trainHashtagList"):
+                            trainHashtags1.add(line);
+                            break;
+                        case ("trainHashtagList_t"):
+                            trainTrainHashtags1.add(line);
+                            break;
+                    }
+                }
+                bufferedReaderA.close();
+            }
+
             predInd = remPredInd;
             System.out.println("========================Evaluate on Test data with C Value: " + c + "============================");
-            ind = remInd;
-            arguments[ind] = "-w0";ind++;
-            arguments[ind] = String.valueOf(c);ind++;
-            arguments[ind] = "-w1";ind++;
-            //arguments[ind] = String.valueOf(c);ind++;
-            d = ((total[classInd]+totalVal[classInd])-(positives[classInd]+positivesVal[classInd]))/(positives[classInd]+positivesVal[classInd]);
-            //d  = 1.0;
-            arguments[ind] = String.valueOf(c*d);ind++;
-            arguments[ind] = path + trainName;
-            ind++;
-            arguments[ind] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c;
-            ind++;
-            Arrays.copyOfRange(arguments, 0, ind - 1);
-            train.run(arguments);
-            argumentsPred[predInd] = path + testName;
-            predInd++;
-            argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c;
-            predInd++;
-            argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + outputFileName + "_" + c;
-            predInd++;
-            Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
-            double[] measures = predict.mainPredict(argumentsPred);
-            accuracies.add(measures[0]);
-            precisions.add(measures[1]);
-            recalls.add(measures[2]);
-            fscores.add(measures[3]);
-            writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c, k);
-            bw.write("****** TEST DATA with C value: " + bestc + " and with K value of " + bestK + " accuracy: " + df3.format(measures[0]) + " - precision: " + df3.format(measures[1]) + " - recall: " + df3.format(measures[2]) + " - f-score: " + df3.format(measures[3]) + "\n");
-            bw.flush();
+            if(solverType.equals("l2_lr")) {
+                trainName = classname + "/fold" + k + "/" + trainFileName + ".csv";
+                testName = classname + "/fold" + k + "/" + testFileName + ".csv";
+                ind = remInd;
+                arguments[ind] = "-w0";
+                ind++;
+                arguments[ind] = String.valueOf(c);
+                ind++;
+                arguments[ind] = "-w1";
+                ind++;
+                //arguments[ind] = String.valueOf(c);ind++;
+//                d = ((double) total[classInd] - positives[classInd]) / positives[classInd];
+                d = ((total[classInd]+totalVal[classInd])-(positives[classInd]+positivesVal[classInd]))/(positives[classInd]+positivesVal[classInd]);
+                //d  = 1.0;
+                arguments[ind] = String.valueOf(c * d);
+                ind++;
+                arguments[ind] = path + trainName;
+                ind++;
+                arguments[ind] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c;
+                ind++;
+                Arrays.copyOfRange(arguments, 0, ind - 1);
+                train.run(arguments);
 
-            for (int o = 0; o < accuracies.size(); o++) {
-                System.out.println(accuracies.get(o) + " " + precisions.get(o) + " " + recalls.get(o) + " " + fscores.get(o));
+                writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c, k, path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", "test", c);
+
+                argumentsPred[predInd] = path + testName;
+                predInd++;
+                argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c;
+                predInd++;
+                argumentsPred[predInd] = LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + outputFileName + "_" + c;
+                predInd++;
+                Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
+
+                double[] measures = predict.mainPredict(argumentsPred);
+                accuracies.add(measures[0]);
+                precisions.add(measures[1]);
+                recalls.add(measures[2]);
+                fscores.add(measures[3]);
+                if (measures[0] > bestKMap) {
+                    bestK = k;
+                    bestKInd = kInd - 1;
+                    bestKMap = measures[0];
+                }
+                bw.write("****** VALIDATION DATA with C value: " + bestc + " and K value: " + k + " accuracy: " + df3.format(measures[0]) + " - precision: " + df3.format(measures[1]) + " - recall: " + df3.format(measures[2]) + " - f-score: " + df3.format(measures[3]) + "\n");
+            }else {
+                trainName = classname + "/fold" + k + "/" + trainFileName + "_strings.csv";
+                testName = classname + "/fold" + k + "/" + testFileName + "_strings.csv";
+                computeNBLogOdds.ComputeLogOdds(classname, classInd + 1, path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", k, Long.valueOf(splitDatesStr[1]), path, trainHashtags1, "test");
+                postProcessParquetLaptop.readNBResults(NBPath + solverType + "/fold" + k + "/" + "test" + "/", NBPath + solverType + "/fold" + k + "/" + "test" + "/", path + featurepath + indexFileName + "_" + classname + "_" + k + ".csv", classname, k, solverType);
+            }
+            testName = classname + "/fold" + k + "/" + testFileName + "_strings.csv";
+
+            // TEST ON ALL TEST DATA BASED ON TRAINED ON BEST CHOSEN COMBINATION OF K AND C
+
+            tweetWeights = new ArrayList<>();
+            truePositive = 0;
+            falsePositive = 0;
+            falseNegative = 0;
+            correct = 0;
+            total2 = 0;
+            double lambda = bestc;
+
+            switch (solverType) {
+                case "Rocchio":
+                    bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k + "/" + "test" + "/" + classname + "/model_" + classname + "__features"));
+                    break;
+                case "NB":
+                    bufferedReader = new BufferedReader(new FileReader(NBPath + solverType + "/fold" + k + "/" + "test" + "/" + classname + "/model_" + classname + "_" + lambda + "_features"));
+                    break;
+                default:
+                    bufferedReader = new BufferedReader(new FileReader(path + classname + "/fold" + k + "/test/" + solverType + "/featureWeights_" + lambda + ".csv"));
+                    break;
             }
 
-            //System.out.println("- Finished fold " + (i+1) + ", accuracy: " + df3.format( correct / (double)_testData._data.size() ));
-            System.out.println("Accuracy:  " + df3.format(Statistics.Avg(accuracies)) + "  +/-  " + df3.format(Statistics.StdError95(accuracies)));
-            System.out.println("Precision: " + df3.format(Statistics.Avg(precisions)) + "  +/-  " + df3.format(Statistics.StdError95(precisions)));
-            System.out.println("Recall:    " + df3.format(Statistics.Avg(recalls)) + "  +/-  " + df3.format(Statistics.StdError95(recalls)));
-            System.out.println("F-Score:   " + df3.format(Statistics.Avg(fscores)) + "  +/-  " + df3.format(Statistics.StdError95(fscores)));
-            System.out.println();
+            trainFeaturesNormVal = 0;
+            double sum = 0;
+            while ((line = bufferedReader.readLine()) != null) {
+                val = Double.valueOf(line.split(",")[1]);
+                sum += val;
+                featureWeights.put(line.split(",")[0], val);
+                trainFeaturesNormVal += val * val;
+            }
+            System.out.println("SUM: " + sum);
+            bufferedReader.close();
+            bufferedReader = new BufferedReader(new FileReader(path + testName));
+            bufferedWriter = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "test_qrel" + "_csv"));
+            bufferedWriter2 = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "test_qtop" + "_csv"));
+            int index = 0;
+            while ((line = bufferedReader.readLine()) != null) {
+                tweetFlag = true;
+                target_label = 0;
+                featWeight = 0;
+                featNormVal = 0;
+                if (line.substring(0, 1).equals("1"))
+                    target_label = 1;
+                line = line.substring(2, line.length());
+                splits = line.split(" ");
+                tid = Long.valueOf(splits[splits.length - 1]);
+                for (int ij = 0; ij < splits.length - 2; ij++) {
+                    feat = splits[ij].toLowerCase();
+                    if (trainHashtags1.contains(feat)) {
+                        tweetFlag = false;
+                        break;
+                    }
+                    if (featureWeights.containsKey(feat)) {
+                        featWeight += featureWeights.get(feat);
+                        featNormVal += featureWeights.get(feat) * featureWeights.get(feat);
+                    }
+                }
+                if (!tweetFlag)
+                    continue;
+                if (solverType.equals("Rocchio")) {
+                    if (featNormVal == 0)
+                        featWeight = 0.0;
+                    else
+                        featWeight /= (featNormVal * trainFeaturesNormVal);
+                }else if(solverType.equals("l2_lr"))
+                    featWeight = -featWeight;
+                tweetWeights.add(new TweetResult(tid, featWeight, line, target_label));
+                predict_label = (featWeight > 0) ? 1 : 0;//IS 0 THE THRESHOLD?
+                //ZAHRA ==============================================================
+                if (predict_label == target_label && target_label == 1)
+                    truePositive++;
+                if (predict_label == 1 && target_label == 0)
+                    falsePositive++;
+                if (predict_label == 0 && target_label == 1)
+                    falseNegative++;
+                if (predict_label == target_label)
+                    correct++;
+                total2++;
+            }
+            Collections.sort(tweetWeights);
+            bufferedReader.close();
+
+            for (int ij = 0; ij < Math.min(10000, tweetWeights.size()); ij++) {
+//                            bufferedWriter.write(tr.getWeight() + "," + tr.getText() + "\n");
+                bufferedWriter.write(classInd + " " + "Q0" + " " + tweetWeights.get(ij).getTid() + " " + tweetWeights.get(ij).getTopical() + "\n");
+                bufferedWriter2.write(classInd + " " + "Q0" + " " + tweetWeights.get(ij).getTid() + " " + index + " " + new BigDecimal(tweetWeights.get(ij).getWeight()).toPlainString() + " " + outputFileName + "\n");
+                index++;
+            }
+            bufferedWriter.close(); bufferedWriter2.close();
+            tweetUtil.runStringCommand("/Users/zahraiman/University/Term\\ 7/OSU_DocAnalysis_Fall2015_Assign1/trec_eval.8.1/trec_eval -a " + LRPath + classname + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "test_qrel" + "_csv " + LRPath + classname + "/" + "/fold" + k + "/" + "out_" + outputFileName + "_" + lambda + "test_qtop" + "_csv > " + LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" +lambda + "_test.csv");
+
+            bufferedReaderA = new BufferedReader(new FileReader(LRPath + classname + "/" + "/fold" + k + "/" + "out_noTrain_" + outputFileName + "_" +lambda + ".csv"));
+            for (int kk = 0; kk < 4; kk++)
+                bufferedReaderA.readLine();
+            double map = Double.valueOf(bufferedReaderA.readLine().split("map            \tall\t")[1]);
+            bufferedReaderA.close();
+            bw.write("****** TEST DATA with lambda value: " + bestc + " and K value: " + k + " Map: " + df3.format(map)+ "\n");
+            //writeFeatureFile(classname, LRPath + classname + "/" + solverType + "/fold" + k + "/bestc/" + modelFileName + "_" + c, classInd+1);
+
+            bw.flush();
+            System.err.println(" For classname: " + classname + " and best K: " + bestK + " , the best C is : " + bestCValues[bestKInd] + " with F-Score value of " + map);
         }
+        for (int o = 0; o < accuracies.size(); o++) {
+            System.out.println(accuracies.get(o) + " " + precisions.get(o) + " " + recalls.get(o) + " " + fscores.get(o));
+        }
+
+        //System.out.println("- Finished fold " + (i+1) + ", accuracy: " + df3.format( correct / (double)_testData._data.size() ));
+        System.out.println("Accuracy:  " + df3.format(Statistics.Avg(accuracies)) + "  +/-  " + df3.format(Statistics.StdError95(accuracies)));
+        System.out.println("Precision: " + df3.format(Statistics.Avg(precisions)) + "  +/-  " + df3.format(Statistics.StdError95(precisions)));
+        System.out.println("Recall:    " + df3.format(Statistics.Avg(recalls)) + "  +/-  " + df3.format(Statistics.StdError95(recalls)));
+        System.out.println("F-Score:   " + df3.format(Statistics.Avg(fscores)) + "  +/-  " + df3.format(Statistics.StdError95(fscores)));
+        System.out.println();
+
         bw.close();
     }
 
@@ -616,36 +645,36 @@ public class LearnTopical_GroupBased {
         bufferedReaderA.close();
     }
 
-    public static void writeFeatureFile(String classname, String modelName, double k) throws IOException, InterruptedException {
+    public static void writeFeatureFile(String classname, String modelName, double k, String featurePath, String valTest, double lambda) throws IOException, InterruptedException {
 
         //build test/train data and hashtag lists
-        for (int i = 0; i < numOfFolds; i++) {
-            FileReader fileReaderA = new FileReader(modelName);
-            BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-            FileReader fileReaderB = new FileReader(path +featurepath + indexFileName + "_" + classname+"_" + k + ".csv");
-            BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
-            FileWriter fw = new FileWriter(path + classname +"/fold" + i +  "/" + solverType + "/featureWeights.csv");
-            BufferedWriter bw = new BufferedWriter(fw);
-            String line = "", line2;String [] splits;int ind = 0;
-            for(int kk = 0; kk < 6; kk++)//read header
-                line = bufferedReaderA.readLine();
-            List<String> featureWeights = new ArrayList<>();
-            while ((line = bufferedReaderA.readLine()) != null) {//last line of model is the bias feature
-                featureWeights.add(new BigDecimal(Double.valueOf(line)).toPlainString());
-            }
-            for(int ik = 0; ik < featureWeights.size()-1; ik++) {
-                line2 = bufferedReaderB.readLine();
-                ind++;
-                splits = line2.split(",");
-                bw.write(splits[0].toLowerCase() + "," + splits[1].toLowerCase() + "," + featureWeights.get(ik) + "\n");
-            }
-            fileReaderA.close();
-            fileReaderB.close();
-            bw.close();
-            tweetUtil.runStringCommand("sort -t',' -rn -k3,3 " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv > " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights1.csv");
-            tweetUtil.runStringCommand("rm -rf " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv");
-            tweetUtil.runStringCommand("mv " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights1.csv " + path + classname + "/fold" + i + "/" + solverType + "/featureWeights.csv");
+        FileReader fileReaderA = new FileReader(modelName);
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        FileReader fileReaderB = new FileReader(featurePath);
+        BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
+        tweetUtil.runStringCommand("mkdir " + path + classname +"/fold" + k +  "/" + valTest + "/");
+        tweetUtil.runStringCommand("mkdir " + path + classname +"/fold" + k +  "/" + valTest + "/" + solverType + "/");
+        FileWriter fw = new FileWriter(path + classname +"/fold" + k +  "/" + valTest + "/" + solverType + "/featureWeights_" + lambda + ".csv");
+        BufferedWriter bw = new BufferedWriter(fw);
+        String line = "", line2;String [] splits;int ind = 0;
+        for(int kk = 0; kk < 6; kk++)//read header
+            line = bufferedReaderA.readLine();
+        List<String> featureWeights = new ArrayList<>();
+        while ((line = bufferedReaderA.readLine()) != null) {//last line of model is the bias feature
+            featureWeights.add(new BigDecimal(Double.valueOf(line)).toPlainString());
         }
+        for(int ik = 0; ik < featureWeights.size()-1; ik++) {
+            line2 = bufferedReaderB.readLine();
+            ind++;
+            splits = line2.split(",");
+            bw.write(splits[0].toLowerCase() + ":" + splits[1].toLowerCase() + "," + featureWeights.get(ik) + "\n");
+        }
+        fileReaderA.close();
+        fileReaderB.close();
+        bw.close();
+        tweetUtil.runStringCommand("sort -t',' -rn -k3,3 " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights.csv > " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights1.csv");
+        tweetUtil.runStringCommand("rm -rf " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights.csv");
+        tweetUtil.runStringCommand("mv " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights1.csv " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights.csv");
     }
 
     public static String getFeatureNames(String featureLine, int groupNum) throws IOException {
@@ -1190,9 +1219,9 @@ public class LearnTopical_GroupBased {
         }
 
 
-        tweetUtil.runStringCommand("perl -MList::Util -e 'print List::Util::shuffle <>' " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv" + " > " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet2.csv");
-        tweetUtil.runStringCommand("rm -f " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv");
-        tweetUtil.runStringCommand("mv " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet2.csv" + " " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv");
+//        tweetUtil.runStringCommand("perl -MList::Util -e 'print List::Util::shuffle <>' " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv" + " > " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet2.csv");
+//        tweetUtil.runStringCommand("rm -f " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv");
+//        tweetUtil.runStringCommand("mv " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet2.csv" + " " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv");
         fileReaderA = new FileReader(path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv");
         bufferedReaderA = new BufferedReader(fileReaderA);
         fw = new FileWriter(path + classname + "/fold" + k + "/" + trainFileName+ "_t.csv");
@@ -1301,7 +1330,7 @@ public class LearnTopical_GroupBased {
                     bwAllTrainStrings.write("1" + cleanTextLine + "\n");
                 }else {
                     bwAllTrain.write("0" + cleanLine + "\n");
-                    bwAllTrain.write("0" + cleanTextLine + "\n");
+                    bwAllTrainStrings.write("0" + cleanTextLine + "\n");
                 }
             }
             else {
