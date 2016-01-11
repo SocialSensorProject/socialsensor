@@ -4,12 +4,14 @@ The total number of tweets collected is $829,026,458$. In the context of Twitter
 \begin{itemize}
 \item $Hashtag(s)$, keywords specified using \# sign
 \item $Mention(s)$, another Twitter username being mentioned using @ sign
-\item $Term(s)$, uni-grams which we extract from the 140 characters of the tweet. These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
+\item $Term(s)$, uni-grams which we extract from the 140 characters of the tweet. %These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
 \end{itemize}
-Fig ~\ref{fig:choropleths} shows the distribution of tweets across different U.S. and international locations for $3$ chosen topics which we found to be more interesting due to their geographical distribution over various locations. For example, we can see that Middle east and Malaysia stand out for the topic of Human Caused Disaster. Malaysia is a hot place for this topic because of MH370 incident with lots of usage of \#whereisthefuckingplane.
+We provide more detailed statistics about each feature in Table ~\ref{table:featureStatistics} and Table ~\ref{table:featureUnique}. Here, we provide the unique number of the feature in our dataset, in addition to maximum, average, and median values of each feature across the tweets, user, and hashtag dimensions. For example, a hashtag has been used in average by $10.08$ users or users have used $2$ hashtags on average.
+
+For $Location$ feature, Fig ~\ref{fig:choropleths} shows the distribution of tweets across different U.S. and international locations for $3$ chosen topics which we found to be more interesting due to their geographical distribution over various locations. For example, we can see that Middle east and Malaysia stand out for the topic of Human Caused Disaster. Malaysia is a hot place for this topic due to MH370 incident with lots of usage of \#whereisthefuckingplane.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[tbph!]
+\begin{figure*}[!tbh]
 \centering
 \begin{tabular}{ccc}
 \begin{tabular}{ccc}
@@ -28,10 +30,8 @@ Fig ~\ref{fig:choropleths} shows the distribution of tweets across different U.S
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Table ~\ref{table:featureStatistics} and table ~\ref{table:featureUnique} provide more detail statistics about each feature. For each feature, we reported the unique number of the feature in our dataset, in addition to maximum, average, median values of each feature across the tweets. The second part of the table provides these counts across user dimension meaning that for example a hashtag has been used in average by $10.08$ users. The third part of the table shows the statistics for the hashtag usage of our users e.g., users have used $2$ hashtags in average.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}[t!]
+\begin{table}[th!]
 \centering
 {\renewcommand{\arraystretch}{1.2}
 \resizebox{0.5\textwidth}{!}{%
@@ -57,7 +57,7 @@ Table ~\ref{table:featureStatistics} and table ~\ref{table:featureUnique} provid
 \label{table:featureStatistics}
 \end{table}
 
-\begin{table}[t!]
+\begin{table}[th!]
 \centering
 {\renewcommand{\arraystretch}{1.2}
 \resizebox{0.5\textwidth}{!}{%
