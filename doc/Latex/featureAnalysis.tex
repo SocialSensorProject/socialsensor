@@ -1,0 +1,186 @@
+%\textbf{What we have to work with: topics, features, feature attributes}
+In this section, we analyze the informativeness of each feature for learning topical tweets by looking at different characteristics for each feature in our dataset. For example, one characteristic of hashtags could be the number of the tweets that contain those hashtags. Does this have an effect on importance of the hashtag when it comes to learning topical tweets or not. In this sense, this section would bring insights to the following questions:
+
+\begin{itemize}
+\item \textbf{What are the best features for learning social sensors, do they differ by topic?  (Why?)}
+\item \textbf{For each feature type, do any attributes correlate with importance?}
+\end{itemize}
+
+A famous method for measuring informativeness is Mutual Information which is a measure of amount of information one random variable contains about another random variable. In order to calculate amount of information that a feature $f_k \in \{from, hashtag, mention, term, location\}$ provides w.r.t $t_i \in \{NaturalDisaster, Epidemics, ...\}$, mutual information is defined as:
+
+\begin{multline}
+I(t_i, f_k)= \\
+ \sum_{t_i\in \{ true, false \}} \sum_{f_k\in \{ true, false\}}p(f_k,t_i)\log \left ( \frac{p(f_k,t_i)}{p(f_k)p(t_i)} \right )
+ \label{eq:eq1}
+\end{multline}
+
+Higher values for this metric indicates more informative features for the specified topic.
+
+First, we provide mutual information values for each feature across different topics shown by boxplots in figure \ref{fig:miboxplots}, and average values of mutual information for each feature vs different topics shown in table \ref{fig:table1}. The last column in table \ref{fig:table1} shows average mutual information for the feature with the standard error range provided. We make a few observations from the analysis of Table \ref{fig:table1}:
+
+\begin{itemize}
+\item Term features provide more information for all of the topics on average which shows the importance of uni-grams when it comes to selection of topical tweet.
+\item From and mention features are the least informative features for all of the topics.
+\item Location and Hashtag feature provide second and third most informative features respectively.
+\item A few topics such as irandeal and tennis are less sensitive to selection of a specific features.
+\item Location feature provides more information regarding HumanCausedDisaster, LBGT, and Soccer topics.
+\item Sorting features based on their average mean value across different topics results in the following order:
+\begin{enumerate}
+\item Term
+\item Location
+\item Hashtag
+\item Mention
+\item From
+\end{enumerate}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\iffalse
+\begin{figure}[tbph!]
+\centering
+\includegraphics[width=0.5\textwidth]{images/avgMI.pdf}
+\vspace{-3mm}
+\caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
+\label{fig:table1}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.5\textwidth]{images/avgMI2.pdf}
+\vspace{-3mm}
+\caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
+\label{fig:table1}
+\end{figure}
+\fi
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.5\textwidth]{images/avgMI_gray.pdf}
+\vspace{-3mm}
+\caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
+\label{fig:table1}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+It is important to note that due to very large amount of Term features, they were cleaned based on their frequency (having at least frequency value of 100).
+
+\textbf{For each feature type, do any attributes correlate with importance?} In order to give a better sense of what features are better for each topic, we provided top-5 features for each topic in table \ref{table:top10MItopicsLocations}. It can be observed how different locations, hashtags, or terms showed as the top features based on mutual information are actually in relation with the specific topic.%\begin{enumerate}
+%\color{red}
+%\item Anecdotal feature analysis: for each of 5 feature types: (rows) top-k / median-k (?), (cols) topics -- much better than below b/c we show all topics here and we can compare features across topics.
+%Don't use for now: show (rows) top-k and median-k features for different topics and (cols) 5 features (location, mention, from, term, hashtag) -- need to select a **few (2-3) interesting topics** and explain shown in table \ref{top10MItopicsLocations}
+%\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}[ht]
+\centering
+{\renewcommand{\arraystretch}{1.2}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\textbf{Topics/Top10} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{IranDeal} & \textbf{SocialIssues} & \textbf{LBGT} & \textbf{HumanCausedDisaster} & \textbf{CelebrityDeath} & \textbf{Space} & \textbf{Tennis} & \textbf{Soccer} \\ \hline
+\textbf{From} & earthquake\_wo & changedecopine & mazandara & nsingerdebtpaid & eph4\_15 & ydumozyf & nmandelaquotes & daily\_astrodata & tracktennisnews & losangelessrh \\ \hline
+\textbf{From} & earthalerts & drdaveanddee & hhadi119 & debtadvisoruk & mgdauber & syriatweeten & boiknox & freesolarleads & tennis\_result & shoetale \\ \hline
+\textbf{From} & seelites & joinmentornetwk & 140iran & debt\_protect & stevendickinson & tintin1957 & jacanews & houston\_\_jobs & i\_roger\_federer & sport\_\_agent \\ \hline
+\textbf{From} & globalfloodnews & followebola & setarehgan & negativeequityf & lileensvf1 & sirajsol & ewnreporter & star\_wars\_gifts & tennislessonnow & books\_you\_want \\ \hline
+\textbf{From} & gcmcdrought & localnursejobs & akhgarshabaneh & dolphin\_ls & truckerbooman & rt3syria & paulretweet & lenautilus & kamranisbest & makeupbella \\ \hline \hline
+\textbf{Hashtag} & earthquake & health & iran & ferguson & tcot & syria & rip & science & wimbledon & lfc \\ \hline
+\textbf{Hashtag} & haiyan & uniteblue & irantalks & mikebrown & p2 & gaza & riprobinwilliams & starwars & usopen & worldcup \\ \hline
+\textbf{Hashtag} & storm & ebola & rouhani & ericgarner & pjnet & isis & ripcorymonteith & houston & tennis & arsenal \\ \hline
+\textbf{Hashtag} & tornado & healthcare & iranian & blacklivesmatter & uniteblue & israel & mandela & sun & nadal & worldcup2014 \\ \hline
+\textbf{Hashtag} & prayforthephilippines & depression & no2rouhani & fergusondecision & teaparty & mh370 & nelsonmandela & sxsw & wimbledon2014 & halamadrid \\ \hline \hline
+\textbf{Location} & philippines & usa & tehran & st.louis & usa & malaysia & southafrica & germany & london & liverpool \\ \hline
+\textbf{Location} & ca & ncusa & u.s.a & mo & bordentown & palestine & johannesburg & roodepoort & uk & manchester \\ \hline
+\textbf{Location} & india & garlandtx & nederland & usa & newjersey & syria & capetown & houston & india & london \\ \hline
+\textbf{Location} & newdelhi & oh-sandiego & iran & dc & sweethomealabama! & israel & pretoria & austin & pakistan & nigeria \\ \hline
+\textbf{Location} & newzealand & washington & globalcitizen & washington & aurora & london & durban & tx & islamabad & india \\ \hline \hline
+\textbf{Mention} & oxfamgb & foxtramedia & 4freedominiran & deray & jjauthor & ifalasteen & nelsonmandela & bizarro\_chile & wimbledon & lfc \\ \hline
+\textbf{Mention} & weatherchannel & obi\_obadike & iran\_policy & natedrug & 2anow & revolutionsyria & realpaulwalker & nasa & usopen & arsenal \\ \hline
+\textbf{Mention} & redcross & who & hassanrouhani & antoniofrench & govchristie & drbasselabuward & robinwilliams & j\_ksen & andy\_murray & realmadriden \\ \hline
+\textbf{Mention} & twcbreaking & obadike1 & un & bipartisanism & a5h0ka & mogaza & rememberrobin & jaredleto & serenawilliams & ussoccer \\ \hline
+\textbf{Mention} & abc7 & c25kfree & statedept & theanonmessage & barackobama & palestinianism & tweetlikegiris & 30secondstomars & espntennis & mcfc \\ \hline \hline
+\textbf{Term} & philippines & health & iran & police & obama & israel & robin & cnblue & murray & madrid \\ \hline
+\textbf{Term} & donate & ebola & regime & protesters & gun & gaza & williams & movistar & tennis & goal \\ \hline
+\textbf{Term} & typhoon & acrx & nuclear & officer & rights & israeli & nelson & enero & federer & cup \\ \hline
+\textbf{Term} & affected & medical & iranian & protest & america & killed & mandela & çimperdible & djokovic & manchester \\ \hline
+\textbf{Term} & relief & virus & resistance & cops & gop & children & cory & greet & nadal & match \\ \hline
+\end{tabular}
+}}
+\caption{Top 5 features for each topic based on Mutual Information}
+\label{table:top10MItopicsLocations}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textcolor{red}{
+\textbf{\color{red}scatterplots of feature MI -- the absolute last thing we do (density plots?!!)}
+**which plots below, and for which topics?  Could pick out most useful features for topics in part (a)(i) and just show selected scatter plots below for these feature types.
+from, mention MIs vs. {followers, favorites, friends, hashtags, tweets}
+hashtag MI vs. {\#tweets, \#users}
+location MI vs. {\#users}
+term MI vs. {\#tweets}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\iffalse
+\begin{figure*}[tbph!]
+\centering
+\begin{tabular}{ccccc}
+\begin{tabular}{ccccc}
+\subfloat[Fig:][Favorite Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/From-favoriteCount.pdf}}
+\subfloat[Fig:][Followers Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/From-followersCount.pdf}}
+\subfloat[Fig:][Friends Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/From-friendsCount.pdf}}
+\subfloat[Fig:][Hashtag Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/From-hashtagCount.pdf}}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/From-tweetCount.pdf}} \\
+%\vspace{-10mm}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/Hashtag-tweetCount.pdf}}
+\subfloat[Fig:][User Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/Hashtag-userCount.pdf}}
+\subfloat[Fig:][User Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/Location-userCount.pdf}}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/Mention-tweetCount.pdf}}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/BoxPlots_IranDeal/Term-tweetCount.pdf}} \\
+\end{tabular}
+\end{tabular}
+\vspace{-2mm}
+\caption {Box Plots for feature attributes counts vs. MI. Top row shows attributes \{favoriteCount, followerCount, friendCount, hashtagCount, tweetCount\} for $From$ feature. Bottom row shows attributes tweetCount and/or userCount for $Hashtag$, $Location$, $Mention$,and $Term$ features.}
+\label{fig:boxplots2}
+\end{figure*}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure*}[tbph!]
+\centering
+\begin{tabular}{ccccc}
+\begin{tabular}{ccccc}
+\subfloat[Fig:][Favorite Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-favoriteCount.eps}}
+\subfloat[Fig:][Followers Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-followersCount.eps}}
+\subfloat[Fig:][Friends Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-friendsCount.eps}}
+\subfloat[Fig:][Hashtag Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-hashtagCount.eps}}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-tweetCount.eps}} \\
+%\vspace{-10mm}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-tweetCount.eps}}
+\subfloat[Fig:][User Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-userCount.eps}}
+\subfloat[Fig:][User Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Location-userCount.eps}}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Mention-tweetCount.eps}}
+\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Term-tweetCount.eps}} \\
+\end{tabular}
+\end{tabular}
+\vspace{-2mm}
+\caption {ViolinPlots for feature attributes counts vs. MI. Top row shows attributes \{favoriteCount, followerCount, friendCount, hashtagCount, tweetCount\} for $From$ feature. Bottom row shows attributes tweetCount and/or userCount for $Hashtag$, $Location$, $Mention$,and $Term$ features.}
+\label{fig:violinplots}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure*}[tbph!]
+\centering
+\begin{tabular}{cccc}
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From_favoriteCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-followersCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount.eps}} \\
+\end{tabular}
+\vspace{-2mm}
+\caption {DensityPlots for feature attributes counts vs. MI. (a-d) show attributes \{favoriteCount, followerCount, friendCount, hashtagCount\} for $From$ feature}
+\label{Fig3}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
