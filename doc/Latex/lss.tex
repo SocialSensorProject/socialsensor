@@ -15,7 +15,7 @@ We define a corpus of $N$ documents as $D = \{{d_{1}}, {d_{2}}, ..., {d_{N}} \}$
 For a given document ${d_{i}}$, features are defined as boolean/real valued vector ${F_{d_{i}}} \in \Re^{M}$ representing the presence/frequency of each single feature ${f_{i}} \in F$. The goal is to learn a classifier $\gamma$ that maps documents to a topic, thus learning the weight vector $W$ to be used for scoring documents at experiment time. For the classification method of $M$, the classifier is defined
 
 \begin{equation}
-\gamma : D \to T 
+(\gamma, M) : D \to T 
 \end{equation}
 
 \begin{equation}
@@ -50,7 +50,7 @@ user-curated topical hashtags to efficiently provide a large number of
 supervised topic labels for social media content.
 
 %TODO: Formal math for defining the set of positive and negative labeled tweets via the hashtag set $H$.
-Using the curated hashtag set $H^{t}$ for topic $t$, a document is labeled as positive (topical) or negative (non-topical) by
+We define the curated hashtag set $H^{t} \in \Re^{M}$ for topic $t$, to have the same size as feature vector $F$ with a value of $1$ for the selected hashtags and value of $0$ for all the other features in $F$. Using $H^{t}$, a document is labeled as positive (topical) or negative (non-topical) by
 
 \begin{equation}
 L(d_{i}) = \left\{\begin{matrix}
@@ -68,6 +68,17 @@ supervised classification and ranking methods to learn topical content
 from a large feature space of source users and their locations, terms,
 hashtags, and mentions.
 
-TODO: An simple enumeration of the training steps?
+%TODO: An simple enumeration of the training steps?
+The training process includes the following steps:
+
+\begin{enumerate}
+\item Preprocess: Selection of a set of documents
+\item Hyper-parameter tuning
+\begin{enumerate}
+\item Feature Selection ($K$)
+\item Model Parameter Selection ($C$)
+\end{enumerate}
+\item Learning: The weight vector $W$ is learned with classification method $M$ on the selected set of documents with tuned hyper parameters $K^{*}$ and $C^{*}$. 
+\end{enumerate}
 
 % Note that formal performance evaluation provided in experimental section.
