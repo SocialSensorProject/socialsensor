@@ -1,11 +1,17 @@
 % This section covers the *formal* framework for learning topical social sensors
 
-% What are we doing?  Formal problem setup.
-% - Tweets, features, labels, classification problem definition (for a generic classifier).
-% - How we label data.
-% - How we train (validation set critical for hyperparameters, what metric used for selection?).
-% - Note that formal performance evaluation provided in experimental section.
+% =====================
+% What are we doing?  
+% (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
+% (2) How we label data.
+% (3) How we train (validation set critical for hyperparameters, what metric used for selection?).
+% Note that formal performance evaluation provided in experimental section.
+% =====================
 
+% (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
+TODO: Formal learning framework.
+
+% (2) How we label data.
 One critical bottleneck for learning targeted topical social sensors
 is to achieve sufficient supervised content labeling.  With data
 requirements often in the thousands of labels to ensure effective
@@ -22,32 +28,15 @@ topical social sensor learning, we leverage a (small) set of
 user-curated topical hashtags to efficiently provide a large number of
 supervised topic labels for social media content.
 
+TODO: Formal math for defining the set of positive and negative labeled
+tweets via the hashtag set $H$.
+
+% (3) How we train (validation set critical for hyperparameters, what metric used for selection?).
 With the data labeling bottleneck resolved, we proceed to train
 supervised classification and ranking methods to learn topical content
 from a large feature space of source users and their locations, terms,
 hashtags, and mentions.
 
-%%%%%%%%%%%%%%%%%
+TODO: An simple enumeration of the training steps?
 
-\eat{Perhaps the critical bottleneck for learning targeted topical social
-sensors is to achieve sufficient supervised content labels.  With
-data requirements often in the thousands of labels to ensure effective
-learning and generalization over a large candidate feature space as
-found in social media,
-manual labeling is simply too time-consuming for many users and
-crowdsourced labels are both costly and prone to misinterpretation of
-users' information needs.  Fortuitously, hashtags have emerged in
-recent years as a pervasive topical proxy on social media sites ---
-hashtags originated on IRC chat, were adopted later (and perhaps most
-famously) on Twitter, and now appear on other microblogs (e.g., Sina
-and Tencent Weibo) and even Facebook.  Hence as a simple enabling
-insight that serves as a catalyst for effective topical social sensor
-learning, we leverage a (small) set of user-curated topical hashtags
-to efficiently provide a large number of supervised topic labels for
-social media content.
-
-With the data labeling bottleneck resolved, we proceed to train
-supervised classification and ranking methods to learn topical content
-from a large feature space of source users and their locations, terms,
-hashtags, and mentions.}
-
+% Note that formal performance evaluation provided in experimental section.
