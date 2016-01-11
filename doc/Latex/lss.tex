@@ -9,7 +9,28 @@
 % =====================
 
 % (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
-TODO: Formal learning framework.
+%TODO: Formal learning framework.
+We define a corpus of $N$ documents as $D = \{{d_{1}}, {d_{2}}, ..., {d_{N}} \}$, a set of $M$ features as $F = \{{f_{1}}, {f_{2}}, ..., {f_{M}} \}$, a set of $K$ topics as $T = \{{t_{1}}, {t_{2}}, ..., {t_{K}} \}$, and a weight vector of $W = \{ {w_{1}}, {w_{2}}, ..., {w_{M}} \}$ corresponding to each feature. 
+
+For a given document ${d_{i}}$, features are defined as boolean/real valued vector ${F_{d_{i}}} \in R^{M}$ representing the presence/frequency of each single feature ${f_{i}} \in F$. The goal is to learn a classifier $\gamma$ that maps documents to a topic, thus learning the weight vector $W$ to be used for scoring documents at experiment time. For the classification method of $M$, the classifier is defined
+
+\begin{equation}
+\gamma : D \to T 
+\end{equation}
+
+\begin{equation}
+t^{*} = argMin_{w} L(t,\hat{t})
+\end{equation}
+
+Where ${L : T \times T \to R_{+} }$ is the loss function indicating the penalty for an incorrect prediction and ${L(t,\hat{t})}$ is the loss for prediction of ${\hat{t}}$ instead of actual topic $t$.
+
+Each document ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as
+
+\begin{equation}
+Sim({d_{i}}, t) = \sum_{j} F_{j}(d_{i}) \times {w_{j}}
+\end{equation}
+
+Afterwards, we present the ranked list of documents, ranked based on their similarity values.
 
 % (2) How we label data.
 One critical bottleneck for learning targeted topical social sensors
