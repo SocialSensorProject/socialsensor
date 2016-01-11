@@ -16,23 +16,20 @@ I(t_i, f_k)= \\
 
 Higher values for this metric indicates more informative features for the specified topic.
 
-First, we provide mutual information values for each feature across different topics shown by boxplots in figure \ref{fig:miboxplots}, and average values of mutual information for each feature vs different topics shown in table \ref{fig:table1}. The last column in table \ref{fig:table1} shows average mutual information for the feature with the standard error range provided. We make a few observations from the analysis of Table \ref{fig:table1}:
+In order to answer the first question on what are the best features for learning social sensors, we provide mean of Mutual Information values for each feature across different topics in Table ~\ref{fig:avgMI}. The last column in this table shows average of mean Mutual Information for the feature. The following observations are from the analysis of Table ~\ref{fig:avgMI}:
 
 \begin{itemize}
-\item Term features provide more information for all of the topics on average which shows the importance of uni-grams when it comes to selection of topical tweet.
-\item From and mention features are the least informative features for all of the topics.
-\item Location and Hashtag feature provide second and third most informative features respectively.
-\item A few topics such as irandeal and tennis are less sensitive to selection of a specific features.
-\item Location feature provides more information regarding HumanDisaster, LBGT, and Soccer topics.
-\item Sorting features based on their average mean value across different topics results in the following order:
-\begin{enumerate}
-\item Term
-\item Location
-\item Hashtag
-\item Mention
-\item From
-\end{enumerate}
+\item $Term$ feature is the most prevalent feature and in general, the more features you have, the better the chance that one is useful.
+%\item $Term$ features provide more information for all of the topics on average which shows the importance of uni-grams when it comes to selection of topical tweet.
+\item $Location$ and $Hashtag$ feature provide second and third most informative features respectively.
+\item A few topics such as $IranDeal$ and tennis are less sensitive to selection of a specific features.
+\item Location feature provides more information regarding $HumanDisaster$, $LBGT$, and $Soccer$ topics.
+\item Sorting features based on their average mean values across different topics results in the following order: $Term$, $Location$, $Hashtag$, $Mention$, $From$
 \end{itemize}
+
+In general, this presents evidence on the need for learning the weights of features for each topic, because there is no specific selection of features that would separate various topics from each other.
+
+Also, in order to show the power of Mutual Information criteria, we present the top $5$ features for each topic in table ~\ref{table:top10MItopicsLocations}. It can be observed how different locations, hashtags, or terms showed as the top features based on mutual information are actually in relation with the specific topic.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \iffalse
@@ -49,7 +46,7 @@ First, we provide mutual information values for each feature across different to
 \includegraphics[width=0.5\textwidth]{images/medianMI.pdf}
 \vspace{-3mm}
 \caption{Median MI for different features vs. Topics, last two column show mean value and stderr across all topics}
-\label{fig:table1}
+\label{fig:medianMI}
 \end{figure}
 \
 \begin{figure}[h!]
@@ -57,17 +54,9 @@ First, we provide mutual information values for each feature across different to
 \includegraphics[width=0.5\textwidth]{images/avgMI_gray.pdf}
 \vspace{-3mm}
 \caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
-\label{fig:table1}
+\label{fig:avgMI}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-It is important to note that due to very large amount of Term features, they were cleaned based on their frequency (having at least frequency value of 100).
-
-\textbf{For each feature type, do any attributes correlate with importance?} In order to give a better sense of what features are better for each topic, we provided top-5 features for each topic in table \ref{table:top10MItopicsLocations}. It can be observed how different locations, hashtags, or terms showed as the top features based on mutual information are actually in relation with the specific topic.%\begin{enumerate}
-%\color{red}
-%\item Anecdotal feature analysis: for each of 5 feature types: (rows) top-k / median-k (?), (cols) topics -- much better than below b/c we show all topics here and we can compare features across topics.
-%Don't use for now: show (rows) top-k and median-k features for different topics and (cols) 5 features (location, mention, from, term, hashtag) -- need to select a **few (2-3) interesting topics** and explain shown in table \ref{top10MItopicsLocations}
-%\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}[ht]
@@ -108,19 +97,22 @@ It is important to note that due to very large amount of Term features, they wer
 \label{table:top10MItopicsLocations}
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In order to answer the second question on whether any attributes correlate with importance for each feature, we provide two set of analysis. The first one, provides Mutual Information values of each feature across feature's attribute values shown by violin plots in figure \ref{fig:violinplots}. The attributes for each feature are:
 
-\textcolor{red}{
-\textbf{\color{red}scatterplots of feature MI -- the absolute last thing we do (density plots?!!)}
-**which plots below, and for which topics?  Could pick out most useful features for topics in part (a)(i) and just show selected scatter plots below for these feature types.
-from, mention MIs vs. {followers, favorites, friends, hashtags, tweets}
-hashtag MI vs. {\#tweets, \#users}
-location MI vs. {\#users}
-term MI vs. {\#tweets}
-}
+\begin{itemize}
+\item From: favorite count (the number of tweets the user has favorited), followers count (the number of users who follow the user), friends count (the number of users followed by the user), hashtag count (number of hashtags used by the user), tweet count (the number of tweets from the user)
+\item Hashtag: tweet count, user count (the number of users using the hashtag)
+\item Location: user count
+\item Mention: tweet count
+\item Term: tweet count
+\end{itemize}
+
+As we can see in the violin plots, the general pattern is that the more number of tweets, users, or hashtags count a feature has, the higher the chance of becoming topical will be. This pattern exists on other attributes of $From$ feature, although a bit less clear than the tweets, users, or hashtags counts attributes. 
+In addition, we further analyzed the density plots of favorite count, follower count, friends count, hashtag count attributes of $From$ feature shown in Fig ~\ref{fig:densityplots}. These plots represent a bi-modality in the distribution. Further analysis of data showed that the top mode belongs to users who have at least one topical tweet while bottom mode are users with no topical tweet.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \iffalse
-\begin{figure*}[tbph!]
+\begin{figure*}[th!]
 \centering
 \begin{tabular}{ccccc}
 \begin{tabular}{ccccc}
@@ -146,7 +138,7 @@ term MI vs. {\#tweets}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[tbph!]
+\begin{figure*}[tph!]
 \centering
 \begin{tabular}{ccccc}
 \begin{tabular}{ccccc}
@@ -171,7 +163,7 @@ term MI vs. {\#tweets}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[tbph!]
+\begin{figure*}[tbh!]
 \centering
 \begin{tabular}{cccc}
 \subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount.eps}} \qquad
@@ -181,6 +173,6 @@ term MI vs. {\#tweets}
 \end{tabular}
 \vspace{-2mm}
 \caption {DensityPlots for feature attributes counts vs. MI. (a-d) show attributes \{favoriteCount, followerCount, friendCount, hashtagCount\} for $From$ feature}
-\label{Fig3}
+\label{fig:densityplots}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
