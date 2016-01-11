@@ -8,7 +8,6 @@ Twitter model: reverse indexes was built in MySQL, leveraging its concurrent tra
 Supporting personalized search, they needed three types of signal: Static signals at indexing time, Resonance signals updated over time, Information about the searcher at search time. At indexing time, tweets are annotated with static information about the user and the language of the tweet's text. Dynamic updates, such as users' interactions with tweets are made over time. At query time, user's social graph is passed along the user's query. A specialized ranking function is used to combine relevance signals and the social graph for computing personalized relevance score for each tweet. The results consists of highest-ranking, most-recent tweets. The ranking function accesses the social graph and uses knowledge about the relationship between the searcher and the author of a tweet during ranking.
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 This section documents existing research on the use of social media as a sensor for topic detection on social media. Herein, we focus on related research on both events and topics detection within social media. With the consideration that events are special type of topics and can be classified as such. To see how different works address topic detection on social media, we focus on three extensively researched types of topic detection: trending topic detection, specific event detection, and tweet recommendation. 
 
 %%%%% TRENDING TOPIC DETECTION
