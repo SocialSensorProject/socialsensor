@@ -10,7 +10,7 @@ contain a vast amount of spam and otherwise low-value content for most
 users' information needs where filtering out irrelevant content is
 extremely time-consuming.  Hence, while it is widely acknowledged that
 social media sources can be used as topical content sensors (indeed,
-an entire European Union project was focused on ``Social Sensor''
+an entire European Union project was focused on related ``Social Sensor''
 research\footnote{\texttt{http://www.socialsensor.eu/}}.),
 automatically learning high-precision sensors (i.e., ranking and
 retrieval methods) for arbitrary topics that generalize to future
@@ -18,37 +18,40 @@ unseen content remains an open question in the literature and
 comprises the key problem we seek to address in this paper.
 
 Perhaps the critical bottleneck for learning targeted topical social
-sensors is to achieve sufficient supervised content labeling; with
+sensors is to achieve sufficient supervised content labeling.  With
 data requirements often in the thousands of labels to ensure effective
-learning and generalization, manual labeling is simply too
-time-consuming for many users and crowdsourced labels are both costly
-and prone to misinterpretation of users' information needs.
-Fortuitously, hashtags have emerged in recent years as a pervasive
-topical proxy on social media sites --- hashtags originated on IRC
-chat, were adopted later (and perhaps most famously) on Twitter, and
-now appear on other microblogs (e.g., Sina and Tencent Weibo) and even
-Facebook.  Hence as a simple enabling insight that serves as a
-catalyst for effective topical social sensor learning, we leverage a
-(small) set of user-curated topical hashtags to efficiently provide a
-large number of supervised topic labels for social media content.
+learning and generalization over a large candidate feature space (as
+found in social media),
+manual labeling is simply too time-consuming for many users and
+crowdsourced labels are both costly and prone to misinterpretation of
+users' information needs.  Fortuitously, hashtags have emerged in
+recent years as a pervasive topical proxy on social media sites ---
+hashtags originated on IRC chat, were adopted later (and perhaps most
+famously) on Twitter, and now appear on other microblogs (e.g., Sina
+and Tencent Weibo) and even Facebook.  Hence as a simple enabling
+insight that serves as a catalyst for effective topical social sensor
+learning, we leverage a (small) set of user-curated topical hashtags
+to efficiently provide a large number of supervised topic labels for
+social media content.
 
 With the data labeling bottleneck resolved, we proceed to train
 supervised classification and ranking methods to learn topical content
 from a large feature space of source users and their locations, terms,
-hashtags, and mentions.  On a corpus of approximately (choose one: 1
-billion English Tweets / 40 TB of data) collected from the Twitter
-streaming API during 2013 and 2014 and covering 10 diverse topics
-ranging from social issues to celebrity deaths to the ``Iran nuclear
-deal'', we empirically show that two simple and efficiently trainable
-methods --- logistic regression and naive Bayes --- generalize well to
-unseen future topical content (including content with no hashtags) in
-terms of their mean average precision (MAP) and Precision@$n$ for a
-range of $n$.  Furthermore, we show that terms and locations are among
-the most useful features --- surprisingly more so than hashtags, even
-though hashtags were used to label the data!  And perhaps even more
-surprisingly, the number of unique hashtags and tweets by a user
-correlates more with their informativeness than their follower or
-friend count.
+hashtags, and mentions.  On a corpus of approximately 1 billion
+English Tweets
+% 40 TB of data
+collected from the Twitter streaming API during 2013 and 2014 and
+covering 10 diverse topics ranging from social issues to celebrity
+deaths to the ``Iran nuclear deal'', we empirically show that two
+simple and efficiently trainable methods --- logistic regression and
+naive Bayes --- generalize well to unseen future topical content
+(including content with no hashtags) in terms of their mean average
+precision (MAP) and Precision@$n$ for a range of $n$.  Furthermore, we
+show that terms and locations are among the most useful features ---
+surprisingly more so than hashtags, even though hashtags were used to
+label the data.  And perhaps even more surprisingly, the number of
+unique hashtags and tweets by a user correlates more with their
+informativeness than their follower or friend count.
 %Overall, our feature analysis indicates that the most
 %useful features are sometimes counter-intuitive and that in general
 %learning methods may be much more effective than manual engineering

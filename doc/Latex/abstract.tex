@@ -13,23 +13,26 @@ To automate generic social sensor construction, we
 %a small number of topical hashtags that users can easily curate.  With
 %this labeled data in hand, we train a supervised learner to identify
 train a supervised learner to identify topical content over a large
-feature space given a small set of seed hashtags.  On a corpus of
-approximately (choose one: 1 billion English Tweets / 40 TB of data)
-collected from the Twitter streaming API during 2013 and 2014 and
-learning for 10 diverse topics ranging from social issues to celebrity
-deaths to the ``Iran nuclear deal'', we empirically show that our
-learned social sensor automatically generalizes to unseen future
-content (including content with no hashtags) with high ranking and
-precision scores.  Furthermore we provide an extensive analysis of
-features and feature types across different topics that reveals, for
-example, that (1)~largely independent of topic, simple terms are the
-most informative feature followed by location features and that
-(2)~the number of unique hashtags and tweets by a user correlates more
-with their informativeness than their follower or friend count.  In
-summary, this work provides a novel, effective, and efficient way to
-learn topical social sensors from a seed set of hashtags requiring
-minimal user curation effort and offering strong generalization
-performance.
+feature space given a small set of seed hashtags as proxies for
+topic labels.  On a corpus of approximately 1 billion
+English Tweets
+% or 40TB of Twitter data?  does not seem like 1 billions tweets though!
+collected from the Twitter
+streaming API during 2013 and 2014 and learning for 10 diverse topics
+ranging from social issues to celebrity deaths to the ``Iran nuclear
+deal'', we empirically show that our learned social sensor
+automatically generalizes to unseen future content (including content
+with no hashtags) with high ranking and precision scores.  Furthermore
+we provide an extensive analysis of features and feature types across
+different topics that reveals, for example, that (1)~largely
+independent of topic, simple terms are the most informative feature
+followed by location features and that (2)~the number of unique
+hashtags and tweets by a user correlates more with their
+informativeness than their follower or friend count.  In summary, this
+work provides a novel, effective, and efficient way to learn topical
+social sensors from a seed set of hashtags requiring minimal user
+curation effort and offering strong generalization to future topical content.
+
 
 %Twitter represents a massively distributed social sensor of a rich
 %underlying topic space that drives its content generation.  Yet
