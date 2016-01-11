@@ -20,9 +20,9 @@ and in this section we survey four related areas of active research:
 (1) trending topic detection, (2) tweet recommendation, (3) friend
 sensors, and (4) and specific event detection such as earthquake or
 influenza sensors.  Despite the partial overlap and superficial
-similarities between this paper and related work on social sensors, we
-argue that none of the prior work has learned targeted social sensors
-for arbitrary topics using supervised learning methods as done in this
+similarities between this paper and related social sensor work, we
+argue that no prior work has learned targeted social sensors for
+arbitrary topics using supervised learning methods as done in this
 paper.
 %In the following, we explain why each of these four areas is different from
 %the social sensor learning work proposed here.
@@ -53,7 +53,7 @@ The third category of methods extends the previous categories by
 additionally exploiting network structure properties~\cite{budak}.
 Despite this important and very active area of work that can be
 considered a type of social sensor, trending topic detection is
-intrinsically unsupervised and intended to detect arbitrary topics.
+intrinsically unsupervised and not intended to detect targeted topics.
 In contrast, the work in this paper is based on supervised learning of
 a specific topical social sensor derived from the topical set of
 hashtags provided by the user.
@@ -91,28 +91,28 @@ hashtags provided by the user.
 
 \vspace{2mm}
 \noindent {\bf Tweet Recommendation} represents an alternate use of
-social sensors and falls into two broad categories:
-personalized or content-oriented recommendation and retweet
-recommendation.  For the first category, the objective of personalized
-recommendation is to observe a user's interests and behavior from
-their user profile, sharing or retweet preferences, and social
-relations to generate tweets the user may like~\cite{Yan,chen}.  The
-objective of content-oriented recommendation is to use source content
-(e.g., a news article) to identify and recommend relevant tweets
-(e.g., to allow some to track discussion of a news
-article)~\cite{Krestel}.  For the second category, there has been a
-variety of work on retweet prediction that leverages retweet history
-in combination with tweet-based, author-based, and social network
-features to predict whether a user will retweet a given
+social sensors and falls into two broad categories: personalized or
+content-oriented recommendation and retweet recommendation.  For the
+first category, the objective of personalized recommendation is to
+observe a user's interests and behavior from their user profile,
+sharing or retweet preferences, and social relations to generate
+tweets the user may like~\cite{Yan,chen}.  The objective of
+content-oriented recommendation is to use source content (e.g., a news
+article) to identify and recommend relevant tweets (e.g., to allow
+someone to track discussion of a news article)~\cite{Krestel}.  For
+the second category, there has been a variety of work on retweet
+prediction that leverages retweet history in combination with
+tweet-based, author-based, and social network features to predict
+whether a user will retweet a given
 tweet~\cite{can,xu,petrovicOsborne}.  Despite that the fact all of
 these methods recommend tweets, they --- and recommendation methods in
 general --- are not focused on a specific topic but rather on
 predicting tweets that correlate with the preferences of a specific
 user or that are directly related to specific content.  Rather the
 focus with learning topical social sensors is to learn to predict for
-a specific topic (independent of a user's profile) in a way that
-generalizes beyond existing labeled content to novel future topical
-content.
+a broad theme (independent of a user's profile) in a way that
+generalizes beyond existing labeled topical content to novel future
+topical content.
 
 %Another set of studies have moved towards creating more generalizable
 %methods. Using a dataset of 55,000 news articles and 121,000
@@ -147,8 +147,8 @@ content.
 %%%%% TARGETED SPECIFIC TOPIC DETECTION
 \vspace{2mm}
 \noindent {\bf Specific Event Detection} builds social sensors
-as we do in this work but focuses on very specific events 
-such as a disasters or epidemics.  For example, for earthquake
+as we do in this work but focuses on highly specific events 
+such as a disasters or epidemics.  For the use case of earthquake
 detection, an SVM can be trained to detect earthquake events
 and coupled with a Kalman filter for localization~\cite{sakakiEq2}.
 %
@@ -170,26 +170,26 @@ In another example use case to detect health epidemics such as
 influenza, researchers build purpose-specific classifiers targeted to
 this specific epidemic~\cite{culotta,aramaki}, e.g, by exploiting
 knowledge of users' proximity and friendship along with the contageous
-nature of influenze~\cite{sadilek}.  While these targeted event
+nature of influenza~\cite{sadilek}.  While these targeted event
 detectors have the potential of providing high precision event
 detection, they are highly specific to the target event and do not
-eaily generalize to learn arbitrary event-based or topic-based social
+easily generalize to learn arbitrary event-based or topic-based social
 sensors as provided in this work.
 
 \vspace{2mm}
 \noindent {\bf Friend Sensors:}
 The fourth and final class of social sensors are intended for early
-event detection~\cite{sandy,garcia} and are based on the concept of the
-"friendship paradox"\cite{feld}~\footnote{On average, most people have
-fewer friends than their friends have.}), which results in a method for
-building user-centric social sensors.  We note that our topical social
-sensors form a \emph{superset} of friend sensors in that our work
-includes author features that the predictor may learn to use (even
-exclusively) if this proves effective for prediction.  However, as
-shown in our feature analysis, user-based features are among the least
-informative feature types for our topical social sensors suggesting
-that general social sensors benefit from a wide variety of features
-well beyond those of author features alone.
+event detection~\cite{sandy,garcia} by leveraging the concept of the
+"friendship paradox"\cite{feld}, %~\footnote{On average, most people have
+%fewer friends than their friends have.}),
+to build user-centric social sensors.  We note that our topical social
+sensors represent a \emph{superset} of friend sensors since our work
+includes author features that the predictor may learn to use if this
+proves effective for prediction.  However, as shown in our feature
+analysis, user-based features are among the least informative feature
+types for our topical social sensors suggesting that general social
+sensors benefit from a wide variety of features well beyond those of
+author features alone.
 
 %In this regard, \citeauthor{garcia} provided a method for
 %choosing sensor groups from friends of random sets of users to find
