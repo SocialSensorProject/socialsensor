@@ -1,55 +1,149 @@
-How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
+%How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
+With the $5$ set of features defined as $From$, $Mention$, $Location$, $Term$, $Hashtag$, we proceed to define the methodology for retrieving ranked list of tweets for a given topic. The list of topics were defined to be a set of $10$ various topics covering very specific e.g., $IranDeal$, and very broad e.g., $SocialIssues$ topics: $Tennis$, $Space$, $Soccer$, $IranDeal$, $HumanDisaster$ (HumanCausedDisaster), $CelebrityDeath$, $SocialIssues$, $NaturalDisaster$, $Epidemics$, and $LGBT$. 
 
-Train/validation/test split date selection -- temporally .5,.1,.4
-
-Feature selection: threshold per feature 159 and 50 (just explain rationale for lower hashtag and location thresholds).
-
-Formal notation, how do we train/test and tune hyperparameters for a generic classifier.
-
-\subsection{Classification Algorithms}
+Our goal is to retrieve a ranked list of tweets $T_i$ by employing machine learning methods using defined features. Fig ~\ref{fig:featureUnique} showed unique number of values for each feature. These values sum up to a total number of $538,365,507$ features. Also, as noted earlier, we are dealing with $829,026,458$ number of tweets. This shows the need for providing techniques to:
 
 \begin{enumerate}
-\item Naive Bayes
-\item Rocchio (centroid)
-\item Logistic Regression
+\item Annotate the tweets as topical and non-topical
+\item Select a set of features for learning the model
 \end{enumerate}
 
-All above over 1,000,000 features, *same* training data for all algorithms.
+%hashtag cureation
+In regards to annotating the tweets, first, a set of topical hashtags are manually curated for each topic. This set is annotated manually with $2$ annotator individually and inner-annotator agreement was achieved by reviewing these sets by $2$ more individuals. Each $Hashtag$ has a birthday which is defined as the first time it has been used in our dataset. The criteria of choosing hashtags included
+\begin{itemize}
+\item To be related to the topic
+\item To be preferably born during our time span i.e. not being used before e.g., \#ebola
+\item The entire set of hashtag birth dates to cover the two years of our data
+\end{itemize}
+After choosing these sets, we tag a tweet as topical if it contains at least one topical hashtag. 
 
-Not breaking down by feature type yet -- that's for the feature analysis section.
+%Train/validation/test split date selection -- temporally .5,.1,.4
+\label{label:split}
+In order to conduct our experiments, tweets are temporally divided over $2$ years to provide train and test sets. Since our tweet labeling is through topical hashtags, this division is done in a way to retain enough hashtags for train, validation, and test timespan. To this purpose, hashtags are divided based on their birth date with $50$ percent of hashtags being born at train timespan, $10$ percent born at validation timespan, and the last $40$ percent born at test timespan.
+Table \ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic. We can see that some topics such as $HumanDisaster$ and $Soccer$ are more general topics and have higher number of topical tweets while some other ones such as $IranDeal$ is more specific, thus having less number of topical tweets.
+
+%Feature selection: threshold per feature 159 and 50 (just explain rationale for lower hashtag and location thresholds).
+Regarding feature selection, it is clear that it is not possible to learn a model with total number of $538,365,507$ features. Even if it was possible, we would have a problem for providing enough training samples, and our feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature. The feature selection process included:
+\begin{itemize}
+\item Cleaning $Term$ feature to remove stop-words
+\item Choosing a cut-off threshold of $159$ for $From$, $Mention$, $Term$ features
+\item Choosing a cut-off threshold of $50$ for $Location$ and $Hashtag$ features (These features had much lower number of unique values)
+\end{itemize} 
+This results in roughly $1$ million features, denoted as social features set $SF$ where 
+
+\begin{multline}
+{SF_{m}} \in \\
+ \{ Hashtag_{m1}, From_{m2}, Mention_{m3}, Term_{m4}, Location_{m5} \} \\
+ {m = \{1,...,1166582 \}}, {m1 = \{1,..,184702 \}}, \\
+  m2 = \{1,...,361789 \}, m3= \{1,..,244478 \}, \\
+  m4= \{1,..,317846 \}, m5= \{1,.., 57767 \}
+\end{multline}
+
+%$SocialFeatures_{1,...,1166582} \in \{Hashtag_{1,..,184702}, From_{1,...,361789}, Mention_{1,..,244478}, Term_{1,..,317846}, Location_{1,.., 57767}\}$
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}[t!]
+\centering
+{\renewcommand{\arraystretch}{1.2}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\multicolumn{1}{|c|}{}                    & \multicolumn{1}{c|}{\textbf{Tennis}} & \multicolumn{1}{c|}{\textbf{Space}} & \multicolumn{1}{c|}{\textbf{Soccer}} & \multicolumn{1}{c|}{\textbf{IranDeal}} & \multicolumn{1}{c|}{\textbf{HumanDisaster}} & \multicolumn{1}{c|}{\textbf{CelebrityDeath}} & \multicolumn{1}{c|}{\textbf{SocialIssues}} & \multicolumn{1}{c|}{\textbf{NaturalDisaster}} & \multicolumn{1}{c|}{\textbf{Epidemics}} & \multicolumn{1}{c|}{\textbf{LGBT}} \\ \hline
+\textbf{\#TrainHashtags}                  & \multicolumn{1}{c|}{58}              & \multicolumn{1}{c|}{98}             & \multicolumn{1}{c|}{126}             & \multicolumn{1}{c|}{12}                & \multicolumn{1}{c|}{49}                     & \multicolumn{1}{c|}{28}                      & \multicolumn{1}{c|}{31}                    & \multicolumn{1}{c|}{31}                       & \multicolumn{1}{c|}{52}                 & \multicolumn{1}{c|}{29}            \\ \hline
+\textbf{\#TestHashtags}                   & \multicolumn{1}{c|}{36}              & \multicolumn{1}{c|}{63}             & \multicolumn{1}{c|}{81}              & \multicolumn{1}{c|}{5}                 & \multicolumn{1}{c|}{29}                     & \multicolumn{1}{c|}{16}                      & \multicolumn{1}{c|}{19}                    & \multicolumn{1}{c|}{19}                       & \multicolumn{1}{c|}{33}                 & \multicolumn{1}{c|}{17}            \\ \hline
+\textbf{\#TopicalTweets}                  & \multicolumn{1}{c|}{55,053}          & \multicolumn{1}{c|}{239,719}        & \multicolumn{1}{c|}{860,389}         & \multicolumn{1}{c|}{8,762}             & \multicolumn{1}{c|}{408,304}                & \multicolumn{1}{c|}{163,890}                 & \multicolumn{1}{c|}{230,058}               & \multicolumn{1}{c|}{230,058}                  & \multicolumn{1}{c|}{210,217}            & \multicolumn{1}{c|}{282,527}       \\ \hline
+\multirow{5}{*}{\textbf{Sample Hashtags}} & \#usopenchampion                     & \#asteroids                         & \#worldcup                           & \#irandeal                             & \#gazaunderattack                           & \#robinwilliams                              & \#policebrutality                          & \#policebrutality                             & \#ebola                                 & \#loveislove                       \\ \cline{2-11} 
+                                          & \#novakdjokovic                      & \#astronauts                        & \#lovesoccer                         & \#iranfreedom                          & \#childrenofsyria                           & \#ripmandela                                 & \#michaelbrown                             & \#michaelbrown                                & \#virus                                 & \#gaypride                         \\ \cline{2-11} 
+                                          & \#wimbledon                          & \#satellite                         & \#fifa                               & \#irantalk                             & \#iraqwar                                   & \#ripjoanrivers                              & \#justice4all                              & \#justice4all                                 & \#vaccine                               & \#uniteblue                        \\ \cline{2-11} 
+                                          & \#womenstennis                       & \#spacecraft                        & \#realmadrid                         & \#rouhani                              & \#bombthreat                                & \#mandela                                    & \#freetheweed                              & \#freetheweed                                 & \#chickenpox                            & \#homo                             \\ \cline{2-11} 
+                                          & \#tennisnews                         & \#telescope                         & \#beckham                            & \#nuclearpower                         & \#isis                                      & \#paulwalker                                 & \#newnjgunlaw                              & \#newnjgunlaw                                 & \#theplague                             & \#gaymarriage                      \\ \hline
+\end{tabular}
+}
+}
+\caption{Test/Train Hashtag samples and statistics}
+\label{table:sampleHashtags}
+\end{table*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Classification Algorithms}
+%Formal notation, how do we train/test and tune hyperparameters for a generic classifier.
+Now that we defined the primary steps for preparing the features and dataset, we can use them to build a ranking approach for topical tweet selection. Our method is based on classification/ranking approaches defined in the literature to weight features. These weights are further used to rank tweets for each topic. Here, we use the following classification approaches:
+
+\begin{enumerate}
+\item Logistic Regression
+\item Naive Bayes
+\item Rocchio (centroid)
+\item RankSVM
+\end{enumerate}
+
+To this purpose, we define the problem as assigning a weight ${W_{i}}$ to tweet ${X}$ as a measure of similarity to the given topics ${t_{i}}$. ${W_{i}}$ is the sum of weights of  features in the ${x_{i}}$:
+
+\begin{equation}
+W_{i} = \sum_{k} w_{k}\times f_{k}
+\end{equation}
+
+where ${w_{k}}$ is the weight of feature ${f_{k}}$ and ${f_{k} \in \{true, false\}}$ represents whether each of the features in ${SF_{m}},m = \{ 1,..,1166582 \} $ is present in tweet ${X}$ or not. The weights ${w_{k}}$ are learned by applying one of the classification algorithms.
+
+For example, in case of Naive Bayes, the problem is defined as probability of tweet being in topic ${t_{i}}$ given feature vector ${F_{x}}$ for 
+
+\begin{equation}
+P({t_{i}}|X) = P({t_{i}}|{F_{x}}) = \frac {P({t_{i}})P({F_{x}}|{t_{i}})}{P({F_{x}})}
+\end{equation}
+
+In order to learn the models, we take the following steps for each topic:
+\begin{enumerate}
+\item All the positive tweets for the given topic, in addition to sub-sampled set of negative tweets are collected
+\item A set of top $N$ features are selected based on the Mutual Information values of features for the given topic. $N$ is selected during hyper-parameter tuning phase from the set of ${10E1, 10E2, 10E3, 10E4, 1166582}$ values.
+\item Train, validation, and train sets are further built based on the division process explained in ~\ref{label:split} and selected set of top $N$ features.
+\item The model's hyper-parameter in addition to $N$ parameter are tuned on the validation set
+\item The model learns the weight vector based on the tuned hyper-parameters on the full train set and validation set
+\end{enumerate}
+
+The Liblinear \cite{liblinear} package is used for implementing $LR$ and $RankSVM$. The reason for deciding to tune the models on top $N$ features based on Mutual Information, comes from our primary feature analysis on the dataset which showed the ability of Mutual Information measure to pick more correlated features for each topic. This is discussed in more details in section ~\ref{label:featureanalysis}. The model hyper-parameters are tuned for $LR$ and $NB$. The $Rocchio$ method is parameter free and the LibLinear \cite{liblinear} implementation of $RankSVM$ does not provide manual tuning of the model's hyper-parameter.
+%Not breaking down by feature type yet -- that's for the feature analysis section.
 
 \subsection{Analysis}
+After experimenting each mentioned model on our dataset, we provide the following metrics:
 
-- Table of rows:alg, cols: MAP, P@k (k in {10,100,1000}) with stderrs over all topics
+\begin{itemize}
+\item MAP: Mean average precision for a set of topics is the mean of the average precision scores for each topic.
+\item P@K: Precision at K for $K \in \{ 10, 100, 1000 \}$, the number of relevant results on the first $K$ search results page
+\end{itemize}
 
-- Could do a bar graph (below) each for MAP, P@100 with topics as major columns and algs as neighboring bars
+%- Anecdotal results for each topic -- point out deficiency in our labels (a good thing, we generalized well from small hashtag set), manual evaluation of relevance for top-100 for best algorithm?
+The model's hyper-parameters are tuned based on MAP scores, having MAP as our most important metrics. Table ~\ref{table:results2} provides these metrics for each topic. Logistic Regression method is the method that performs best on average. Generally, Naive Bayes performed comparable/better to Logistic Regression having second best average value of MAP. We also provide the top $5$ tweets returned by Logistic Regression for each topic as anecdotal results in Table ~\ref{table:topTweets}. In this table, the signs in the beginning of the tweet represent the following:
+\begin{itemize}
+\item \xmark represents the tweets that are method has incorrectly ranked as highly topical
+\item \checkmark represents the tweets correctly ranked as highly topical
+\item \starmark represents the tweets that don't have any topical hashtags and therefore are not labeled as correctly ranked topical. However, looking at the tweets, we can see that they are in fact related to the topic
+\end{itemize}  
 
-- Anecdotal results for each topic -- point out deficiency in our labels (a good thing, we generalized well from small hashtag set), manual evaluation of relevance for top-100 for best algorithm?
+The fact that there are cases of tweets not being correctly labeled as topical, provides evidence that our method of labeling tweets has limitations and our MAP and P@K values are actually suffering from this problem. However, this shows the power of Logistic Regression method in generalizing from a small set of hashtags.
+%Could do a bar graph (below) each for MAP, P@100 with topics as major columns and algs as neighboring bars
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}[t]
 \centering
 {\renewcommand{\arraystretch}{1.2}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|l|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|}
 \hline
-\textbf{Method} & \textbf{Metric} & \textbf{Tennis} & \textbf{Space} & \textbf{Soccer} & \textbf{IranDeal} & \textbf{HumanCausedDisaster} & \textbf{CelebrityDeath} & \textbf{SocialIssues} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{LGBT} & \textbf{Mean$\pm$Std} \\ \hline
-\textbf{LR} & \textbf{MAP} & 0.918 & 0.870 & 0.827 & 0.811 & 0.761 & 0.719 & 0.498 & 0.338 & 0.329 & 0.165 & 0.623$\pm$0.19 \\ \hline
-\textbf{NB} & \textbf{MAP} & 0.908 & 0.897 & 0.731 & 0.824 & 0.785 & 0.748 & 0.623 & 0.267 & 0.178 & 0.092 & 0.605$\pm$0.22 \\ \hline
-\textbf{Rocchio} & \textbf{MAP} & 0.690 & 0.221 & 0.899 & 0.584 & 0.481 & 0.253 & 0.393 & 0.210 & 0.255 & 0.089 & 0.407$\pm$0.18 \\ \hline
+ &  & \textbf{Tennis} & \textbf{Space} & \textbf{Soccer} & \textbf{IranDeal} & \textbf{HumanDisaster} & \textbf{CelebrityDeath} & \textbf{SocialIssues} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{LGBT} & \textbf{Mean} \\ \hline
+\textbf{LR} & \textbf{MAP} & \textbf{0.918} & 0.870 & 0.827 & 0.811 & 0.761 & 0.719 & 0.498 & \textbf{0.338} & \textbf{0.329} & \textbf{0.165} & \textbf{0.623$\pm$0.19} \\ \hline
+\textbf{NB} & \textbf{MAP} & 0.908 & \textbf{0.897} & 0.731 & \textbf{0.824} & \textbf{0.785} & \textbf{0.748} & \textbf{0.623} & 0.267 & 0.178 & 0.092 & 0.605$\pm$0.22 \\ \hline
+\textbf{Rocchio} & \textbf{MAP} & 0.690 & 0.221 & \textbf{0.899} & 0.584 & 0.481 & 0.253 & 0.393 & 0.210 & 0.255 & 0.089 & 0.407$\pm$0.18 \\ \hline
 \textbf{RankSVM} & \textbf{MAP} & 0.702 & 0.840 & 0.674 & 0.586 & 0.603 & 0.469 & 0.370 & 0.248 & 0.136 & 0.082 & 0.471$\pm$0.18 \\ \hline \hline
-\textbf{LR} & \textbf{P@10} & 1.000 & 0.000 & 0.200 & 0.700 & 0.600 & 0.000 & 0.100 & 0.200 & 0.300 & 0.500 & 0.360$\pm$0.24 \\ \hline
-\textbf{NB} & \textbf{P@10} & 1.000 & 0.900 & 0.700 & 0.600 & 0.600 & 0.700 & 1.000 & 0.100 & 0.400 & 0.100 & 0.610$\pm$0.23 \\ \hline
-\textbf{Rocchio} & \textbf{P@10} & 0.800 & 0.000 & 1.000 & 0.900 & 0.000 & 0.000 & 0.000 & 0.500 & 0.500 & 0.100 & 0.380$\pm$0.29 \\ \hline
-\textbf{RankSVM} & \textbf{P@10} & 1.000 & 0.800 & 0.600 & 0.800 & 0.400 & 0.300 & 0.000 & 0.100 & 0.000 & 0.200 & 0.420$\pm$0.26 \\ \hline \hline
-\textbf{LR} & \textbf{P@100} & 0.950 & 0.580 & 0.650 & 0.870 & 0.620 & 0.490 & 0.640 & 0.690 & 0.790 & 0.210 & 0.649$\pm$0.15 \\ \hline
-\textbf{NB} & \textbf{P@100} & 0.980 & 0.850 & 0.600 & 0.880 & 0.750 & 0.860 & 0.730 & 0.230 & 0.090 & 0.190 & 0.616$\pm$0.23 \\ \hline
-\textbf{Rocchio} & \textbf{P@100} & 0.980 & 0.000 & 1.000 & 0.690 & 0.170 & 0.000 & 0.280 & 0.170 & 0.680 & 0.120 & 0.409$\pm$0.28 \\ \hline
-\textbf{RankSVM} & \textbf{P@100} & 0.730 & 0.720 & 0.310 & 0.700 & 0.880 & 0.440 & 0.480 & 0.340 & 0.020 & 0.100 & 0.472$\pm$0.20 \\ \hline \hline
-\textbf{LR} & \textbf{P@1000} & 0.963 & 0.954 & 0.816 & 0.218 & 0.899 & 0.833 & 0.215 & 0.192 & 0.343 & 0.071 & 0.550$\pm$0.26 \\ \hline
-\textbf{NB} & \textbf{P@1000} & 0.954 & 0.954 & 0.716 & 0.218 & 0.904 & 0.881 & 0.215 & 0.195 & 0.141 & 0.060 & 0.524$\pm$0.28 \\ \hline
-\textbf{Rocchio} & \textbf{P@1000} & 0.604 & 0.000 & 0.925 & 0.218 & 0.359 & 0.000 & 0.215 & 0.167 & 0.144 & 0.065 & 0.270$\pm$0.21 \\ \hline
-\textbf{RankSVM} & \textbf{P@1000} & 0.799 & 0.922 & 0.764 & 0.218 & 0.525 & 0.547 & 0.215 & 0.173 & 0.154 & 0.064 & 0.438$\pm$0.22 \\ \hline
+\textbf{LR} & \textbf{P@10} & \textbf{1.000} & 0.000 & 0.200 & 0.700 & \textbf{0.600} & 0.000 & 0.100 & 0.200 & 0.300 & 0.500 & 0.360$\pm$0.24 \\ \hline
+\textbf{NB} & \textbf{P@10} & \textbf{1.000} & \textbf{0.900} & 0.700 & 0.600 & \textbf{0.600} & \textbf{0.700} & \textbf{1.000} & 0.100 & 0.400 & 0.100 & \textbf{0.610$\pm$0.23} \\ \hline
+\textbf{Rocchio} & \textbf{P@10} & 0.800 & 0.000 & \textbf{1.000} & \textbf{0.900} & 0.000 & 0.000 & 0.000 & \textbf{0.500} & \textbf{0.500} & 0.100 & 0.380$\pm$0.29 \\ \hline
+\textbf{RankSVM} & \textbf{P@10} & \textbf{1.000} & 0.800 & 0.600 & 0.800 & 0.400 & 0.300 & 0.000 & 0.100 & 0.000 & \textbf{0.200} & 0.420$\pm$0.26 \\ \hline \hline
+\textbf{LR} & \textbf{P@100} & 0.950 & 0.580 & 0.650 & 0.870 & 0.620 & 0.490 & 0.640 & \textbf{0.690} & \textbf{0.790} & \textbf{0.210} & \textbf{0.649$\pm$0.15} \\ \hline
+\textbf{NB} & \textbf{P@100} & \textbf{0.980} & \textbf{0.850} & 0.600 & \textbf{0.880} & 0.750 & \textbf{0.860} & \textbf{0.730} & 0.230 & 0.090 & 0.190 & 0.616$\pm$0.23 \\ \hline
+\textbf{Rocchio} & \textbf{P@100} & \textbf{0.980} & 0.000 & \textbf{1.000} & 0.690 & 0.170 & 0.000 & 0.280 & 0.170 & 0.680 & 0.120 & 0.409$\pm$0.28 \\ \hline
+\textbf{RankSVM} & \textbf{P@100} & 0.730 & 0.720 & 0.310 & 0.700 & \textbf{0.880} & 0.440 & 0.480 & 0.340 & 0.020 & 0.100 & 0.472$\pm$0.20 \\ \hline \hline
+\textbf{LR} & \textbf{P@1000} & \textbf{0.963} & \textbf{0.954} & 0.816 & \textbf{0.218} & 0.899 & 0.833 & \textbf{0.215} & 0.192 & \textbf{0.343} & \textbf{0.071} & \textbf{0.550$\pm$0.26} \\ \hline
+\textbf{NB} & \textbf{P@1000} & 0.954 & \textbf{0.954} & 0.716 & \textbf{0.218} & \textbf{0.904} & \textbf{0.881} & \textbf{0.215} & \textbf{0.195} & 0.141 & 0.060 & 0.524$\pm$0.28 \\ \hline
+\textbf{Rocchio} & \textbf{P@1000} & 0.604 & 0.000 & \textbf{0.925} & \textbf{0.218} & 0.359 & 0.000 & \textbf{0.215} & 0.167 & 0.144 & 0.065 & 0.270$\pm$0.21 \\ \hline
+\textbf{RankSVM} & \textbf{P@1000} & 0.799 & 0.922 & 0.764 & \textbf{0.218} & 0.525 & 0.547 & \textbf{0.215} & 0.173 & 0.154 & 0.064 & 0.438$\pm$0.22 \\ \hline
 \end{tabular}
 }}
 \caption{Different learning methods results on topics with hyper-parameter tuning based on MAP}
@@ -66,17 +160,17 @@ Not breaking down by feature type yet -- that's for the feature analysis section
 \hline
 \textbf{Tennis} & \textbf{Space} \\ \hline 
 \checkmark rt @espntennis: shock city. darcis drops rafa in straight sets. first time nadal loses in first rd of a. major in career. \#espnwimbledon \#wÉ & \xmark  rt @jaredleto: rt @30secondstomars: icymi: mars performing a cover of @rihanna's \#stay on australia's @triplemmelb - video \_ http://t.co/uqÉ \\ \hline
-\checkmark rt @espntennis: shock city. darcis drops rafa in straight sets. first time nadal loses in first rd of a. major in career. \#espnwimbledon \#wÉ & \xmark  voting mars @30secondstomars @jaredleto @shannonleto @tomofromearth xobest group http://t.co/dlsozvjinf \\ \hline
-\checkmark rt @espntennis: shock city. darcis drops rafa in straight sets. first time nadal loses in first rd of a. major in career. \#espnwimbledon \#wÉ & \xmark  rt @jaredleto\_com: show everyone how much you are proud of @30secondstomars !\#mtvhottest 30 seconds to mars http://t.co/byxnri4t67 \\ \hline
-\checkmark rt @espntennis: shock city. darcis drops rafa in straight sets. first time nadal loses in first rd of a. major in career. \#espnwimbledon \#wÉ & \xmark  rt @30secondstomars: missed the big news? mars touring with @linkinpark + special guests @afi this summer!\_ http://t.co/3e5rm9pwrd \\ \hline
-\checkmark rt @espntennis: shock city. darcis drops rafa in straight sets. first time nadal loses in first rd of a. major in career. \#espnwimbledon \#wÉ & \xmark  rt @30secondstomars: to the right,to the left,we will fightto the death.go \#intothewildonvyrt with mars, starting weekly, nov 30 \_ httÉ \\ \hline
+\checkmark @ESPNTennis: Shock city. Darcis drops Rafa in straight sets. First time Nadal loses in first rd of a. Major in career. & \xmark  voting mars @30secondstomars @jaredleto @shannonleto @tomofromearth xobest group http://t.co/dlsozvjinf \\ \hline
+\checkmark @ESPNTennis: Djokovic ousts the last American man standing @Wimbledon, beating Reynolds 7-6 6-3 6-1 \#ESPNWimbledon & \xmark  rt @jaredleto\_com: show everyone how much you are proud of @30secondstomars !\#mtvhottest 30 seconds to mars http://t.co/byxnri4t67 \\ \hline
+\checkmark Nadal's a legend. After 3 years; Definitely He's gonna be the best of all the time. Unbelievable performance. @RafaelNadal \#USOpenFinal & \xmark  rt @30secondstomars: missed the big news? mars touring with @linkinpark + special guests @afi this summer!\_ http://t.co/3e5rm9pwrd \\ \hline
+\checkmark @calvy70 @ESPNTennis @Wimbledon I see, thanks for the info and enjoy \#Wimbledon2014 & \xmark  rt @30secondstomars: to the right,to the left,we will fightto the death.go \#intothewildonvyrt with mars, starting weekly, nov 30 \_ httÉ \\ \hline
 \textbf{Soccer} & \textbf{IranDeal} \\ \hline
 \xmark  rt @tomm\_dogg: \#thingstodobeforeearthends spend all my money. & \checkmark rt @iran\_policy: @vidalquadras:@isjcommittee has investigated 10 major subjects of iranŐs controversial \#nuclear program \#irantalksvienna \\ \hline
 \starmark  @mancityonlineco nice performance & \checkmark rt @iran\_policy: @vidalquadras:@isjcommittee has investigated 10 major subjects of iranŐs controversial \#nuclear program \#irantalksvienna \\ \hline
 \starmark  rt @indykaila: podolski: "let's see what happens in the winter. the fact is that i'm not happy with it, that's clear." @arsenal & \xmark  rt @negarmortazavi: thank you @hassanrouhani for retweeting. let's hope for a day when no iranian fears returning to their homeland. http:/É \\ \hline
 \starmark  rt @indykaila: wenger: "i don't believe match-fixing is a problem in england." \#afc & \xmark  rt @iran\_policy: iran: details of savage attack on political prisoners in evin prison http://t.co/xdzuakqdiv \#iran \#humanrights \\ \hline
 \xmark  @indykaila you never got back to me about tennis this week & \checkmark rt @iran\_policy: chairman ros-lehtinen speaking on us commitment 2 protect camp liberty residents. \#iranhrviolations http://t.co/1g6dhx1znu \\ \hline
-\textbf{HumanCausedDisaster} & \textbf{CelebrityDeath} \\ \hline
+\textbf{HumanDisaster} & \textbf{CelebrityDeath} \\ \hline
 \checkmark rt @baselsyrian: there`ve been peaceful people in \#homs not terrorists! \#assad,enemy of \#humanity destroyed it. \#eyeonhoms \#withsyria http:É & \starmark  rt @sawubona\_chris: today is my birthday \&amp; also the day my hero @nelsonmandela has died. lets never forget what he taught us. forgiveness iÉ \\ \hline
 \checkmark what a helpless father, he can do nothing under \#assad's siege!\#speakup4syrianchildren  http://t.co/vgle3byebw\#syria \#syriawarcrimes \#un & \starmark  rt @nelsonmandela: Ňdeath is something inevitable.when a man has done what he considers to be his duty to his people\&amp;his country,he can resÉ \\ \hline
 \starmark  exclusive: us formally requested \#un investigation; russia pressured \#assad to no avail;chain of evidence proof hard http://t.co/560t2rvdfw & \starmark  rt @nelsonmandela: la muerte es algo inevitable.cuando un hombre ha hecho lo que considera que es su deber para con su gente y su pas,puedÉ \\ \hline
@@ -89,7 +183,8 @@ Not breaking down by feature type yet -- that's for the feature analysis section
 \starmark  rt @2anow: vote with your wallet against \#guncontrolforest city enterprises does not support the \#2a http://t.co/tpkok3berm\#nj2as  \#tcot & \xmark  mes cousins jamais ns hantent les nuits de duvalier \#haiti \#duvalier \\ \hline
 \starmark  @2anow @momsdemand @jstines3 they dont have a plan for that , which is why they should never be allowed to take our guns & \checkmark tony burgener of @swisssolidarity says you can't compare the disaster response in \#haiti with the response to \#haiyan in \#philippines @iheid \\ \hline
 \textbf{Epidemics} & \textbf{LGBT} \\ \hline
-\checkmark rt @who: fourteen of the susp. \&amp; conf. ebola cases in \#conakry, \#guinea, are health care workers, of which 11 died \#askebola & \starmark  rt @jackmcoldcuts: @lunaticrex @fingersmalloy @toddkincannon @theanonliberal anthony kennedy just wrote opinion granting legal protection to cupcake kiplers \\ \hline
+\checkmark rt @who: fourteen of the susp. \&amp; conf. ebola cases in \#conakry, \#guinea, are health care workers, of which 11 died \#askebola & \starmark  rt @jackmcoldcuts: @lunaticrex @fingersmalloy @toddkincannon @theanonliberal anthony kennedy just wrote opinion granting...% legal protection to cupcake kiplers 
+\\ \hline
 \xmark  @who who can afford also been cover in government health insurance {[}with universal health coverage{]} & \xmark  @toddkincannon your personal account, your interest. separate from your business. \\ \hline
 \checkmark \#ebolaoutbreak this health crisis..unparalleled in modern times,Ó @who dir. aylward - requires \$1 billion to stem http://t.co/rjzqhydb3d & \xmark  why would you report someone as spam if he is not spam? @illygirlbrea @toddkincannon \\ \hline
 \xmark  rt @medsin: @who are conducting a survey on the social determinants of health in medical teaching. fill the survey in at https://t.co/aj59xÉ & \xmark  rt @t3h\_arch3r: @toddkincannon thanks for your tl having the female realbrother. between them is 600 lbs. 104 iq points. and a lot of hate. \\ \hline

@@ -23,7 +23,7 @@ First, we provide mutual information values for each feature across different to
 \item From and mention features are the least informative features for all of the topics.
 \item Location and Hashtag feature provide second and third most informative features respectively.
 \item A few topics such as irandeal and tennis are less sensitive to selection of a specific features.
-\item Location feature provides more information regarding HumanCausedDisaster, LBGT, and Soccer topics.
+\item Location feature provides more information regarding HumanDisaster, LBGT, and Soccer topics.
 \item Sorting features based on their average mean value across different topics results in the following order:
 \begin{enumerate}
 \item Term
@@ -43,15 +43,15 @@ First, we provide mutual information values for each feature across different to
 \caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
 \label{fig:table1}
 \end{figure}
-
+\fi
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.5\textwidth]{images/avgMI2.pdf}
+\includegraphics[width=0.5\textwidth]{images/medianMI.pdf}
 \vspace{-3mm}
-\caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
+\caption{Median MI for different features vs. Topics, last two column show mean value and stderr across all topics}
 \label{fig:table1}
 \end{figure}
-\fi
+\
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth]{images/avgMI_gray.pdf}
@@ -76,7 +76,7 @@ It is important to note that due to very large amount of Term features, they wer
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
 \hline
-\textbf{Topics/Top10} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{IranDeal} & \textbf{SocialIssues} & \textbf{LBGT} & \textbf{HumanCausedDisaster} & \textbf{CelebrityDeath} & \textbf{Space} & \textbf{Tennis} & \textbf{Soccer} \\ \hline
+\textbf{Topics/Top10} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{IranDeal} & \textbf{SocialIssues} & \textbf{LBGT} & \textbf{HumanDisaster} & \textbf{CelebrityDeath} & \textbf{Space} & \textbf{Tennis} & \textbf{Soccer} \\ \hline
 \textbf{From} & earthquake\_wo & changedecopine & mazandara & nsingerdebtpaid & eph4\_15 & ydumozyf & nmandelaquotes & daily\_astrodata & tracktennisnews & losangelessrh \\ \hline
 \textbf{From} & earthalerts & drdaveanddee & hhadi119 & debtadvisoruk & mgdauber & syriatweeten & boiknox & freesolarleads & tennis\_result & shoetale \\ \hline
 \textbf{From} & seelites & joinmentornetwk & 140iran & debt\_protect & stevendickinson & tintin1957 & jacanews & houston\_\_jobs & i\_roger\_federer & sport\_\_agent \\ \hline
@@ -150,17 +150,17 @@ term MI vs. {\#tweets}
 \centering
 \begin{tabular}{ccccc}
 \begin{tabular}{ccccc}
-\subfloat[Fig:][Favorite Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-favoriteCount.eps}}
-\subfloat[Fig:][Followers Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-followersCount.eps}}
-\subfloat[Fig:][Friends Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-friendsCount.eps}}
-\subfloat[Fig:][Hashtag Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-hashtagCount.eps}}
-\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-tweetCount.eps}} \\
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-favoriteCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-followersCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-friendsCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-hashtagCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-tweetCount.eps}} \\
 %\vspace{-10mm}
-\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-tweetCount.eps}}
-\subfloat[Fig:][User Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-userCount.eps}}
-\subfloat[Fig:][User Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Location-userCount.eps}}
-\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Mention-tweetCount.eps}}
-\subfloat[Fig:][Tweet Count]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Term-tweetCount.eps}} \\
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-tweetCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-userCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Location-userCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Mention-tweetCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Term-tweetCount.eps}} \\
 \end{tabular}
 \end{tabular}
 \vspace{-2mm}
@@ -174,9 +174,9 @@ term MI vs. {\#tweets}
 \begin{figure*}[tbph!]
 \centering
 \begin{tabular}{cccc}
-\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From_favoriteCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-followersCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount.eps}} \qquad
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-followersCount.eps}} \qquad
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount.eps}} \qquad
 \subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount.eps}} \\
 \end{tabular}
 \vspace{-2mm}
