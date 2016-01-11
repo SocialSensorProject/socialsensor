@@ -1,45 +1,56 @@
+\externaldocument{lss}
+\externaldocument{datasetStatistics}
 %How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
-With the $5$ set of features defined as $From$, $Mention$, $Location$, $Term$, $Hashtag$, we proceed to define the methodology for retrieving ranked list of tweets for a given topic. The list of topics were defined to be a set of $10$ various topics covering very specific e.g., $IranDeal$, and very broad e.g., $SocialIssues$ topics: $Tennis$, $Space$, $Soccer$, $IranDeal$, $HumanDisaster$ (HumanCausedDisaster), $CelebrityDeath$, $SocialIssues$, $NaturalDisaster$, $Epidemics$, and $LGBT$. 
+With the $5$ set of features defined as \textit{From}, \textit{Mention}, \textit{Location}, \textit{Term}, \textit{Hashtag}, we proceed to define the methodology for retrieving ranked list of tweets for a given topic. The list of topics were defined to be a set of $10$ various topics covering very specific and very broad topics:
 
-Our goal is to retrieve a ranked list of tweets $T_i$ by employing machine learning methods using defined features. Fig ~\ref{fig:featureUnique} showed unique number of values for each feature. These values sum up to a total number of $538,365,507$ features. Also, as noted earlier, we are dealing with $829,026,458$ number of tweets. This shows the need for providing techniques to:
+\textit{Tennis}, \textit{Space}, \textit{Soccer}, \textit{IranDeal}, \textit{HumanDisaster} (HumanCausedDisaster), \textit{CelebrityDeath}, \textit{SocialIssues}, \textit{NaturalDisaster}, \textit{Epidemics}, and \textit{LGBT}. 
 
-\begin{enumerate}
-\item Annotate the tweets as topical and non-topical
-\item Select a set of features for learning the model
-\end{enumerate}
+As defined in Sec~\ref{sec:lss} Our goal is to retrieve a ranked list of tweets $D \in \Re^{N}$ by employing machine learning methods on defined features $F \in \Re^{M}$. We provided unique number of values for each feature in Fig.~\ref{fig:featureStatistics}. These values sum up to a total number of $538,365,507$ features and as noted earlier, we are working on $829,026,458$ tweet corpus. This shows the need for techniques to annotate the data and select a subset of features for learning. The tweet labeling process was explained in the Sec~\ref{sec:lss}.
 
 %hashtag cureation
-In regards to annotating the tweets, first, a set of topical hashtags are manually curated for each topic. This set is annotated manually with $2$ annotator individually and inner-annotator agreement was achieved by reviewing these sets by $2$ more individuals. Each $Hashtag$ has a birthday which is defined as the first time it has been used in our dataset. The criteria of choosing hashtags included
+% NOTE DO WE NEED TO MENTION THE INNER-ANNOTATOR AGREEMENT ON 3-4 PEOPLE HERE OR IN LSS?!
+%In regards to annotating the tweets, first, a set of topical hashtags are manually curated for each topic. This set is annotated manually with $2$ annotator individually and inner-annotator agreement was achieved by reviewing these sets by $2$ more individuals. 
+Each \textit{Hashtag} has a birthday which is defined as the first time it has been used in our dataset. The criteria for hashtag curation included
 \begin{itemize}
 \item To be related to the topic
 \item To be preferably born during our time span i.e. not being used before e.g., \#ebola
-\item The entire set of hashtag birth dates to cover the two years of our data
+\item To cover the two year timespan of our Twitter corpus by birth dates of chosen set of hashtag
 \end{itemize}
-After choosing these sets, we tag a tweet as topical if it contains at least one topical hashtag. 
+After choosing these sets $H^{t}$, we label each tweet using the Eq.~\ref{eq:labeling}.
 
 %Train/validation/test split date selection -- temporally .5,.1,.4
 \label{label:split}
-In order to conduct our experiments, tweets are temporally divided over $2$ years to provide train and test sets. Since our tweet labeling is through topical hashtags, this division is done in a way to retain enough hashtags for train, validation, and test timespan. To this purpose, hashtags are divided based on their birth date with $50$ percent of hashtags being born at train timespan, $10$ percent born at validation timespan, and the last $40$ percent born at test timespan.
-Table \ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic. We can see that some topics such as $HumanDisaster$ and $Soccer$ are more general topics and have higher number of topical tweets while some other ones such as $IranDeal$ is more specific, thus having less number of topical tweets.
+In order to conduct our experiments on train, validation and test datasets, tweets are temporally divided over $2$ years. Since our tweet labeling is through topical hashtags, this division is done in a way to retain enough number of hashtags for train, validation, and test timespan. To this purpose, hashtags are divided based on their birthday with $50$ percent of hashtags being born at train timespan, $10$ percent born at validation timespan, and the last $40$ percent born at test timespan.
+Table.~\ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic. We can see that some topics such as \textit{HumanDisaster} and \textit{Soccer} are more general topics and have higher number of topical tweets while some other ones such as \textit{IranDeal} is more specific, thus having less number of topical tweets.
 
 %Feature selection: threshold per feature 159 and 50 (just explain rationale for lower hashtag and location thresholds).
-Regarding feature selection, it is clear that it is not possible to learn a model with total number of $538,365,507$ features. Even if it was possible, we would have a problem for providing enough training samples, and our feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature. The feature selection process included:
+Regarding feature selection, it is clear that it is not possible to learn a model with total number of $538,365,507$ features. In which case, we would have to provide a much larger training samples, and, in addition, our feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature. The feature selection process included:
 \begin{itemize}
-\item Cleaning $Term$ feature to remove stop-words
-\item Choosing a cut-off threshold of $159$ for $From$, $Mention$, $Term$ features
-\item Choosing a cut-off threshold of $50$ for $Location$ and $Hashtag$ features (These features had much lower number of unique values)
+\item Cleaning \textit{Term} feature to remove stop-words
+\item Choosing a cut-off threshold on the frequency of features
 \end{itemize} 
-This results in roughly $1$ million features, denoted as social features set $SF$ where 
+This results in roughly $1$ million features, considered as defined $F \in \Re^{M}$ feature vector. The detailed values of cut-off thresholds and number of remaining unique values for each feature is shown in Table.~\ref{table:learningFeatures}. Since \textit{Term} and \textit{Location} features had much lower number of unique values in the corpus, we chose a lower threshold for these features.
 
-\begin{multline}
-{SF_{m}} \in \\
- \{ Hashtag_{m1}, From_{m2}, Mention_{m3}, Term_{m4}, Location_{m5} \} \\
- {m = \{1,...,1166582 \}}, {m1 = \{1,..,184702 \}}, \\
-  m2 = \{1,...,361789 \}, m3= \{1,..,244478 \}, \\
-  m4= \{1,..,317846 \}, m5= \{1,.., 57767 \}
-\end{multline}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[!h]
+\centering
+{\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|c|c|}
+\hline
+ & \textbf{Threshold} & \textbf{\#unique values} \\ \hline
+\textbf{From} & 159 & 361,789 \\ \hline
+\textbf{Hashtag} & 159 & 184,702 \\ \hline
+\textbf{Mention} & 159 & 244,478 \\ \hline
+\textbf{Location} & 50 & 57,767 \\ \hline
+\textbf{Term} & 50 & 317,846 \\ \hline
+\textbf{Features (SF)} &  & 1,166,582 \\ \hline
+\end{tabular}
+}
+\caption{Cut-off threshold and selected number of unique values of features for selection of \textit{SF} learning feature set}
+\label{table:learningFeatures}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%$SocialFeatures_{1,...,1166582} \in \{Hashtag_{1,..,184702}, From_{1,...,361789}, Mention_{1,..,244478}, Term_{1,..,317846}, Location_{1,.., 57767}\}$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}[tbh!]
 \centering
