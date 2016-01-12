@@ -1,22 +1,20 @@
 %\externaldocument{lss}
 %\externaldocument{datasetStatistics}
 %How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
-With the formal definition of learning topical social sensors provided in Sec~\ref{sec:lss}, we proceed to outline our experimental methodology on our Twitter corpus. The features $D_{i}^{+}$ includes features from \textit{From}, \textit{Mention}, \textit{Location}, \textit{Term}, \textit{Hashtag} features. The set of topics $T$ on the Twitter corpus is defined to be a set of $10$ various topics covering very specific and very broad topics:
-$T = \{ \textit{Tennis}, \textit{Space}, \textit{Soccer}, \textit{IranDeal}, \textit{HumanDisaster}, \\
+With the formal definition of learning topical social sensors provided in Sec~\ref{sec:lss}, we proceed to outline our experimental methodology on our Twitter corpus. The set of topics $T$ on the Twitter corpus is defined to be a set of $10$ various topics covering very specific and very broad topics $T = \{ \textit{Tennis}, \textit{Space}, \textit{Soccer}, \textit{IranDeal}, \textit{HumanDisaster}, \\
 \textit{CelebrityDeath}, \textit{SocialIssues}, \textit{NaturalDisaster}, \textit{Epidemics}, \\
  \textit{LGBT} \}$ 
 
-With the goal of training a scoring function $f$, we employ classification and ranking methods using defined set of features $(d_i^1,\ldots,d_i^M) \in \{0,1\}^M$. The sum over number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features and as noted earlier, we are working on $829,026,458$ tweet corpus. This shows the need for techniques to annotate the data and select a subset of features for learning. 
+%We employ classification and ranking methods to train a scoring function $f$ using the defined set of features $(d_i^1,\ldots,d_i^M) \in \{0,1\}^M$.
+The features $D_{i}^{+}$ includes \textit{From}, \textit{Mention}, \textit{Location}, \textit{Term}, \textit{Hashtag} features. The summation of number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features. As noted earlier, we are working on a $829,026,458$ tweet corpus. Thus with great number of features and tweets, there is a need for techniques to annotate the data and select a subset of features for learning. 
 
-We explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, hashtag set $H^{t}$ for each topic $t \in T$ is curated with $2$ annotators individually and inner-annotator agreement is achieved by reviewing and merging these sets by $2$ more individuals. 
-%Afterwards, we label each tweet based on the rule defined in Eq.~\ref{eq:labeling}.
-Table.~\ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic.
-Regarding feature selection, it is clear that it is not possible to learn a model with total number of $538,365,507$ features. In which case, we would have to provide a much larger set of training samples, and, in addition, our feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature by:
+We explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, the hashtag set $H^{t}$ for each topic $t \in T$ is curated with two annotators individually. Inner-annotator agreement is achieved by reviewing and merging these sets with two more individuals. Table.~\ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic.
+Regarding feature selection, it is impossible to learn a model on total number of $538,365,507$ features. To learn such a model would require a very large set of training samples, and, feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature by:
 \begin{itemize}
-\item Cleaning \textit{Term} feature to remove stop-words
+\item Cleaning the \textit{Term} feature to remove stop-words
 \item Choosing a cut-off threshold on the frequency of features
 \end{itemize} 
-This results in almost $1$ million features. The detailed values of cut-off thresholds and number of remaining unique values for each feature is shown in Table.~\ref{table:learningFeatures}. Since \textit{Term} and \textit{Location} features had much lower number of unique values in the corpus, we chose a lower threshold for these features.
+This results in almost $1$ million features. The detailed values of cut-off thresholds and number of remaining unique values for each feature is shown in Table.~\ref{table:learningFeatures}. Since \textit{Term} and \textit{Location} features exhibited fewer unique values in the corpus, we chose a lower threshold for these features.
 
 %Train/validation/test split date selection -- temporally .5,.1,.4
 %\label{label:split}
@@ -72,7 +70,7 @@ This results in almost $1$ million features. The detailed values of cut-off thre
 
 \subsection{Classification Algorithms}
 %Formal notation, how do we train/test and tune hyperparameters for a generic classifier.
-Now that we defined the primary steps for preparing the features and splitting the dataset, we can train social sensors for targeted topical tweet selection. Here, we use the following $4$ classification and ranking methods: %The learned weights are further used to rank tweets for each topic
+Having defined the primary steps for preparing the features and splitting the dataset, we can now train social sensors for targeted topical tweet selection. Here, we use the following four classification and ranking methods: %The learned weights are further used to rank tweets for each topic
 
 \begin{enumerate}
 \item Logistic Regression
@@ -81,34 +79,31 @@ Now that we defined the primary steps for preparing the features and splitting t
 \item Rank SVM
 \end{enumerate}
 
-To this purpose, based on the problem setting defined in Sec~\ref{sec:lss}, we have $D$ as our tweet corpus. Each tweet ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as:
+Based on the problem setting defined in Sec~\ref{sec:lss}, we have $D$ as our tweet corpus. We tune the hyper-parameters on validation data. The \textit{Logistic Regression}'s hyper-parameter $C$ and \textit{Na\"{i}ve Bayes}'s prior $\alpha$ are tuned on a range of values $C \in \{E-12, E-11, ..., E+11, E+12\}$ for \textit{Logistic Regression} and $\alpha \in \{E-20, E-15, E-8, E-3, E-1, 1\}$ for \textit{Na\"{i}ve Bayes}. In addition, our models have another hyper-parameter $K$, as the number of top features chosen based on Mutual Information tuned on $K \in \{E2, E3, E4, E5, 1166582\}$. The tuning is based on mean average precision (MAP) value computed on validation tweets. After tuning the hyper-parameters, the model learns the weight vector $W \in \Re^{M}$ on train data. Then, each tweet ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as:
 
 %SCORING TWEETS AT TEST TIME
 \begin{equation}
-Sim({d_{i}}, t) = \sum_{j} F_{d_{i}}^{j} \times {w_{j}}
+Sim({d_{i}}, t) = \sum_{j} d_{i}^{j} \times {w_{j}}
 \label{eq:similarity}
 \end{equation}
 
-where $F_{d_{i}}^{j}$ represents the $j$-th value in $F_{d_{i}}$ and ${w_{k}}$ is the weight of feature ${f_{k}}$. The weights ${w_{k}}$ are learned by applying the classification/ranking methods.
+where $d_{i}^{j}$ represents the $j$-th value in $d_{i}$ and ${w_{j}}$ is the weight of feature $d_{j}$ and is learned by applying the classification/ranking methods.
 In order to learn the models, we take the following steps for each topic $t$:
-\begin{enumerate}
-\item Preprocess: The set of tweets for learning is selected by including all the positive tweets for the given topic, in addition to sub-sampled set of negative tweets.
-\item Hyper-parameter tuning: The \textit{LR}'s hyper-parameter and \textit{NB}'s prior, in addition to number of features as another hyper-parameter for all of $4$ models, are tuned on validation set of tweets. The tuning is based on mean average precision (MAP) value computed on validation tweets.
+%\begin{enumerate}
+%\item Preprocess: The set of tweets for learning is selected by including all the positive tweets for the given topic, in addition to sub-sampled set of negative tweets.
+%\item Hyper-parameter tuning: The \textit{LR}'s hyper-parameter and \textit{NB}'s prior, in addition to number of features as another hyper-parameter for all of $4$ models, are tuned on validation set of tweets. The tuning is based on mean average precision (MAP) value computed on validation tweets.
 %The number of features $K^{*}$ and model's hyper-parameter $c^{*}$ (if applicable) are tuned on validation set by following steps: 
 %\begin{enumerate}
 %\item Feature Selection: A set of top $K \in \{10E1, 10E2, 10E3, 10E4, 1166582\}$ features are selected based on the Mutual Information values of features for the given topic. $K$ is selected during hyper-parameter tuning phase.
 %\item Train, validation, and train set of tweets are further modified based on the division process explained in Sec~\ref{label:split} and using only selected set of top $K$ features.
 %\item The best number of features $K^{*}$, and $c^{*}$ are selected on the validation set, based on MAP scores computed from learned weights
 %\end{enumerate}
-\item Learning: The final values of weight vector $W$ is learned on full set of train tweets.
+%\item Learning: The final values of weight vector $W$ is learned on full set of train tweets.
 %\item Test: For each tweet $d_{i}$ in test set, we compute the similarity of the tweet to the given topic $t$ based on Eq.~\ref{eq:similarity}. Then, we rank the tweets based on their similarity value and return top $10,000$ tweets. The MAP and P@n metrics are computed on this top $10,000$ set of tweets. 
-\end{enumerate}
+%\end{enumerate}
 
-It is important to note that we remove any tweet in validation set if it contains any train hashtag and any tweet in test set if it contains any train or validation hashtag.
-The Liblinear \cite{liblinear} package is used for implementing \textit{Logistic Regression} and \textit{Rank SVM}. 
+The Liblinear \cite{liblinear} package is used for implementing \textit{Logistic Regression} and \textit{Rank SVM}. The \textit{Rocchio} method is parameter free and the LibLinear \cite{liblinear} implementation of \textit{Rank SVM} does not enable manual tuning of the model's hyper-parameter.
 %The reason for deciding to tune the models on top $N$ features based on Mutual Information, comes from our primary feature analysis on the dataset which showed the ability of Mutual Information measure to pick more correlated features for each topic. This is discussed in more details in Sec~\ref{label:featureanalysis}. The model hyper-parameters are tuned for \textit{LR} and \textit{NB}. 
-The \textit{Rocchio} method is parameter free and the LibLinear \cite{liblinear} implementation of \textit{Rank SVM} does not enable manual tuning of the model's hyper-parameter.
-%Not breaking down by feature type yet -- that's for the feature analysis section.
 
 \subsection{Analysis}
 After learning the weight vector $W$ using \textit{Logistic Regression}, \textit{Na\"{i}ve Bayes}, \textit{Rocchio}, and \textit{Rank SVM} methods, we now proceed to analysis of learned social sensors on test set of tweets.

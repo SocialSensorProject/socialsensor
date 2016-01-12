@@ -88,11 +88,18 @@ Also, in order to show the power of Mutual Information criteria, in Table~\ref{t
 In order to answer the second question on whether any attributes correlate with importance for each feature, we provide two group of analysis. The first group, provides Mutual Information values for each feature across the feature's attribute values shown by violin plots in Fig.~\ref{fig:violinplots}. The attributes for each feature are:
 
 \begin{itemize}
-\item From: favorite count (the number of tweets the user has favorited), followers count (the number of users who follow the user), friends count (the number of users followed by the user), hashtag count (number of hashtags used by the user), tweet count (the number of tweets from the user)
-\item Hashtag: tweet count, user count (the number of users using the hashtag)
-\item Location: user count
-\item Mention: tweet count
-\item Term: tweet count
+\item \textbf{From}: 
+\begin{itemize}
+\item favorite count (the number of tweets the user has favorited)
+\item followers count (the number of users who follow the user)
+\item friends count (the number of users followed by the user)
+\item hashtag count (number of hashtags used by the user)
+\item tweet count (the number of tweets from the user)
+ \end{itemize}
+\item \textbf{Hashtag}: tweet count, user count (the number of users using the hashtag)
+\item \textbf{Location}: user count
+\item \textbf{Mention}: tweet count
+\item \textbf{Term}: tweet count
 \end{itemize}
 
 As we can see in the violin plots, the general pattern is that the greater the number of tweets, users, or hashtag count a feature has, the greater the chance of becoming topical will be. This pattern exists on other attributes of \textit{From} feature, although the pattern is less visible in comparison with the tweets, users, or hashtag count attributes. 
