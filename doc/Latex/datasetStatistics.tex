@@ -1,57 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[t!]
-\centering
-\begin{tabular}{ccc}
-\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-HumanCausedDisaster_location.eps}}
-\subfloat[Fig:][Iran Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.eps}}
-\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.eps}} \\
-%\vspace{-10mm}
-\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.eps}}
-\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.eps}}
-\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location}} \\
-\end{tabular}
-%\vspace{-2mm}
-\caption {Per capita tweet frequency across different international and U.S. locations for different topics.}
-\label{fig:choropleths}
-\end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Now we provide details of the Twitter testbed for topical social sensor learning
-that we evaluate in this paper.  We crawled Twitter data using Twitter
-Streaming API for two years spanning 2013 and 2014 years.
-%This type of crawling provides us with a very sparse set of data, roughly $1\%$ of all tweets \footnote{\hyperref[]{http://allthingsd.com/20101110/twitter-firehose-too-intense-take-a-sip-from-the-garden-hose-or-sample-the-spritzer|}}. 
-The total number of tweets collected is $829,026,458$. In the context
-of Twitter, we consider five feature types for each tweet.  Each
-tweet has a \textit{From} feature (i.e., the person who tweeted it), a
-possible \textit{Location} (i.e., a string provided as meta-data), and
-a time stamp when it was posted.  A tweet can also contain one or more
-of the following:
-\begin{itemize}
-%NOTE: $$ is not for italics... it is for math mode and has larger math mode spacing
-%since adjacent letters are implicitly multiplied.  Use \textit -SPS
-\item \textit{Hashtag}: a topical keyword specified using the \# sign.
-\item \textit{Mention}: a Twitter username reference using the @ sign. % reply?
-\item \textit{Term}:    any non-hashtag and non-mention unigrams. %These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
-\end{itemize}
-We provide more detailed statistics about each feature in
-Table~\ref{table:featureStatistics}.  For example, there are
-over 11 million unique hashtags, the most frequent unique hashtag
-occurred in over 1.6 million tweets,
-a hashtag has been used on average by $10.08$ unique users, and 
-authors (\textit{From} users) have used a median value of $2$
-unique hashtags. % not average, median!!! -SPS
-
-Fig.~\ref{fig:choropleths} shows per capita tweet frequency across
-different international and U.S. locations for different topics.
-While English speaking countries dominate English tweets, we see that
-the Middle East and Malaysia additionally stand out for the topic of
-Human Caused Disaster (MH370 incident), Iran and Europe for nuclear
-negotiations the ``Iran deal'', and soccer for some (English-speaking)
-countries where it is popular.  For U.S. states, we see that Colorado
-stands out for health epidemics (both whooping cough and pneumonic
-plague), Missouri stands out for social issues (\#blacklivesmatter in
-St. Louis), and Texas stands out for space due to NASA's presence
-there.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table}[t!]
@@ -81,7 +27,7 @@ there.
 \textbf{Feature} & \textbf{Max} & \textbf{Avg} & \textbf{Median} & \textbf{Max entity} \\ \hline
 \textbf{From} & 10,196 & 8.67 & 2 & running\_status \\ \hline
 \textbf{Hashtag} & 1,653,159 & 13.91 & 1 & \#retweet \\ \hline
-\textbf{Mention} & 6,291 & 1.26 & 1 & null \\ \hline
+\textbf{Mention} & 6,291 & 1.26 & 1 & tweet\_all\_time$\rightarrow$null \\ \hline
 \textbf{Location} & 10,848,224 & 9,562.34 & 130 & london \\ \hline
 \textbf{Term} & 241,896,559 & 492.37 & 1 & rt \\ \hline 
 \multicolumn{5}{c}{} \\
@@ -93,9 +39,67 @@ there.
 \multicolumn{5}{c}{} \\
 \multicolumn{5}{c}{\textbf{Feature Using \#Hashtags}} \\ \hline
 \textbf{From} & 18,167 & 2 & 0 & daily\_astrodata \\ \hline
+\textbf{Location} & 2,440,969 & 1,837.79 & 21 & uk \\ \hline
 \end{tabular}
 }}
 \caption{Feature Statistics of our $829,026,458$ tweet corpus.} % in our Twitter dataset}
 \label{table:featureStatistics}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure*}[t!]
+\centering
+\begin{tabular}{ccc}
+\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-HumanCausedDisaster_location.eps}}
+\subfloat[Fig:][Iran Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.eps}}
+\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.eps}} \\
+%\vspace{-10mm}
+\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.eps}}
+\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.eps}}
+\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location}} \\
+\end{tabular}
+%\vspace{-2mm}
+\caption {Per capita tweet frequency across different international and U.S. locations for different topics. The legend provides the number of tweets per 1 Million capita.}
+\label{fig:choropleths}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Now we provide details of the Twitter testbed for topical social sensor learning
+that we evaluate in this paper.  We crawled Twitter data using Twitter
+Streaming API for two years spanning 2013 and 2014 years.
+%This type of crawling provides us with a very sparse set of data, roughly $1\%$ of all tweets \footnote{\hyperref[]{http://allthingsd.com/20101110/twitter-firehose-too-intense-take-a-sip-from-the-garden-hose-or-sample-the-spritzer|}}. 
+We collected more than 2.5 TB of compressed data, which contains a total number 
+of $829,026,458$ english tweets. In the context 
+of Twitter, we consider five feature types for each tweet.  Each
+tweet has a \textit{From} feature (i.e., the person who tweeted it), a
+possible \textit{Location} (i.e., a string provided as meta-data), and
+a time stamp when it was posted.  A tweet can also contain one or more
+of the following:
+\begin{itemize}
+%NOTE: $$ is not for italics... it is for math mode and has larger math mode spacing
+%since adjacent letters are implicitly multiplied.  Use \textit -SPS
+\item \textit{Hashtag}: a topical keyword specified using the \# sign.
+\item \textit{Mention}: a Twitter username reference using the @ sign. % reply?
+\item \textit{Term}:    any non-hashtag and non-mention unigrams. %These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
+\end{itemize}
+We provide more detailed statistics about each feature in
+Table~\ref{table:featureStatistics}.  For example, there are
+over 11 million unique hashtags, the most frequent unique hashtag
+occurred in over 1.6 million tweets,
+a hashtag has been used on average by $10.08$ unique users, and 
+authors (\textit{From} users) have used a median value of $2$
+tweets. % not average, median!!! -SPS
+
+Fig.~\ref{fig:choropleths} shows per capita tweet frequency across
+different international and U.S. locations for different topics.
+While English speaking countries dominate English tweets, we see that
+the Middle East and Malaysia additionally stand out for the topic of
+Human Caused Disaster (MH370 incident), Iran, U.S., and Europe for nuclear
+negotiations the ``Iran deal'', and soccer for some (English-speaking)
+countries where it is popular.  For U.S. states, we see that Colorado
+stands out for health epidemics (both whooping cough and pneumonic
+plague), Missouri stands out for social issues (\#blacklivesmatter in
+St. Louis), and Texas stands out for space due to NASA's presence
+there.
+
+
