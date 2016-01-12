@@ -11,23 +11,39 @@
 % (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
 %TODO: Formal learning framework.
 Our objective in learning social sensors is to train an automatic
-system for ranking documents by their topical relevance given curated
-topic labels for a set of training documents.  There are two catches
-that make our setting somewhat non-standard.  First, 
+system for ranking documents by their topical relevance.  Formally,
+given an arbitrary document $d$ and a set of topics $T = \{
+t_1,\ldots,t_K\}$, we wish to train a scoring function $f\!\!:\!\!d \rightarrow \mathbb{R}$
+over a set of training documents $D = \{
+d_1,\ldots,d_N \}$ where each $d_i \in D$ has a boolean feature vector
+$(d_i^1,\ldots,d_i^M) \in \{0,1\}^M$ and boolean label $d_i^t \in \{
+0,1 \}$ indicating whether the document $d_i$ is topical (1) or not
+(0).  We define the set of positively occurring features for a document
+$d_i$ as $D_i^+ = \{ d_i^j | d_i^j=1 \}_{j=1\ldots M}$ and note that
+$D_i^+$ may include features for the content of $d_i$ (e.g., terms, 
+hashtags) as well as its meta-data (e.g., author, location).
 
-We define a corpus of $N$ documents as $D = \{{d_{1}}, {d_{2}}, ..., {d_{N}} \}$, a set of $K$ topics as $T = \{{t_{1}}, {t_{2}}, ..., {t_{K}} \}$, a set of $M$ features as $F = \{0,1\}^{M}$, and a weight vector of $W \in \Re^{M}$ corresponding to each feature. 
+There are two catches that make our training setting somewhat
+non-standard and which underlie subtle but critical contributions in this
+work:  (1) Manually labeling documents is time-consuming so
+we need a way to manually label a large number of tweets with minimal
+user curation effort; we achieve this by using hashtags as topical proxies.
+(2) We need to train our social sensor on
+known topical content, but tune it on novel topical content in validation data
+that ensures the tuning achieves optimal generalization; we achieve this by 
+excising training content from our validation data to ensure that our tuning
+targets generalization.  We next explain both innovations in turn.
 
-For a given document ${d_{i}}$, features are defined as boolean vector ${F_{d_{i}}} \in \{0,1\}^{M}$ representing the presence or absence of each single feature ${f_{i}} \in F$ in the document. The goal is to learn a classifier $\gamma$ that maps documents to a topic, thus learning the weight vector $W$ to be used for scoring documents at experiment time. For the classification method of $M$, the classifier is defined as:
+%\begin{equation}
+%(\gamma, M) : D \to T 
+%\end{equation}
+%
+%\begin{equation}
+%t^{*} = argMin_{w} L(t,\hat{t})
+%\end{equation}
+%
+%Where ${L : T \times T \to \Re_{+} }$ is the loss function indicating the penalty for an incorrect prediction and ${L(t,\hat{t})}$ is the loss for prediction of ${\hat{t}}$ instead of actual topic $t$.
 
-\begin{equation}
-(\gamma, M) : D \to T 
-\end{equation}
-
-\begin{equation}
-t^{*} = argMin_{w} L(t,\hat{t})
-\end{equation}
-
-Where ${L : T \times T \to \Re_{+} }$ is the loss function indicating the penalty for an incorrect prediction and ${L(t,\hat{t})}$ is the loss for prediction of ${\hat{t}}$ instead of actual topic $t$.
 %SCORING TWEETS AT TEST TIME
 %Each document ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as
 %
@@ -38,7 +54,7 @@ Where ${L : T \times T \to \Re_{+} }$ is the loss function indicating the penalt
 %where $F_{d_{i}}^{j}$ represents the $j$th value in $F_{d_{i}}$.
 
 % (2) How we label data.
-One critical bottleneck for learning targeted topical social sensors
+A critical bottleneck for learning targeted topical social sensors
 is to achieve sufficient supervised content labeling.  With data
 requirements often in the thousands of labels to ensure effective
 learning and generalization over a large candidate feature space (as
@@ -50,28 +66,48 @@ media sites --- hashtags originated on IRC chat, were adopted later
 (and perhaps most famously) on Twitter, and now appear on other social
 media platforms such as Instagram, Tumblr, and Facebook.  Hence as a
 simple enabling insight that serves as a catalyst for effective
-topical social sensor learning, we leverage a (small) set of
-user-curated topical hashtags to efficiently provide a large number of
-supervised topic labels for social media content.
-
-%TODO: Formal math for defining the set of positive and negative labeled tweets via the hashtag set $H$.
-Having the curated hashtag set $H^{t} \in \{h_{1}, h_{2},...,h_{l_{t}} \}$ for topic $t$, the label of document $d_{i}$ is defined as positive (topical) or negative (non-topical) by the following rule:
-
-\begin{equation}
-d_{i}^{t} = \exists _{h \in H^{t}} F_{d_{i}}^{h} = 1
-\end{equation}
-
-Where $d_{i}^{t}$ is the label of document $d_{i}$ and $F_{d_{i}}^{h}$ represents the $h$-th value in $F_{d_{i}}$.
-
+topical social sensor learning, for each topic $t \in T$, we leverage a (small) set of
+user-curated topical hashtags $H^t$ to efficiently provide a large number of
+supervised topic labels for social media content.  Formally, given $H^t$, we
+can label each document $d_i$ (containing positive features $D_i^+$) as follows:
+\begin{equation*}
+d_{i}^{t} =
+  \begin{cases}
+    1: \exists_{h \in H^t} h \in D_i^+ \\
+    0: \mathrm{otherwise}
+  \end{cases}
+\end{equation*}
 % (3) How we train (validation set critical for hyperparameters, what metric used for selection?).
 With the data labeling bottleneck resolved, we proceed to train
 supervised classification and ranking methods to learn topical content
-from a large feature space of source users and their locations, terms,
-hashtags, and mentions. The training process includes the following steps:%TODO: An simple enumeration of the training steps?
-
+from a large feature space (e.g., for Twitter, this feature space
+includes terms, hashtags, mentions, authors and their locations). The
+training process includes the following steps:
+%TODO: An simple enumeration of the training steps?
 \begin{enumerate}
-\item Preprocess: Selection of a set of documents and temporally splitting them into train and validation documents. The split is based on a split-time defined on hashtag set $H^{t}$ to preserve enough number of hashtags in train and validation sets.
-\item Hyper-parameter tuning: hyper-parameters are tuned on validation set of tweets. It is important to note that we remove tweets containing train hashtags from the set of validation tweets and perform the analysis on the remaining tweets, labeled by validation hashtags.
-\item Learning: The weight vector $W$ is learned with classification method $M$ on the selected set of documents using tuned hyper parameters
+\item {\bf Build train and validation sets by splitting $H^t$ temporally:}
+As usual for machine learning methods, we divide our training data into
+train and validation sets, the latter for hyperparameter tuning to control
+overfitting ensure generalization to unseen data.  
+As a critical insight for topical generalization where we view identification
+of previously unseen hashtags as a proxy for topical generalization, we do not simply
+split our data temporally into train and test sets as usually done.  Instead,
+we split $H^t$ into two disjoint sets $H^t_\mathrm{train}$ and $H^t_\mathrm{test}$ 
+according to a time stamp $t_\mathrm{split}$ and based on the first usage time
+$h_\mathrm{time*}$ of hashtags $h \in H^t$.  Formally:
+\begin{equation*}
+H^t_\mathrm{test}
+\end{equation*}
+Selection of a set of documents and temporally splitting them into
+train and validation documents. The split is based on a split-time
+defined on hashtag set $H^{t}$ to preserve enough number of hashtags
+in train and validation sets.
+\item {\bf Training and hyper-parameter tuning:}
+hyper-parameters are tuned on validation set of tweets. It is
+important to note that we remove tweets containing train hashtags from
+the set of validation tweets and perform the analysis on the remaining
+tweets, labeled by validation hashtags.
+
+%\item {\bf Learning: The weight vector $W$ is learned with classification method $M$ on the selected set of documents using tuned hyper parameters
 \end{enumerate}
 % Note that formal performance evaluation provided in experimental section.

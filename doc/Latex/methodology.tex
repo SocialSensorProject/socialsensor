@@ -1,5 +1,5 @@
-\externaldocument{lss}
-\externaldocument{datasetStatistics}
+%\externaldocument{lss}
+%\externaldocument{datasetStatistics}
 %How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
 With the $5$ set of features defined as \textit{From}, \textit{Mention}, \textit{Location}, \textit{Term}, \textit{Hashtag}, we proceed to define the methodology for retrieving ranked list of tweets for a given topic. The list of topics were defined to be a set of $10$ various topics covering very specific and very broad topics:
 %(1) \textit{Tennis}, (2) \textit{Space}, (3) \textit{Soccer}, (4) \textit{IranDeal}, (5) \textit{HumanDisaster} (HumanCausedDisaster), (6) \textit{CelebrityDeath}, (7) \textit{SocialIssues}, (8) \textit{NaturalDisaster}, (9) \textit{Epidemics}, and (10) \textit{LGBT}
@@ -9,7 +9,7 @@ $T = \{ \textit{Tennis}, \textit{Space}, \textit{Soccer}, \textit{IranDeal}, \te
 
 As defined in Sec~\ref{sec:lss}, our goal is to train social sensors to learn topical content from a large feature space. Therefore, we want to have a ranked list of tweets $D_{t}$ as the result for topic $t$, by employing classification and ranking methods on defined set of features $F \in \{0,1\}^{M}$. The sum over number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features and as noted earlier, we are working on $829,026,458$ tweet corpus. This shows the need for techniques to annotate the data and select a subset of features for learning. 
 
-In Sec~\ref{sec:lss}, we explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, hashtag set $H^{t}$ for each topic $t \in T$ is curated with $2$ annotators individually and inner-annotator agreement is achieved by reviewing and merging these sets by $2$ more individuals. Afterwards, we label each tweet based on Eq.~\ref{eq:labeling}.
+In Sec~\ref{sec:lss}, we explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, hashtag set $H^{t}$ for each topic $t \in T$ is curated with $2$ annotators individually and inner-annotator agreement is achieved by reviewing and merging these sets by $2$ more individuals. Afterwards, we label each tweet based on the rule defined in Sec~\ref{sec:lss}.% Eq.~\ref{eq:labeling}.
 %The criteria for hashtag curation included
 %\begin{itemize}
 %\item To be related to the topic
