@@ -23,31 +23,6 @@
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}[t!]
-\vspace{-0.5mm}
-\centering
-{\footnotesize
-%\small
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|l|c|c|}
-\hline
- & \textbf{Threshold} & \textbf{\#Unique Values} \\ \hline
-\textbf{From} & 159 & 361,789 \\ \hline
-\textbf{Hashtag} & 159 & 184,702 \\ \hline
-\textbf{Mention} & 159 & 244,478 \\ \hline
-\textbf{Location} & 50 & 57,767 \\ \hline
-\textbf{Term} & 50 & 317,846 \\ \hline
-\textbf{Features (CF)} & - & 1,166,582 \\ \hline
-\end{tabular}
-}
-\vspace{-0.5mm}
-\caption{Cutoff threshold and corresponding number of unique values of candidate features \textit{CF} for learning.}
-\label{table:learningFeatures}
-\vspace{-1.5mm}
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
 With the formal definition of learning topical social sensors provided
 in Sec.~\ref{sec:lss} and the overview of our data in
@@ -67,7 +42,7 @@ agreement of 3 annotators to permit a hashtag to be assigned to a
 topic set.  Per topic, hashtags were split into train and test sets
 according to their first usage time stamp roughly according to a 3/5
 to 2/5 proportion.  The train set was further temporally subdivided
-into train and validation hashtag sets according to a 5/3 to 1/6
+into train and validation hashtag sets according to a 5/6 to 1/6
 proportion.  We show a variety of statistics and five sample hashtags
 per topic in Table~\ref{table:sampleHashtags}.  Here we can see that
 different topics had varying prevalence in the data
@@ -110,6 +85,28 @@ candidate features (\textit{CF}) for learning social sensors.
 
 %Feature selection: threshold per feature 159 and 50 (just explain rationale for lower hashtag and location thresholds).
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[t!]
+\centering
+{%\footnotesize
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|c|c|}
+\hline
+ & \textbf{Threshold} & \textbf{\#Unique Values} \\ \hline
+\textbf{From} & 159 & 361,789 \\ \hline
+\textbf{Hashtag} & 159 & 184,702 \\ \hline
+\textbf{Mention} & 159 & 244,478 \\ \hline
+\textbf{Location} & 50 & 57,767 \\ \hline
+\textbf{Term} & 50 & 317,846 \\ \hline
+\textbf{Features (CF)} & - & 1,166,582 \\ \hline
+\end{tabular}
+}
+\caption{Cutoff threshold and corresponding number of unique values of candidate features \textit{CF} for learning topical social sensors.}
+\label{table:learningFeatures}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -235,7 +232,7 @@ of tweets, hence the reason for also evaluating P@100 and P@1000.
 % Huh??? -SPS
 Table~\ref{table:results2} evaluates these metrics for each
 topic. \textit{Logistic Regression} is the best performing
-method on average except for $P@10$.  We conjecture the reason
+method on average except for $P@10$ where .  We conjecture the reason
 for this is that \textit{Na\"{i}ve Bayes} tends to select fewer
 features for training, which allows it to achieve higher precision
 over the top of the ranked list but which causes it suffer slightly
@@ -251,23 +248,21 @@ each topic returned by \textit{Logistic Regression} in Table
 ~\ref{table:topTweets}.  We've annotated all tweets in this table with
 the following symbols:
 \begin{itemize}
-\item \checkmark: \; Tweet was topical according to our curated test hashtag set.
-\item \starmark:\ \; Tweet was determined to be topical through manual evaluation
+\item \checkmark: \; the tweet was topical according to our curated test hashtag set.
+\item \starmark:\ \; the tweet was determined to be topical through manual evaluation
 even though it did not contain a hashtag in our curated hashtag set (this corresponds
 to a false negative due to non-exhaustive labeling of the data).
-\item \xmark: \; Tweet was not topical.
+\item \xmark: \; the tweet was not topical.
 \end{itemize}  
 In general, we remark that our learning social sensor based on
 logistic regression performs even better than the quantitative results
-in Table~\ref{table:results2} would indicate, i.e., many of the highly
-ranked tweets are false negatives --- they are actually relevant indicating
-that our social sensor learning generalized well beyond the curated hashtag
-set in terms of topical relevance.
+in Table~\ref{table:results2} would indicate: many of the highly
+ranked tweets are false negatives --- they are actually relevant.
 Furthermore, we remark that even though we use hashtags to label our
 training, validation, and testing data, our learning social sensor has
 highly (and correctly) ranked topical tweets that do not contain
-hashtags indicating encouraging generalization properties beyond
-the identification of topical hashtags.
+hashtags indicating encouraging generalization properties from a
+relatively small set of curated topical hashtags.
 
 %Having cases of topical tweets not being correctly labeled as topical,
 %provides evidence that our method of labeling tweets has limitations
