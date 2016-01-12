@@ -36,28 +36,30 @@ of the following:
 \item \textit{Term}:    any non-hashtag and non-mention unigrams. %These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
 \end{itemize}
 We provide more detailed statistics about each feature in
-Table~\ref{table:featureStatistics}.  For example,
+Table~\ref{table:featureStatistics}.  For example, there are
+over 11 million unique hashtags, the most frequent unique hashtag
+occurred in over 1.6 million tweets,
+a hashtag has been used on average by $10.08$ unique users, and 
 authors (\textit{From} users) have used a median value of $2$
-unique hashtags % not average, median!!! -SPS
-and a hashtag has been used on average by $10.08$ unique users.
+unique hashtags. % not average, median!!! -SPS
 
 Fig.~\ref{fig:choropleths} shows per capita tweet frequency across
 different international and U.S. locations for different topics.
-While English speaking countries dominate English tweets, we
-see that the Middle East and Malaysia additionally stand out for the
-topic of Human Caused Disaster (MH370 incident), Iran and Europe
-for the ``Iran deal'', and
-soccer for many countries where it is popular.  For U.S. states,
-we see that Colorado stands out for health epidemics (both whooping
-cough and pneumonic plague), Missouri stands out for social issues
-(\#blacklivesmatter in St. Louis), and Texas stands out for space due to
-NASA's presence there.
+While English speaking countries dominate English tweets, we see that
+the Middle East and Malaysia additionally stand out for the topic of
+Human Caused Disaster (MH370 incident), Iran and Europe for nuclear
+negotiations the ``Iran deal'', and soccer for some (English-speaking)
+countries where it is popular.  For U.S. states, we see that Colorado
+stands out for health epidemics (both whooping cough and pneumonic
+plague), Missouri stands out for social issues (\#blacklivesmatter in
+St. Louis), and Texas stands out for space due to NASA's presence
+there.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table}[t!]
 \centering
 {\renewcommand{\arraystretch}{1.2}
-\resizebox{0.5\textwidth}{!}{%
+\resizebox{0.48\textwidth}{!}{%
 \begin{tabular}{|c|c|c|c|c|}
 %\hline
 \multicolumn{5}{c}{\textbf{\#Unique Features}} \\ \hline
@@ -73,9 +75,10 @@ NASA's presence there.
 %\begin{table}[t!]
 %\centering
 {\renewcommand{\arraystretch}{1.2}
-\resizebox{0.5\textwidth}{!}{%
+\resizebox{0.48\textwidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|}
 %\hline
+\multicolumn{5}{c}{} \\
 \multicolumn{5}{c}{\textbf{Feature Usage in \#Tweets}} \\ \hline
 \textbf{Feature} & \textbf{Max} & \textbf{Avg} & \textbf{Median} & \textbf{Max entity} \\ \hline
 \textbf{From} & 10,196 & 8.67 & 2 & running\_status \\ \hline
@@ -83,11 +86,13 @@ NASA's presence there.
 \textbf{Mention} & 6,291 & 1.26 & 1 & null \\ \hline
 \textbf{Location} & 10,848,224 & 9,562.34 & 130 & london \\ \hline
 \textbf{Term} & 241,896,559 & 492.37 & 1 & rt \\ \hline 
+\multicolumn{5}{c}{} \\
 \multicolumn{5}{c}{\textbf{Feature Usage by \#Users}} \\ \hline
 \textbf{Hashtag} & 592,363 & 10.08 & 1 & \#retweet \\ \hline
 \textbf{Mention} & 26,293 & 5.44 & 1 & dimensionist \\ \hline
 \textbf{Location} & 739,120 & 641.5 & 2 & london \\ \hline
 \textbf{Term} & 1,799,385 & 6,616.65 & 1 & rt \\ \hline %SHOULD BE FIXED
+\multicolumn{5}{c}{} \\
 \multicolumn{5}{c}{\textbf{Feature Using \#Hashtags}} \\ \hline
 \textbf{From} & 18,167 & 2 & 0 & daily\_astrodata \\ \hline
 \end{tabular}
