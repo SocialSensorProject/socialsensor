@@ -12,7 +12,7 @@
 %TODO: Formal learning framework.
 We define a corpus of $N$ documents as $D = \{{d_{1}}, {d_{2}}, ..., {d_{N}} \}$, a set of $K$ topics as $T = \{{t_{1}}, {t_{2}}, ..., {t_{K}} \}$, a set of $M$ features as $F = \{0,1\}^{M}$, and a weight vector of $W \in \Re^{M}$ corresponding to each feature. 
 
-For a given document ${d_{i}}$, features are defined as boolean vector ${F_{d_{i}}} \in \{0,1\}^{M}$ representing the presence of each single feature ${f_{i}} \in F$ in the document. The goal is to learn a classifier $\gamma$ that maps documents to a topic, thus learning the weight vector $W$ to be used for scoring documents at experiment time. For the classification method of $M$, the classifier is defined
+For a given document ${d_{i}}$, features are defined as boolean vector ${F_{d_{i}}} \in \{0,1\}^{M}$ representing the presence or absence of each single feature ${f_{i}} \in F$ in the document. The goal is to learn a classifier $\gamma$ that maps documents to a topic, thus learning the weight vector $W$ to be used for scoring documents at experiment time. For the classification method of $M$, the classifier is defined as:
 
 \begin{equation}
 (\gamma, M) : D \to T 
@@ -65,7 +65,7 @@ from a large feature space of source users and their locations, terms,
 hashtags, and mentions. The training process includes the following steps:%TODO: An simple enumeration of the training steps?
 
 \begin{enumerate}
-\item Preprocess: Selection of a set of documents and splitting them into train and validation tweets. The split is based on a split-time defined on hashtag set $H^{t}$ to preserve enough number of hashtags in train and validation sets.
+\item Preprocess: Selection of a set of documents and temporally splitting them into train and validation documents. The split is based on a split-time defined on hashtag set $H^{t}$ to preserve enough number of hashtags in train and validation sets.
 \item Hyper-parameter tuning: hyper-parameters are tuned on validation set of tweets. It is important to note that we remove tweets containing train hashtags from the set of validation tweets and perform the analysis on the remaining tweets, labeled by validation hashtags.
 \item Learning: The weight vector $W$ is learned with classification method $M$ on the selected set of documents using tuned hyper parameters
 \end{enumerate}

@@ -1,12 +1,12 @@
 %\textbf{What we have to work with: topics, features, feature attributes}
-In this section, we analyze the informativeness of each feature for learning topical tweets by looking at different characteristics for each feature in our dataset. For example, one characteristic of hashtags could be the number of the tweets that contain those hashtags. Does this have an effect on importance of the hashtag when it comes to learning topical tweets or not. In this sense, this section would bring insights to the following questions:
+In this section, we analyze the informativeness of our defined features in Sec~\ref{sec:dataStatistics} and the effect of their attributes on learning targeted topical. To this end, the goal is to answer the following questions in this section.
 
 \begin{itemize}
-\item \textbf{What are the best features for learning social sensors, do they differ by topic?}
+\item \textbf{What are the best features for learning social sensors and do they differ by topic?}
 \item \textbf{For each feature type, do any attributes correlate with importance?}
 \end{itemize}
 
-A famous method for measuring informativeness is Mutual Information which is a measure of amount of information one random variable contains about another random variable. In order to calculate amount of information that a feature $f_k \in \{from, hashtag, mention, term, location\}$ provides w.r.t $t_i \in \{NaturalDisaster, Epidemics, ...\}$, mutual information is defined as:
+A general method for measuring informativeness is Mutual Information which is a measure of amount of information one random variable contains about another random variable. In order to calculate amount of information that a feature $f_k \in \{from, hashtag, mention, term, location\}$ provides w.r.t $t_i \in \{NaturalDisaster, Epidemics, ...\}$, mutual information is defined as:
 
 \begin{multline}
 I(t_i, f_k)= \\
@@ -14,22 +14,20 @@ I(t_i, f_k)= \\
  \label{eq:eq1}
 \end{multline}
 
-Higher values for this metric indicates more informative features for the specified topic.
+Where higher values for this metric indicate more informative features for the specified topic.
 
-In order to answer the first question on what are the best features for learning social sensors, we provide mean of Mutual Information values for each feature across different topics in Table ~\ref{fig:avgMI}. The last column in this table shows average of mean Mutual Information for the feature. The following observations are from the analysis of Table ~\ref{fig:avgMI}:
+In order to answer the first question on what are the best features for learning social sensors, we provide in Table ~\ref{fig:avgMI} mean of Mutual Information values for each feature across different topics. The last column in Table ~\ref{fig:avgMI} shows the average of mean Mutual Information for the feature. From analysis of Table ~\ref{fig:avgMI}, we can make a set of observations:
 
 \begin{itemize}
-\item $Term$ feature is the most prevalent feature and in general, the more features you have, the better the chance that one is useful.
-%\item $Term$ features provide more information for all of the topics on average which shows the importance of uni-grams when it comes to selection of topical tweet.
-\item $Location$ and $Hashtag$ feature provide second and third most informative features respectively.
-\item A few topics such as $IranDeal$ and tennis are less sensitive to selection of a specific features.
-\item Location feature provides more information regarding $HumanDisaster$, $LBGT$, and $Soccer$ topics.
-\item Sorting features based on their average mean values across different topics results in the following order: $Term$, $Location$, $Hashtag$, $Mention$, $From$
+\item The \textit{Term} and \textit{Location} features are the most prevalent features.% and in general, the more features you have, the better the chance that one is useful.
+\item A few topics such as \textit{IranDeal} and \textit{tennis} are less sensitive to the selection of a specific set of features.
+\item The Location feature provides more information regarding \textit{HumanDisaster}, \textit{LBGT}, and \textit{Soccer} topics.
+\item Sorting features based on their average mean values across different topics results in the following order for informativeness measure of features: \textit{Term}, \textit{Location}, \textit{Hashtag}, \textit{Mention}, \textit{From}.
 \end{itemize}
 
-In general, this presents evidence on the need for learning the weights of features for each topic, because there is no specific selection of features that would separate various topics from each other.
+In general, this presents evidence on the need for learning the weights of features for each topic as there is no specific selection of features that would separate various topics from each other.
 
-Also, in order to show the power of Mutual Information criteria, we present the top $5$ features for each topic in table ~\ref{table:top10MItopicsLocations}. It can be observed how different locations, hashtags, or terms showed as the top features based on mutual information are actually in relation with the specific topic.
+Also, in order to show the power of Mutual Information criteria, in Table~\ref{table:top10MItopicsLocations} we present the top $5$ features for each topic. It can be observed that the different locations, hashtags, or terms shown as the top features based on Mutual Information are actually in relation with the specific topic.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\begin{figure}[h!]
@@ -41,9 +39,9 @@ Also, in order to show the power of Mutual Information criteria, we present the 
 %\end{figure}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.5\textwidth]{images/avgMI_gray.pdf}
+\includegraphics[width=0.5\textwidth, height=60mm]{images/avgMI_gray.pdf}
 \vspace{-3mm}
-\caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
+\caption{Mean MI values for different features vs. Topics with the last column as average of mean values across all topics}
 \label{fig:avgMI}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,7 +85,7 @@ Also, in order to show the power of Mutual Information criteria, we present the 
 \label{table:top10MItopicsLocations}
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In order to answer the second question on whether any attributes correlate with importance for each feature, we provide two set of analysis. The first one, provides Mutual Information values of each feature across feature's attribute values shown by violin plots in figure \ref{fig:violinplots}. The attributes for each feature are:
+In order to answer the second question on whether any attributes correlate with importance for each feature, we provide two group of analysis. The first group, provides Mutual Information values for each feature across the feature's attribute values shown by violin plots in Fig.~\ref{fig:violinplots}. The attributes for each feature are:
 
 \begin{itemize}
 \item From: favorite count (the number of tweets the user has favorited), followers count (the number of users who follow the user), friends count (the number of users followed by the user), hashtag count (number of hashtags used by the user), tweet count (the number of tweets from the user)
@@ -97,8 +95,8 @@ In order to answer the second question on whether any attributes correlate with 
 \item Term: tweet count
 \end{itemize}
 
-As we can see in the violin plots, the general pattern is that the more number of tweets, users, or hashtags count a feature has, the higher the chance of becoming topical will be. This pattern exists on other attributes of $From$ feature, although a bit less clear than the tweets, users, or hashtags counts attributes. 
-In addition, we further analyzed the density plots of favorite count, follower count, friends count, hashtag count attributes of $From$ feature shown in Fig ~\ref{fig:densityplots}. These plots represent a bi-modality in the distribution. Further analysis of data showed that the top mode belongs to users who have at least one topical tweet while bottom mode are users with no topical tweet.
+As we can see in the violin plots, the general pattern is that the greater the number of tweets, users, or hashtag count a feature has, the greater the chance of becoming topical will be. This pattern exists on other attributes of \textit{From} feature, although the pattern is less visible in comparison with the tweets, users, or hashtag count attributes. 
+In addition, we further analyzed the density plots of favorite count, follower count, friends count, hashtag count attributes of \textit{From} feature as demonstrated in Fig.~\ref{fig:densityplots}. Fig.~\ref{fig:densityplots} represents a bi-modality in the distribution of Mutual Information values across attributes dimension. Further analysis of data showed that the top mode belongs to users who have at least one topical tweet while the bottom mode are users with no topical tweets.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \iffalse
@@ -120,7 +118,7 @@ In addition, we further analyzed the density plots of favorite count, follower c
 \end{tabular}
 \end{tabular}
 \vspace{-2mm}
-\caption {Box Plots for feature attributes counts vs. MI. Top row shows attributes \{favoriteCount, followerCount, friendCount, hashtagCount, tweetCount\} for $From$ feature. Bottom row shows attributes tweetCount and/or userCount for $Hashtag$, $Location$, $Mention$,and $Term$ features.}
+\caption {Box Plots for feature attributes counts vs. MI. Top row shows attributes \{favoriteCount, followerCount, friendCount, hashtagCount, tweetCount\} for \textit{From} feature. Bottom row shows attributes tweetCount and/or userCount for \textit{Hashtag}, \textit{Location}, \textit{Mention},and \textit{Term} features.}
 \label{fig:boxplots2}
 \end{figure*}
 \fi
@@ -132,21 +130,21 @@ In addition, we further analyzed the density plots of favorite count, follower c
 \centering
 \begin{tabular}{ccccc}
 \begin{tabular}{ccccc}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-favoriteCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-followersCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-friendsCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-hashtagCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/From-tweetCount.eps}} \\
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/From-favoriteCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/From-followersCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/From-friendsCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/From-hashtagCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/From-tweetCount.eps}} \\
 %\vspace{-10mm}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-tweetCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Hashtag-userCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Location-userCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Mention-tweetCount.eps}}
-\subfloat[Fig:][]{\includegraphics[width=32mm, height=35mm]{images/ViolinPlots/Term-tweetCount.eps}} \\
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/Hashtag-tweetCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/Hashtag-userCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/Location-userCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/Mention-tweetCount.eps}}
+\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/ViolinPlots/Term-tweetCount.eps}} \\
 \end{tabular}
 \end{tabular}
 \vspace{-2mm}
-\caption {ViolinPlots for feature attributes counts vs. MI. Top row shows attributes \{favoriteCount, followerCount, friendCount, hashtagCount, tweetCount\} for $From$ feature. Bottom row shows attributes tweetCount and/or userCount for $Hashtag$, $Location$, $Mention$,and $Term$ features.}
+\caption {ViolinPlots for the frequency values of feature attributes vs. MI. Plots (a-e) respectively show attributes \{favoriteCount, followerCount, friendCount, hashtagCount, tweetCount\} for \textit{From} feature. Plots (f-j) respectively show attributes tweetCount and userCount for \textit{Hashtag}, userCount for \textit{Location} feature, tweetCount for \textit{Mention} and \textit{Term} features.}
 \label{fig:violinplots}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -156,13 +154,13 @@ In addition, we further analyzed the density plots of favorite count, follower c
 \begin{figure*}[tbh!]
 \centering
 \begin{tabular}{cccc}
-\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount.eps}} \qquad
-\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-followersCount.eps}} \qquad
-\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount.eps}} \qquad
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount.eps}} \quad
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-followersCount.eps}} \quad
+\subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount.eps}} \quad
 \subfloat[Fig:][]{\includegraphics[width=40mm, height=35mm]{images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount.eps}} \\
 \end{tabular}
 \vspace{-2mm}
-\caption {DensityPlots for feature attributes counts vs. MI. (a-d) show attributes \{favoriteCount, followerCount, friendCount, hashtagCount\} for $From$ feature}
+\caption {DensityPlots for the frequency values of feature attributes vs. MI. Plots (a-d) respectively show attributes \{favoriteCount, followerCount, friendCount, hashtagCount\} for \textit{From} feature}
 \label{fig:densityplots}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -89,7 +89,16 @@ Now that we defined the primary steps for preparing the features and dataset, we
 
 To this purpose, based on the problem setting defined in Sec~\ref{sec:lss}, we have $D$ as our tweet corpus, and the goal is to assign a measure of similarity for the tweet $d_{i}$ to the given topic $t \in \{T\}$ noted as $Sim(d_{i}, t)$.
 
-${W_{i}}$ is the sum of weights of  features in the ${x_{i}}$:
+${W_{i}}$ is the sum of weights of  features in the ${x_{i}}$
+%SCORING TWEETS AT TEST TIME
+%Each document ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as
+%
+%\begin{equation}
+%Sim({d_{i}}, t) = \sum_{j} F_{d_{i}}^{j}) \times {w_{j}}
+%\end{equation}
+%
+%where $F_{d_{i}}^{j}$ represents the $j$th value in $F_{d_{i}}$.
+
 
 \begin{equation}
 W_{i} = \sum_{k} w_{k}\times f_{k}
