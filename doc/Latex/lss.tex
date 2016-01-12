@@ -10,6 +10,11 @@
 
 % (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
 %TODO: Formal learning framework.
+Our objective in learning social sensors is to train an automatic
+system for ranking documents by their topical relevance given curated
+topic labels for a set of training documents.  There are two catches
+that make our setting somewhat non-standard.  First, 
+
 We define a corpus of $N$ documents as $D = \{{d_{1}}, {d_{2}}, ..., {d_{N}} \}$, a set of $K$ topics as $T = \{{t_{1}}, {t_{2}}, ..., {t_{K}} \}$, a set of $M$ features as $F = \{0,1\}^{M}$, and a weight vector of $W \in \Re^{M}$ corresponding to each feature. 
 
 For a given document ${d_{i}}$, features are defined as boolean vector ${F_{d_{i}}} \in \{0,1\}^{M}$ representing the presence or absence of each single feature ${f_{i}} \in F$ in the document. The goal is to learn a classifier $\gamma$ that maps documents to a topic, thus learning the weight vector $W$ to be used for scoring documents at experiment time. For the classification method of $M$, the classifier is defined as:
