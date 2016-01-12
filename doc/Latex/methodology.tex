@@ -10,18 +10,19 @@ As defined in Sec~\ref{sec:lss} Our goal is to retrieve a ranked list of tweets 
 %hashtag cureation
 % NOTE DO WE NEED TO MENTION THE INNER-ANNOTATOR AGREEMENT ON 3-4 PEOPLE HERE OR IN LSS?!
 %In regards to annotating the tweets, first, a set of topical hashtags are manually curated for each topic. This set is annotated manually with $2$ annotator individually and inner-annotator agreement was achieved by reviewing these sets by $2$ more individuals. 
-Each \textit{Hashtag} has a birthday which is defined as the first time it has been used in our dataset. The criteria for hashtag curation included
-\begin{itemize}
-\item To be related to the topic
-\item To be preferably born during our time span i.e. not being used before e.g., \#ebola
-\item To cover the two year timespan of our Twitter corpus by birth dates of chosen set of hashtag
-\end{itemize}
-After choosing these sets $H^{t}$, we label each tweet using the Eq.~\ref{eq:labeling}.
+Each \textit{Hashtag} has a birthday which is defined as the first time it has been used in our dataset.
+%The criteria for hashtag curation included
+%\begin{itemize}
+%\item To be related to the topic
+%\item To be preferably born during our time span i.e. not being used before e.g., \#ebola
+%\item To cover the two year timespan of our Twitter corpus by birth dates of chosen set of hashtag
+%\end{itemize}
+After choosing topical hashtag sets $H^{t}$, we label each tweet using the Eq.~\ref{eq:labeling}.
 
 %Train/validation/test split date selection -- temporally .5,.1,.4
 \label{label:split}
-In order to conduct our experiments on train, validation and test datasets, tweets are temporally divided over $2$ years. Since our tweet labeling is through topical hashtags, this division is done in a way to retain enough number of hashtags for train, validation, and test timespan. To this purpose, hashtags are divided based on their birthday with $50$ percent of hashtags being born at train timespan, $10$ percent born at validation timespan, and the last $40$ percent born at test timespan.
-Table.~\ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic. We can see that some topics such as \textit{HumanDisaster} and \textit{Soccer} are more general topics and have higher number of topical tweets while some other ones such as \textit{IranDeal} is more specific, thus having less number of topical tweets.
+In order to conduct our experiments on train, validation and test datasets, tweets are temporally divided over $2$ years. Since our tweet labeling is through topical hashtags, this division is done in a way to preserve enough number of hashtags for train, validation, and test timespan. To this purpose, hashtags are divided based on their birthday with $50$ percent of hashtags being born at train timespan, $10$ percent born at validation timespan, and the last $40$ percent born at test timespan.
+Table.~\ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic. As illustrated, some topics such as \textit{HumanDisaster} and \textit{Soccer} are more general topics and have higher number of topical tweets while some other ones such as \textit{IranDeal} is more specific, thus having less number of topical tweets.
 
 %Feature selection: threshold per feature 159 and 50 (just explain rationale for lower hashtag and location thresholds).
 Regarding feature selection, it is clear that it is not possible to learn a model with total number of $538,365,507$ features. In which case, we would have to provide a much larger training samples, and, in addition, our feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature. The feature selection process included:
@@ -29,7 +30,7 @@ Regarding feature selection, it is clear that it is not possible to learn a mode
 \item Cleaning \textit{Term} feature to remove stop-words
 \item Choosing a cut-off threshold on the frequency of features
 \end{itemize} 
-This results in roughly $1$ million features, considered as defined $F \in \Re^{M}$ feature vector. The detailed values of cut-off thresholds and number of remaining unique values for each feature is shown in Table.~\ref{table:learningFeatures}. Since \textit{Term} and \textit{Location} features had much lower number of unique values in the corpus, we chose a lower threshold for these features.
+This results in a little over $1$ million features, considered as defined $F \in \Re^{M}$ feature vector. The detailed values of cut-off thresholds and number of remaining unique values for each feature is shown in Table.~\ref{table:learningFeatures}. Since \textit{Term} and \textit{Location} features had much lower number of unique values in the corpus, we chose a lower threshold for these features.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table}[!h]
@@ -43,7 +44,7 @@ This results in roughly $1$ million features, considered as defined $F \in \Re^{
 \textbf{Mention} & 159 & 244,478 \\ \hline
 \textbf{Location} & 50 & 57,767 \\ \hline
 \textbf{Term} & 50 & 317,846 \\ \hline
-\textbf{Features (SF)} &  & 1,166,582 \\ \hline
+\textbf{Features (SF)} & - & 1,166,582 \\ \hline
 \end{tabular}
 }
 \caption{Cut-off threshold and selected number of unique values of features for selection of \textit{SF} learning feature set}
@@ -77,7 +78,7 @@ This results in roughly $1$ million features, considered as defined $F \in \Re^{
 
 \subsection{Classification Algorithms}
 %Formal notation, how do we train/test and tune hyperparameters for a generic classifier.
-Now that we defined the primary steps for preparing the features and dataset, we can use them to build a ranking approach for topical tweet selection. Our method is based on classification/ranking approaches defined in the literature to weight features. These weights are further used to rank tweets for each topic. Here, we use the following classification approaches:
+Now that we defined the primary steps for preparing the features and dataset, we can use them to build an approach for topical tweet selection. Our method is based on classification/ranking approaches defined in the literature. The learned weights are further used to rank tweets for each topic. Here, we use the following classification approaches:
 
 \begin{enumerate}
 \item Logistic Regression
@@ -86,20 +87,20 @@ Now that we defined the primary steps for preparing the features and dataset, we
 \item RankSVM
 \end{enumerate}
 
-To this purpose, we define the problem as assigning a weight ${W_{i}}$ to tweet ${X}$ as a measure of similarity to the given topics ${t_{i}}$. ${W_{i}}$ is the sum of weights of  features in the ${x_{i}}$:
+To this purpose, based on the problem setting defined in Sec~\ref{sec:lss}, we have $D$ as our tweet corpus, and the goal is to assign a measure of similarity for the tweet $d_{i}$ to the given topic $t \in \{T\}$ noted as $Sim(d_{i}, t)$.
+
+${W_{i}}$ is the sum of weights of  features in the ${x_{i}}$:
 
 \begin{equation}
 W_{i} = \sum_{k} w_{k}\times f_{k}
 \end{equation}
 
 where ${w_{k}}$ is the weight of feature ${f_{k}}$ and ${f_{k} \in \{true, false\}}$ represents whether each of the features in ${SF_{m}},m = \{ 1,..,1166582 \} $ is present in tweet ${X}$ or not. The weights ${w_{k}}$ are learned by applying one of the classification algorithms.
-
-For example, in case of Naive Bayes, the problem is defined as probability of tweet being in topic ${t_{i}}$ given feature vector ${F_{x}}$ for 
-
-\begin{equation}
-P({t_{i}}|X) = P({t_{i}}|{F_{x}}) = \frac {P({t_{i}})P({F_{x}}|{t_{i}})}{P({F_{x}})}
-\end{equation}
-
+%For example, in case of Naive Bayes, the problem is defined as probability of tweet being in topic ${t_{i}}$ given feature vector ${F_{x}}$ for 
+%
+%\begin{equation}
+%P({t_{i}}|X) = P({t_{i}}|{F_{x}}) = \frac {P({t_{i}})P({F_{x}}|{t_{i}})}{P({F_{x}})}
+%\end{equation}
 %and for Rocchio, we first compute a feature vector on training tweet where $f_{i}^{d}$ is the $i$th feature in $d$th tweet datum and is defined as whether the feature exists in the tweet or not.
 %${w_{i}^{t}} = \sum_{d \in D} {f_{i}^{d}} \times I[{X_{t}}]$
 %\begin{equation}
@@ -108,14 +109,17 @@ P({t_{i}}|X) = P({t_{i}}|{F_{x}}) = \frac {P({t_{i}})P({F_{x}}|{t_{i}})}{P({F_{x
 
 In order to learn the models, we take the following steps for each topic:
 \begin{enumerate}
-\item All the positive tweets for the given topic, in addition to sub-sampled set of negative tweets are collected
-\item A set of top $N$ features are selected based on the Mutual Information values of features for the given topic. $N$ is selected during hyper-parameter tuning phase from the set of ${10E1, 10E2, 10E3, 10E4, 1166582}$ values.
-\item Train, validation, and train sets are further built based on the division process explained in ~\ref{label:split} and selected set of top $N$ features.
-\item The model's hyper-parameter in addition to $N$ parameter are tuned on the validation set
-\item The model learns the weight vector based on the tuned hyper-parameters on the full train set and validation set
+\item Preprocess: The set of tweets for learning is selected by including all the positive tweets for the given topic, in addition to sub-sampled set of negative tweets
+\item Hyper-parameter tuning: The number of features $K^{*}$ and model's hyper-parameter $c^{*}$ (if applicable) are tuned on validation set by following steps: 
+\begin{enumerate}
+\item Feature Selection: A set of top $K \in \{10E1, 10E2, 10E3, 10E4, 1166582\}$ features are selected based on the Mutual Information values of features for the given topic. $K$ is selected during hyper-parameter tuning phase.
+\item Train, validation, and train set of tweets are further modified based on the division process explained in Sec~\ref{label:split} and using only selected set of top $K$ features.
+\item The best number of features $K^{*}$, and $c^{*}$ are selected on the validation set, based on MAP scores computed from learned weights
+\end{enumerate}
+\item Learning: The final values of weight vector $W$ is learned on full set of train and test tweets
 \end{enumerate}
 
-The Liblinear \cite{liblinear} package is used for implementing $LR$ and $RankSVM$. The reason for deciding to tune the models on top $N$ features based on Mutual Information, comes from our primary feature analysis on the dataset which showed the ability of Mutual Information measure to pick more correlated features for each topic. This is discussed in more details in section ~\ref{label:featureanalysis}. The model hyper-parameters are tuned for $LR$ and $NB$. The $Rocchio$ method is parameter free and the LibLinear \cite{liblinear} implementation of $RankSVM$ does not provide manual tuning of the model's hyper-parameter.
+The Liblinear \cite{liblinear} package is used for implementing \textit{LR} and \textit{RankSVM}. The reason for deciding to tune the models on top $N$ features based on Mutual Information, comes from our primary feature analysis on the dataset which showed the ability of Mutual Information measure to pick more correlated features for each topic. This is discussed in more details in Sec~\ref{label:featureanalysis}. The model hyper-parameters are tuned for \textit{LR} and \textit{NB}. The \textit{Rocchio} method is parameter free and the LibLinear \cite{liblinear} implementation of \textit{RankSVM} does not provide manual tuning of the model's hyper-parameter.
 %Not breaking down by feature type yet -- that's for the feature analysis section.
 
 \subsection{Analysis}

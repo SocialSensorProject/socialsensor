@@ -2,7 +2,7 @@
 In this section, we analyze the informativeness of each feature for learning topical tweets by looking at different characteristics for each feature in our dataset. For example, one characteristic of hashtags could be the number of the tweets that contain those hashtags. Does this have an effect on importance of the hashtag when it comes to learning topical tweets or not. In this sense, this section would bring insights to the following questions:
 
 \begin{itemize}
-\item \textbf{What are the best features for learning social sensors, do they differ by topic?  (Why?)}
+\item \textbf{What are the best features for learning social sensors, do they differ by topic?}
 \item \textbf{For each feature type, do any attributes correlate with importance?}
 \end{itemize}
 
@@ -32,23 +32,13 @@ In general, this presents evidence on the need for learning the weights of featu
 Also, in order to show the power of Mutual Information criteria, we present the top $5$ features for each topic in table ~\ref{table:top10MItopicsLocations}. It can be observed how different locations, hashtags, or terms showed as the top features based on mutual information are actually in relation with the specific topic.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\iffalse
-\begin{figure}[tbph!]
-\centering
-\includegraphics[width=0.5\textwidth]{images/avgMI.pdf}
-\vspace{-3mm}
-\caption{Average MI for different features vs. Topics, last two column show mean value and stderr across all topics}
-\label{fig:table1}
-\end{figure}
-\fi
-\begin{figure}[h!]
-\centering
-\includegraphics[width=0.5\textwidth]{images/medianMI.pdf}
-\vspace{-3mm}
-\caption{Median MI for different features vs. Topics, last two column show mean value and stderr across all topics}
-\label{fig:medianMI}
-\end{figure}
-\
+%\begin{figure}[h!]
+%\centering
+%\includegraphics[width=0.5\textwidth]{images/medianMI.pdf}
+%\vspace{-3mm}
+%\caption{Median MI for different features vs. Topics, last two column show mean value and stderr across all topics}
+%\label{fig:medianMI}
+%\end{figure}
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth]{images/avgMI_gray.pdf}
