@@ -117,10 +117,10 @@ candidate features (\textit{CF}) for learning social sensors.
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|}
 \hline
  &  & \textbf{Tennis} & \textbf{Space} & \textbf{Soccer} & \textbf{IranDeal} & \textbf{HumanDisaster} & \textbf{CelebrityDeath} & \textbf{SocialIssues} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{LGBT} & \textbf{Mean} \\ \hline
-\textbf{LR} & \textbf{MAP} & \textbf{0.918} & 0.870 & 0.827 & 0.811 & 0.761 & 0.719 & 0.498 & \textbf{0.338} & \textbf{0.329} & \textbf{0.165} & \textbf{0.623$\pm$0.19} \\ \hline
-\textbf{NB} & \textbf{MAP} & 0.908 & \textbf{0.897} & 0.731 & \textbf{0.824} & \textbf{0.785} & \textbf{0.748} & \textbf{0.623} & 0.267 & 0.178 & 0.092 & 0.605$\pm$0.22 \\ \hline
-\textbf{Rocchio} & \textbf{MAP} & 0.690 & 0.221 & \textbf{0.899} & 0.584 & 0.481 & 0.253 & 0.393 & 0.210 & 0.255 & 0.089 & 0.407$\pm$0.18 \\ \hline
-\textbf{RankSVM} & \textbf{MAP} & 0.702 & 0.840 & 0.674 & 0.586 & 0.603 & 0.469 & 0.370 & 0.248 & 0.136 & 0.082 & 0.471$\pm$0.18 \\ \hline \hline
+\textbf{LR} & \textbf{AP} & \textbf{0.918} & 0.870 & 0.827 & 0.811 & 0.761 & 0.719 & 0.498 & \textbf{0.338} & \textbf{0.329} & \textbf{0.165} & \textbf{0.623$\pm$0.19} \\ \hline
+\textbf{NB} & \textbf{AP} & 0.908 & \textbf{0.897} & 0.731 & \textbf{0.824} & \textbf{0.785} & \textbf{0.748} & \textbf{0.623} & 0.267 & 0.178 & 0.092 & 0.605$\pm$0.22 \\ \hline
+\textbf{Rocchio} & \textbf{AP} & 0.690 & 0.221 & \textbf{0.899} & 0.584 & 0.481 & 0.253 & 0.393 & 0.210 & 0.255 & 0.089 & 0.407$\pm$0.18 \\ \hline
+\textbf{RankSVM} & \textbf{AP} & 0.702 & 0.840 & 0.674 & 0.586 & 0.603 & 0.469 & 0.370 & 0.248 & 0.136 & 0.082 & 0.471$\pm$0.18 \\ \hline \hline
 \textbf{LR} & \textbf{P@10} & \textbf{1.000} & 0.000 & 0.200 & 0.700 & \textbf{0.600} & 0.000 & 0.100 & 0.200 & 0.300 & \textbf{0.500} & 0.360$\pm$0.24 \\ \hline
 \textbf{NB} & \textbf{P@10} & \textbf{1.000} & \textbf{0.900} & 0.700 & 0.600 & \textbf{0.600} & \textbf{0.700} & \textbf{1.000} & 0.100 & 0.400 & 0.100 & \textbf{0.610$\pm$0.23} \\ \hline
 \textbf{Rocchio} & \textbf{P@10} & 0.800 & 0.000 & \textbf{1.000} & \textbf{0.900} & 0.000 & 0.000 & 0.000 & \textbf{0.500} & \textbf{0.500} & 0.100 & 0.380$\pm$0.29 \\ \hline
@@ -135,7 +135,8 @@ candidate features (\textit{CF}) for learning social sensors.
 \textbf{RankSVM} & \textbf{P@1000} & 0.799 & 0.922 & 0.764 & \textbf{0.218} & 0.525 & 0.547 & \textbf{0.215} & 0.173 & 0.154 & 0.064 & 0.438$\pm$0.22 \\ \hline
 \end{tabular}
 }}
-\caption{Performance of topical social sensor learning algorithms across metrics and topics.} 
+\caption{Performance of topical social sensor learning algorithms across metrics and topics with the
+mean performance over all topics shown in the right column.  The best performance per metric is shown in bold.} 
 \label{table:results2}
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,8 +167,8 @@ We remark that many algorithms such as Naive Bayes and Rocchio
 performed better with feature selection and hence we used feature
 selection for all algorithms (where it is possible to select all
 features).  Hyperparameter tuning is done via exhaustive grid search
-and using the Mean Average Precision
-(MAP) to select the best scoring function $f$ on the validation data.
+and using the Average Precision
+(AP) to select the best scoring function $f$ on the validation data.
 Once found, $f$ can be applied to any tweet $d_i$ to provide a score $f(d_i)$
 used to rank tweets in the test data.
 %After tuning the
@@ -202,32 +203,72 @@ used to rank tweets in the test data.
 
 \subsection{Performance Analysis}
 
-After learning the weight vector $W$ using \textit{Logistic
-Regression}, \textit{Na\"{i}ve Bayes}, \textit{Rocchio},
-and \textit{Rank SVM} methods, we now proceed to analysis of learned
-social sensors on test set of tweets.  For each tweet $d_{i}$ in test
-set, we compute the similarity of the tweet to the given topic $t$
-based on Eq.~\ref{eq:similarity}. Then, we rank the tweets based on
-their similarity value and return top $10,000$ tweets. The following
-metrics are computed on this top $10,000$ set of tweets:
-
+We now proceed to evalaute the performance of each of the four
+aforementioned supervised learning algorithms for the task of
+learning social sensors.  Once each a scoring function is trained
+via each method, we use it to rank tweets and then compute the
+following ranking metrics on the resulting ranked list:
+%After learning the weight vector $W$ using \textit{Logistic
+%Regression}, \textit{Na\"{i}ve Bayes}, \textit{Rocchio},
+%and \textit{Rank SVM} methods, we now proceed to analysis of learned
+%social sensors on test set of tweets.  For each tweet $d_{i}$ in test
+%set, we compute the similarity of the tweet to the given topic $t$
+%based on Eq.~\ref{eq:similarity}. Then, we rank the tweets based on
+%their similarity value and return top $10,000$ tweets. The following
+%metrics are computed on this top $10,000$ set of tweets:
 \begin{itemize}
-\item MAP: Mean average precision for a set of topics is the mean of the average precision scores for each topic.
-\item P@$n$: Precision at \textit{n} for $n \in \{ 10, 100, 1000 \}$, the number of relevant results on the first $n$ search results page
+\item {\bf AP:} Average precision over the ranked list; the mean over
+all topics provides mean AP (MAP).
+\item {\bf P@$k$:} Precision at $k$ for $k \in \{ 10, 100, 1000 \}$.
 \end{itemize}
+While P@10 may be a more standard retrieval metric for tasks such
+as ad-hoc web search, we remark that the short length of tweets relative
+to web documents makes it more plausible to look at a much larger number
+of tweets, hence the reason for also evaluating P@100 and P@1000.
 
 %- Anecdotal results for each topic -- point out deficiency in our labels (a good thing, we generalized well from small hashtag set), manual evaluation of relevance for top-100 for best algorithm?
-The model's hyper-parameters are tuned based on MAP scores, having MAP as our most important metrics. Table ~\ref{table:results2} provides these metrics for each topic. \textit{Logistic Regression} method is the best performing method on average. Empirical results show that two simple and efficiently trainable methods, \textit{Logistic Regression} and \textit{Na\"{i}ve Bayes}, generalize well to unseen future topical content (including content with no hashtags) in terms of their mean average precision (MAP) and Precision@$n$ for a range of $n$.
+%
+%The model's hyper-parameters are tuned based on MAP scores, having MAP as our most important metrics.
+% Huh??? -SPS
+Table~\ref{table:results2} evaluates these metrics for each
+topic. \textit{Logistic Regression} is the best performing
+method on average except for $P@10$ where .  We conjecture the reason
+for this is that \textit{Na\"{i}ve Bayes} tends to select fewer
+features for training, which allows it to achieve higher precision
+over the top of the ranked list but which causes it suffer slightly
+more lower down the list due to having fewer features and lower recall.
+These results suggest that in general both \textit{Logistic Regression}
+and \textit{Na\"{i}ve Bayes} make for effective topical social sensor
+learners with \textit{Na\"{i}ve Bayes} being a good choice in terms
+of its efficiency compared to it's overall performance.
 
-We also provide the top $5$ tweets for each topic returned by \textit{Logistic Regression} method as anecdotal results in Table ~\ref{table:topTweets}. In this table, the signs in the beginning of the tweet represent the following:
+To provide more insight into the general performance of our learning
+topical social sensor framework, we provide the top five tweets for
+each topic returned by \textit{Logistic Regression} in Table
+~\ref{table:topTweets}.  We've annotated all tweets in this table with
+the following symbols:
 \begin{itemize}
-\item \xmark represents the tweets that our method has incorrectly ranked as topical
-\item \checkmark represents the tweets correctly ranked as topical
-\item \starmark represents the tweets that don't have any topical hashtags and therefore are not labeled as correctly ranked topical. However, looking at the tweets, we can see that they are in fact related to the topic
+\item \checkmark: \; the tweet was topical according to our curated test hashtag set.
+\item \starmark:\ \; the tweet was determined to be topical through manual evaluation
+even though it did not contain a hashtag in our curated hashtag set (this corresponds
+to a false negative due to non-exhaustive labeling of the data).
+\item \xmark: \; the tweet was not topical.
 \end{itemize}  
+In general, we remark that our learning social sensor based on
+logistic regression performs even better than the quantitative results
+in Table~\ref{table:results2} would indicate: many of the highly
+ranked tweets are false negatives --- they are actually relevant.
+Furthermore, we remark that even though we use hashtags to label our
+training, validation, and testing data, our learning social sensor has
+highly (and correctly) ranked topical tweets that do not contain
+hashtags indicating encouraging generalization properties from a
+relatively small set of curated topical hashtags.
 
-Having cases of topical tweets not being correctly labeled as topical, provides evidence that our method of labeling tweets has limitations and our MAP and P@$n$ values are in fact suffering from this problem. However, this shows the power of Logistic Regression method in generalizing from a small set of hashtags.
-%Could do a bar graph (below) each for MAP, P@100 with topics as major columns and algs as neighboring bars
+%Having cases of topical tweets not being correctly labeled as topical,
+%provides evidence that our method of labeling tweets has limitations
+%and our MAP and P@$n$ values are in fact suffering from this
+%problem. However, this shows the power of Logistic Regression method
+%in generalizing from a small set of hashtags.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}[t!]
