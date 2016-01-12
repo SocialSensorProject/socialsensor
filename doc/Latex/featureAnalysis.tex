@@ -1,20 +1,25 @@
 %\textbf{What we have to work with: topics, features, feature attributes}
-In this section, we analyze the informativeness of our defined features in Sec~\ref{sec:datasetStatistics} and the effect of their attributes on learning targeted topical social sensor. To this end, the goal is to answer the following questions in this section.
-
+In this section, we analyze the informativeness of our defined
+features in Sec~\ref{sec:datasetStatistics} and the effect of their
+attributes on learning targeted topical social sensors. To this end,
+our goal in this section is to answer the following questions:
 \begin{itemize}
 \item What are the best features for learning social sensors and do they differ by topic?
 \item For each feature type, do any attributes correlate with importance?
 \end{itemize}
-
-To answer these questions, we use Mutual Information as the metric for evaluating features. Mutual Information is a general method for measuring informativeness, which is a measure of amount of information one random variable contains about another random variable. In order to calculate amount of information that a feature $d_{i} \in \{from, hashtag, mention, term, location\}$ provides w.r.t topic $t \in \{NaturalDisaster, Epidemics, ...\}$, mutual information is defined as:
-
-\begin{multline}
-I(t, f_k)= \\
- \sum_{t \in \{ true, false \}} \sum_{f_k\in \{ true, false\}}p(f_k,t)\log \left ( \frac{p(f_k,t)}{p(f_k)p(t)} \right )
+To answer these questions, we use Mutual Information as our primary
+metric for feature evaluation.  Mutual Information is a general method
+for measuring the amount of information one random variable contains
+about another random variable.  In order to calculate the amount of
+information that each feature
+$j \in \{ \textit{From}, \textit{Hashtag}, \textit{Mention}, \textit{Term}, \textit{Location} \}$
+provides w.r.t.\ each topic label $t \in \{NaturalDisaster, Epidemics,...\}$,
+Mutual Information is defined as 
+\begin{align*}
+I(j, t) & = \!\!\! \sum_{t \in \{ \mathrm{true}, \mathrm{false} \}} \sum_{j \in \{ \mathrm{true}, \mathrm{false}\}}p(j,t)\log \left ( \frac{p(j,t)}{p(j)p(t)} \right ) , 
  \label{eq:eq1}
-\end{multline}
-
-Where higher values for this metric indicate more informative features for the specified topic.
+\end{align*}
+where higher values for this metric indicate more informative features for the specified topic.
 
 In order to answer the first question on what are the best features for learning social sensors, we provide mean of Mutual Information values for each feature across different topics in Table ~\ref{fig:avgMI}. The last column in Table ~\ref{fig:avgMI} shows the average of mean Mutual Information for the feature. From analysis of Table ~\ref{fig:avgMI}, we can make a set of observations:
 
@@ -37,7 +42,7 @@ Also, in order to show the power of Mutual Information metric, we present the to
 %\caption{Median MI for different features vs. Topics, last two column show mean value and stderr across all topics}
 %\label{fig:medianMI}
 %\end{figure}
-\begin{figure}[h!]
+\begin{figure}[t!]
 \centering
 \includegraphics[width=0.5\textwidth, height=60mm]{images/avgMI_gray.pdf}
 \vspace{-3mm}
@@ -46,60 +51,21 @@ Also, in order to show the power of Mutual Information metric, we present the to
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[tph!]
+\begin{figure*}[t!]
 \centering
 \begin{tabular}{ccccc}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/TermVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/LocationVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/HashtagVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/MentionVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/FromVsTopics.pdf}} \\
+\fbox{Commented out}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/TermVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/LocationVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/HashtagVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/MentionVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/FromVsTopics.pdf}} \\
 \end{tabular}
 \vspace{-2mm}
 \caption {Box plots for mean MI values across topics}
 \label{fig:avgMIBP}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table*}[ht]
-\centering
-{\renewcommand{\arraystretch}{1.2}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
-\hline
-\textbf{Topics/Top10} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{IranDeal} & \textbf{SocialIssues} & \textbf{LBGT} & \textbf{HumanDisaster} & \textbf{CelebrityDeath} & \textbf{Space} & \textbf{Tennis} & \textbf{Soccer} \\ \hline
-\textbf{From} & earthquake\_wo & changedecopine & mazandara & nsingerdebtpaid & eph4\_15 & ydumozyf & nmandelaquotes & daily\_astrodata & tracktennisnews & losangelessrh \\ \hline
-\textbf{From} & earthalerts & drdaveanddee & hhadi119 & debtadvisoruk & mgdauber & syriatweeten & boiknox & freesolarleads & tennis\_result & shoetale \\ \hline
-\textbf{From} & seelites & joinmentornetwk & 140iran & debt\_protect & stevendickinson & tintin1957 & jacanews & houston\_\_jobs & i\_roger\_federer & sport\_\_agent \\ \hline
-\textbf{From} & globalfloodnews & followebola & setarehgan & negativeequityf & lileensvf1 & sirajsol & ewnreporter & star\_wars\_gifts & tennislessonnow & books\_you\_want \\ \hline
-\textbf{From} & gcmcdrought & localnursejobs & akhgarshabaneh & dolphin\_ls & truckerbooman & rt3syria & paulretweet & lenautilus & kamranisbest & makeupbella \\ \hline \hline
-\textbf{Hashtag} & earthquake & health & iran & ferguson & tcot & syria & rip & science & wimbledon & lfc \\ \hline
-\textbf{Hashtag} & haiyan & uniteblue & irantalks & mikebrown & p2 & gaza & riprobinwilliams & starwars & usopen & worldcup \\ \hline
-\textbf{Hashtag} & storm & ebola & rouhani & ericgarner & pjnet & isis & ripcorymonteith & houston & tennis & arsenal \\ \hline
-\textbf{Hashtag} & tornado & healthcare & iranian & blacklivesmatter & uniteblue & israel & mandela & sun & nadal & worldcup2014 \\ \hline
-\textbf{Hashtag} & prayforthephilippines & depression & no2rouhani & fergusondecision & teaparty & mh370 & nelsonmandela & sxsw & wimbledon2014 & halamadrid \\ \hline \hline
-\textbf{Location} & philippines & usa & tehran & st.louis & usa & malaysia & southafrica & germany & london & liverpool \\ \hline
-\textbf{Location} & ca & ncusa & u.s.a & mo & bordentown & palestine & johannesburg & roodepoort & uk & manchester \\ \hline
-\textbf{Location} & india & garlandtx & nederland & usa & newjersey & syria & capetown & houston & india & london \\ \hline
-\textbf{Location} & newdelhi & oh-sandiego & iran & dc & sweethomealabama! & israel & pretoria & austin & pakistan & nigeria \\ \hline
-\textbf{Location} & newzealand & washington & globalcitizen & washington & aurora & london & durban & tx & islamabad & india \\ \hline \hline
-\textbf{Mention} & oxfamgb & foxtramedia & 4freedominiran & deray & jjauthor & ifalasteen & nelsonmandela & bizarro\_chile & wimbledon & lfc \\ \hline
-\textbf{Mention} & weatherchannel & obi\_obadike & iran\_policy & natedrug & 2anow & revolutionsyria & realpaulwalker & nasa & usopen & arsenal \\ \hline
-\textbf{Mention} & redcross & who & hassanrouhani & antoniofrench & govchristie & drbasselabuward & robinwilliams & j\_ksen & andy\_murray & realmadriden \\ \hline
-\textbf{Mention} & twcbreaking & obadike1 & un & bipartisanism & a5h0ka & mogaza & rememberrobin & jaredleto & serenawilliams & ussoccer \\ \hline
-\textbf{Mention} & abc7 & c25kfree & statedept & theanonmessage & barackobama & palestinianism & tweetlikegiris & 30secondstomars & espntennis & mcfc \\ \hline \hline
-\textbf{Term} & philippines & health & iran & police & obama & israel & robin & cnblue & murray & madrid \\ \hline
-\textbf{Term} & donate & ebola & regime & protesters & gun & gaza & williams & movistar & tennis & goal \\ \hline
-\textbf{Term} & typhoon & acrx & nuclear & officer & rights & israeli & nelson & enero & federer & cup \\ \hline
-\textbf{Term} & affected & medical & iranian & protest & america & killed & mandela & çimperdible & djokovic & manchester \\ \hline
-\textbf{Term} & relief & virus & resistance & cops & gop & children & cory & greet & nadal & match \\ \hline
-\end{tabular}
-}}
-\caption{Top 5 features for each topic based on Mutual Information}
-\label{table:top10MItopicsLocations}
-\end{table*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 In order to answer the second question on whether any attributes correlate with importance for each feature, we provide two group of analysis. The first group, provides Mutual Information values for each feature across the frequency value of feature attribute shown by violin plots in Fig.~\ref{fig:violinplots}. The attributes for each feature are:
 
 \begin{itemize}
@@ -158,4 +124,45 @@ The second group provides further analysis by plotting density plots of favorite
 \caption {DensityPlots for the frequency values of feature attributes vs. MI. Plots (a-d) respectively show attributes \{favoriteCount, followerCount, friendCount, hashtagCount\} for \textit{From} feature}
 \label{fig:densityplots}
 \end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table*}[t!]
+\centering
+{\renewcommand{\arraystretch}{1.2}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\textbf{Topics/Top10} & \textbf{NaturalDisaster} & \textbf{Epidemics} & \textbf{IranDeal} & \textbf{SocialIssues} & \textbf{LBGT} & \textbf{HumanDisaster} & \textbf{CelebrityDeath} & \textbf{Space} & \textbf{Tennis} & \textbf{Soccer} \\ \hline
+\textbf{From} & earthquake\_wo & changedecopine & mazandara & nsingerdebtpaid & eph4\_15 & ydumozyf & nmandelaquotes & daily\_astrodata & tracktennisnews & losangelessrh \\ \hline
+\textbf{From} & earthalerts & drdaveanddee & hhadi119 & debtadvisoruk & mgdauber & syriatweeten & boiknox & freesolarleads & tennis\_result & shoetale \\ \hline
+\textbf{From} & seelites & joinmentornetwk & 140iran & debt\_protect & stevendickinson & tintin1957 & jacanews & houston\_\_jobs & i\_roger\_federer & sport\_\_agent \\ \hline
+\textbf{From} & globalfloodnews & followebola & setarehgan & negativeequityf & lileensvf1 & sirajsol & ewnreporter & star\_wars\_gifts & tennislessonnow & books\_you\_want \\ \hline
+\textbf{From} & gcmcdrought & localnursejobs & akhgarshabaneh & dolphin\_ls & truckerbooman & rt3syria & paulretweet & lenautilus & kamranisbest & makeupbella \\ \hline \hline
+\textbf{Hashtag} & earthquake & health & iran & ferguson & tcot & syria & rip & science & wimbledon & lfc \\ \hline
+\textbf{Hashtag} & haiyan & uniteblue & irantalks & mikebrown & p2 & gaza & riprobinwilliams & starwars & usopen & worldcup \\ \hline
+\textbf{Hashtag} & storm & ebola & rouhani & ericgarner & pjnet & isis & ripcorymonteith & houston & tennis & arsenal \\ \hline
+\textbf{Hashtag} & tornado & healthcare & iranian & blacklivesmatter & uniteblue & israel & mandela & sun & nadal & worldcup2014 \\ \hline
+\textbf{Hashtag} & prayforthephilippines & depression & no2rouhani & fergusondecision & teaparty & mh370 & nelsonmandela & sxsw & wimbledon2014 & halamadrid \\ \hline \hline
+\textbf{Location} & philippines & usa & tehran & st.louis & usa & malaysia & southafrica & germany & london & liverpool \\ \hline
+\textbf{Location} & ca & ncusa & u.s.a & mo & bordentown & palestine & johannesburg & roodepoort & uk & manchester \\ \hline
+\textbf{Location} & india & garlandtx & nederland & usa & newjersey & syria & capetown & houston & india & london \\ \hline
+\textbf{Location} & newdelhi & oh-sandiego & iran & dc & sweethomealabama! & israel & pretoria & austin & pakistan & nigeria \\ \hline
+\textbf{Location} & newzealand & washington & globalcitizen & washington & aurora & london & durban & tx & islamabad & india \\ \hline \hline
+\textbf{Mention} & oxfamgb & foxtramedia & 4freedominiran & deray & jjauthor & ifalasteen & nelsonmandela & bizarro\_chile & wimbledon & lfc \\ \hline
+\textbf{Mention} & weatherchannel & obi\_obadike & iran\_policy & natedrug & 2anow & revolutionsyria & realpaulwalker & nasa & usopen & arsenal \\ \hline
+\textbf{Mention} & redcross & who & hassanrouhani & antoniofrench & govchristie & drbasselabuward & robinwilliams & j\_ksen & andy\_murray & realmadriden \\ \hline
+\textbf{Mention} & twcbreaking & obadike1 & un & bipartisanism & a5h0ka & mogaza & rememberrobin & jaredleto & serenawilliams & ussoccer \\ \hline
+\textbf{Mention} & abc7 & c25kfree & statedept & theanonmessage & barackobama & palestinianism & tweetlikegiris & 30secondstomars & espntennis & mcfc \\ \hline \hline
+\textbf{Term} & philippines & health & iran & police & obama & israel & robin & cnblue & murray & madrid \\ \hline
+\textbf{Term} & donate & ebola & regime & protesters & gun & gaza & williams & movistar & tennis & goal \\ \hline
+\textbf{Term} & typhoon & acrx & nuclear & officer & rights & israeli & nelson & enero & federer & cup \\ \hline
+\textbf{Term} & affected & medical & iranian & protest & america & killed & mandela & çimperdible & djokovic & manchester \\ \hline
+\textbf{Term} & relief & virus & resistance & cops & gop & children & cory & greet & nadal & match \\ \hline
+\end{tabular}
+}}
+\caption{Top 5 features for each topic based on Mutual Information}
+\label{table:top10MItopicsLocations}
+\end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
