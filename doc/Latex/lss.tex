@@ -128,7 +128,7 @@ content (i.e., new hashtags).
 \item {\bf Training and hyper-parameter tuning:}
 Once $D^t_\mathrm{train}$ and $D^t_\mathrm{val}$ have been constructed,
 we proceed to train our scoring function $f$ on $D^t_\mathrm{train}$ and
-select hyperparameters to optimize Mean Average Precision (MAP) on
+select hyperparameters to optimize Average Precision (AP) on
 $D^t_\mathrm{val}$.  Once the optimal $f$ is found for $D_\mathrm{val}$,
 we return it as our final learned topical scoring function for topic $t$.
 %\item {\bf Learning: The weight vector $W$ is learned with classification method $M$ on the selected set of documents using tuned hyper parameters
