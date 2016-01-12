@@ -149,10 +149,10 @@ algorithms to generate a score function $f$ for learning social sensors
 as defined in Sec.~\ref{sec:lss}.  In this paper, we experiment with
 the following four state-of-the-art classification and ranking methods:
 \begin{enumerate}
-\item Logistic Regression using LibLinear~\cite{liblinear}
-\item Bernoulli Na\"{i}ve Bayes~\cite{mccallum98nb}
-\item Rocchio~\cite{manning_ir} (a simple centroid-based classifier)
-\item Large-scale RankSVM~\cite{largescale_ranksvm}
+\item {\bf Logistic Regression} using LibLinear~\cite{liblinear}
+\item {\bf Bernoulli Na\"{i}ve Bayes}~\cite{mccallum98nb}
+\item {\bf Rocchio}~\cite{manning_ir}\\(a centroid-based classifier)
+\item {\bf RankSVM}~\cite{largescale_ranksvm}
 \end{enumerate}
 
 As outlined in Sec~\ref{sec:lss}, tuning of hyperparameters on a validation
@@ -160,7 +160,7 @@ dataset is critical.  In our experiments, we tune the following hyperparameters:
 \begin{itemize}
 \item \textit{Logistic Regression}: $L_2$ regularization constant $C$ is tuned for $C \in \{1E-12, 1E-11, ..., 1E+11, 1E+12\}$.
 \item \textit{Na\"{i}ve Bayes}: Dirichlet prior $\alpha$ is tuned for $\alpha \in \{1E-20, 1E-15, 1E-8, 1E-3, 1E-1, 1\}$.
-\item \textit{All Classfiers}: The number of top features $M$ selected based on their Mutual Information is tuned for $M \in \{1E2, 1E3, 1E4, 1E5, 1166582 \mathrm(all features) \}$.
+\item \textit{All Classfiers}: The number of top features $M$ selected based on their Mutual Information is tuned for $M \in \{1E2, 1E3, 1E4, 1E5, 1166582 \textrm{ (all features) } \}$.
 \end{itemize}
 We remark that many algorithms such as Naive Bayes and Rocchio
 performed better with feature selection and hence we used feature
