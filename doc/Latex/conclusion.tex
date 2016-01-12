@@ -1,10 +1,18 @@
 This work fills a major gap in 
 event detection and tracking from social media
 on identifying emerging topics from long-running themes with
-minimal user supervision.  Our results suggest that these
+minimal user supervision.  
+We contribute a novel supervised method for training social sensors with minimal user curation by using a small seed set of hashtags as topical proxies for automatic supervised data labeling. The supervised classification and ranking methods learn topical content from a large feature space. We train our social sensor on known topical content, but tune it on novel topical validation content which ensures optimal generalization. The experiments are on a corpus of over $800$ million tweets crawled with Twitter Search API. Our results suggest that these
 sensors generalize well to unseen future topical content and provide a
 novel paradigm for the extraction of high-value content from social
-media.  Future work should explore the following enhanced topical
+media. Furthermore, we provide an
+extensive analysis of features and feature attributes across different
+topics that reveals, (1)~largely independent of
+topic, simple terms are the most informative feature followed by
+location features and that (2)~the number of unique hashtags and
+tweets by a user correlates more with their informativeness than their follower or friend count.
+
+Future work should explore the following enhanced topical
 social sensor learning tasks: (1) optimizing rankings not only for topicality
 but also to minimize the lag-time of novel content identification, (2) optimizing
 queries for boolean retrieval oriented APIs such as Twitter, and (3) utilizing 
