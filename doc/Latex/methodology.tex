@@ -1,39 +1,35 @@
 %\externaldocument{lss}
 %\externaldocument{datasetStatistics}
 %How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
-With the $5$ set of features defined as \textit{From}, \textit{Mention}, \textit{Location}, \textit{Term}, \textit{Hashtag}, we proceed to define the methodology for retrieving ranked list of tweets for a given topic. The list of topics were defined to be a set of $10$ various topics covering very specific and very broad topics:
-%(1) \textit{Tennis}, (2) \textit{Space}, (3) \textit{Soccer}, (4) \textit{IranDeal}, (5) \textit{HumanDisaster} (HumanCausedDisaster), (6) \textit{CelebrityDeath}, (7) \textit{SocialIssues}, (8) \textit{NaturalDisaster}, (9) \textit{Epidemics}, and (10) \textit{LGBT}
-$T = \{ \textit{Tennis}, \textit{Space}, \textit{Soccer}, \textit{IranDeal}, \textit{HumanDisaster} \\
-, \textit{CelebrityDeath}, \textit{SocialIssues}, \textit{NaturalDisaster}, \textit{Epidemics}, \\
+With the formal definition of learning topical social sensors provided in Sec~\ref{sec:lss}, we proceed to outline our experimental methodology on our Twitter corpus. The features $D_{i}^{+}$ includes features from \textit{From}, \textit{Mention}, \textit{Location}, \textit{Term}, \textit{Hashtag} features. The set of topics $T$ on the Twitter corpus is defined to be a set of $10$ various topics covering very specific and very broad topics:
+$T = \{ \textit{Tennis}, \textit{Space}, \textit{Soccer}, \textit{IranDeal}, \textit{HumanDisaster}, \\
+\textit{CelebrityDeath}, \textit{SocialIssues}, \textit{NaturalDisaster}, \textit{Epidemics}, \\
  \textit{LGBT} \}$ 
 
-As defined in Sec~\ref{sec:lss}, our goal is to train social sensors to learn topical content from a large feature space. Therefore, we want to have a ranked list of tweets $D_{t}$ as the result for topic $t$, by employing classification and ranking methods on defined set of features $F \in \{0,1\}^{M}$. The sum over number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features and as noted earlier, we are working on $829,026,458$ tweet corpus. This shows the need for techniques to annotate the data and select a subset of features for learning. 
+With the goal of training a scoring function $f$, we employ classification and ranking methods using defined set of features $(d_i^1,\ldots,d_i^M) \in \{0,1\}^M$. The sum over number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features and as noted earlier, we are working on $829,026,458$ tweet corpus. This shows the need for techniques to annotate the data and select a subset of features for learning. 
 
-In Sec~\ref{sec:lss}, we explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, hashtag set $H^{t}$ for each topic $t \in T$ is curated with $2$ annotators individually and inner-annotator agreement is achieved by reviewing and merging these sets by $2$ more individuals. Afterwards, we label each tweet based on the rule defined in Sec~\ref{sec:lss}.% Eq.~\ref{eq:labeling}.
-%The criteria for hashtag curation included
-%\begin{itemize}
-%\item To be related to the topic
-%\item To be preferably born during our time span i.e. not being used before e.g., \#ebola
-%\item To cover the two year timespan of our Twitter corpus by birth dates of chosen set of hashtag
-%\end{itemize}
-
-%Train/validation/test split date selection -- temporally .5,.1,.4
-\label{label:split}
-In order to conduct our experiments, the train, validation and test set of tweets are formed by temporally dividing the dataset over $2$ years. Since our tweet labeling is through topical hashtags, this division is done in a way to preserve sufficient number of hashtags for train, validation, and test timespan. To this purpose, hashtags are divided based on their birthday with $50$ percent of hashtags born at train timespan, $10$ percent born at validation timespan, and the last $40$ percent born at test timespan.
-Table.~\ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic. %As illustrated, some topics such as \textit{HumanDisaster} and \textit{Soccer} are more general topics and have higher number of topical tweets while some other ones such as \textit{IranDeal} is more specific, thus having less number of topical tweets.
-
-%Feature selection: threshold per feature 159 and 50 (just explain rationale for lower hashtag and location thresholds).
+We explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, hashtag set $H^{t}$ for each topic $t \in T$ is curated with $2$ annotators individually and inner-annotator agreement is achieved by reviewing and merging these sets by $2$ more individuals. 
+%Afterwards, we label each tweet based on the rule defined in Eq.~\ref{eq:labeling}.
+Table.~\ref{table:sampleHashtags} provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic.
 Regarding feature selection, it is clear that it is not possible to learn a model with total number of $538,365,507$ features. In which case, we would have to provide a much larger set of training samples, and, in addition, our feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature by:
 \begin{itemize}
 \item Cleaning \textit{Term} feature to remove stop-words
 \item Choosing a cut-off threshold on the frequency of features
 \end{itemize} 
-This results in almost $1$ million features, considered as defined $F$ feature vector. The detailed values of cut-off thresholds and number of remaining unique values for each feature is shown in Table.~\ref{table:learningFeatures}. Since \textit{Term} and \textit{Location} features had much lower number of unique values in the corpus, we chose a lower threshold for these features.
+This results in almost $1$ million features. The detailed values of cut-off thresholds and number of remaining unique values for each feature is shown in Table.~\ref{table:learningFeatures}. Since \textit{Term} and \textit{Location} features had much lower number of unique values in the corpus, we chose a lower threshold for these features.
+
+%Train/validation/test split date selection -- temporally .5,.1,.4
+%\label{label:split}
+%In order to conduct our experiments, the train, validation and test set of tweets are formed by temporally dividing the dataset over $2$ years. Since our tweet labeling is through topical hashtags, this division is done in a way to preserve sufficient number of hashtags for train, validation, and test timespan. To this purpose, hashtags are divided based on their birthday with $50$ percent of hashtags born at train timespan, $10$ percent born at validation timespan, and the last $40$ percent born at test timespan.
+
+
+%Feature selection: threshold per feature 159 and 50 (just explain rationale for lower hashtag and location thresholds).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table}[!h]
 \centering
-{\renewcommand{\arraystretch}{1.2}
+{\footnotesize \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{|l|c|c|}
 \hline
  & \textbf{Threshold} & \textbf{\#unique values} \\ \hline
@@ -175,36 +171,35 @@ Having cases of topical tweets not being correctly labeled as topical, provides 
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Tennis} & \textbf{Space} \\ \hline 
-\checkmark rt @espntennis: shock city. darcis drops rafa in straight sets. first time nadal loses in first rd of a. major in career. \#espnwimbledon \#wÉ & \xmark  rt @jaredleto: rt @30secondstomars: icymi: mars performing a cover of @rihanna's \#stay on australia's @triplemmelb - video \_ http://t.co/uqÉ \\ \hline
-\checkmark @ESPNTennis: Shock city. Darcis drops Rafa in straight sets. First time Nadal loses in first rd of a. Major in career. & \xmark  voting mars @30secondstomars @jaredleto @shannonleto @tomofromearth xobest group http://t.co/dlsozvjinf \\ \hline
-\checkmark @ESPNTennis: Djokovic ousts the last American man standing @Wimbledon, beating Reynolds 7-6 6-3 6-1 \#ESPNWimbledon & \xmark  rt @jaredleto\_com: show everyone how much you are proud of @30secondstomars !\#mtvhottest 30 seconds to mars http://t.co/byxnri4t67 \\ \hline
-\checkmark Nadal's a legend. After 3 years; Definitely He's gonna be the best of all the time. Unbelievable performance. @RafaelNadal \#USOpenFinal & \xmark  rt @30secondstomars: missed the big news? mars touring with @linkinpark + special guests @afi this summer!\_ http://t.co/3e5rm9pwrd \\ \hline
-\checkmark @calvy70 @ESPNTennis @Wimbledon I see, thanks for the info and enjoy \#Wimbledon2014 & \xmark  rt @30secondstomars: to the right,to the left,we will fightto the death.go \#intothewildonvyrt with mars, starting weekly, nov 30 \_ httÉ \\ \hline
+\checkmark rt @espntennis: shock city. darcis drops rafa in straight sets. first time nadal loses in first rd of a. major... & \xmark  rt @jaredleto: rt @30secondstomars: icymi: mars performing a cover of @rihanna's \#stay on australia's @trip...\\ \hline
+\checkmark @ESPNTennis: Shock city. Darcis drops Rafa in straight sets. First time Nadal loses in first rd of a... & \xmark  voting mars @30secondstomars @jaredleto @shannonleto @tomofromearth xobest group http://t.co/dls... \\ \hline
+\checkmark @ESPNTennis: Djokovic ousts the last American man standing @Wimbledon, beating Reynolds 7-6... & \xmark  rt @jaredleto\_com: show everyone how much you are proud of @30secondstomars !\#mtvhottest 30 seconds to... \\ \hline
+\checkmark Nadal's a legend. After 3 years; Definitely He's gonna be the best of all the time. Unbelievable perf... & \xmark  rt @30secondstomars: missed the big news? mars touring with @linkinpark + special guests @afi this summer...\\ \hline
+\checkmark @calvy70 @ESPNTennis @Wimbledon I see, thanks for the info and enjoy \#Wimbledon2014 & \xmark  rt @30secondstomars: to the right,to the left,we will fightto the death.go \#intothewildonvyrt with mars, starting... \\ \hline
 \textbf{Soccer} & \textbf{IranDeal} \\ \hline
-\xmark  rt @tomm\_dogg: \#thingstodobeforeearthends spend all my money. & \checkmark rt @iran\_policy: @vidalquadras:@isjcommittee has investigated 10 major subjects of iranŐs controversial \#nuclear program \#irantalksvienna \\ \hline
-\starmark  @mancityonlineco nice performance & \checkmark rt @iran\_policy: @vidalquadras:@isjcommittee has investigated 10 major subjects of iranŐs controversial \#nuclear program \#irantalksvienna \\ \hline
-\starmark  rt @indykaila: podolski: "let's see what happens in the winter. the fact is that i'm not happy with it, that's clear." @arsenal & \xmark  rt @negarmortazavi: thank you @hassanrouhani for retweeting. let's hope for a day when no iranian fears returning to their homeland. http:/É \\ \hline
-\starmark  rt @indykaila: wenger: "i don't believe match-fixing is a problem in england." \#afc & \xmark  rt @iran\_policy: iran: details of savage attack on political prisoners in evin prison http://t.co/xdzuakqdiv \#iran \#humanrights \\ \hline
-\xmark  @indykaila you never got back to me about tennis this week & \checkmark rt @iran\_policy: chairman ros-lehtinen speaking on us commitment 2 protect camp liberty residents. \#iranhrviolations http://t.co/1g6dhx1znu \\ \hline
+\xmark  rt @tomm\_dogg: \#thingstodobeforeearthends spend all my money. & \checkmark rt @iran\_policy: @vidalquadras:@isjcommittee has investigated 10 major subjects of iranŐs controversial \#nuc... \\ \hline
+\starmark  @mancityonlineco nice performance & \checkmark rt @iran\_policy: @vidalquadras:@isjcommittee has investigated 10 major subjects of iranŐs controversial \#nuc... \\ \hline
+\starmark  rt @indykaila: podolski: "let's see what happens in the winter. the fact is that i'm not happy with it, th... & \xmark  rt @negarmortazavi: thank you @hassanrouhani for retweeting. let's hope for a day when no iranian fears retur... \\ \hline
+\starmark  rt @indykaila: wenger: "i don't believe match-fixing is a problem in england." \#afc & \xmark  rt @iran\_policy: iran: details of savage attack on political prisoners in evin prison http://t.co/xdzuakqdiv \#iran... \\ \hline
+\xmark  @indykaila you never got back to me about tennis this week & \checkmark rt @iran\_policy: chairman ros-lehtinen speaking on us commitment 2 protect camp liberty residents. \#iranhr... \\ \hline
 \textbf{HumanDisaster} & \textbf{CelebrityDeath} \\ \hline
-\checkmark rt @baselsyrian: there`ve been peaceful people in \#homs not terrorists! \#assad,enemy of \#humanity destroyed it. \#eyeonhoms \#withsyria http:É & \starmark  rt @sawubona\_chris: today is my birthday \&amp; also the day my hero @nelsonmandela has died. lets never forget what he taught us. forgiveness iÉ \\ \hline
-\checkmark what a helpless father, he can do nothing under \#assad's siege!\#speakup4syrianchildren  http://t.co/vgle3byebw\#syria \#syriawarcrimes \#un & \starmark  rt @nelsonmandela: Ňdeath is something inevitable.when a man has done what he considers to be his duty to his people\&amp;his country,he can resÉ \\ \hline
-\starmark  exclusive: us formally requested \#un investigation; russia pressured \#assad to no avail;chain of evidence proof hard http://t.co/560t2rvdfw & \starmark  rt @nelsonmandela: la muerte es algo inevitable.cuando un hombre ha hecho lo que considera que es su deber para con su gente y su pas,puedÉ \\ \hline
-\starmark  \#save\_aleppo from \#assadwarcrimes\#save\_aleppo from \#civilians -targeted shelling of \#assad regime\#syria \#aleppo http://t.co/k3dfxh0pxl & \xmark   \#jacques \#kallis: a phenomenal cricketing giant of all time - \#cricket \#history \#southafrica http://t.co/ms5pmwoag9 \\ \hline
-\checkmark rt @canine\_rights: why does the \#un allow this to continue? rt@tintin1957 help raise awareness of the suffering in \#syriawarcrimes http://tÉ & \xmark  @sudesh1304 south africa has the most beautiful babies....so diverse,so unique...so god!! lol \#durban \#southafrica \\ \hline
+\checkmark rt @baselsyrian: there`ve been peaceful people in \#homs not terrorists! \#assad,enemy of \#humanity... & \starmark  rt @sawubona\_chris: today is my birthday \&amp; also the day my hero @nelsonmandela has died. lets never... \\ \hline
+\checkmark what a helpless father, he can do nothing under \#assad's siege!\#speakup4syrianchildren  http://t.co/vg... & \starmark  rt @nelsonmandela: Ňdeath is something inevitable.when a man has done what he considers to be his duty to... \\ \hline
+\starmark  exclusive: us formally requested \#un investigation; russia pressured \#assad to no avail;chain of evidence... & \starmark  rt @nelsonmandela: la muerte es algo inevitable.cuando un hombre ha hecho lo que considera que es su deber... \\ \hline
+\starmark  \#save\_aleppo from \#assadwarcrimes\#save\_aleppo from \#civilians -targeted shelling of \#assad regime... & \xmark   \#jacques \#kallis: a phenomenal cricketing giant of all time - \#cricket \#history \#southafrica http://t.co/ms5p... \\ \hline
+\checkmark rt @canine\_rights: why does the \#un allow this to continue? rt@tintin1957 help raise awareness of the... & \xmark  @sudesh1304 south africa has the most beautiful babies....so diverse,so unique...so god!! lol \#durban \#southa...\\ \hline
 \textbf{SociallIssues} & \textbf{NaturalDisaster} \\ \hline
-\starmark  the us doesn't actually borrow is the thing. i believe in a creationist theory of the us dollar @usanationdebt @nationaldebt & \xmark  us execution in \#oklahoma :  not cruel and unusual?  maybe just barbaric, inhumane and reminiscent of the dark ages! \\ \hline
-\starmark  rt @2anow: according to @njsenatepres women's rights do not include this poor nj mother's right to defend herself http://t.co/xzbslnqkh6  \#É & \xmark  \#haiti \#politics - the haiti-dominican crisis - i agree with how martelly is handling the situation: i totally... http://t.co/ro4pswsszs \\ \hline
-\starmark  rt @2anow: confiscation ? how many carry permits are in the senate and assembly? give us ours or turn them in.  @senatorlorettaw @lougreenwÉ & \starmark  rt @soilhaiti: a new reforestation effort in \#haiti. local compost, anyone? http://t.co/xpad0rqbjk @richardbranson @clintonfdn @virginuniteÉ \\ \hline
-\starmark  rt @2anow: vote with your wallet against \#guncontrolforest city enterprises does not support the \#2a http://t.co/tpkok3berm\#nj2as  \#tcot & \xmark  mes cousins jamais ns hantent les nuits de duvalier \#haiti \#duvalier \\ \hline
-\starmark  @2anow @momsdemand @jstines3 they dont have a plan for that , which is why they should never be allowed to take our guns & \checkmark tony burgener of @swisssolidarity says you can't compare the disaster response in \#haiti with the response to \#haiyan in \#philippines @iheid \\ \hline
+\starmark  the us doesn't actually borrow is the thing. i believe in a creationist theory of the us dollar @usanationdebt... & \xmark  us execution in \#oklahoma :  not cruel and unusual?  maybe just barbaric, inhumane and reminiscent of the dark...\\ \hline
+\starmark  rt @2anow: according to @njsenatepres women's rights do not include this poor nj mother's right to defend... & \xmark  \#haiti \#politics - the haiti-dominican crisis - i agree with how martelly is handling the situation: i totally... http... \\ \hline
+\starmark  rt @2anow: confiscation ? how many carry permits are in the senate and assembly? give us ours or turn ... & \starmark  rt @soilhaiti: a new reforestation effort in \#haiti. local compost, anyone? http://t.co/xpad0rqbjk @richardbran... \\ \hline
+\starmark  rt @2anow: vote with your wallet against \#guncontrolforest city enterprises does not support the \#2a http... & \xmark  mes cousins jamais ns hantent les nuits de duvalier \#haiti \#duvalier \\ \hline
+\starmark  @2anow @momsdemand @jstines3 they dont have a plan for that,which is why they should never be allow... & \checkmark tony burgener of @swisssolidarity says you can't compare the disaster response in \#haiti with the response to... \\ \hline
 \textbf{Epidemics} & \textbf{LGBT} \\ \hline
-\checkmark rt @who: fourteen of the susp. \&amp; conf. ebola cases in \#conakry, \#guinea, are health care workers, of which 11 died \#askebola & \starmark  rt @jackmcoldcuts: @lunaticrex @fingersmalloy @toddkincannon @theanonliberal anthony kennedy just wrote opinion granting...% legal protection to cupcake kiplers 
-\\ \hline
+\checkmark rt @who: fourteen of the susp. \&amp; conf. ebola cases in \#conakry, \#guinea, are health care workers, of... & \starmark  rt @jackmcoldcuts: @lunaticrex @fingersmalloy @toddkincannon @theanonliberal anthony kennedy just wro...\\ \hline
 \xmark  @who who can afford also been cover in government health insurance {[}with universal health coverage{]} & \xmark  @toddkincannon your personal account, your interest. separate from your business. \\ \hline
-\checkmark \#ebolaoutbreak this health crisis..unparalleled in modern times,Ó @who dir. aylward - requires \$1 billion to stem http://t.co/rjzqhydb3d & \xmark  why would you report someone as spam if he is not spam? @illygirlbrea @toddkincannon \\ \hline
-\xmark  rt @medsin: @who are conducting a survey on the social determinants of health in medical teaching. fill the survey in at https://t.co/aj59xÉ & \xmark  rt @t3h\_arch3r: @toddkincannon thanks for your tl having the female realbrother. between them is 600 lbs. 104 iq points. and a lot of hate. \\ \hline
-\xmark  augmentation vertigineuse de 57,4\% en 1 an des actes islamophobes en france, dit le collectif contre l'islamophobie http://t.co/2qjhocegi5 & \xmark  @toddkincannon who us dick trickle. \\ \hline
+\checkmark \#ebolaoutbreak this health crisis..unparalleled in modern times,Ó @who dir. aylward - requires \$1 billion ... & \xmark  why would you report someone as spam if he is not spam? @illygirlbrea @toddkincannon \\ \hline
+\xmark  rt @medsin: @who are conducting a survey on the social determinants of health in medical teaching. fill... & \xmark  rt @t3h\_arch3r: @toddkincannon thanks for your tl having the female realbrother. between them is 600 lbs. 104 iq... \\ \hline
+\xmark  augmentation vertigineuse de 57,4\% en 1 an des actes islamophobes en france, dit le collectif contre l'is... & \xmark  @toddkincannon who us dick trickle. \\ \hline
 \end{tabular}
 }
 }
