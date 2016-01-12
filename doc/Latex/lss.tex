@@ -12,8 +12,13 @@
 %TODO: Formal learning framework.
 Our objective in learning social sensors is to train an automatic
 system for ranking documents by their topical relevance given curated
-topic labels for a set of training documents.  There are two catches
-that make our setting somewhat non-standard.  First, 
+topic labels for a set of training documents.  Formally, given an
+arbitrary document $d$, we wish to train a function $f: d \longrightarrow \mathbb{R}$ over
+a set of training documents $D = \{ d_1,\ldots,d_n \}$ with feature vector $\vec{f}$
+
+There are two catches
+that make our setting somewhat non-standard.  First, manually labeling
+documents is time-consuming, yet 
 
 We define a corpus of $N$ documents as $D = \{{d_{1}}, {d_{2}}, ..., {d_{N}} \}$, a set of $K$ topics as $T = \{{t_{1}}, {t_{2}}, ..., {t_{K}} \}$, a set of $M$ features as $F = \{0,1\}^{M}$, and a weight vector of $W \in \Re^{M}$ corresponding to each feature. 
 
