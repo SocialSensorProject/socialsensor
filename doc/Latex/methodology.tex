@@ -79,7 +79,13 @@ Having defined the primary steps for preparing the features and splitting the da
 \item Rank SVM
 \end{enumerate}
 
-Based on the problem setting defined in Sec~\ref{sec:lss}, we have $D$ as our tweet corpus. We tune the hyper-parameters on validation data. The \textit{Logistic Regression}'s hyper-parameter $C$ and \textit{Na\"{i}ve Bayes}'s prior $\alpha$ are tuned on a range of values $C \in \{E-12, E-11, ..., E+11, E+12\}$ for \textit{Logistic Regression} and $\alpha \in \{E-20, E-15, E-8, E-3, E-1, 1\}$ for \textit{Na\"{i}ve Bayes}. In addition, our models have another hyper-parameter $K$, as the number of top features chosen based on Mutual Information tuned on $K \in \{E2, E3, E4, E5, 1166582\}$. The tuning is based on mean average precision (MAP) value computed on validation tweets. After tuning the hyper-parameters, the model learns the weight vector $W \in \Re^{M}$ on train data. Then, each tweet ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as:
+Based on the problem setting defined in Sec~\ref{sec:lss}, we have $D$ as our tweet corpus. We tune the hyper-parameters on validation data:
+\begin{itemize}
+\item The \textit{Logistic Regression}'s hyper-parameter $C$ is tuned on $C \in \{E-12, E-11, ..., E+11, E+12\}$ values.
+\item The \textit{Na\"{i}ve Bayes}'s prior $\alpha$ are tuned on $\alpha \in \{E-20, E-15, E-8, E-3, E-1, 1\}$.
+\item The hyper-parameter $K$, the number of top features chosen based on Mutual Information, is tuned on $K \in \{E2, E3, E4, E5, 1166582\}$ for all methods.
+\end{itemize}
+The tuning is based on mean average precision (MAP) value computed on validation tweets. After tuning the hyper-parameters, the model learns the weight vector $W \in \Re^{M}$ on train data. Then, each tweet ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as:
 
 %SCORING TWEETS AT TEST TIME
 \begin{equation}
