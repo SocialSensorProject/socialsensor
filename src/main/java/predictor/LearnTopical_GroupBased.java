@@ -784,7 +784,7 @@ public class LearnTopical_GroupBased {
             System.out.println(accuracies.get(o) + " " + precisions.get(o) + " " + recalls.get(o) + " " + fscores.get(o));
         }
         bw.close();
-        System.out.println("============================================================= \n");
+        System.out.println("1============================================================= \n");
         for(int i = 0; i < numOfTopics; i++){
             System.out.print(classNames[i] + "\t");
             for(int j = 0 ; j < topTweetsNum;j++){
