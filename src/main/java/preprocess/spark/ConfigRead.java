@@ -1,7 +1,6 @@
 package preprocess.spark;
 
 import java.io.*;
-
 import java.util.Properties;
 
 /**
@@ -163,5 +162,13 @@ public class ConfigRead {
 
     public boolean getTestFlag() {
         return Boolean.valueOf(prop.getProperty("testFlag"));
+    }
+
+    public boolean findTermStats() {
+        return Boolean.valueOf(prop.getProperty("findTermStat"));
+    }
+
+    public boolean getText() {
+        return Boolean.valueOf(prop.getProperty("getText"));
     }
 }

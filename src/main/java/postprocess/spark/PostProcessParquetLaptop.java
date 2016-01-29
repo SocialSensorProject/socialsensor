@@ -1,6 +1,6 @@
 package postprocess.spark;
 
-import machinelearning.ScatterPlot;
+import visualization.ScatterPlot;
 import org.apache.spark.Accumulator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -14,14 +14,14 @@ import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import preprocess.spark.ConfigRead;
-import scala.Function1;
 import scala.Tuple2;
 import util.TweetUtil;
 import util.ValueComparator;
 
-import javax.swing.*;
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +40,7 @@ public class PostProcessParquetLaptop implements Serializable {
     private static String scriptPath;
     private static TweetUtil tweetUtil = new TweetUtil();
     private static Map<String, Long> hashtagMap = new HashMap<>();
-    final static int groupNum = 6;
+    final static int groupNum = 1;
     private static BufferedWriter bwTrec;
     private static boolean testFlag ;
 
@@ -67,16 +67,26 @@ public class PostProcessParquetLaptop implements Serializable {
         boolean readBaselineResults = false;
         boolean readLearningResults = false;
         boolean readNonzeroLearningWeights = false;
-        boolean readTables = false;
+        boolean readTables = true;
         boolean readNonzeroBaselineMixedWeights = false;
         boolean readNonzeroBaselineMixedWeights2 = false;
         boolean readNBResults = false;
-        boolean findTestTrainDataTids = true;
+        boolean findTestTrainDataTids = false;
+        boolean analyzeMI = false;
+        boolean writeTableTopFeatureTopics = false;
+
+        if(analyzeMI)
+            analyzeMI();
+
+        if(writeTableTopFeatureTopics)
+            writeTableTopFeatureTopics();
 
         if(readTables || findTestTrainDataTids) {
             SparkConf sparkConfig = new SparkConf().setAppName("PostProcessParquet").setMaster("local[2]");
             JavaSparkContext sparkContext = new JavaSparkContext(sparkConfig);
             SQLContext sqlContext = new SQLContext(sparkContext);
+            String path = "ClusterResults/tidTextList_parquet";
+            sqlContext.read().parquet(path).coalesce(1).write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save("ClusterResults/tidTextList_csv");
             if(readTables)
                 readResultsCSV2(sqlContext);
             else if(findTestTrainDataTids)
@@ -114,7 +124,7 @@ public class PostProcessParquetLaptop implements Serializable {
 
         if(convertParquet) {
             boolean readTestTrain = true;
-            String path = "/Volumes/SocSensor/Zahra/ClusterResults_Oct29/TestTrainData/";
+            String path = "ClusterResults/tidTextList_parquet";
             String topic = configRead.getGroupNames()[groupNum-1];
             SparkConf sparkConfig;
             if (local) {
@@ -222,25 +232,25 @@ public class PostProcessParquetLaptop implements Serializable {
     }
 
     private static void readNonzeroLearningWeights() throws IOException, InterruptedException {
-        String path = "Data/LearningMethods/Rocchio/Topics/";
+        String path = "TestSet/Data/LearningMethods/NB/Topics/";
 //        if(!testFlag)
 //            path = "Data/Learning/Topics/";
         String logisticMethod = "l2_lr/";
         logisticMethod = "";
-        FileReader fileReaderA = new FileReader(path+ configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"featureWeights.csv");
+        FileReader fileReaderA = new FileReader(path+ configRead.getGroupNames()[groupNum-1] +"/fold1000/"+logisticMethod+"featureWeights.csv");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
         String line;
-        FileWriter fw = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"nonZero_featureWeights.csv");
+        FileWriter fw = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold1000/"+logisticMethod+"nonZero_featureWeights.csv");
         BufferedWriter bw = new BufferedWriter(fw);
-        FileWriter fw1 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"featureWeights_from.csv");
+        FileWriter fw1 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold1000/"+logisticMethod+"featureWeights_from.csv");
         BufferedWriter bwFrom = new BufferedWriter(fw1);
-        FileWriter fw2 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"featureWeights_hashtag.csv");
+        FileWriter fw2 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold1000/"+logisticMethod+"featureWeights_hashtag.csv");
         BufferedWriter bwHashtag = new BufferedWriter(fw2);
-        FileWriter fw3 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"featureWeights_location.csv");
+        FileWriter fw3 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold1000/"+logisticMethod+"featureWeights_location.csv");
         BufferedWriter bwLocation = new BufferedWriter(fw3);
-        FileWriter fw4 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"featureWeights_mention.csv");
+        FileWriter fw4 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold1000/"+logisticMethod+"featureWeights_mention.csv");
         BufferedWriter bwMention = new BufferedWriter(fw4);
-        FileWriter fw5 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold0/"+logisticMethod+"featureWeights_term.csv");
+        FileWriter fw5 = new FileWriter(path + configRead.getGroupNames()[groupNum-1] +"/fold1000/"+logisticMethod+"featureWeights_term.csv");
         BufferedWriter bwTerm = new BufferedWriter(fw5);
         String stF, stW, feat, featType;
         while((line = bufferedReaderA.readLine()) != null){
@@ -329,11 +339,11 @@ public class PostProcessParquetLaptop implements Serializable {
             bwTrec.close();
     }
     private static void readLearningResults(boolean local) throws IOException, InterruptedException {
-        String clusterPath = "ClusterResults/Nov30/BaselinesRes/LearningMethods/NB/Topics/";
-        String clusterOutPath = "ClusterResults/Nov30/BaselinesRes/LearningMethods/NB/Out/Topics/";
+        String clusterPath = "ClusterResults/Dec16/BaselinesRes/LearningMethods/NB/Topics/";
+        String clusterOutPath = "ClusterResults/Dec16/BaselinesRes/LearningMethods/NB/Out/Topics/";
         if(testFlag) {
-            clusterPath = "TestSet/Data/BaselinesRes/LearningMethods/Rocchio/Topics/";
-            clusterOutPath = "TestSet/Data/BaselinesRes/LearningMethods/Rocchio/Topics/";
+            clusterPath = "TestSet/Data/BaselinesRes/LearningMethods/NB/Topics/";
+            clusterOutPath = "TestSet/Data/BaselinesRes/LearningMethods/NB/Topics/";
         }
         boolean readTrecResults = false;
         String topic = configRead.getGroupNames()[groupNum-1];
@@ -690,9 +700,9 @@ public class PostProcessParquetLaptop implements Serializable {
         JavaRDD<String> strRes;
         final List<String> trainHashtags = tweetUtil.getTestTrainGroupHashtagList(groupNum, testFlag, true);
         final List<String> testHashtags = tweetUtil.getTestTrainGroupHashtagList(groupNum, testFlag, false);
-        if(flagLearningRes) {
+        if (flagLearningRes) {
             DataFrame results;
-            if(resultsNoTrain != null)
+            if (resultsNoTrain != null)
                 results = resultsNoTrain;
             else
                 results = resultsTestTrain;
@@ -709,9 +719,9 @@ public class PostProcessParquetLaptop implements Serializable {
                     if (row.get(ind) != null) out += " - prob: " + row.get(ind).toString();
                     ind++;
                     int topical = 0;
-                    if(row.get(5) != null) {
+                    if (row.get(5) != null) {
                         List<String> hashtags = new ArrayList<String>(Arrays.asList(row.getString(5).split(" ")));
-                        if(resultsNoTrain != null) {
+                        if (resultsNoTrain != null) {
                             List<String> hashtags2 = new ArrayList<String>();
                             hashtags2.addAll(hashtags);
                             hashtags.retainAll(trainHashtags);
@@ -719,7 +729,7 @@ public class PostProcessParquetLaptop implements Serializable {
                             topical = (hashtags2.size() > 0) ? 1 : 0;
                             if (hashtags.size() > 0 || hashtags2.size() > 0)
                                 return new Tuple2<Long, String>(row.getLong(0), "-1");
-                        }else{
+                        } else {
                             hashtags.retainAll(testHashtags);
                             topical = (hashtags.size() > 0) ? 1 : 0;
                         }
@@ -766,7 +776,7 @@ public class PostProcessParquetLaptop implements Serializable {
         }
 
 
-        if(resultsTestTrain != null) {
+        if (resultsTestTrain != null) {
             StructField[] fieldsIDHashtag = {
                     DataTypes.createStructField("tid", DataTypes.LongType, true),
                     DataTypes.createStructField("hashtag", DataTypes.StringType, true)
@@ -832,7 +842,7 @@ public class PostProcessParquetLaptop implements Serializable {
             tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_qtop" + "_csv");
         }
 
-        if(resultsNoTrain != null) {
+        if (resultsNoTrain != null) {
             StructField[] fieldsIDHashtag = {
                     DataTypes.createStructField("tid", DataTypes.LongType, true),
                     DataTypes.createStructField("hashtag", DataTypes.StringType, true)
@@ -900,15 +910,15 @@ public class PostProcessParquetLaptop implements Serializable {
             tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qtop" + "_csv");
         }
     }
-
     public static void readBaselineResultFiles(DataFrame resultsTestTrain, DataFrame resultsNoTrain, final String filename, String outPath) throws IOException, InterruptedException {
         JavaRDD<String> strRes;
+        final boolean NB = true;
         if(resultsTestTrain != null) {
-            strRes = resultsTestTrain.select("tid", "topical", "prob").distinct().sort(resultsTestTrain.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
+            strRes = resultsTestTrain.select("tid", "topical", "prob").distinct().sort((NB) ? resultsTestTrain.col("prob").asc() : resultsTestTrain.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
                 @Override
                 public String call(Row row) throws Exception {
                     String s = "Q0";
-                    if(row.get(1) == null)
+                    if (row.get(1) == null)
                         return groupNum + " " + s + " " + row.getLong(0) + " " + "0";
                     return groupNum + " " + s + " " + row.getLong(0) + " " + row.getInt(1);
                 }
@@ -918,14 +928,14 @@ public class PostProcessParquetLaptop implements Serializable {
             tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_qrel" + "_csv");
 
 
-            strRes = resultsTestTrain.select("prob", "tid").distinct().sort(resultsTestTrain.col("prob").desc()).javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, String>() {
+            strRes = resultsTestTrain.select("prob", "tid").distinct().sort((NB) ? resultsTestTrain.col("prob").asc() : resultsTestTrain.col("prob").desc()).javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, String>() {
                 @Override
                 public String call(Tuple2<Row, Long> v1) throws Exception {
                     String s = "Q0";
                     if (v1._1().get(0).toString().contains("NaN") || v1._1().get(0).toString().contains("Inf"))
                         return groupNum + " " + s + " " + v1._1().getLong(1) + " " + v1._2() + " " + v1._1().get(0).toString() + " " + filename;
                     else
-                        return groupNum + " " + s + " " + v1._1().getLong(1) + " " + v1._2() + " " + new BigDecimal(v1._1().getDouble(0)).toPlainString() + " " + filename;
+                        return groupNum + " " + s + " " + v1._1().getLong(1) + " " + v1._2() + " " + new BigDecimal((NB)? -v1._1().getDouble(0) : v1._1().getDouble(0)).toPlainString() + " " + filename;
                 }
             });
             strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_qtop" + "_csv");
@@ -934,7 +944,7 @@ public class PostProcessParquetLaptop implements Serializable {
         }
 
         if(resultsNoTrain != null) {
-            strRes = resultsNoTrain.select("tid", "topical", "prob").distinct().sort(resultsNoTrain.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
+            strRes = resultsNoTrain.select("tid", "topical", "prob").distinct().sort((NB) ? resultsTestTrain.col("prob").asc() : resultsNoTrain.col("prob").desc()).javaRDD().map(new Function<Row, String>() {//.distinct()
                 @Override
                 public String call(Row row) throws Exception {
                     String s = "Q0";
@@ -946,14 +956,14 @@ public class PostProcessParquetLaptop implements Serializable {
             tweetUtil.runStringCommand("rm -rf " + outPath + "out_" + filename + "_withoutTestTrainOverlap_qrel" + "_csv");
 
 
-            strRes = resultsNoTrain.select("prob", "tid").distinct().sort(resultsNoTrain.col("prob").desc()).javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, String>() {
+            strRes = resultsNoTrain.select("prob", "tid").distinct().sort((NB) ? resultsTestTrain.col("prob").asc() : resultsNoTrain.col("prob").desc()).javaRDD().zipWithIndex().map(new Function<Tuple2<Row, Long>, String>() {
                 @Override
                 public String call(Tuple2<Row, Long> v1) throws Exception {
                     String s = "Q0";
                     if (v1._1().get(0).toString().contains("NaN") || v1._1().get(0).toString().contains("Inf"))
                         return groupNum + " " + s + " " + v1._1().getLong(1) + " " + v1._2() + " " + v1._1().get(0).toString() + " " + filename;
                     else
-                        return groupNum + " " + s + " " + v1._1().getLong(1) + " " + v1._2() + " " + new BigDecimal(v1._1().getDouble(0)).toPlainString() + " " + filename;
+                        return groupNum + " " + s + " " + v1._1().getLong(1) + " " + v1._2() + " " + new BigDecimal((NB)? -v1._1().getDouble(0) : v1._1().getDouble(0)).toPlainString() + " " + filename;
                 }
             });
             strRes.coalesce(1).saveAsTextFile(outPath + "out_" + filename + "_withoutTestTrainOverlap_qtop" + "_csv");
@@ -2027,9 +2037,51 @@ public class PostProcessParquetLaptop implements Serializable {
                 DataTypes.createStructField("hashtagGrouped", DataTypes.StringType, true),
                 DataTypes.createStructField("time", DataTypes.LongType, true)
         };
-        String path = "Data/Learning/Topics/";
-        for (int gNum = 6; gNum <= 6; gNum++) {
-            df = sqlContext.read().parquet("/Volumes/SocSensor/Zahra/ClusterResults_Oct29/TestTrainData/" + "tweet_hashtag_user_mention_term_time_location_"+gNum+"_allInnerJoins_parquet");
+        StructField[] f = {
+                DataTypes.createStructField("topical", DataTypes.IntegerType, true),
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("hashtag", DataTypes.StringType, true),
+                DataTypes.createStructField("term", DataTypes.StringType, true),
+                DataTypes.createStructField("mentionee", DataTypes.StringType, true),
+                DataTypes.createStructField("location", DataTypes.StringType, true),
+                DataTypes.createStructField("time", DataTypes.LongType, true),
+                DataTypes.createStructField("tid", DataTypes.LongType, true),
+        };
+        String path = "/Volumes/SocSensor/Zahra/ClusterResults_Oct29/TestTrainData/TestTrainDataCSV/";
+        for (int gNum = 2; gNum <= 10; gNum++) {
+            df = sqlContext.read().parquet("/Volumes/SocSensor/Zahra/ClusterResults_Oct29/TestTrainData/" + "tweet_hashtag_user_mention_term_time_location_" + gNum + "_allInnerJoins_parquet");
+            /*df = sqlContext.createDataFrame(sqlContext.read().format("com.databricks.spark.csv").load(path +"out_tweet_hashtag_user_mention_term_time_location_1_allInnerJoins_parquet_csvFormat.csv" ).javaRDD().flatMap(new FlatMapFunction<Row, Row>() {
+                @Override
+                public Iterable<Row> call(Row v1) throws Exception {
+                    String h = "", term = "", mention = "", username = "", location = "";
+                    username = v1.getString(1).split(":")[1];
+                    for(String s: v1.getString(2).split(":")){
+                        if(s.equals("hashtag")) continue;
+                        h += s.split(" ")[0] + ",";
+                    }
+                    h = h.substring(0, h.length()-1).toLowerCase();
+                    for(String s: v1.getString(3).split(":")){
+                        if(s.equals("term")) continue;
+                        term += s.split(" ")[0] + ",";
+                    }
+                    term = term.substring(0, term.length()-1).toLowerCase();
+                    for(String s: v1.getString(4).split(":")){
+                        if(s.equals("mention")) continue;
+                        mention += s.split(" ")[0] + ",";
+                    }
+                    mention = mention.substring(0, mention.length()-1).toLowerCase();
+                    location = v1.getString(5).split(":")[1];
+                    List<Row> list = new ArrayList<Row>();
+
+                        for(String _term : term.split(",")){
+                            for(String _mention : mention.split(","))
+                                list.add(RowFactory.create(Integer.valueOf(v1.getString(0)),username, h, _term, _mention,
+                                        location, Long.valueOf(v1.getString(6)), Long.valueOf(v1.getString(7))));
+                        }
+                    return list;
+                }
+            }), new StructType(f));*/
+            System.out.println(df.count());
             df.select("tid", "username", "hashtag", "time").distinct().write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_user_hashtag_grouped_parquet");
             df.select("tid", "mentionee", "hashtag", "time").distinct().write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_mention_hashtag_grouped_parquet");
             df.select("tid", "location", "hashtag", "time").distinct().write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_location_hashtag_grouped_parquet");
@@ -2040,12 +2092,12 @@ public class PostProcessParquetLaptop implements Serializable {
                     List<Row> list = new ArrayList<Row>();
                     if(row.get(1) == null)
                         return list;
-                    String[] splits = row.getString(1).split(" ");
+                    String[] splits = row.getString(1).split(",");
                     for (String s : splits)
                         list.add(RowFactory.create(row.getLong(0), s, row.getString(1), row.getLong(2)));
                     return list;
                 }
-            }), new StructType(fields)).write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_hashtag_hashtag_grouped");
+            }), new StructType(fields)).write().mode(SaveMode.Overwrite).parquet(path + configRead.getGroupNames()[gNum - 1] + "/fold0/Ids/tweet_hashtag_hashtag_grouped_parquet");
         }
 
 /*
@@ -2115,6 +2167,187 @@ public class PostProcessParquetLaptop implements Serializable {
             bufferedReader.close();
             System.out.println(" Number of Tweets for " + configRead.getGroupNames()[gNum - 1] + " is : " + tweetCounter);
         }*/
+    }
+
+    public static void writeTableTopFeatureTopics() throws IOException {
+        String path = "/Volumes/SocSensor/Zahra/FeatureAnalysisICWSM/FeatureAnalysis_TopMiddle/";
+        String featureAlg = "MI";
+        String line;
+        FileReader fileReader;
+        BufferedReader bufferedReader;
+        int classInd, topInd;
+        String[][] topsFeature = new String[configRead.getNumOfGroups()][10];
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path + "finalTopTable.csv"));
+        bufferedWriter.write("top10,");
+        for(String topic: configRead.getGroupNames()) {
+            bufferedWriter.write(topic  + ",");
+        }
+        bufferedWriter.write("\n");
+        for(String featureType : new String[]{"From", "Hashtag", "Location", "Mention", "Term"}) {
+            classInd = 0;
+            for(String topic: configRead.getGroupNames()){
+                topInd = 0;
+                System.out.println(path + topic + "/" + featureAlg + "/" + featureType + "/top10_" + featureType + "1.csv");
+                fileReader = new FileReader(path + topic + "/" + featureAlg + "/" + featureType + "/top10_" + featureType + "1.csv");
+                bufferedReader = new BufferedReader(fileReader);
+                while((line = bufferedReader.readLine()) != null){
+                    topsFeature[classInd][topInd] = line.split(",")[0];
+                    topInd++;
+                }
+                classInd++;
+            }
+            for(int i = 0; i < 10; i++){
+                bufferedWriter.write(featureType + ",");
+                for(int j = 0; j < configRead.getNumOfGroups()-1; j++) {
+                    bufferedWriter.write(topsFeature[j][i] + ",");
+                }
+                bufferedWriter.write(topsFeature[configRead.getNumOfGroups()-1][i] + "\n");
+            }
+            bufferedWriter.write("\n");
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < configRead.getNumOfGroups()-1; j++) {
+                    topsFeature[i][j] = "";
+                }
+            }
+            bufferedWriter.write("\n");
+        }
+        bufferedWriter.close();
+    }
+
+    public static void getTweetMonthStats(SQLContext sqlContext) throws ParseException {
+        StructField[] fields = {
+                DataTypes.createStructField("monthNumber", DataTypes.IntegerType, true)
+        };
+        String path = "";
+        DataFrame tweetTime = sqlContext.read().parquet(path + "tweet_time_parquet");
+        final long[] months = new long[24];
+        int ind = 0;
+
+        final SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
+        months[ind] = format.parse("Tue Jan 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Fri Feb 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Fri Mar 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Mon Apr 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Wed May 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Sat Jun 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Mon Jul 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Thu Aug 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Sun Sept 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Tue Oct 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Fri Nov 1 00:00:00 +0000 2013").getTime();
+        ind++;
+        months[ind] = format.parse("Sun Dec 1 00:00:00 +0000 2013").getTime();
+        ind++;
+
+        months[ind] = format.parse("Wed Jan 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Sat Feb 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Sat Mar 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Tue Apr 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Thu May 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Sun Jun 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Tue Jul 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Fri Aug 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Mon Sept 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Wed Oct 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Sat Nov 1 00:00:00 +0000 2014").getTime();
+        ind++;
+        months[ind] = format.parse("Mon Dec 1 00:00:00 +0000 2014").getTime();
+        ind++;
+
+        DataFrame monthCounts = sqlContext.createDataFrame(tweetTime.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row v1) throws Exception {
+                int index = 0;
+                while (v1.getLong(1) < months[index])
+                    index++;
+                return RowFactory.create(index - 1);
+            }
+        }), new StructType(fields));
+        monthCounts.write().format("com.databricks.spark.csv").save(path + "monthNumbers_csv");
+    }
+
+    public static void analyzeMI() throws IOException {
+        //String userFeatureCounts = "irandeal-From_favoriteCount_MI.csv";
+        String commonPath =  "/Users/zahraiman/University/FriendSensor/SPARK/SocialSensorProject_oct7/socialsensor/Data/MIAnalysis/";
+        //String[] countNames = {"allMI_CountfTtT.csv", "allMI_CountfTtF.csv", "allMI_CountfFtT.csv", "allMI_CountfFtF.csv"};
+
+        String countsPath = "/Volumes/SocSensor/Zahra/MIAnalysis/";
+        String line;
+        String[] splits;
+        HashSet<String> namesGreater = new HashSet<>();
+        FileReader fileReaderA = new FileReader(countsPath + "namesGreater2E9.csv");
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+
+        while ((line = bufferedReaderA.readLine()) != null) {
+            namesGreater.add(line);
+        }
+        bufferedReaderA.close();
+        BufferedReader bufferedReaderTT = new BufferedReader(new FileReader(countsPath + "allMI_CountfTtT.csv"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(commonPath + "ProbsGreater_allMI_CountfTtT.csv"));
+        while ((line = bufferedReaderTT.readLine()) != null) {
+            splits = line.split(",");
+            if(splits.length < 2)
+                continue;
+            if(namesGreater.contains(splits[0]))
+                bufferedWriter.write(splits[1] + "\n");
+        }
+        bufferedWriter.close();
+        bufferedReaderTT.close();
+        BufferedReader bufferedReaderTF = new BufferedReader(new FileReader(countsPath + "allMI_CountfTtF.csv"));
+        bufferedWriter = new BufferedWriter(new FileWriter(commonPath + "ProbsGreater_allMI_CountfTtF.csv"));
+        while ((line = bufferedReaderTF.readLine()) != null) {
+            splits = line.split(",");
+            if(splits.length < 2)
+                continue;
+            if(namesGreater.contains(splits[0]))
+                bufferedWriter.write(splits[1] + "\n");
+        }
+        bufferedWriter.close();
+        bufferedReaderTF.close();
+
+        BufferedReader bufferedReaderFT = new BufferedReader(new FileReader(countsPath + "allMI_CountfFtT.csv"));
+        bufferedWriter = new BufferedWriter(new FileWriter(commonPath + "ProbsGreater_allMI_CountfFtT.csv"));
+        while ((line = bufferedReaderFT.readLine()) != null) {
+            splits = line.split(",");
+            if(splits.length < 2)
+                continue;
+            if(namesGreater.contains(splits[0]))
+                bufferedWriter.write(splits[1] + "\n");
+        }
+        bufferedWriter.close();
+        bufferedReaderFT.close();
+
+        BufferedReader bufferedReaderFF = new BufferedReader(new FileReader(countsPath + "allMI_CountfFtF.csv"));
+        bufferedWriter = new BufferedWriter(new FileWriter(commonPath + "ProbsGreater_allMI_CountfFtF.csv"));
+        while ((line = bufferedReaderFF.readLine()) != null) {
+            splits = line.split(",");
+            if(splits.length < 2)
+                continue;
+            if(namesGreater.contains(splits[0]))
+                bufferedWriter.write(splits[1] + "\n");
+        }
+        bufferedWriter.close();
+        bufferedReaderFF.close();
     }
 }
 
