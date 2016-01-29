@@ -1,4 +1,4 @@
-package machinelearning.predictor.LearnTopicalTweets;
+package machinelearning.logisticRegression.LearnTopicalTweets;
 
 import org.json.simple.JSONObject;
 import util.TweetUtil;

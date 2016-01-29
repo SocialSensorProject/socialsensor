@@ -1,8 +1,8 @@
-package machinelearning.predictor;
+package machinelearning.logisticRegression;
 
-import machinelearning.predictor.de.bwaldvogel.liblinear.InvalidInputDataException;
-import machinelearning.predictor.de.bwaldvogel.liblinear.Predict;
-import machinelearning.predictor.de.bwaldvogel.liblinear.Train;
+import machinelearning.logisticRegression.de.bwaldvogel.liblinear.InvalidInputDataException;
+import machinelearning.logisticRegression.de.bwaldvogel.liblinear.Predict;
+import machinelearning.logisticRegression.de.bwaldvogel.liblinear.Train;
 import preprocess.spark.ConfigRead;
 import util.Statistics;
 import util.TweetUtil;

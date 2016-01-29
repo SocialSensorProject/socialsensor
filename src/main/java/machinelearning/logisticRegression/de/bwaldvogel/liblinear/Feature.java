@@ -1,4 +1,4 @@
-package machinelearning.predictor.de.bwaldvogel.liblinear;
+package machinelearning.logisticRegression.de.bwaldvogel.liblinear;
 
 /**
  * @since 1.9

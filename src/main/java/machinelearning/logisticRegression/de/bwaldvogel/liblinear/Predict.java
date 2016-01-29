@@ -1,11 +1,11 @@
-package machinelearning.predictor.de.bwaldvogel.liblinear;
+package machinelearning.logisticRegression.de.bwaldvogel.liblinear;
 
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static machinelearning.predictor.de.bwaldvogel.liblinear.Linear.*;
+import static machinelearning.logisticRegression.de.bwaldvogel.liblinear.Linear.*;
 
 
 public class Predict {

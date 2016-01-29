@@ -1,8 +1,8 @@
-package machinelearning.predictor.de.bwaldvogel.liblinear;
+package machinelearning.logisticRegression.de.bwaldvogel.liblinear;
 
 //import static main.java.predictor.bwaldvogel.liblinear.Linear.info;
 
-import static machinelearning.predictor.de.bwaldvogel.liblinear.Linear.info;
+import static machinelearning.logisticRegression.de.bwaldvogel.liblinear.Linear.info;
 
 /**
  * Trust Region Newton Method optimization

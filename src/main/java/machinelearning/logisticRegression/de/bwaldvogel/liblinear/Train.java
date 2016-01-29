@@ -1,4 +1,4 @@
-package machinelearning.predictor.de.bwaldvogel.liblinear;
+package machinelearning.logisticRegression.de.bwaldvogel.liblinear;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-import static machinelearning.predictor.de.bwaldvogel.liblinear.Linear.atof;
-import static machinelearning.predictor.de.bwaldvogel.liblinear.Linear.atoi;
+import static machinelearning.logisticRegression.de.bwaldvogel.liblinear.Linear.atof;
+import static machinelearning.logisticRegression.de.bwaldvogel.liblinear.Linear.atoi;
 
 
 public class Train {

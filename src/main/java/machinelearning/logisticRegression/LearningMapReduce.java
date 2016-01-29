@@ -1,4 +1,4 @@
-package machinelearning.predictor;
+package machinelearning.logisticRegression;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;

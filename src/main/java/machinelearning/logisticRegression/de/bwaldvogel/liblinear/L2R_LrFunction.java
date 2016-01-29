@@ -1,4 +1,4 @@
-package machinelearning.predictor.de.bwaldvogel.liblinear;
+package machinelearning.logisticRegression.de.bwaldvogel.liblinear;
 
 class L2R_LrFunction implements Function {
 

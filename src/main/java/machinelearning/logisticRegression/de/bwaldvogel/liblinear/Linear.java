@@ -1,4 +1,4 @@
-package machinelearning.predictor.de.bwaldvogel.liblinear;
+package machinelearning.logisticRegression.de.bwaldvogel.liblinear;
 
 import java.io.*;
 import java.nio.charset.Charset;
