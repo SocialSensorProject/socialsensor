@@ -1,6 +1,6 @@
 package machinelearning.weightedLearning;
 
-import machinelearning.naiveBayes1.ComputeNBLogOdds;
+import machinelearning.naiveBayes.ComputeNBLogOdds;
 import postprocess.spark.PostProcessParquetLaptop;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.InvalidInputDataException;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.Predict;

@@ -1,4 +1,4 @@
-package machinelearning.mutualInformation1;
+package machinelearning.mutualInformation;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;

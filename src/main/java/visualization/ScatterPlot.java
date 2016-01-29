@@ -1,4 +1,4 @@
-package visualization1;
+package visualization;
 
 /**
  * Created by zahraiman on 9/9/15.

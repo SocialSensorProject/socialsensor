@@ -1,4 +1,4 @@
-package machinelearning.featureStatistics1;
+package machinelearning.featureStatistics;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -18,58 +18,76 @@ import java.util.*;
 /**
  * Created by zahraiman on 8/10/15.
  */
-public class FeatureStatistics {
+public class FeatureStatistics2 {
     private static String hdfsPath;
     private static int numPart;
-    private static DataFrame tweet_user;
     private static double tweetCount;
     private static SQLContext sqlContext;
     private static DataFrame tweet_user_hashtag_grouped;
     private static DataFrame fromUserProb;
+    private static DataFrame containTermProb;
     private static DataFrame toUserProb;
     private static DataFrame fromHashtagProb;
     private static boolean testSet = false;
     private static int topUserNum;
     private static boolean localRun;
     private static ConfigRead configRead;
-    private static DataFrame tweet_hashtag;
     private static JavaSparkContext sparkContext;
-    private static DataFrame tweet_hashtag_hashtag_grouped;
     private static long [] containNotContainCounts;
+    private static String dataPath;
+    private static String outputPath; //"Local_Results/out/";
+    private static final boolean calcFromUser = true;
+    private static final boolean calcToUser = false;
+    private static final boolean calcContainHashtag = false;
+    private static final boolean calcContainTerm = false;
 
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
     }
 
-    private static String dataPath;
-    private static String outputPath; //"Local_Results/out/";
-
     public static void main(String[] args) throws IOException {
         loadConfig();
+        int groupNum = 2;
         numPart = configRead.getNumPart();
         hdfsPath = configRead.getHdfsPath();
         dataPath = hdfsPath + configRead.getDataPath();
         outputPath = hdfsPath + configRead.getOutputPath();
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
-        int groupNum = 3;
+
         initializeSqlContext();
         containNotContainCounts = getContainNotContainCounts(groupNum);
-        calcFromUserProb(tweetCount);
-        calcToUserProb(tweetCount);
-        calcTweetCondFromUserConditionalEntropy(groupNum);
 
-        calcFromHashtagProb(tweetCount);
-        calcTweetCondFromHashtagConditionalEntropy(groupNum);
+        if(calcToUser) {
+            calcToUserProb(tweetCount);
+            calcTweetCondToUserConditionalEntropy(groupNum);
+        }
+
+        if(calcContainHashtag) {
+            calcContainHashtagProb(tweetCount);
+            calcTweetCondContainHashtagConditionalEntropy(groupNum);
+        }
+
+        if(calcFromUser) {
+            calcFromUserProb(tweetCount);
+            calcTweetCondFromUserConditionalEntropy(groupNum);
+        }
+
+        if(calcContainTerm) {
+            calcContainTermProb(tweetCount);
+            calcTweetCondContainTermConditionalEntropy(groupNum);
+        }
     }
 
     public static void initializeSqlContext(){
         SparkConf sparkConfig;
         if(localRun) {
             dataPath = configRead.getTestDataPath();
+            //dataPath = "TestSet/data1Month/";
             outputPath = configRead.getTestOutPath();
             sparkConfig = new SparkConf().setAppName("FeatureStatistics").setMaster("local[2]").set("spark.executor.memory", "6g").set("spark.driver.maxResultSize", "6g");
+            tweetCount = 100;
         }else {
             tweetCount = 829026458; //tweet_user.count();
             sparkConfig = new SparkConf().setAppName("FeatureStatistics");
@@ -77,16 +95,12 @@ public class FeatureStatistics {
         sparkContext = new JavaSparkContext(sparkConfig);
         sqlContext = new SQLContext(sparkContext);
         sqlContext.sql("SET spark.sql.shuffle.partitions=" + numPart);
-        tweet_hashtag = sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart);
-        tweet_user = sqlContext.read().parquet(dataPath + "tweet_user_parquet").coalesce(numPart);
-        tweet_user.cache();
-        tweet_user_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);//.registerTempTable("tweet_user_hashtag_grouped");
+        System.out.println("LOOK: " + dataPath + "tweet_user_hashtag_grouped_parquet");
+        tweet_user_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").coalesce(numPart);
         tweet_user_hashtag_grouped.cache();
-        tweet_hashtag_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet").coalesce(numPart);
-        tweet_hashtag_hashtag_grouped.cache();
+
+        System.out.println("LOOOOOOOOK-FromUSER: " + tweet_user_hashtag_grouped.count());
         System.out.println(" HAS READ THE TWEET_HASHTAG ");
-        if(localRun)
-            tweetCount = tweet_user.count();//TODO change hardcode numbers
     }
 
     public static DataFrame calcFromToProb(final double tweetNum, DataFrame df, String colName, String probName){
@@ -104,7 +118,7 @@ public class FeatureStatistics {
         }).map(new Function<Tuple2<String, Double>, Row>() {
             @Override
             public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2() / tweetNum);
+                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
             }
         });
         StructField[] fields = {
@@ -115,16 +129,22 @@ public class FeatureStatistics {
     }
 
 
-    public static void calcFromHashtagProb(final double tweetNum){
-        fromHashtagProb = calcFromToProb(tweetCount, tweet_hashtag, "hashtag1", "fromProb");
+    public static void calcContainHashtagProb(final double tweetNum){
+        fromHashtagProb = calcFromToProb(tweetCount, sqlContext.read().parquet(dataPath + "tweet_hashtag_time_parquet").drop("time").coalesce(numPart), "hashtag1", "fromProb");
         fromHashtagProb.registerTempTable("fromHashtagProb");
         fromHashtagProb.cache();
     }
 
     public static void calcFromUserProb(final double tweetNum){
-        fromUserProb = calcFromToProb(tweetCount, tweet_user, "username1", "fromProb");
+        fromUserProb = calcFromToProb(tweetCount, sqlContext.read().parquet(dataPath + "tweet_user_parquet").coalesce(numPart), "username1", "fromProb");
         fromUserProb.registerTempTable("fromUserProb");
         fromUserProb.cache();
+    }
+
+    public static void calcContainTermProb(final double tweetNum){
+        containTermProb = calcFromToProb(tweetCount, sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart), "term1", "containTermProb");
+        containTermProb.registerTempTable("containTermProb");
+        containTermProb.cache();
     }
 
     public static void calcToUserProb(final double tweetNum){
@@ -134,262 +154,238 @@ public class FeatureStatistics {
 
     }
 
+    /*
+      * groupNum: Hashtag Topic Group Number
+      * (tweet_Contain_topical_Hashtag | Mention_user)
+    */
+    public static void calcTweetCondToUserConditionalEntropy(final int groupNum) {
+        StructField[] fields1 = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("prob", DataTypes.DoubleType, true)
+        };
+        StructField[] fields = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("first", DataTypes.DoubleType, true),
+                DataTypes.createStructField("second", DataTypes.DoubleType, true),
+                DataTypes.createStructField("contain", DataTypes.DoubleType, true),
+                DataTypes.createStructField("prob", DataTypes.DoubleType, true)
+        };
+        //TODO should I cache some of the user probabilities in the memory
+        final double probTweetContain = (double) containNotContainCounts[0] / tweetCount;
+        final double probTweetNotContain = (double) containNotContainCounts[1] / tweetCount;
+        DataFrame tweet_mention_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_mention_hashtag_grouped_parquet").coalesce(numPart);
+        tweet_mention_hashtag_grouped.cache();
+        System.out.println("LOOOOOOOOK-ToUSER: " + tweet_mention_hashtag_grouped.count());
+        //==============================================================================================================
+        JavaRDD<Row> probContainTweet = calcProb(tweet_mention_hashtag_grouped, groupNum, true, tweetCount);
+        DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields1));
+        results2.registerTempTable("condEntropyTweetTrueToUserTrue");
+
+        //CE_P(Y = true|  ToUser = true)
+        DataFrame toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
+        /*JavaRDD<Row> tores = toresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
+            }
+        });*/
+        //MI_P(Y = true|  ToUser = true)
+        toresults2.show();
+        JavaRDD<Row> toresMI = toresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
+            }
+        }).coalesce(numPart);
+        toresMI.count();
+        //toresults2 = sqlContext.createDataFrame(tores.coalesce(numPart), new StructType(fields));
+        //output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueToUserTrue_" + groupNum, false);
+        /*results2=sqlContext.createDataFrame(toresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), (row.getDouble(1) / row.getDouble(2)));
+            }
+        }), new StructType(fields));*/
+        //output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueCondToUserTrue_" + groupNum, false);
+        //System.out.println("SIZE 1 TO =================" + toresMI.count() + "================");
+        //==============================================================================================================
+        JavaRDD<Row> probNotContainTweet = calcProb(tweet_mention_hashtag_grouped, groupNum, false, tweetCount);
+        results2 = (sqlContext.createDataFrame(probNotContainTweet.coalesce(numPart).distinct(), new StructType(fields1)));
+        results2.registerTempTable("condEntropyTweetFalseToUserTrue");
+        //CE_P(Y = False|  ToUser = true)
+        toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
+        /*tores = tores.union(toresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
+            }
+        }));*/
+        //MI_P(Y = False|  ToUser = true)
+        toresMI = toresMI.union(toresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetNotContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * row.getDouble(2))));
+            }
+        })).coalesce(numPart);
+        System.out.println("SIZE 2 to=================" + toresMI.count() + "================");
+        //==============================================================================================================
+        results2 = sqlContext.sql("select username, (" + containNotContainCounts[0] + "-(prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetTrueToUserTrue");
+        toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
+        toresMI = toresMI.union(toresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-row.getDouble(2)))));
+            }
+        })).coalesce(numPart);
+        System.out.println("SIZE 3 to =================" + toresMI.count() + "================");
+        //==============================================================================================================
+        results2 = sqlContext.sql("select username, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseToUserTrue");
+        toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
+        toresMI = toresMI.union(toresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), probTweetNotContain, row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1-row.getDouble(2)))));
+            }
+        })).coalesce(numPart);
+        System.out.println("SIZE 4 to=================" + toresMI.count() + "================");
+        //sqlContext.createDataFrame(tores.coalesce(numPart), new StructType(fields)).registerTempTable("condEntropyTweetToUser");
+        //sqlContext.createDataFrame(toresMI.coalesce(numPart), new StructType(fields)).registerTempTable("mutualEntropyTweetToUser");
+        DataFrame d = sqlContext.createDataFrame(toresMI, new StructType(fields)).coalesce(numPart);
+        d.write().parquet(outputPath+ "toresMI_parquet");
+        d.registerTempTable("mutualEntropyTweetToUser");
+
+        //toresults2 = sqlContext.sql("SELECT username, -sum(prob) AS condEntropy FROM condEntropyTweetToUser GROUP BY username");
+        //output(toresults2.sort(toresults2.col("condEntropy").desc()).coalesce(1), "CondEntropyTweetToUser_"+groupNum, false);
+
+
+        toresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetToUser GROUP BY username");
+        output(toresults2.sort(toresults2.col("mutualEntropy").desc()).coalesce(1), "mutualEntropyTweetToUser_"+groupNum, false);
+
+    }
+
+    /*
+      * groupNum: Hashtag Topic Group Number
+      * (tweet_Contain_topical_Hashtag | FromUser)
+      *
+    */
     public static void calcTweetCondFromUserConditionalEntropy(final int groupNum){
-        //System.out.println("==================User count: " + tweet_user.drop("tid").distinct().count()); // LOCAL: 11534925
-        //System.out.println("==================User count From hashtag: " + tweet_user_hashtag_grouped.drop("tid").drop("hashtag").distinct().count()); // LOCAL: 11534925
-        //System.out.println("==================Tweet count From hashtag: " + tweet_user_hashtag_grouped.drop("username").drop("hashtag").distinct().count()); // LOCAL: 11534925
-        //int UniqueUserCount = 95547198;
         StructField[] fields = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true),
         };
-        //TODO should I cache some of the user probabilities in the memory
-        //==============================================================================================================
-        JavaRDD<Row> containNotContainNum = calcProb(groupNum, true, 3, tweetCount);
-        StructField[] fields1 = {
-                DataTypes.createStructField("key", DataTypes.IntegerType, true),
-                DataTypes.createStructField("num", DataTypes.LongType, true),
+        StructField[] fieldsMI = {
+                DataTypes.createStructField("username", DataTypes.StringType, true),
+                DataTypes.createStructField("first", DataTypes.DoubleType, true),
+                DataTypes.createStructField("second", DataTypes.DoubleType, true),
+                DataTypes.createStructField("contain", DataTypes.DoubleType, true),
+                DataTypes.createStructField("prob", DataTypes.DoubleType, true)
         };
-        (sqlContext.createDataFrame(containNotContainNum, new StructType(fields1))).registerTempTable("containNumTable");
-        long containNum = sqlContext.sql("select num from containNumTable where key = 1").head().getLong(0);
-        long notContainNum = sqlContext.sql("select num from containNumTable where key = 2").head().getLong(0);
-        final double probTweetContain = (double)containNum / tweetCount;
-        final double probTweetNotContain = (double)notContainNum / tweetCount;
-
-        JavaRDD<Row> condEntropyTweetTrueFromUserTrue = calcProb(groupNum, true, 1, tweetCount);
-        DataFrame results2 = sqlContext.createDataFrame(condEntropyTweetTrueFromUserTrue.coalesce(numPart), new StructType(fields));
-        results2.registerTempTable("condEntropyTweetTrueFromUserTrue");
-
-        DataFrame fromresults2 = results2.join(fromUserProb, fromUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        JavaRDD<Row> res = fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
-            }
-        });
-        JavaRDD<Row> resMI = fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if(probTweetContain == 0)
-                    System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
-            }
-        });
-        System.out.println("SIZE 1=================" + resMI.count() + "================" );
-
-        DataFrame toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        JavaRDD<Row> tores = toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
-            }
-        });
-        JavaRDD<Row> toresMI = toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if(row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1)/(probTweetContain*row.getDouble(2))));
-            }
-        });
-        System.out.println("SIZE 1 TO ================="+ toresMI.count() + "================");
         //==============================================================================================================
-        JavaRDD<Row> condEntropyTweetFalseFromUserTrue = calcProb(groupNum, false, 2, tweetCount);
-        results2 = (sqlContext.createDataFrame(condEntropyTweetFalseFromUserTrue.coalesce(numPart).distinct(), new StructType(fields)));
+        final double probTweetContain = (double)containNotContainCounts[0] / tweetCount;
+        final double probTweetNotContain = (double)containNotContainCounts[1] / tweetCount;
+        final double tweetNum = tweetCount;
+        final double containNum =  (double)containNotContainCounts[0];
+        final double notContainNum =  (double)containNotContainCounts[0];
+
+        JavaRDD<Row> probContainTweet = calcProb(tweet_user_hashtag_grouped, groupNum, true, tweetCount);
+        DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields));
+        results2.registerTempTable("condEntropyTweetTrueFromUserTrue");
+        DataFrame fromresults2 = results2.join(fromUserProb, fromUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
+
+        //MI_P(Y = true|  FromUser = true)
+        DataFrame allMI = sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1), row.getDouble(2), containNum, (row.getDouble(1) / tweetNum) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2)))); // name, #(topical & from), #from,
+            }
+        }).coalesce(numPart), new StructType(fieldsMI));allMI.registerTempTable("MITable1");
+        output(allMI, "allMI_1", false);
+
+        //==============================================================================================================
+        final JavaRDD<Row> probNotContainTweet = calcProb(tweet_user_hashtag_grouped, groupNum, false, tweetCount);
+        results2 = (sqlContext.createDataFrame(probNotContainTweet.coalesce(numPart).distinct(), new StructType(fields)));
         results2.registerTempTable("condEntropyTweetFalseFromUserTrue");
         fromresults2 = results2.join(fromUserProb, fromUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        res = res.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
+        //MI_P(Y = False|  FromUser = true)
+        allMI = sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
                 else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
+                    return RowFactory.create(row.getString(0),row.getDouble(1), row.getDouble(2), notContainNum, (row.getDouble(1)/tweetNum) * Math.log(row.getDouble(1) / (probTweetNotContain * row.getDouble(2))));
             }
-        }));
-        resMI = resMI.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (probTweetNotContain == 0)
-                    System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * row.getDouble(2))));
-            }
-        }));
+        }).coalesce(numPart), new StructType(fieldsMI));allMI.registerTempTable("MITable2");
+        output(allMI, "allMI_2", false);
+        DataFrame resMI = sqlContext.sql("SELECT mt1.username, (mt1.prob+mt2.prob) AS prob FROM MITable1 mt1, MITable2 mt2 where mt1.username = mt2.username");
         System.out.println("SIZE 2=================" + resMI.count() + "================");
-        toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        tores = tores.union(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
-            }
-        }));
-        toresMI = toresMI.union(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * row.getDouble(2))));
-            }
-        }));
-        double fromSize = (double) resMI.count(); double toSize = (double)toresMI.count();
-        System.out.println("SIZE 2 to=================" + toresMI.count() + "================");
+        resMI.registerTempTable("MITable3");
+
         //==============================================================================================================
-
-
-        results2 = sqlContext.sql("select username, (" + containNum + "-(prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetTrueFromUserTrue");
+        //calculate condEntropyTweetTrueFromUserFalse
+        results2 = sqlContext.sql("select username, (" + containNotContainCounts[0] + " - prob ) AS prob from condEntropyTweetTrueFromUserTrue");
         fromresults2 = results2.join(fromUserProb, fromUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        res = res.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
+        allMI = sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
                 else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (1-row.getDouble(2)))); // 1- fromUserProb = NotFromUserProb
+                    return RowFactory.create(row.getString(0), row.getDouble(1), (1-(row.getDouble(2)/tweetNum)), containNum, (row.getDouble(1)/tweetNum) * Math.log((row.getDouble(1)/tweetNum) / (probTweetContain * (1 - row.getDouble(2)/tweetNum))));
             }
-        }));
-        resMI = resMI.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-row.getDouble(2)))));
-            }
-        }));
+        }).coalesce(numPart), new StructType(fieldsMI)); allMI.registerTempTable("MITable4");
+        output(allMI, "allMI_3", false);
+        resMI = sqlContext.sql("SELECT mt1.username, (mt1.prob+mt2.prob) AS prob FROM MITable3 mt1, MITable4 mt2 where mt1.username = mt2.username");
         System.out.println("SIZE 3=================" + resMI.count() + "================");
-        toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        tores = tores.union(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (1-row.getDouble(2))));
-            }
-        }));
-        toresMI = toresMI.union(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-row.getDouble(2)))));
-            }
-        }));
-        System.out.println("SIZE 3 to =================" + toresMI.count() + "================");
+        resMI.registerTempTable("MITable5");
         //==============================================================================================================
-
-        results2 = sqlContext.sql("select username, (" + notContainNum + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseFromUserTrue");
+        //calculate condEntropyTweetFalseFromUserFalse
+        results2 = sqlContext.sql("select username, (" + containNotContainCounts[1] + " - prob) AS prob from condEntropyTweetFalseFromUserTrue");
         fromresults2 = results2.join(fromUserProb, fromUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        res = res.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
+        allMI = sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
+                    return RowFactory.create(row.getString(0), 0.0, 0.0, 0.0, 0.0);
                 else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (1-row.getDouble(2))));
+                    return RowFactory.create(row.getString(0), row.getDouble(1), (1-row.getDouble(2)), notContainNum, (row.getDouble(1)/tweetNum) * Math.log((row.getDouble(1)/tweetNum) / (probTweetNotContain * (1 - row.getDouble(2)/tweetNum))));
             }
-        }));
-        resMI = resMI.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (probTweetNotContain == 0)
-                    System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1-row.getDouble(2)))));
-            }
-        }));
+        }).coalesce(numPart), new StructType(fieldsMI));allMI.registerTempTable("MITable6");
+        output(allMI, "allMI_4", false);
+        resMI = sqlContext.sql("SELECT mt1.username, (mt1.prob+mt2.prob) AS mutualEntropy FROM MITable5 mt1, MITable6 mt2 where mt1.username = mt2.username");
+        resMI.cache();
         System.out.println("SIZE 4=================" + resMI.count() + "================");
-        sqlContext.createDataFrame(res.coalesce(numPart), new StructType(fields)).registerTempTable("condEntropyTweetFromUser");
-        sqlContext.createDataFrame(resMI.coalesce(numPart), new StructType(fields)).registerTempTable("mutualEntropyTweetFromUser");
-
-        toresults2 = results2.join(toUserProb, toUserProb.col("username1").equalTo(results2.col("username"))).drop("username1");
-        tores = tores.union(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (1-row.getDouble(2))));
-            }
-        }));
-        toresMI = toresMI.union(toresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1-row.getDouble(2)))));
-            }
-        }));
-        System.out.println("SIZE 4 to=================" + toresMI.count() + "================");
-        sqlContext.createDataFrame(tores.coalesce(numPart), new StructType(fields)).registerTempTable("condEntropyTweetToUser");
-        sqlContext.createDataFrame(toresMI.coalesce(numPart), new StructType(fields)).registerTempTable("mutualEntropyTweetToUser");
-
+        resMI.registerTempTable("mutualEntropyTweetFromUser");
+        //sqlContext.createDataFrame(resMI, new StructType(fields)).registerTempTable("mutualEntropyTweetFromUser");
         //======================== COMPUTE COND ENTROPY=================================================================
-        fromresults2 = sqlContext.sql("SELECT username, -sum(prob) AS condEntropy FROM condEntropyTweetFromUser GROUP BY username");
-        fromresults2 = fromresults2.sort(fromresults2.col("condEntropy"));//.limit((int) fromSize / 2 + topUserNum / 2);
-        fromresults2.cache();
-        //output(sqlContext.createDataFrame(takeMiddle(fromresults2, sparkContext), new StructType(fields)), "CondEntropyTweetFromUser_"+groupNum+"_middle", false);
-        //output(fromresults2.limit(topUserNum), "CondEntropyTweetFromUser_"+groupNum+"_top", false);
-        System.out.println("GROUP NUM: " + groupNum);
-        output(fromresults2.coalesce(1), "CondEntropyTweetFromUser", false);
-
-
-
-        toresults2 = sqlContext.sql("SELECT username, -sum(prob) AS condEntropy FROM condEntropyTweetToUser GROUP BY username");
-        toresults2 = toresults2.sort(toresults2.col("condEntropy"));//.limit((int) toSize / 2 + topUserNum / 2);
-        //output(sqlContext.createDataFrame(takeMiddle(toresults2, sparkContext), new StructType(fields)), "CondEntropyTweetToUser_"+groupNum+"_middle", false);
-        //output(toresults2.limit(topUserNum), "CondEntropyTweetToUser_"+groupNum+"_top", false);
-        output(toresults2.coalesce(1), "CondEntropyTweetToUser", false);
-
-        fromresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetFromUser GROUP BY username");
-        fromresults2 = fromresults2.sort(fromresults2.col("mutualEntropy"));
-        //output(sqlContext.createDataFrame(takeMiddle(fromresults2, sparkContext), new StructType(fields)), "mutualEntropyTweetFromUser_"+groupNum+"_middle", false);
-        //output(fromresults2.limit(topUserNum), "mutualEntropyTweetFromUser_"+groupNum+"_top", false);
-        output(fromresults2.coalesce(1), "mutualEntropyTweetFromUser", false);
-
-        toresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetToUser GROUP BY username");
-        toresults2 = toresults2.sort(toresults2.col("mutualEntropy"));
-        //output(sqlContext.createDataFrame(takeMiddle(toresults2, sparkContext), new StructType(fields)), "mutualEntropyTweetToUser_"+groupNum+"_middle", false);
-        //output(toresults2.limit(topUserNum), "mutualEntropyTweetToUser_" + groupNum + "_top", false);
-        output(toresults2.coalesce(1), "mutualEntropyTweetToUser", false);
-
-
-
-        //==============================================================================================================
-        /*sqlContext.sql("select sum(t1.prob, t2.prob, t3.prob, t4.prob) from condEntropyTweetTrueFromUserTrue t1  INNER JOIN " +
-                "condEntropyTweetFalseFromUserTrue t2 on t1.username = t2.username  INNER JOIN" +
-                "condEntropyTweetTrueFromUserFalse t3 on t2.username = t3.username  INNER JOIN" +
-                "condEntropyTweetFalseFromUserFalse t4 on t3.username = t4.username");*/
+        //fromresults2 = sqlContext.sql("SELECT username, sum(prob) AS mutualEntropy FROM mutualEntropyTweetFromUser GROUP BY username").coalesce(numPart);
+        output(resMI.sort(resMI.col("mutualEntropy").desc()).coalesce(1), "mutualEntropyTweetFromUser_"+groupNum, false);
     }
 
-    private static JavaRDD<Row> takeMiddle(DataFrame res, JavaSparkContext sparkContext) { // res is already sorted
-        double size = (double)res.count();
-        for(Row r: res.collectAsList().subList((int)Math.floor((size / 2) - (topUserNum / 2)),(int) Math.ceil(size / 2) + (topUserNum / 2)))
-            System.out.println(r.getString(0) + ", " + r.getDouble(1));
-        return null;
-        //return sparkContext.parallelize(res.collectAsList().subList((int)Math.floor((size / 2) - (topUserNum / 2)),(int) Math.ceil(size / 2) + (topUserNum / 2)));
-    }
 
     private static List<String> getGroupHashtagList(int groupNum) {
         List<String> hashtagList = new ArrayList<>();
@@ -410,20 +406,15 @@ public class FeatureStatistics {
         return hashtagList ;
     }
 
-    public static double calcConditionEntropy(){
-        return 0;
-    }
-
     private static void output(DataFrame data, String folderName, boolean flag) {
         if(flag)
             data.write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(outputPath + folderName + "_csv");
         data.write().mode(SaveMode.Overwrite).parquet(outputPath + folderName + "_parquet");
     }
 
-    private static JavaRDD<Row> calcProb(final int groupNum, final boolean containFlag, final int fromUserCond, final double tweetNum){
+    private static JavaRDD<Row> calcProb(DataFrame df, final int groupNum, final boolean containFlag, final double tweetNum){
         final List<String> hashtagList = getGroupHashtagList(groupNum);
-
-        return tweet_user_hashtag_grouped.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
+        return df.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
             @Override
             public Tuple2<String, Double> call(Row row) throws Exception {
                 List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(","))));
@@ -449,55 +440,15 @@ public class FeatureStatistics {
         }).map(new Function<Tuple2<String, Double>, Row>() {
             @Override
             public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                String username = stringDoubleTuple2._1();
-                //double fromUserProb = sqlContext.sql("select fromProb from fromUserProb fb where fb.username = '" + username+"'").head().getDouble(0);
                 if(tweetNum == 0)
                     System.err.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                return RowFactory.create(username, stringDoubleTuple2._2() / tweetNum);
-            }
-        });
-    }
-
-    private static JavaRDD<Row> calcHashtagProb(final int groupNum, final boolean containFlag, final int fromUserCond, final double tweetNum){
-        final List<String> hashtagList = getGroupHashtagList(groupNum);
-        //TODO FIX IT
-        return tweet_hashtag_hashtag_grouped.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
-            @Override
-            public Tuple2<String, Double> call(Row row) throws Exception {
-                List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(2).split(","))));
-                tH.retainAll(hashtagList);
-                int numHashtags = tH.size();
-                if (containFlag) {
-                    if (numHashtags > 0)
-                        return new Tuple2<String, Double>(row.getString(1), 1.0);
-                    else
-                        return new Tuple2<String, Double>(row.getString(1), 0.0);
-                } else {
-                    if (numHashtags == 0)
-                        return new Tuple2<String, Double>(row.getString(1), 1.0);
-                    else
-                        return new Tuple2<String, Double>(row.getString(1), 0.0);
-                }
-            }
-        }).reduceByKey(new Function2<Double, Double, Double>() {
-            @Override
-            public Double call(Double aDouble, Double aDouble2) throws Exception {
-                return aDouble + aDouble2;
-            }
-        }).map(new Function<Tuple2<String, Double>, Row>() {
-            @Override
-            public Row call(Tuple2<String, Double> stringDoubleTuple2) throws Exception {
-                String username = stringDoubleTuple2._1();
-                //double fromUserProb = sqlContext.sql("select fromProb from fromUserProb fb where fb.username = '" + username+"'").head().getDouble(0);
-                if(tweetNum == 0)
-                    System.err.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                return RowFactory.create(username, stringDoubleTuple2._2() / tweetNum);
+                return RowFactory.create(stringDoubleTuple2._1(), stringDoubleTuple2._2());
             }
         });
     }
 
     public static long[] getContainNotContainCounts(final int groupNum){
-        JavaRDD<Row> containNotContainNum =  tweet_user_hashtag_grouped.drop("username").javaRDD().mapToPair(new PairFunction<Row, Integer, Long>() {
+        JavaRDD<Row> containNotContainNum =  tweet_user_hashtag_grouped.drop("username").coalesce(numPart).javaRDD().mapToPair(new PairFunction<Row, Integer, Long>() {
             @Override
             public Tuple2<Integer, Long> call(Row row) throws Exception {
                 List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(","))));
@@ -526,23 +477,33 @@ public class FeatureStatistics {
         long [] counts = new long[2];
         counts[0] = sqlContext.sql("select num from containNumTable where key = 1").head().getLong(0);
         counts[1] = sqlContext.sql("select num from containNumTable where key = 2").head().getLong(0);
+        System.out.println("=============== CONTAIN: " + counts[0] + " ============ NOT CONTAIN: " + counts[1]);
         return counts;
     }
 
-    public static void calcTweetCondFromHashtagConditionalEntropy(final int groupNum){
+     /*
+    *
+    * (Tweet_contain_topical_hashtag | contain_hashtag)
+    *
+     */
+
+    public static void calcTweetCondContainHashtagConditionalEntropy(final int groupNum){
         StructField[] fields = {
                 DataTypes.createStructField("hashtag", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true),
         };
         //TODO should I cache some of the user probabilities in the memory
+        DataFrame tweet_hashtag_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet").coalesce(numPart);
+        tweet_hashtag_hashtag_grouped.cache();
+        System.out.println("LOOOOOOOOK-Hashtag: " + tweet_hashtag_hashtag_grouped.count());
         //==============================================================================================================
 
         final double probTweetContain = (double)containNotContainCounts[0] / tweetCount;
         final double probTweetNotContain = (double)containNotContainCounts[1] / tweetCount;
 
-        JavaRDD<Row> condEntropyTweetTrueFromHashtagTrue = calcHashtagProb(groupNum, true, 1, tweetCount);
-        DataFrame results2 = sqlContext.createDataFrame(condEntropyTweetTrueFromHashtagTrue.coalesce(numPart), new StructType(fields));
-        results2.registerTempTable("condEntropyTweetTrueFromHashtagTrue");
+        JavaRDD<Row> probContainTweet = calcProb(tweet_hashtag_hashtag_grouped, groupNum, true, tweetCount);
+        DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields));
+        results2.registerTempTable("condEntropyTweetTrueContainHashtagTrue");
 
         DataFrame fromresults2 = results2.join(fromHashtagProb, fromHashtagProb.col("hashtag1").equalTo(results2.col("hashtag"))).drop("hashtag1");
         JavaRDD<Row> res = fromresults2.javaRDD().map(new Function<Row, Row>() {
@@ -565,11 +526,23 @@ public class FeatureStatistics {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
             }
         });
-        System.out.println("SIZE 1=================" + resMI.count() + "================" );
+        //TODO FIX THIS
+        output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueContainHashtagTrue_"+groupNum, false);
+        results2=sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), (row.getDouble(1) / row.getDouble(2)));
+            }
+        }), new StructType(fields));
+        output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueCondContainHashtagTrue_" + groupNum, false);
+        System.out.println("SIZE 1 Hashtag=================" + resMI.count() + "================" );
         //==============================================================================================================
-        JavaRDD<Row> condEntropyTweetFalseFromHashtagTrue = calcHashtagProb(groupNum, false, 2, tweetCount);
-        results2 = (sqlContext.createDataFrame(condEntropyTweetFalseFromHashtagTrue.coalesce(numPart).distinct(), new StructType(fields)));
-        results2.registerTempTable("condEntropyTweetFalseFromHashtagTrue");
+        JavaRDD<Row> probNotContainTweet = calcProb(tweet_hashtag_hashtag_grouped, groupNum, false, tweetCount);
+        results2 = (sqlContext.createDataFrame(probNotContainTweet.coalesce(numPart).distinct(), new StructType(fields)));
+        results2.registerTempTable("condEntropyTweetFalseContainHashtagTrue");
         fromresults2 = results2.join(fromHashtagProb, fromHashtagProb.col("hashtag1").equalTo(results2.col("hashtag"))).drop("hashtag1");
         res = res.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
@@ -591,44 +564,26 @@ public class FeatureStatistics {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * row.getDouble(2))));
             }
         }));
-        System.out.println("SIZE 2=================" + resMI.count() + "================");
+        System.out.println("SIZE 2 Hashtagg=================" + resMI.count() + "================");
         //==============================================================================================================
 
 
-        results2 = sqlContext.sql("select hashtag, (" + containNotContainCounts[0] + "-(prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetTrueFromHashtagTrue");
+        results2 = sqlContext.sql("select hashtag, (" + containNotContainCounts[0] + "-(prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetTrueContainHashtagTrue");
         fromresults2 = results2.join(fromHashtagProb, fromHashtagProb.col("hashtag1").equalTo(results2.col("hashtag"))).drop("hashtag1");
-        res = res.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (1-row.getDouble(2))));
-            }
-        }));
         resMI = resMI.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
                 if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
                     return RowFactory.create(row.getString(0), 0.0);
                 else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1-row.getDouble(2)))));
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1 - row.getDouble(2)))));
             }
         }));
-        System.out.println("SIZE 3=================" + resMI.count() + "================");
+        System.out.println("SIZE 3 Hashtag=================" + resMI.count() + "================");
         //==============================================================================================================
 
-        results2 = sqlContext.sql("select hashtag, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseFromHashtagTrue");
+        results2 = sqlContext.sql("select hashtag, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseContainHashtagTrue");
         fromresults2 = results2.join(fromHashtagProb, fromHashtagProb.col("hashtag1").equalTo(results2.col("hashtag"))).drop("hashtag1");
-        res = res.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
-            @Override
-            public Row call(Row row) throws Exception {
-                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
-                    return RowFactory.create(row.getString(0), 0.0);
-                else
-                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (1 - row.getDouble(2))));
-            }
-        }));
         resMI = resMI.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
             @Override
             public Row call(Row row) throws Exception {
@@ -640,25 +595,145 @@ public class FeatureStatistics {
                     return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1-row.getDouble(2)))));
             }
         }));
-        System.out.println("SIZE 4=================" + resMI.count() + "================");
-        sqlContext.createDataFrame(res.coalesce(numPart), new StructType(fields)).registerTempTable("condEntropyTweetFromHashtag");
-        sqlContext.createDataFrame(resMI.coalesce(numPart), new StructType(fields)).registerTempTable("mutualEntropyTweetFromHashtag");
+        System.out.println("SIZE 4 Hashtag=================" + resMI.count() + "================");
+        sqlContext.createDataFrame(res.coalesce(numPart), new StructType(fields)).registerTempTable("condEntropyTweetContainHashtag");
+        sqlContext.createDataFrame(resMI.coalesce(numPart), new StructType(fields)).registerTempTable("mutualEntropyTweetContainHashtag");
 
         //======================== COMPUTE COND ENTROPY=================================================================
-        fromresults2 = sqlContext.sql("SELECT hashtag, -sum(prob) AS condEntropy FROM condEntropyTweetFromHashtag GROUP BY hashtag");
-        fromresults2 = fromresults2.sort(fromresults2.col("condEntropy"));//.limit((int) fromSize / 2 + topUserNum / 2);
-        fromresults2.cache();
-        //output(sqlContext.createDataFrame(takeMiddle(fromresults2, sparkContext), new StructType(fields)), "CondEntropyTweetFromUser_"+groupNum+"_middle", false);
-        //output(fromresults2.limit(topUserNum), "CondEntropyTweetFromUser_"+groupNum+"_top", false);
-        output(fromresults2.coalesce(1), "CondEntropyTweetFromHashtag", false);
+        fromresults2 = sqlContext.sql("SELECT hashtag, -sum(prob) AS condEntropy FROM condEntropyTweetContainHashtag GROUP BY hashtag");
+        output(fromresults2.sort(fromresults2.col("condEntropy").desc()).coalesce(1), "CondEntropyTweetContainHashtag_"+groupNum, false);
 
+        fromresults2 = sqlContext.sql("SELECT hashtag, sum(prob) AS mutualEntropy FROM mutualEntropyTweetContainHashtag GROUP BY hashtag");
+        output(fromresults2.sort(fromresults2.col("mutualEntropy").desc()).coalesce(1), "mutualEntropyTweetContainHashtag_"+groupNum, false);
 
+    }
 
-        fromresults2 = sqlContext.sql("SELECT hashtag, sum(prob) AS mutualEntropy FROM mutualEntropyTweetFromHashtag GROUP BY hashtag");
-        fromresults2 = fromresults2.sort(fromresults2.col("mutualEntropy"));
-        //output(sqlContext.createDataFrame(takeMiddle(fromresults2, sparkContext), new StructType(fields)), "mutualEntropyTweetFromUser_"+groupNum+"_middle", false);
-        //output(fromresults2.limit(topUserNum), "mutualEntropyTweetFromUser_"+groupNum+"_top", false);
-        output(fromresults2.coalesce(1), "mutualEntropyTweetFromHashtag", false);
+    /*
+    *
+    * (Tweet_contain_topical_hashtag | contain_term)
+    *
+     */
+
+    public static void calcTweetCondContainTermConditionalEntropy(final int groupNum){
+        StructField[] fields = {
+                DataTypes.createStructField("term", DataTypes.StringType, true),
+                DataTypes.createStructField("prob", DataTypes.DoubleType, true),
+        };
+        DataFrame tweet_term_hashtag_grouped = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").coalesce(numPart);
+        tweet_term_hashtag_grouped.cache();
+        //System.out.println("LOOOOOOOOK-Term: " + tweet_term_hashtag_grouped.count());
+        //==============================================================================================================
+        final double probTweetContain = (double)containNotContainCounts[0] / tweetCount;
+        final double probTweetNotContain = (double)containNotContainCounts[1] / tweetCount;
+
+        JavaRDD<Row> probContainTweet = calcProb(tweet_term_hashtag_grouped, groupNum, true, tweetCount);
+        DataFrame results2 = sqlContext.createDataFrame(probContainTweet.coalesce(numPart), new StructType(fields));
+        results2.registerTempTable("condEntropyTweetTrueContainTermTrue");
+        //CE_P(Y = true|  ContainTerm = true)
+        DataFrame fromresults2 = results2.join(containTermProb, containTermProb.col("term1").equalTo(results2.col("term"))).drop("term1");
+        JavaRDD<Row> res = fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
+            }
+        });
+        //MI_P(Y = true|  ContainTerm = true)
+        sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (probTweetContain == 0)
+                    System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * row.getDouble(2))));
+            }
+        }).coalesce(numPart), new StructType(fields)).registerTempTable("MITable1");
+        output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueContainTermTrue_" + groupNum, false);
+        results2=sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), (row.getDouble(1) / row.getDouble(2)));
+            }
+        }), new StructType(fields));
+        output(results2.sort(results2.col("prob").desc()).coalesce(1), "ProbTweetTrueCondContainTermTrue_" + groupNum, false);
+        System.out.println("SIZE 1 Term=================" + res.count() + "================" );
+        //==============================================================================================================
+        JavaRDD<Row> probNotContainTweet = calcProb(tweet_term_hashtag_grouped, groupNum, false, tweetCount);
+        results2 = (sqlContext.createDataFrame(probNotContainTweet.coalesce(numPart).distinct(), new StructType(fields)));
+        results2.registerTempTable("condEntropyTweetFalseContainTermTrue");
+        fromresults2 = results2.join(containTermProb, containTermProb.col("term1").equalTo(results2.col("term"))).drop("term1");
+        //CE_P(Y = False|  ContainTerm = true)
+        res = res.union(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / row.getDouble(2)));
+            }
+        }));
+        //MI_P(Y = False|  ContainTerm = true)
+        sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (probTweetNotContain == 0)
+                    System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * row.getDouble(2))));
+            }
+        }).coalesce(numPart), new StructType(fields)).registerTempTable("MITable2");
+        DataFrame resMI = sqlContext.sql("SELECT mt1.term, (mt1.prob+mt2.prob) AS prob FROM MITable1 mt1, MITable2 mt2 where mt1.term = mt2.term");
+        System.out.println("SIZE 2 Term=================" + resMI.count() + "================");
+        resMI.registerTempTable("MITable3");
+        DataFrame df = sqlContext.createDataFrame(res.coalesce(numPart), new StructType(fields));df.registerTempTable("condEntropyTweetContainTerm");
+        fromresults2 = sqlContext.sql("SELECT term, -sum(prob) AS condEntropy FROM condEntropyTweetContainTerm GROUP BY term").coalesce(numPart);
+        output(fromresults2.sort(fromresults2.col("condEntropy").desc()).coalesce(1), "CondEntropyTweetContainTerm_" + groupNum, false);
+        System.out.println("================WRITED CONDITONAL ENTROPY=================");
+        //==============================================================================================================
+        //calculate condEntropyTweetTrueContainTermFalse
+        results2 = sqlContext.sql("select term, (" + containNotContainCounts[0] + "-(prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetTrueContainTermTrue");
+        fromresults2 = results2.join(containTermProb, containTermProb.col("term1").equalTo(results2.col("term"))).drop("term1");
+        sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetContain * (1 - row.getDouble(2)))));
+            }
+        }).coalesce(numPart), new StructType(fields)).registerTempTable("MITable4");
+        resMI = sqlContext.sql("SELECT mt1.term, (mt1.prob+mt2.prob) AS prob FROM MITable3 mt1, MITable4 mt2 where mt1.term = mt2.term");
+        System.out.println("SIZE 3 Term=================" + resMI.count() + "================");
+        resMI.registerTempTable("MITable5");
+        //==============================================================================================================
+        //calculate condEntropyTweetFalseContainTermFalse
+        results2 = sqlContext.sql("select term, (" + containNotContainCounts[1] + " - (prob*" + BigInteger.valueOf((long) tweetCount) + "))/" + BigInteger.valueOf((long) tweetCount) + " AS prob from condEntropyTweetFalseContainTermTrue");
+        fromresults2 = results2.join(containTermProb, containTermProb.col("term1").equalTo(results2.col("term"))).drop("term1");
+        sqlContext.createDataFrame(fromresults2.javaRDD().map(new Function<Row, Row>() {
+            @Override
+            public Row call(Row row) throws Exception {
+                if (probTweetNotContain == 0)
+                    System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                if (row.getDouble(1) == 0 || row.getDouble(2) == 0)
+                    return RowFactory.create(row.getString(0), 0.0);
+                else
+                    return RowFactory.create(row.getString(0), row.getDouble(1) * Math.log(row.getDouble(1) / (probTweetNotContain * (1 - row.getDouble(2)))));
+            }
+        }).coalesce(numPart), new StructType(fields)).registerTempTable("MITable6");
+        resMI = sqlContext.sql("SELECT mt1.term, (mt1.prob+mt2.prob) AS mutualEntropy FROM MITable5 mt1, MITable6 mt2 where mt1.term = mt2.term");
+        resMI.cache();
+        System.out.println("SIZE 4 Term=================" + resMI.count() + "================");
+        resMI.registerTempTable("mutualEntropyTweetContainTerm");
+        output(resMI.sort(resMI.col("mutualEntropy").desc()).coalesce(1), "mutualEntropyTweetContainTerm_"+groupNum, false);
 
     }
 

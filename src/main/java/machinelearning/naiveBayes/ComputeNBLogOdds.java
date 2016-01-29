@@ -1,4 +1,4 @@
-package machinelearning.naiveBayes1;
+package machinelearning.naiveBayes;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
