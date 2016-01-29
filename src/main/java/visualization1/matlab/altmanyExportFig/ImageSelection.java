@@ -1,4 +1,4 @@
-package Visualization.matlab.altmanyExportFig;
+package visualization1.matlab.altmanyExportFig;
 /*
  * Based on code snippet from
  * http://java.sun.com/developer/technicalArticles/releases/data/

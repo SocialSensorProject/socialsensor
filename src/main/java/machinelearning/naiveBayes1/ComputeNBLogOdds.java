@@ -1,4 +1,4 @@
-package machinelearning.NaiveBayes;
+package machinelearning.naiveBayes1;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -12,11 +12,9 @@ import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import preprocess.spark.ConfigRead;
 import scala.Tuple2;
-import scala.runtime.AbstractFunction1;
 import util.TweetUtil;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package machinelearning.FeatureStatistics;
+package machinelearning.featureStatistics1;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
