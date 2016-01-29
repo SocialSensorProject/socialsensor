@@ -1,6 +1,6 @@
 package postprocess.spark;
 
-import visualization.ScatterPlot;
+import Visualization.ScatterPlot;
 import org.apache.spark.Accumulator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;

@@ -38,8 +38,6 @@ public class Preprocess implements Serializable {
     private static ConfigRead configRead;
     private static int groupNum = 1;
     private static final double userCountThreshold = 10;
-    private static long featureNum = 1000000;
-    private static long sampleNum = 2000000;
     private static final double featureNumWin = 1000;
     private static final boolean allInnerJoin = false;
     private static final TweetUtil tweetUtil = new TweetUtil();
@@ -47,6 +45,8 @@ public class Preprocess implements Serializable {
     private static int numOfGroups;
     private static String[] groupNames;
     private static int returnNum = 10000;
+    private static long featureNum = 1000000;
+    private static long sampleNum = 2000000;
     private static boolean thousand = true;
 
     private static final int topFeatureNum = 200000;
@@ -175,30 +175,11 @@ public class Preprocess implements Serializable {
         }
 
         if(configRead.getTestTrainData()) {
-            LearningBaseline learningBaseline = new LearningBaseline(outputPath, dataPath, groupNum, timestamps, numPart, groupNames);
+            LearningMR learningMR = new LearningMR(outputPath, dataPath, groupNum, timestamps, numPart, groupNames);
             LearningFeatures learningFeatures = new LearningFeatures(outputPath, dataPath, groupNum, timestamps, numPart, groupNames);
-
-            /*df2 = sqlContext.read().parquet(dataPath + "tweet_user_hashtag_grouped_parquet").drop("hashtag").distinct().coalesce(numPart);
-            df1 = sqlContext.read().parquet(dataPath + "tweet_fromFeature_grouped_parquet").distinct().coalesce(numPart);
-            df2.show();
-            df1 = df1.join(df2, df1.col("tid").equalTo(df2.col("tid")), "left").drop(df2.col("tid")).drop(df1.col("tid")).distinct().coalesce(numPart);
-            df1.show();
-            System.out.println("==============FROM COUNT====" + df1.count() + "==================");
-            df1.coalesce(1).write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(outputPath + "from_index");*/
 
             //getGroupedMentionHashtagTerm(sqlContext, sparkContext);
             //getGroupedMentionHashtagTermGrouped(sqlContext, sparkContext);
-
-
-            /*DataFrame df1 = sqlContext.read().parquet(dataPath + "tweet_hashtagFeature_grouped_parquet");
-            DataFrame df2 = sqlContext.read().parquet(dataPath + "tweet_hashtag_user_mention_term_time_location_1_allInnerJoins_parquet").drop("hashtag");
-            df2 = df2.join(df1, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df1.col("tid")).coalesce(numPart);
-            df2.write().parquet(outputPath + "tweet_hashtag_user_mention_term_time_location_1_allInnerJoins_allHashtags_parquet");
-            df2 = sqlContext.read().parquet(dataPath + "tweet_hashtag_user_mention_term_time_location_7_allInnerJoins_parquet").drop("hashtag");
-            df2 = df2.join(df1, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df1.col("tid")).coalesce(numPart);
-            df2.write().parquet(outputPath + "tweet_hashtag_user_mention_term_time_location_7_allInnerJoins_allHashtags_parquet");
-*/
-
             //getTestTrainDataMixedAllData(sqlContext);
 
             for (int gNum = 1; gNum <= 1; gNum++) {
@@ -209,22 +190,17 @@ public class Preprocess implements Serializable {
                 //learningFeatures.getGroupedFeaturesBaselineBased(sqlContext, sparkContext);
                 System.out.println("==================== Group Num: " + groupNum + "===================");
                 System.out.println("==================== ENTERING TWEET TOPICAL===================");
-
-//                    learningBaseline.getTweetTopical(sqlContext, true, false);
-//                    learningBaseline.getTweetTopical(sqlContext, true, true);
-
-                //getTestTrainData(sqlContext);
-                learningBaseline.getLearningBaseline(sqlContext);
-                //learningBaseline.getRocchioLearning(sqlContext);
+                learningMR.getTweetTopical(sqlContext, true, false);
+                learningMR.getTweetTopical(sqlContext, true, true);
+               //getTestTrainData(sqlContext);
+                learningMR.getLearningBaseline(sqlContext);
+                //learningMR.getRocchioLearning(sqlContext);
 //                writeAllTweetFeatures(sqlContext);
-                //learningBaseline.getBaseline(sqlContext);
-
+                //learningMR.getBaseline(sqlContext);
                 System.out.println("==================== ENTERING TEST TRAIN DATA WITH TOPICAL===================");
-
-                //learningBaseline.getTestTrainDataSet(sqlContext);
+                //learningMR.getTestTrainDataSet(sqlContext);
                 //writeBaselineAllTweetFeatures(sqlContext);
             }
-
             //writeAsCSV(sqlContext);
         }
 
@@ -542,183 +518,7 @@ public class Preprocess implements Serializable {
         tweetUtil.output(sqlContext.createDataFrame(tweet_mention, new StructType(fields)), "tweet_user_mention", false, outputPath);
     }
 
-    private static void getTestTrainData(SQLContext sqlContext) {
-        //Label Hashtag From Mention Term
-        DataFrame positiveSamples, negativeSamples, df1, df2;
-        String folderName = "baselineFeatures1000/";
-        if (!thousand)
-            folderName = "baselineFeatures5000/";
-        folderName = "";
-        DataFrame tweetTopical = sqlContext.read().parquet(outputPath + "tweet_topical_" + groupNum + "_parquet").coalesce(numPart);
-        if (groupNum > 1){
 
-            //df2 = sqlContext.read().parquet(outputPath + "tweet_hashtag_user_mention_term_time_parquet").drop("user").drop("hashtag").drop("term").drop("mentionee").drop("time").drop("username").coalesce(numPart);//.registerTempTable(
-            //System.out.println("=========== tweet_hashtag_user_mention_term_time COUNT =================== " + df2.count());
-            //df = df.join(df2, df2.col("tid").equalTo(df.col("tid"))).drop(df2.col("tid")).coalesce(numPart);
-            //negativeSamples = df.filter(df.col("topical").$eq$eq$eq(0)).coalesce(numPart);
-            //positiveSamples = df.filter(df.col("topical").$greater(0)).coalesce(numPart);
-
-            positiveSamples = tweetTopical.filter(tweetTopical.col("topical").$eq$eq$eq(1)).coalesce(numPart);
-            negativeSamples = tweetTopical.filter(tweetTopical.col("topical").$eq$eq$eq(0)).coalesce(numPart);
-
-            long l = positiveSamples.count();
-            long l2 = negativeSamples.count();
-            System.out.println("=================== POSITIVES/NEGATIVES LEFT ================ " + l + "/" + l2);
-            double countVal = sampleNum - l;
-            double sampleSize = (double) (countVal / l2);
-            System.out.println("LOOOK: " + l + " " + l2);
-
-
-
-
-            DataFrame featureTweetIds = sqlContext.read().parquet(outputPath + folderName + "tweet_thsh_fromFeature_grouped_parquet").drop("user")
-                    .coalesce(numPart).unionAll(sqlContext.read().parquet(outputPath + folderName + "tweet_thsh_termFeature_grouped_parquet")
-                            .drop("term").coalesce(numPart)).unionAll(sqlContext.read().
-                            parquet(outputPath + folderName + "tweet_thsh_mentionFeature_grouped_parquet").drop("mentionee").coalesce(numPart))
-                    .unionAll(sqlContext.read().parquet(outputPath + folderName + "tweet_thsh_hashtagFeature_grouped_parquet").drop("hashtag")
-                            .coalesce(numPart)).unionAll(sqlContext.read().parquet(outputPath + folderName + "tweet_thsh_locationFeature_grouped_parquet")
-                            .drop("location").coalesce(numPart)).coalesce(numPart).distinct();
-            //featureTweetIds.write().parquet(outputPath + "featureTweetIds_parquet");
-            long featureTweetIdsCount = featureTweetIds.count();
-            System.out.println("================== featureTweetIds COUNT: =========== " + featureTweetIdsCount);
-            DataFrame negativeTweetIds = featureTweetIds.sample(false, sampleSize).coalesce(numPart);
-
-            long c = negativeTweetIds.count();
-            System.out.println("================== negativeTweetIds COUNT: =========== " + c);
-            while (c < sampleNum - l - featureNumWin) {
-                featureTweetIds = featureTweetIds.except(negativeTweetIds);
-                long tmpCount = featureTweetIdsCount - c;//featureTweetIds.count();
-                System.out.println("================== featureTweetIds COUNT 2: =========== " + tmpCount);
-                sampleSize = (double) (sampleNum - l - c) / tmpCount;
-                System.out.println("==================SAMPLE SIZE: ============" + sampleSize);
-                negativeTweetIds = negativeTweetIds.unionAll(featureTweetIds.sample(false, sampleSize).coalesce(numPart));
-                c = negativeTweetIds.count();
-                System.out.println("================== negativeTweetIds COUNT2: =========== " + c);
-            }
-
-            featureTweetIds = negativeTweetIds.unionAll(positiveSamples.select("tid")).coalesce(numPart).distinct();
-            //System.out.println("================== positiveTweetIds COUNT2: =========== " + positiveSamples.count());
-            System.out.printf("================POSITIVE AT BEGIN: " + featureTweetIds.join(tweetTopical, featureTweetIds.col("tid").equalTo(tweetTopical.col("tid"))).javaRDD().filter(new Function<Row, Boolean>() {
-                @Override
-                public Boolean call(Row v1) throws Exception {
-                    return v1.get(2).toString().equals("1");
-                }
-            }).count() + "=================");
-            featureTweetIds.write().mode(SaveMode.Overwrite).parquet(outputPath + "featureTweetIds_parquet");
-            //System.out.println("================== featureTweetIds COUNT: =========== " + featureTweetIds.count());
-
-            df2 = sqlContext.read().parquet(dataPath + folderName + "tweet_fromFeature_grouped_parquet").coalesce(numPart);
-            //df1 = sqlContext.read().parquet(dataPath + "user_location_parquet").coalesce(numPart);
-            //df2 = df2.join(df1, df2.col("user").equalTo(df1.col("username")), "left").drop(df1.col("username"));
-            //df2.printSchema(); df2.show();
-            df1 = featureTweetIds.join(df2, df2.col("tid").equalTo(featureTweetIds.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-
-            df2 = sqlContext.read().parquet(dataPath + folderName + "tweet_termFeature_grouped_parquet").coalesce(numPart);
-            df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-            //df1.write().parquet(outputPath + "tweet_tmp1_parquet");
-
-            //df1 = sqlContext.read().parquet(outputPath + "tweet_tmp1_parquet");
-            //System.out.println("================== TMP1 COUNT: =========== " + df1.count());
-            df2 = sqlContext.read().parquet(dataPath + folderName + "tweet_hashtagFeature_grouped_parquet").coalesce(numPart);
-            df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-            df1.write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_tmp2_parquet");
-        }
-
-        //System.out.println("================== TMP2 COUNT: =========== " + df1.count());
-        df1 = sqlContext.read().parquet(outputPath + "tweet_tmp2_parquet").coalesce(numPart);
-        df1.cache();
-        df2 = sqlContext.read().parquet(dataPath + folderName + "tweet_mentionFeature_grouped_parquet").coalesce(numPart);
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-        //System.out.println("================== COUNT: =========== " + df1.count());
-        //df1.cache();
-
-        df2 = sqlContext.read().parquet(dataPath + folderName + "tweet_locationFeature_grouped_parquet").coalesce(numPart);
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-
-        df2 = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);//.registerTempTable("tweetMention");
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-
-        df1 = df1.join(tweetTopical, tweetTopical.col("tid").equalTo(df1.col("tid"))).drop(df1.col("tid")).coalesce(numPart);
-        tweetUtil.output(df1.coalesce(numPart), folderName+"tweet_hashtag_user_mention_term_time_location_" + groupNum + "_allInnerJoins", false, outputPath);
-
-        System.out.printf("================POSITIVE AT END: " + df1.javaRDD().filter(new Function<Row, Boolean>() {
-            @Override
-            public Boolean call(Row v1) throws Exception {
-                return Integer.valueOf(v1.get(7).toString()) == 1;
-            }
-        }).count() + "=================");
-        /*df1 = sqlContext.read().parquet(outputPath + "tweet_hashtag_user_mention_term_time_location_" + groupNum + "_allInnerJoins_parquet").coalesce(numPart);
-        df2 = sqlContext.read().format("com.databricks.spark.csv").load(dataPath + "FeaturesList_csv").coalesce(numPart);
-        df1 = df1.join(df2, df1.col("user").equalTo(df2.col("C1")), "left").drop(df2.col("C1")).drop(df1.col("user")).coalesce(numPart);
-        df1 = df1.select(df1.col("tid"), df1.apply("C0").as("user"), df1.col("term"), df1.col("hashtag"), df1.col("mentionee"), df1.col("location"), df1.col("time"));
-        df1 = df1.join(df2, df1.col("location").equalTo(df2.col("C1")), "left").drop(df2.col("C1")).drop(df1.col("location")).coalesce(numPart);
-        df1 = df1.select(df1.col("tid"), df1.col("user"), df1.col("term"), df1.col("hashtag"), df1.col("mentionee"), df1.apply("C0").as("location"), df1.col("time"));
-
-        df2 = sqlContext.read().parquet(dataPath + "tweet_hashtag_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart);
-        df1 = df1.join(df2, df1.col("tid").equalTo(df2.col("tid")), "left").drop(df1.col("hashtag")).drop(df2.col("tid")).coalesce(numPart);
-
-        df2 = sqlContext.read().parquet(dataPath + "tweet_mention_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart);
-        df1 = df1.join(df2, df1.col("tid").equalTo(df2.col("tid")), "left").drop(df1.col("mentionee")).drop(df2.col("tid")).coalesce(numPart);
-
-        df2 = sqlContext.read().parquet(dataPath + "tweet_term_hashtag_grouped_parquet").drop("hashtag").coalesce(numPart);
-        df1 = df1.join(df2, df1.col("tid").equalTo(df2.col("tid")), "left").drop(df1.col("term")).drop(df2.col("tid")).coalesce(numPart);
-
-        tweetUtil.output(df1, "tweet_hashtag_user_mention_term_time_location_strings_"+groupNum+"_allInnerJoins", false);*/
-
-        //System.out.println("================== Only tweets with chosen features TWEET TOPICAL COUNT: " + df1.count() + "========================");
-        //System.out.println("================== Only tweets with chosen features TWEET TOPICAL POSITIVE COUNT: " + positiveSamples.count() + "========================");
-        //System.out.println("================== Only tweets with chosen features TWEET TOPICAL NEGATIVE COUNT: " + negativeSamples.count() + "========================");
-
-
-        //System.out.println("================== FINAL TWEET COUNT: =========== " + df1.count());
-
-    }
-
-    private static void getTestTrainDataMixedAllData(SQLContext sqlContext) throws ParseException {
-        DataFrame df1, df2;
-        df2 = sqlContext.read().parquet(dataPath + "tweet_time_parquet").coalesce(numPart);
-        //Get all tweets after max(SplitTime), so we can seperate them later based on each topics' splitTime
-        long maxTimeStamp = -1;
-        for(long a : timestamps){
-            if(a > maxTimeStamp)
-                maxTimeStamp = a;
-        }
-        if(configRead.getTestFlag()){
-            final SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy");
-            final long splitTime = format.parse("Thu Feb 20 15:08:01 +0001 2014").getTime();
-            maxTimeStamp = splitTime;
-            maxTimeStamp = 15000000000000000l;
-        }
-
-
-        df1 = df2.filter(df2.col("time").gt(maxTimeStamp));//tid, time for all tweets after max(splitTime)
-        String folderName = "";
-
-
-        df2 = sqlContext.read().parquet(outputPath + "tweet_hashtagFeature_grouped_parquet").drop("username").coalesce(numPart);
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-        df1.write().mode(SaveMode.Overwrite).parquet(outputPath + "tweet_hashtag_time_" + groupNum + "_allInnerJoins");
-
-        df2 = sqlContext.read().parquet(outputPath + folderName + "tweet_fromFeature_grouped_parquet").coalesce(numPart);
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-
-        df2 = sqlContext.read().parquet(outputPath + folderName + "tweet_locationFeature_grouped_parquet").coalesce(numPart);
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-
-        df2 = sqlContext.read().parquet(outputPath + folderName + "tweet_mentionFeature_grouped_parquet").coalesce(numPart);
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-        tweetUtil.output(df1.coalesce(numPart), folderName+"tweet_hashtag_user_mention_time_location_" + groupNum + "_allInnerJoins", false, outputPath);
-
-        df1 = sqlContext.read().parquet(outputPath+folderName + "tweet_hashtag_user_mention_time_location_" + groupNum + "_allInnerJoins_parquet");
-        df2 = sqlContext.read().parquet(outputPath + folderName + "tweet_termFeature_grouped_parquet").coalesce(numPart);
-        df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-
-        //df2 = sqlContext.read().parquet(outputPath + "tweet_topical_" + groupNum + "_parquet").coalesce(numPart);
-        //df1 = df1.join(df2, df2.col("tid").equalTo(df1.col("tid")), "left").drop(df2.col("tid")).coalesce(numPart);
-
-        tweetUtil.output(df1.coalesce(numPart), folderName+"tweet_hashtag_user_mention_term_time_location_" + groupNum + "_allInnerJoins_allTrainData_AfterMaxSplitTime_", false, outputPath);
-
-    }
 
     private static void writeAsCSV(SQLContext sqlContext){
         for(int gNum = 1; gNum <= 1; gNum++) {
@@ -2101,7 +1901,7 @@ public class Preprocess implements Serializable {
     }
 
 
-    
+
 
     public static void getGroupedMentionHashtagTermGrouped(SQLContext sqlContext, JavaSparkContext sc){
         //final List<String> hashtagList = getGroupHashtagList(groupNum);
