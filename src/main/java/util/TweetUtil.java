@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.SaveMode;
 import preprocess.spark.ConfigRead;
 
 import java.io.BufferedReader;
@@ -330,5 +332,11 @@ public class TweetUtil {
         int randomNum = rand.nextInt((max - min) + 1) + min;
 
         return randomNum;
+    }
+
+    public static void output(DataFrame data, String folderName, boolean flag, String outputPath) {
+        if(flag)
+            data.write().mode(SaveMode.Overwrite).format("com.databricks.spark.csv").save(outputPath + folderName + "_csv");
+        data.write().mode(SaveMode.Overwrite).parquet(outputPath + folderName + "_parquet");
     }
 }
