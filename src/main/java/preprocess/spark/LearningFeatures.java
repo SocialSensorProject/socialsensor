@@ -8,6 +8,7 @@ import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
+import util.ConfigRead;
 import util.TweetUtil;
 
 import java.io.IOException;

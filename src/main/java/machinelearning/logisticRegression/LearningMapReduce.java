@@ -10,7 +10,7 @@ import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.apache.spark.storage.StorageLevel;
-import preprocess.spark.ConfigRead;
+import util.ConfigRead;
 import scala.Tuple2;
 import util.TweetUtil;
 

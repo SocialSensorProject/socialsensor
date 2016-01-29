@@ -8,7 +8,7 @@ import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
-import preprocess.spark.ConfigRead;
+import util.ConfigRead;
 import scala.Tuple2;
 
 import java.io.IOException;

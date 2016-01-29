@@ -9,6 +9,7 @@ import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
+import util.ConfigRead;
 import util.TweetUtil;
 
 import java.io.BufferedReader;

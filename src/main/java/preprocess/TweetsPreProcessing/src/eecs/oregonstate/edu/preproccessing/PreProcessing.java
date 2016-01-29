@@ -15,7 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import preprocess.spark.ConfigRead;
+import util.ConfigRead;
 
 /**
  * This class pre-process the raw dataset of Scott.

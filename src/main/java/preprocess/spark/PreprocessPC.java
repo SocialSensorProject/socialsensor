@@ -2,10 +2,7 @@ package preprocess.spark;
 
 
 import com.twitter.Extractor;
-import org.apache.spark.Accumulator;
-import org.apache.spark.HashPartitioner;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.*;
@@ -15,18 +12,14 @@ import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.apache.spark.storage.StorageLevel;
-import scala.Function1;
 import scala.Tuple2;
-import preprocess.spark.ConfigRead;
-import scala.collection.mutable.Seq;
-import scala.runtime.BoxedUnit;
+import util.ConfigRead;
 import util.TweetUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;

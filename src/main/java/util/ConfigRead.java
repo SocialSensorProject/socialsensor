@@ -1,4 +1,4 @@
-package preprocess.spark;
+package util;
 
 import java.io.*;
 import java.util.Properties;
@@ -171,4 +171,13 @@ public class ConfigRead {
     public boolean getText() {
         return Boolean.valueOf(prop.getProperty("getText"));
     }
+
+    public String getPath() { return prop.getProperty("learningPath"); }
+
+    public String getLRPath() { return prop.getProperty("learningPath"); }
+
+    public String getNBPath() { return prop.getProperty("learningPath"); }
+
+    public String getTrecPath() { return prop.getProperty("learningPath"); }
+    public String getRankSVMPath() { return prop.getProperty("learningPath"); }
 }

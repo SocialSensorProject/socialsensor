@@ -2,7 +2,6 @@ package util;
 
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.SaveMode;
-import preprocess.spark.ConfigRead;
 
 import java.io.BufferedReader;
 import java.io.File;

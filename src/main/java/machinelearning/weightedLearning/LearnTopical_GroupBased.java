@@ -5,7 +5,7 @@ import postprocess.spark.PostProcessParquetLaptop;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.InvalidInputDataException;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.Predict;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.Train;
-import preprocess.spark.ConfigRead;
+import util.ConfigRead;
 import util.Statistics;
 import util.TweetResult;
 import util.TweetUtil;
@@ -28,11 +28,11 @@ public class LearnTopical_GroupBased {
     private static int sampleNum = 2000000;
     private static TweetUtil tweetUtil;
 
-    private static String path = "/data/ClusterData/input/Data/Learning/Topics/";
-    private static String trecPath = "/data/OSU_DocAnalysis_Fall2015_Assign1-master/trec_eval.8.1";
-    private static String NBPath = "/data/ClusterData/input/Data/LearningMethods/";
-    private static String LRPath = "/data/ClusterData/input/Data/Learning/LogisticRegression/";
-    private static String rankSVMPath = "/data/liblinear-ranksvm-1.95/train";
+    private static String path;// = "/data/ClusterData/input/Data/Learning/Topics/";
+    private static String trecPath;// = "/data/OSU_DocAnalysis_Fall2015_Assign1-master/trec_eval.8.1";
+    private static String NBPath;// = "/data/ClusterData/input/Data/LearningMethods/";
+    private static String LRPath;// = "/data/ClusterData/input/Data/Learning/LogisticRegression/";
+    private static String rankSVMPath;// = "/data/liblinear-ranksvm-1.95/train";
     private static String featurepath = "featureData/";
     private static String hashtagFileName = "hashtagIndex";
     private static String indexFileName = "featureIndex";
@@ -76,6 +76,11 @@ public class LearnTopical_GroupBased {
         loadConfig();
         int lineCounter;
         int totalFeatureNum =1166582;
+        path = configRead.getPath();
+        LRPath = configRead.getLRPath();
+        NBPath = configRead.getNBPath();
+        trecPath = configRead.getTrecPath();
+        rankSVMPath = configRead.getRankSVMPath();
         testFlag = configRead.getTestFlag();
         System.out.println("TEST FLAG: " + testFlag);
         if(configRead.getTrainPercentage() == 0.7){
@@ -97,10 +102,17 @@ public class LearnTopical_GroupBased {
         total = new int[classNames.length];
         positivesVal = new int[classNames.length];
         totalVal = new int[classNames.length];
-        String time1 = "2013-06-20 15:08:01";
-        String time2 = "Thu Jun 20 15:08:01 +0001 2013";
-        long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
-        long t2 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse(time2).getTime();
+//        String time1 = "2013-06-20 15:08:01";
+//        String time2 = "Thu Jun 20 15:08:01 +0001 2013";
+//        long t = new SimpleDateFormat("yyy-MM-dd HH':'mm':'ss").parse(time1).getTime();
+//        long t2 = new SimpleDateFormat("EEE MMM dd HH':'mm':'ss zz yyyy").parse(time2).getTime();
+        crossValidateWeightedLearning(totalFeatureNum);
+
+
+    }
+
+    private static void crossValidateWeightedLearning(int totalFeatureNum) throws IOException, InterruptedException, ParseException, InvalidInputDataException {
+        int lineCounter;
         boolean filePrepare = true;
         String[][] toptweets = new String[numOfTopics][topTweetsNum];
         long[][] toptweetIds = new long[numOfTopics][topTweetsNum];
@@ -838,8 +850,6 @@ public class LearnTopical_GroupBased {
         System.out.println("Recall:    " + df3.format(Statistics.Avg(recalls)) + "  +/-  " + df3.format(Statistics.StdError95(recalls)));
         System.out.println("F-Score:   " + df3.format(Statistics.Avg(fscores)) + "  +/-  " + df3.format(Statistics.StdError95(fscores)));
         System.out.println();
-
-
     }
 
     private static String[][] printTopTweets(long[][] toptweetIds) throws IOException {

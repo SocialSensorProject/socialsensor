@@ -5,7 +5,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.*;
 import org.apache.spark.sql.*;
-import preprocess.spark.ConfigRead;
+import util.ConfigRead;
 
 import java.io.IOException;
 import java.io.Serializable;

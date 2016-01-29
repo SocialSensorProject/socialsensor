@@ -3,7 +3,7 @@ package machinelearning.logisticRegression;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.InvalidInputDataException;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.Predict;
 import machinelearning.logisticRegression.de.bwaldvogel.liblinear.Train;
-import preprocess.spark.ConfigRead;
+import util.ConfigRead;
 import util.Statistics;
 import util.TweetUtil;
 
@@ -25,8 +25,8 @@ public class LearnTopical {
     private static int sampleNum = 2000000;
     private static TweetUtil tweetUtil;
 
-    private static String path = "Data/Learning/Topics/";
-    private static String LRPath = "Data/Learning/LogisticRegression/";
+    private static String path;// = "Data/Learning/Topics/";
+    private static String LRPath;// = "Data/Learning/LogisticRegression/";
     private static String featurepath = "featureData/";
     private static String hashtagFileName = "hashtagIndex.csv";
     private static String indexFileName = "featureIndex.csv";
@@ -62,6 +62,8 @@ public class LearnTopical {
      */
     public static void main(String[] args) throws IOException, InvalidInputDataException, ParseException, InterruptedException {
         loadConfig();
+        path = configRead.getPath();
+        LRPath = configRead.getLRPath();
         testFlag = configRead.getTestFlag();
         if(configRead.getTrainPercentage() == 0.7){
             percentageTrain = 0.7;

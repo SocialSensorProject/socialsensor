@@ -9,7 +9,7 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
-import preprocess.spark.ConfigRead;
+import util.ConfigRead;
 import util.TweetUtil;
 import util.ValueComparator;
 
