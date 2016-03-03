@@ -38,7 +38,7 @@ public class PostProcessParquetLaptop implements Serializable {
     public static String clusterResultsPath = "/Volumes/SocSensor/Zahra/SocialSensor/FeatureStatisticsRun_Sept1/ClusterResults/";
     public static int topFeatureNum = 1000;
     private static String scriptPath;
-    private static TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
     private static Map<String, Long> hashtagMap = new HashMap<>();
     final static int groupNum = 1;
     private static BufferedWriter bwTrec;
@@ -49,7 +49,7 @@ public class PostProcessParquetLaptop implements Serializable {
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {
-
+        tweetUtil = new TweetUtil();
         loadConfig();
         testFlag = configRead.getTestFlag();
         scriptPath = configRead.getScriptPath();

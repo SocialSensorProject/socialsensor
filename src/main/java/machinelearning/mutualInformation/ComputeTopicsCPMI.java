@@ -48,11 +48,12 @@ public class ComputeTopicsCPMI {
     private static int groupNum;
     private static int numOfGroups;
     private static String[] groupNames;
-    private static TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
 
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
+        tweetUtil = new TweetUtil();
     }
 
     public static void main(String[] args) throws IOException {
@@ -177,7 +178,7 @@ public class ComputeTopicsCPMI {
       * groupNum: Hashtag Topic Group Number
       * (tweet_Contain_topical_Hashtag | Mention_user)
     */
-    public static void calcTweetCondToUserConditionalEntropy(final int groupNum) {
+    public static void calcTweetCondToUserConditionalEntropy(final int groupNum) throws IOException {
         StructField[] fields1 = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true)
@@ -270,7 +271,7 @@ public class ComputeTopicsCPMI {
       * (tweet_Contain_topical_Hashtag | FromUser)
       *
     */
-    public static void calcTweetCondFromUserConditionalEntropy(final int groupNum){
+    public static void calcTweetCondFromUserConditionalEntropy(final int groupNum) throws IOException {
         StructField[] fields = {
                 DataTypes.createStructField("username", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true),
@@ -371,8 +372,8 @@ public class ComputeTopicsCPMI {
         data.write().mode(SaveMode.Overwrite).parquet(outputPath+"TestTrain/"+ groupNames[groupNum-1] +"/"+ folderName + "_parquet");
     }
 
-    private static JavaRDD<Row> calcProb(DataFrame df, final int groupNum, final boolean containFlag, final double tweetNum){
-        final List<String> hashtagList = tweetUtil.getGroupHashtagList(groupNum, localRun);
+    private static JavaRDD<Row> calcProb(DataFrame df, final int groupNum, final boolean containFlag, final double tweetNum) throws IOException {
+        final List<String> hashtagList = tweetUtil.getGroupHashtagList(groupNum, localRun, "");
         return df.javaRDD().mapToPair(new PairFunction<Row, String, Double>() {
             @Override
             public Tuple2<String, Double> call(Row row) throws Exception {
@@ -411,7 +412,7 @@ public class ComputeTopicsCPMI {
             @Override
             public Tuple2<Integer, Long> call(Row row) throws Exception {
                 List<String> tH = new ArrayList<String>(Arrays.asList((row.getString(1).split(","))));
-                tH.retainAll(tweetUtil.getGroupHashtagList(groupNum, localRun));
+                tH.retainAll(tweetUtil.getGroupHashtagList(groupNum, localRun, ""));
                 if (tH.size() > 0)
                     return new Tuple2<Integer, Long>(1, 1l);
                 else
@@ -446,7 +447,7 @@ public class ComputeTopicsCPMI {
     *
      */
 
-    public static void calcTweetCondContainHashtagConditionalEntropy(final int groupNum){
+    public static void calcTweetCondContainHashtagConditionalEntropy(final int groupNum) throws IOException {
         StructField[] fields = {
                 DataTypes.createStructField("hashtag", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true),
@@ -536,7 +537,7 @@ public class ComputeTopicsCPMI {
     *
      */
 
-    public static void calcTweetCondContainTermConditionalEntropy(final int groupNum){
+    public static void calcTweetCondContainTermConditionalEntropy(final int groupNum) throws IOException {
         StructField[] fields = {
                 DataTypes.createStructField("term", DataTypes.StringType, true),
                 DataTypes.createStructField("prob", DataTypes.DoubleType, true),

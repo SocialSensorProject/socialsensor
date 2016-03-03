@@ -62,7 +62,7 @@ public class ComputeMIForLearning {
     private static int groupNum;
     private static int numOfGroups;
     private static String[] groupNames;
-    private static TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
     //private static DataFrame tweetTime;
     private static final int topFeatureNum = 1000;
     private static boolean testFlag;
@@ -77,6 +77,7 @@ public class ComputeMIForLearning {
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
+        tweetUtil = new TweetUtil();
     }
 
     public static void main(String[] args) throws IOException, ParseException, InterruptedException {
@@ -98,7 +99,7 @@ public class ComputeMIForLearning {
         localRun = configRead.isLocal();
         topUserNum = configRead.getTopUserNum();
         TweetUtil tweetUtil = new TweetUtil();
-        milionFeatureLists = tweetUtil.get1MFeatures(localRun);
+        milionFeatureLists = tweetUtil.get1MFeatures(localRun, "");
 
         for(groupNum = 1; groupNum <= 1; groupNum++) {
             dataPath = "/data/ClusterData/input/Data/Learning/Topics/" + groupNames[groupNum-1] + "/fold0/Ids/";

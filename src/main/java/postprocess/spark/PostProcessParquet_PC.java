@@ -1,6 +1,6 @@
 package postprocess.spark;
 
-import machinelearning.ScatterPlot;
+import visualization.ScatterPlot;
 import org.apache.spark.Accumulator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -30,7 +30,7 @@ public class PostProcessParquet_PC implements Serializable {
     public static String clusterResultsPath = "/data/FeatureAnalysis/";
     public static int topFeatureNum = 1000;
     private static String scriptPath;
-    private static TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
     private static HashMap<Integer, String> indexFeatureName;
     private static int thresholdValue = 400;
     private static int numberOfLines = 10;
@@ -39,6 +39,7 @@ public class PostProcessParquet_PC implements Serializable {
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
+        tweetUtil = new TweetUtil();
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {

@@ -174,10 +174,27 @@ public class ConfigRead {
 
     public String getPath() { return prop.getProperty("learningPath"); }
 
-    public String getLRPath() { return prop.getProperty("learningPath"); }
+    public String getLRPath() { return prop.getProperty("LRPath"); }
 
-    public String getNBPath() { return prop.getProperty("learningPath"); }
+    public String getNBPath() { return prop.getProperty("NBPath"); }
 
-    public String getTrecPath() { return prop.getProperty("learningPath"); }
-    public String getRankSVMPath() { return prop.getProperty("learningPath"); }
+    public String getTrecPath() { return prop.getProperty("trecPath"); }
+
+    public String getRankSVMPath() { return prop.getProperty("rankSVMPath"); }
+
+    public String get1mFeaturePath() { return prop.getProperty("1mfeaturePath"); }
+
+    public String getLocalDataPath() { return prop.getProperty("localDataPath"); }
+
+    public int getTreeDepth() {
+        return Integer.valueOf(prop.getProperty("treeDepth"));
+    }
+
+    public int getMaxTreeSize() {
+        return Integer.valueOf(prop.getProperty("maxTreeSize"));
+    }
+
+    public int getMaxLeafNum() {
+        return Integer.valueOf(prop.getProperty("maxLeafNum"));
+    }
 }

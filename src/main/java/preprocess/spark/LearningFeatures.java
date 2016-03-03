@@ -41,7 +41,7 @@ public class LearningFeatures {
         numPart = _numPart;
     }
 
-    public static void getGroupedFeaturesBaselineBased(SQLContext sqlContext, JavaSparkContext sc){
+    public static void getGroupedFeaturesBaselineBased(SQLContext sqlContext, JavaSparkContext sc) throws IOException {
         TweetUtil tweetUtil = new TweetUtil();
         System.out.println("************************** " + dataPath + " "  + groupNum);
         StructField[] fieldsMention = {

@@ -57,7 +57,7 @@ public class ComputeNBLogOdds {
     private static int groupNum;
     private static int numOfGroups;
     private static String[] groupNames;
-    private static TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
     //private static DataFrame tweetTime;
     private static final int topFeatureNum = 1000;
     private static boolean testFlag;
@@ -82,6 +82,7 @@ public class ComputeNBLogOdds {
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
         testFlag = configRead.getTestFlag();
+        tweetUtil = new TweetUtil();
     }
 
     public static void ComputeLogOdds(String _className, int _groupNum, String featurePath, double _kValue, long _splitTime, String _dataPath, HashSet<String> _hashtagList, String _testVal) throws IOException, ParseException {

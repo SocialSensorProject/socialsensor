@@ -40,7 +40,7 @@ public class PreprocessPC implements Serializable {
     private static long sampleNum = 2000000;
     private static final double featureNumWin = 1000;
     private static final boolean allInnerJoin = false;
-    private static final TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
     private static boolean localRun;
     private static int numOfGroups;
     private static String[] groupNames;
@@ -50,6 +50,7 @@ public class PreprocessPC implements Serializable {
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
+        tweetUtil = new TweetUtil();
     }
     private static Extractor hmExtractor = new Extractor();
     private static int numPart;
@@ -152,7 +153,7 @@ public class PreprocessPC implements Serializable {
         if(configRead.isWriteHashtagSetBirthday()){
             List<String> hashtagSet = new ArrayList<>();
             for(int i = 1; i <= numOfGroups; i++) {
-                hashtagSet.addAll(tweetUtil.getGroupHashtagList(i, localRun));
+                hashtagSet.addAll(tweetUtil.getGroupHashtagList(i, localRun, ""));
             }
             writeHashtagBirthday(sqlContext, hashtagSet);
         }

@@ -57,7 +57,7 @@ public class ComputeBaselinesCPMI {
     private static int groupNum;
     private static int numOfGroups;
     private static String[] groupNames;
-    private static TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
     private static DataFrame tweetTime;
     private static final int topFeatureNum = 1000;
     private static final boolean testFlag = true;
@@ -68,6 +68,7 @@ public class ComputeBaselinesCPMI {
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
+        tweetUtil = new TweetUtil();
     }
 
     public static void main(String[] args) throws IOException, ParseException {

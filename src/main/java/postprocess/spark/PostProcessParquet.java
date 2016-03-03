@@ -31,10 +31,11 @@ public class PostProcessParquet implements Serializable {
     public static String clusterResultsPath = "/Volumes/SocSensor/Zahra/SocialSensor/FeatureStatisticsRun_Sept1/ClusterResults/";
     public static int topFeatureNum = 1000;
     private static String scriptPath;
-    private static TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
+        tweetUtil = new TweetUtil();
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {

@@ -1250,7 +1250,7 @@ public class LearnTopical_GroupBased {
             fw = new FileWriter(path + classNames[classInd] + "/" +"allHashtag_"+classNames[classInd]+".csv");
             bw = new BufferedWriter(fw);
             HashMap<String, Long> hashtagSetDate = new HashMap<String, Long>();
-            for(String s: tweetUtil.getGroupHashtagList(classInd+1, testFlag)){
+            for(String s: tweetUtil.getGroupHashtagList(classInd+1, testFlag, path + classNames[classInd] + "/" +"allHashtag_"+classNames[classInd]+".csv")){
                 if (hashtagDate.containsKey(s)){// && featureMap.containsKey(s)) {
                     hashtagSetDate.put(s, hashtagDate.get(s));
                     bw.write(s + "\n");
@@ -1611,7 +1611,7 @@ public class LearnTopical_GroupBased {
 //        bufferedReaderA.close();
 
         Map<String, Long> hashtagSetDate = new HashMap<>();
-        for (String s : tweetUtil.getGroupHashtagList(classInd + 1, testFlag)) {
+        for (String s : tweetUtil.getGroupHashtagList(classInd + 1, testFlag, path + classNames[classInd] + "/" +"allHashtag_"+classNames[classInd]+".csv")) {
             if (hashtagDate.containsKey(s))// && featureMap.containsKey(s)) {
                 hashtagSetDate.put(s, hashtagDate.get(s));
         }
@@ -1886,7 +1886,7 @@ public class LearnTopical_GroupBased {
             fw = new FileWriter(path + classNames[classInd] + "/" + "allHashtag_" + classNames[classInd] + ".csv");
             bw = new BufferedWriter(fw);
 
-            for (String s : tweetUtil.getGroupHashtagList(classInd + 1, testFlag)) {
+            for (String s : tweetUtil.getGroupHashtagList(classInd + 1, testFlag, path + classNames[classInd] + "/" +"allHashtag_"+classNames[classInd]+".csv")) {
                 if (hashtagDate.containsKey(s)) {// && featureMap.containsKey(s)) {
                     //hashtagSetDate.put(s, hashtagDate.get(s));
                     bw.write(s + "\n");

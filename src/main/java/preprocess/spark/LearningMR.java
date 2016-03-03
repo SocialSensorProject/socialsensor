@@ -41,10 +41,11 @@ public class LearningMR {
     private static boolean thousand = true;
     private static final double featureNumWin = 1000;
     private static final boolean allInnerJoin = false;
-    private static final TweetUtil tweetUtil = new TweetUtil();
+    private static TweetUtil tweetUtil;
 
     public static void loadConfig() throws IOException {
         configRead = new ConfigRead();
+        tweetUtil = new TweetUtil();
     }
 
     public LearningMR(String _outputPath, String _dataPath, int _groupNum, long[] _timestamps, int _numPart, String[] _groupNames) throws IOException {

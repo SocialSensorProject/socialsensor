@@ -35,7 +35,6 @@ public class LearningMapReduce {
     private static long sampleNum = 2000000;
     private static final double featureNumWin = 1000;
     private static final boolean allInnerJoin = false;
-    private static final TweetUtil tweetUtil = new TweetUtil();
     private static boolean localRun;
     private static int numOfGroups;
     private static String[] groupNames;

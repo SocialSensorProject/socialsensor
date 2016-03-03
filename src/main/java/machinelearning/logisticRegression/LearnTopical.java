@@ -399,7 +399,7 @@ public class LearnTopical {
             fw = new FileWriter(path + classNames[groupNum-1] + "/" +"allHashtag_"+classNames[groupNum-1]+".csv");
             bw = new BufferedWriter(fw);
             hashtagSetDate[groupNum-1] = new HashMap<String, Long>();
-            for(String s: tweetUtil.getGroupHashtagList(groupNum, testFlag)){
+            for(String s: tweetUtil.getGroupHashtagList(groupNum, testFlag, path + classNames[groupNum-1] + "/" +"allHashtag_"+classNames[groupNum-1]+".csv")){
                 bw.write(s + "\n");
                 if (hashtagDate.containsKey(s))
                     hashtagSetDate[groupNum-1].put(s, hashtagDate.get(s));
