@@ -119,7 +119,7 @@ public class RegTree extends REPTree {
 
             RegressionProblem cp = new RegressionProblem(dataPath);
             classifier = new RegTree();
-            classifier.setOptions(new String[]{"-M", "2", "-L", Integer.toString(treeDepth), "-V", "-1"});
+            classifier.setOptions(new String[]{"-M", "2", "-L", Integer.toString(10), "-V", "-1"});
             cp.getData().setClassIndex(0);
 //            ArrayList<Instances> splittedData = splitData(cp, new double[]{70, 30});
             classifier.buildClassifier(cp.getData());

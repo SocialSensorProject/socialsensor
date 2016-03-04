@@ -70,7 +70,7 @@ public class LearnFunctionalBoostedTree {
 //            emptyADD = _context.getVarNode(2, 0.0d, 0.0d);
             tweetToADD = new TweetToADD(learningProblem, _context);
 
-            tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
+            //tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
             f0 = computeF0(dataPath);
 
             for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
