@@ -91,7 +91,7 @@ public class RegTree extends REPTree {
         try {
 
             RegressionProblem cp = new RegressionProblem(dataPath);
-            RegTree classifier = new RegTree();
+            classifier = new RegTree();
             classifier.setOptions(new String[]{"-M", "1", "-L", Integer.toString(treeDepth), "-V", "-1"});
 //            ArrayList<Instances> splittedData = splitData(cp, new double[]{70, 30});
             classifier.buildClassifier(cp.getData());

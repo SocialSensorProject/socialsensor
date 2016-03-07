@@ -33,7 +33,8 @@ public class LearnFunctionalBoostedTree {
     public static FBR _context;
     public static boolean makeADDdirectly = false;
     public static boolean boostedRegTree = false;
-    public static boolean singleRegTree = true;
+    public static boolean singleRegTree = false;
+    public static boolean bigram = true;
     public static LearningProblem learningProblem;
     public static RegTree regTree;
 
@@ -68,15 +69,15 @@ public class LearnFunctionalBoostedTree {
             order.addAll(learningProblem.featureMap.values());
             _context = new FBR(1, learningProblem.getFeatureOrders()); // 1: ADD
 //            emptyADD = _context.getVarNode(2, 0.0d, 0.0d);
-            tweetToADD = new TweetToADD(learningProblem, _context);
+            tweetToADD = new TweetToADD(learningProblem, _context, bigram);
 
-            //tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
+            tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
             f0 = computeF0(dataPath);
 
             for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
                 System.out.println("Iteration: " + iteration);
                 sampleReader = new BufferedReader(new FileReader(dataPath));
-                if (makeADDdirectly) {
+                if (makeADDdirectly || bigram) {
                     fun = tweetToADD.convertTweetsToADD(sampleReader, prevFun, iteration, classInd, f0);
                     fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
                     if(prevFun == null)
@@ -152,12 +153,12 @@ public class LearnFunctionalBoostedTree {
         int validInd = 0, tp = 0, fp = 0, tn = 0, fn = 0, index;
         List<TweetResult> tweetWeights = null;
 
-        if(boostedRegTree) {
+        if(makeADDdirectly || boostedRegTree || bigram) {
             tweetWeights = new ArrayList<>();
             while ((tweet = sampleReader.readLine()) != null) {
                 target_label = 0;
                 splits = tweet.split(" ");
-                if (splits[0].split(",")[0].equals("1.0"))
+                if (splits[0].split(",")[0].equals("1"))
                     target_label = 1;
                 if (splits[1].equals("1")) {// || line.substring(4,5).equals("0")) {//exclude tweets with no hashtag
                     continue;

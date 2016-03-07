@@ -121,11 +121,11 @@ public class TweetToArff {
         //WRITE THE HASHTAG LIST BASED ON TIMESTAMP
 
         writeHeader(bw, learningProblem);
-        writeHeader(bwTest, learningProblem);
+//        writeHeader(bwTest, learningProblem);
         writeHeader(bwVal, learningProblem);
-        writeHeader(bwAllTrain, learningProblem);
+        //writeHeader(bwAllTrain, learningProblem);
         int sampleInd = 0;
-        double yhatOne , yhatNegOne;
+        int yhatOne , yhatNegOne, yhatZero;
         while ((textLine = bufferedReaderA.readLine()) != null) {
             y = 0;
             numOfHashtags = 0;
@@ -177,13 +177,14 @@ public class TweetToArff {
             Collections.sort(tmp);
             cleanLine = "";
             for (long st : tmp)
-                cleanLine += "," + new BigDecimal(st).toPlainString() + " 1";
+                cleanLine += "," + new BigDecimal(st).toPlainString();
 
             if(cDate > 1388534339000l)
                 tweets2014Num++;
 
             yhatOne = 1;//computeYHat(1, fFun, iteartion, trainFileSize);
             yhatNegOne = -1;//computeYHat(-1, fFun, iteartion, trainFileSize);
+            yhatZero = 0;
 
             if (cDate <= Long.valueOf(learningProblem.getSplitDatesStr()[classInd-1][1])) {
                 if(cDate >= Long.valueOf(splitDatesStr[0])){//TRAIN_VAL
@@ -193,7 +194,7 @@ public class TweetToArff {
                         bwVal.write("{0 "+ yhatOne + cleanLine + "}\n");
                         bwValStrings.write(yhatOne + ((topicalTraintrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") +cleanTextLine + "\n");
                     }else {
-                        bwVal.write("{0 "+ yhatNegOne + cleanLine + "}\n");
+                        bwVal.write("{0 "+ yhatZero + cleanLine + "}\n");
                         bwValStrings.write(yhatNegOne + ((topicalTraintrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                     }
                     trainValFileSize++;
@@ -210,25 +211,27 @@ public class TweetToArff {
                         bw.write("{0 "+ yhatOne + cleanLine + "}\n");
                         bwStrings.write(yhatOne + cleanTextLine + "\n");
                     }else {
-                        bw.write("{0 "+yhatNegOne + cleanLine + "}\n");
+                        bw.write("{0 "+yhatZero + cleanLine + "}\n");
                         bwStrings.write(yhatNegOne + cleanTextLine + "\n");
                     }
                     trainFileSize++;
                 }
                 if(topicalTrain) {
-                    bwAllTrain.write("{0 "+ yhatOne + cleanLine + "}\n");
+                    bwAllTrain.write(yhatOne + cleanLine + "\n");
+                    //bwAllTrain.write("{0 "+ yhatOne + cleanLine + "}\n");
                     bwAllTrainStrings.write(yhatOne + cleanTextLine + "\n");
                 }else {
-                    bwAllTrain.write("{0 "+yhatNegOne + cleanLine + "}\n");
+                    bwAllTrain.write(yhatZero + cleanLine + "\n");
+                    //bwAllTrain.write("{0 "+yhatNegOne + cleanLine + "}\n");
                     bwAllTrainStrings.write(yhatNegOne + cleanTextLine + "\n");
                 }
             }
             else {
                 if(topicalTest) {
-                    bwTest.write("{0 "+yhatOne + cleanLine + "}\n");
+                    bwTest.write(yhatOne + cleanLine + "\n");
                     bwTestStrings.write(yhatOne + ((topicalTrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                 }else {
-                    bwTest.write("{0 "+yhatNegOne + cleanLine + "}\n");
+                    bwTest.write(yhatZero + cleanLine + "\n");
                     bwTestStrings.write(yhatNegOne + ((topicalTrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                 }
                 testFileSize++;

@@ -18,24 +18,26 @@ public class TweetToADD {
     public static int maxTreeSize;
     public static int maxLeafNum;
     public static FBR _context;
-    public static double prunePrec = 0.8;
+    public static double prunePrec = 1;
+    public static boolean bigram;
     public static LearningProblem learningProblem;
     public final static boolean ALWAYS_FLUSH = false; // Always flush DD caches?
-    public final static double FLUSH_PERCENT_MINIMUM = 0.2d; // Won't flush
+    public final static double FLUSH_PERCENT_MINIMUM = 0.3d; // Won't flush
     public static Runtime RUNTIME = Runtime.getRuntime();
 
-    public TweetToADD(LearningProblem _learningProblem, FBR context) throws IOException {
+    public TweetToADD(LearningProblem _learningProblem, FBR context, boolean _bigram) throws IOException {
         ConfigRead configRead = new ConfigRead();
         maxTreeSize = configRead.getMaxTreeSize();
         maxLeafNum = configRead.getMaxLeafNum();
         learningProblem = _learningProblem;
         _context = context;
+        bigram = _bigram;
     }
     /**
      * Compute the multiplication of indicator function of a step t for all query vars
      **/
     public Object getTweetIndicator(String tweet, Map var2ID, Object lastItADD, int classInd, double f0) {
-        Object dd = null, ddr = null;
+        Object dd = null, dd2 = null, ddr = null, prevddr = null;
         String[] splits;
         int feat;
 
@@ -49,6 +51,8 @@ public class TweetToADD {
             features.add(splits[i]);
         }
 
+        if(topicalLabel == 1.0)
+            System.out.print("");
         //System.out.println(topicalLabel + " => " +  fM_1);
 
         //Compute the yHat
@@ -62,59 +66,63 @@ public class TweetToADD {
         long tid = Long.valueOf(splits[splits.length - 1]);
 
         ddr = _context.getTidIndicator(tid);
-        if(ddr == null) {
-            for (int i = 1; i < splits.length - 1; i += 2) {
-                int gid = ((Integer) var2ID.get(splits[i])).intValue();
-                if (gid == -1)
-                    continue;
-                dd = _context.getVarNode(gid, 0.0d, 1.0d); // Get a new node
-                if (ddr != null)
-                    ddr = _context.applyInt(dd, ddr, DD.ARITH_PROD);
-                else
-                    ddr = dd;
+        if (ddr == null) {
+            if(bigram){
+                for (int i = 1; i < splits.length - 1; i += 2) {
+                    int gid1 = (Integer) var2ID.get(splits[i]);
+                    dd = _context.getVarNode(gid1, 0.0d, 1.0d); // Get a new node
+                    for (int j = i+2; j < splits.length - 1; j += 2) {
+                        int gid2 = (Integer) var2ID.get(splits[j]);
+                        dd2 = _context.getVarNode(gid2, 0.0d, 1.0d); // Get a new node
+                        ddr = _context.applyInt(dd, dd2, DD.ARITH_PROD);
+                        ddr = _context.scalarMultiply(ddr, yhat);
+                        if(prevddr == null)
+                            prevddr = ddr;
+                        else
+                            prevddr = _context.applyInt(ddr, prevddr, DD.ARITH_SUM);
+                        prevddr = prune(prevddr);
+                    }
+                    _context.addSpecialNode(prevddr);
+                    flushCaches();
+                }
+                ddr = prevddr;
+            }else {
+                for (int i = 1; i < splits.length - 1; i += 2) {
+                    int gid = ((Integer) var2ID.get(splits[i])).intValue();
+                    if (gid == -1)
+                        continue;
+                    dd = _context.getVarNode(gid, 0.0d, 1.0d); // Get a new node
+                    if (ddr != null)
+                        ddr = _context.applyInt(dd, ddr, DD.ARITH_PROD);
+                    else
+                        ddr = dd;
+                }
+                ddr = _context.scalarMultiply(ddr, yhat);
             }
             _context.addTidIndicator(tid, ddr);
         }
 //        if(topicalLabel == 1.0)
 //            yhat *= (learningProblem.getTotal()[classInd-1] - (learningProblem.getPositives()[classInd-1]))/learningProblem.getPositives()[classInd-1];
-        ddr = _context.scalarMultiply(ddr, yhat);
+
         return ddr;
     }
 
     public Object convertTweetsToADD(BufferedReader sampleReader, Object lastItADD, int iteration, int classInd, double f0) throws IOException {
         String dotFileName = "tweetsADD";
         String line;
-        Object dd = null, pdd = null;
+        Object dd = null;
         int trainTweetsNum = 0;
         while ( (line = sampleReader.readLine()) != null) {
-            //System.out.println(trainTweetsNum);
+            System.out.println("================================================ "+trainTweetsNum);
             trainTweetsNum++;
             Object tweetADD = getTweetIndicator(line, learningProblem.featureMap, lastItADD, classInd, f0);
             if (dd != null)
                 dd = _context.applyInt(tweetADD, dd, DD.ARITH_SUM);
             else
                 dd = tweetADD;
-            pdd = dd;
-
-            double _prunePrec = prunePrec;
-            boolean maxLeafFlag = true;
-            while(_context.countExactNodes(dd) > maxTreeSize){//need to prune the tree based on max number of leaves
-//                System.out.println("Pruning: " + _prunePrec);
-                _context.SetPruneInfo(DD.REPLACE_AVG, _prunePrec);
-                if(maxLeafFlag)
-                    dd = _context.pruneNodes(dd, maxLeafNum);//-1
-                else
-                    dd = _context.pruneNodes(dd, -1);
-                if(pdd.equals(dd)) {
-                    if(!maxLeafFlag)
-                        break;
-                    maxLeafFlag = false;
-                }
-                _prunePrec *= 2;
-                pdd = dd;
-            }
-            //flushCaches();
-
+            dd = prune(dd);
+            _context.addSpecialNode(dd);
+            flushCaches();
         }
         visualizeGraph(dd, "ADDs/"+dotFileName+"_"+iteration);
         return dd;
@@ -157,5 +165,32 @@ public class TweetToADD {
         }
 
         _context.flushCaches(false);
+    }
+
+    public Object prune(Object dd){
+        Object pdd = dd;
+        double _prunePrec = prunePrec;
+        boolean maxLeafFlag = false;
+        long addSize = _context.countExactNodes(dd);
+        if(addSize > 10000)
+            _prunePrec = 70;
+//        System.out.print("Pruning...");
+        while(addSize > maxTreeSize){//need to prune the tree based on max number of leaves
+            System.out.println("Size: " + addSize);
+            long before = System.currentTimeMillis();
+            _context.SetPruneInfo(DD.REPLACE_AVG, _prunePrec);
+            dd = _context.pruneNodes(dd, -1);
+            if(pdd.equals(dd) && _prunePrec > 100) {
+                if(!maxLeafFlag)
+                    break;
+                maxLeafFlag = false;
+            }
+            addSize = _context.countExactNodes(dd);
+            _prunePrec *= 2;
+            pdd = dd;
+            long after = System.currentTimeMillis();
+            System.out.println("time taken : " + (after-before)/1000 + " seconds");
+        }
+        return dd;
     }
 }
