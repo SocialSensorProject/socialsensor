@@ -28,13 +28,15 @@ public class LearnFunctionalBoostedTree {
     public static ConfigRead configRead;
     public static final int MAX_ITERATION = 10000;
     public static final int MAX_TRAIN = 1500000;
-    public static final int numOfFeatures = 1166582;
+    public static final int numOfFeatures = 1000;//1166582;
     public static final int treeDepth = 4;
     public static FBR _context;
     public static boolean makeADDdirectly = false;
     public static boolean boostedRegTree = false;
-    public static boolean singleRegTree = false;
-    public static boolean bigram = true;
+    public static boolean singleRegTree = true;
+    public static boolean pythonArff = true;
+    public static boolean bigram = false;
+    public static boolean trainVal = true;
     public static LearningProblem learningProblem;
     public static RegTree regTree;
 
@@ -42,61 +44,94 @@ public class LearnFunctionalBoostedTree {
         tweetUtil = new TweetUtil();
         configRead = new ConfigRead();
         learningProblem = new LearningProblem();
-        TweetToArff tweetToArff = new TweetToArff(numOfFeatures);
-        String dataPath, arffDataPath;
+        TweetToArff tweetToArff = new TweetToArff(numOfFeatures, pythonArff);
+        String dataPath, arffDataPath, validDataPath, validArffDataPath;
+        String testDataPath = "";
+        String testArffDataPath = "";
         Pair<ArrayList, HashMap> treeVars;
         ArrayList order;
         BufferedReader sampleReader;
         String[] splits;
         TweetToADD tweetToADD;
-        Object fun, prevFun = null;
+        Object fun = null, prevFun = null;
         BufferedWriter bufferedWriter, bufferedWriter2;
         LearningProblem.prepareDirectories(new int[]{numOfFeatures});
         double currPrec = 0, prevPrec = 0, currMAP = 0, prevMAP = 0;
         double[] mapP100 = new double[2];
         Object copyADD, emptyADD;
         double f0, mean = 0;
+        int trainFileSize, testFileSize;
+        String trainName, trainArffName, validName, validArffName, testName, testArffName, filePath;
 
-        for (int classInd = 1; classInd < configRead.getNumOfGroups(); classInd++) {
+        for (int classInd = 1; classInd < 2/*configRead.getNumOfGroups()*/; classInd++) {
             // Read train_train data
             regTree = new RegTree();
             String classname = configRead.getGroupNames()[classInd - 1];
             learningProblem.getFeatureList(numOfFeatures, classname);
-            dataPath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/" + learningProblem.trainFileName + "_t_strings.csv";//.arff";
-            arffDataPath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/" + learningProblem.trainFileName + "_t.arff";
             tweetToArff.makeHashtagSets(learningProblem, classInd);
             order = new ArrayList();
             order.addAll(learningProblem.featureMap.values());
             _context = new FBR(1, learningProblem.getFeatureOrders()); // 1: ADD
-//            emptyADD = _context.getVarNode(2, 0.0d, 0.0d);
             tweetToADD = new TweetToADD(learningProblem, _context, bigram);
-
             tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
-            f0 = computeF0(dataPath);
-
-            for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
-                System.out.println("Iteration: " + iteration);
-                sampleReader = new BufferedReader(new FileReader(dataPath));
-                if (makeADDdirectly || bigram) {
-                    fun = tweetToADD.convertTweetsToADD(sampleReader, prevFun, iteration, classInd, f0);
-                    fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
-                    if(prevFun == null)
-                        fun = _context.scalarAdd(fun, f0);
-                    else
-                        fun = _context.applyInt(prevFun, fun, DD.ARITH_SUM);
-                    sampleReader.close();
-                    prevFun = fun;
-                    mapP100 = validate(tweetToADD, classname, classInd, fun, iteration);
-                } else if(boostedRegTree) {
-                    //Build Regression Tree
-                    treeVars = regTree.buildRegTree(dataPath, treeDepth);
-                    //Build ADD from the tree
-                    fun = _context.buildDDFromUnorderedTree(treeVars.getKey(), learningProblem.featureMap);
-                }else if(singleRegTree) {
-                    Pair<ArrayList, HashMap> resRegTree = regTree.buildSingleRegTree(arffDataPath, treeDepth);
-                    mapP100 = validate(tweetToADD, classname, classInd, null, iteration);
-                    break;
+            filePath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/";
+            for(int tv = 0; tv < 2; tv++) {
+                if (trainVal) {
+                    trainName = learningProblem.trainFileName + "_t_strings.csv";
+                    trainArffName = learningProblem.trainFileName + "_t.arff";
+                    validName = learningProblem.trainFileName + "_v_strings.csv";
+                    validArffName = learningProblem.trainFileName + "_v.arff";
+                    testName = learningProblem.trainFileName + "_v_strings.csv";
+                    testArffName = learningProblem.trainFileName + "_v.arff";
+                    trainFileSize = learningProblem.getTrainFileSize()[classInd - 1];
+                    testFileSize = learningProblem.getTrainValFileSize()[classInd - 1];
+                } else {
+                    trainName = learningProblem.trainFileName + "_strings.csv";
+                    trainArffName = learningProblem.trainFileName + ".arff";
+                    validName = learningProblem.trainFileName + "_v_strings.csv";
+                    validArffName = learningProblem.trainFileName + "_v.arff";
+                    testName = learningProblem.testFileName + "_strings.csv";
+                    testArffName = learningProblem.testFileName + ".arff";
+                    trainFileSize = learningProblem.getTrainFileSize()[classInd - 1] + learningProblem.getTrainValFileSize()[classInd - 1];
+                    testFileSize = learningProblem.getTestFileSize()[classInd - 1];
                 }
+                dataPath = filePath + trainName;//.arff";
+                arffDataPath = filePath + trainArffName;
+                testDataPath = filePath + testName;
+                testArffDataPath = filePath + testArffName;
+                validDataPath = filePath + validName;
+                validArffDataPath = filePath + validArffName;
+                f0 = computeF0(dataPath);
+
+                for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
+                    System.out.println("Iteration: " + iteration);
+                    sampleReader = new BufferedReader(new FileReader(dataPath));
+                    if (makeADDdirectly || bigram) {
+                        fun = tweetToADD.convertTweetsToADD(sampleReader, prevFun, iteration, classInd, f0);
+                        fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
+                        if (prevFun == null)
+                            fun = _context.scalarAdd(fun, f0);
+                        else
+                            fun = _context.applyInt(prevFun, fun, DD.ARITH_SUM);
+                        sampleReader.close();
+                        prevFun = fun;
+                    } else if (boostedRegTree) {
+                        //Build Regression Tree
+                        //treeVars = regTree.buildRegTree(dataPath, treeDepth);
+                        tweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
+                                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + -1 + " " + iteration);
+                        ArrayList resRegTree = regTree.makeStepTreeFromPythonRes(null, "RegTree/treeStruct_" + iteration + ".txt");
+                        //Build ADD from the tree
+                        fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
+                    } else if (singleRegTree) {
+                        tweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
+                                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + -1 + " " + iteration);
+                        ArrayList resRegTree = regTree.makeStepTreeFromPythonRes(null, "RegTree/treeStruct_" + iteration + ".txt");
+                        fun = null;
+                        //fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
+                        //Pair<ArrayList, HashMap> resRegTree = regTree.buildSingleRegTree(arffDataPath, treeDepth);
+                    }
+                    mapP100 = validate(tweetToADD, classname, classInd, fun, iteration, validDataPath, validArffDataPath);
                 /*copyADD = fun;
                 copyADD = _context.applyInt(copyADD, -1, DD.ARITH_ABS);
                 Object power2ADD = _context.applyInt(copyADD, -1, DD.ARITH_POW);
@@ -105,18 +140,24 @@ public class LearnFunctionalBoostedTree {
                 copyADD = _context.applyInt(fun, copyADD, DD.ARITH_DIV);
                 fun = _context.applyInt(fun, copyADD, DD.ARITH_PROD);*/
 
-                currPrec = mapP100[1];
-                currMAP = mapP100[0];
+                    currPrec = mapP100[1];
+                    currMAP = mapP100[0];
 
-                if(currMAP < prevMAP){ // MAP Dropping
-                    break;
+                    if (currMAP < prevMAP || singleRegTree) { // MAP Dropping
+                        break;
+                    }
+                    sampleReader.close();
+                    prevMAP = currMAP;
                 }
-                sampleReader.close();
-                prevMAP = currMAP;
+                trainVal = false;
             }
             //TEST
+            /*mapP100 = validate(tweetToADD, classname, classInd, fun, -1, testDataPath, testArffDataPath);
+            System.out.println("MAP: " + mapP100[0]);
+            System.out.println("P@100: " + mapP100[1]);*/
         }
     }
+
 
     private static double computeF0(String dataPath) throws IOException {
         String tweet;
@@ -142,19 +183,18 @@ public class LearnFunctionalBoostedTree {
         //g.launchViewer(/*width, height*/);
     }
 
-    public static double[] validate(TweetToADD tweetToADD, String classname, int classInd, Object fun, int iteration) throws Exception {
+    public static double[] validate(TweetToADD tweetToADD, String classname, int classInd, Object fun, int iteration, String testDataPath, String testArffDataPath) throws Exception {
         //VALIDATION
         String[] splits;
-        String validDataPath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/" + learningProblem.trainFileName + "_t_strings.csv";//.arff";
-        String validArffDataPath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/" + learningProblem.trainFileName + "_t.arff";//.arff";
-        BufferedReader sampleReader = new BufferedReader(new FileReader(validDataPath));
+
+
+        BufferedReader sampleReader = new BufferedReader(new FileReader(testDataPath));
         String tweet;
         int target_label;
         int validInd = 0, tp = 0, fp = 0, tn = 0, fn = 0, index;
-        List<TweetResult> tweetWeights = null;
+        List<TweetResult> tweetWeights = new ArrayList<>();
 
         if(makeADDdirectly || boostedRegTree || bigram) {
-            tweetWeights = new ArrayList<>();
             while ((tweet = sampleReader.readLine()) != null) {
                 target_label = 0;
                 splits = tweet.split(" ");
@@ -187,7 +227,16 @@ public class LearnFunctionalBoostedTree {
 
             }
         }else if(singleRegTree) {
-            tweetWeights = regTree.evaluateModel(validArffDataPath);
+            //tweetWeights = regTree.evaluateModel(testArffDataPath);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/predictions_"+iteration+".txt"));
+            String line;
+            validInd = 0;
+            while((line = bufferedReader.readLine()) != null){
+                splits = line.split(" ");
+                tweetWeights.add(new TweetResult(validInd, Double.valueOf(splits[1]), "", Integer.valueOf(splits[0])));
+                validInd++;
+            }
+            bufferedReader.close();
         }
         Collections.sort(tweetWeights);
         double [] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");

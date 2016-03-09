@@ -8,10 +8,7 @@ import util.TweetUtil;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zahraiman on 2/3/16.
@@ -59,6 +56,7 @@ public class LearningProblem {
     public static int totalFeatureNum =1166582;
 
     public Map<String, Integer> featureMap;
+    public HashMap<Integer, String> inverseFeatureMap;
     private static ArrayList<Integer> featureOrders;
     private static int[] trainFileSize;
     private static int[] testFileSize;
@@ -189,10 +187,10 @@ public class LearningProblem {
         totalVal = new int[classNames.length];
     }
 
-    public static void getFeatureList(double k, String classname) throws IOException {
+    public static void getFeatureList(double k, String classname) throws IOException, InterruptedException {
         FileReader fileReaderA = new FileReader(path + classname + "/featuresMI.csv");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
-        FileWriter fw = new FileWriter(path +featurepath + indexFileName + "_" + classname+"_" + k + ".csv");
+        FileWriter fw = new FileWriter(path +featurepath + indexFileName + "_" + classname+"_" + (int)k + ".csv");
         BufferedWriter bw = new BufferedWriter(fw);
         String line = "";
         int ind = 0;

@@ -75,7 +75,7 @@ public class TweetToADD {
                         int gid2 = (Integer) var2ID.get(splits[j]);
                         dd2 = _context.getVarNode(gid2, 0.0d, 1.0d); // Get a new node
                         ddr = _context.applyInt(dd, dd2, DD.ARITH_PROD);
-                        ddr = _context.scalarMultiply(ddr, yhat);
+                        //ddr = _context.scalarMultiply(ddr, yhat);
                         if(prevddr == null)
                             prevddr = ddr;
                         else
@@ -103,7 +103,7 @@ public class TweetToADD {
         }
 //        if(topicalLabel == 1.0)
 //            yhat *= (learningProblem.getTotal()[classInd-1] - (learningProblem.getPositives()[classInd-1]))/learningProblem.getPositives()[classInd-1];
-
+        ddr = _context.scalarMultiply(ddr, yhat);
         return ddr;
     }
 

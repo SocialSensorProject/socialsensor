@@ -17,10 +17,12 @@ public class TweetToArff {
 
     public static int k;
     public static TweetUtil tweetUtil;
+    public static boolean pythonArff;
 
-    public TweetToArff(int _numOfFeatures) throws IOException {
+    public TweetToArff(int _numOfFeatures, boolean _pythonArff) throws IOException {
         tweetUtil = new TweetUtil();
         k = _numOfFeatures;
+        pythonArff = _pythonArff;
     }
 
     public void writeHeader(BufferedWriter bw, LearningProblem learningProblem) throws IOException {
@@ -119,11 +121,12 @@ public class TweetToArff {
         bwTestStrings = new BufferedWriter(fwTestStrings);
 
         //WRITE THE HASHTAG LIST BASED ON TIMESTAMP
-
-        writeHeader(bw, learningProblem);
-//        writeHeader(bwTest, learningProblem);
-        writeHeader(bwVal, learningProblem);
-        //writeHeader(bwAllTrain, learningProblem);
+        if(!pythonArff) {
+            writeHeader(bw, learningProblem);
+            writeHeader(bwTest, learningProblem);
+            writeHeader(bwVal, learningProblem);
+            writeHeader(bwAllTrain, learningProblem);
+        }
         int sampleInd = 0;
         int yhatOne , yhatNegOne, yhatZero;
         while ((textLine = bufferedReaderA.readLine()) != null) {
@@ -176,8 +179,12 @@ public class TweetToArff {
                 continue;
             Collections.sort(tmp);
             cleanLine = "";
-            for (long st : tmp)
-                cleanLine += "," + new BigDecimal(st).toPlainString();
+            for (long st : tmp) {
+                if(pythonArff)
+                    cleanLine += "," + new BigDecimal(st).toPlainString();
+                else
+                    cleanLine += "," + new BigDecimal(st).toPlainString() + " 1";
+            }
 
             if(cDate > 1388534339000l)
                 tweets2014Num++;
@@ -191,10 +198,16 @@ public class TweetToArff {
                     totalVal++;
                     if(topicalVal) {
                         positivesVal++;
-                        bwVal.write("{0 "+ yhatOne + cleanLine + "}\n");
+                        if(pythonArff)
+                            bwVal.write(yhatOne + cleanLine + "\n");
+                        else
+                            bwVal.write("{0 "+ yhatOne + cleanLine + "}\n");
                         bwValStrings.write(yhatOne + ((topicalTraintrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") +cleanTextLine + "\n");
                     }else {
-                        bwVal.write("{0 "+ yhatZero + cleanLine + "}\n");
+                        if(pythonArff)
+                            bwVal.write(yhatZero + cleanLine + "\n");
+                        else
+                            bwVal.write("{0 "+ yhatNegOne + cleanLine + "}\n");
                         bwValStrings.write(yhatNegOne + ((topicalTraintrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                     }
                     trainValFileSize++;
@@ -208,30 +221,46 @@ public class TweetToArff {
                             //firstClassOne = true;
                         }
                         positives++;
-                        bw.write("{0 "+ yhatOne + cleanLine + "}\n");
+                        if(pythonArff)
+                            bw.write(yhatOne + cleanLine + "\n");
+                        else
+                            bw.write("{0 "+ yhatOne + cleanLine + "}\n");
                         bwStrings.write(yhatOne + cleanTextLine + "\n");
                     }else {
-                        bw.write("{0 "+yhatZero + cleanLine + "}\n");
+                        if(pythonArff)
+                            bw.write(yhatZero + cleanLine + "\n");
+                        else
+                            bw.write("{0 "+yhatNegOne + cleanLine + "}\n");
                         bwStrings.write(yhatNegOne + cleanTextLine + "\n");
                     }
                     trainFileSize++;
                 }
                 if(topicalTrain) {
-                    bwAllTrain.write(yhatOne + cleanLine + "\n");
-                    //bwAllTrain.write("{0 "+ yhatOne + cleanLine + "}\n");
+                    if(pythonArff)
+                        bwAllTrain.write(yhatOne + cleanLine + "\n");
+                    else
+                        bwAllTrain.write("{0 "+ yhatOne + cleanLine + "}\n");
                     bwAllTrainStrings.write(yhatOne + cleanTextLine + "\n");
                 }else {
-                    bwAllTrain.write(yhatZero + cleanLine + "\n");
-                    //bwAllTrain.write("{0 "+yhatNegOne + cleanLine + "}\n");
+                    if(pythonArff)
+                        bwAllTrain.write(yhatZero + cleanLine + "\n");
+                    else
+                        bwAllTrain.write("{0 "+yhatNegOne + cleanLine + "}\n");
                     bwAllTrainStrings.write(yhatNegOne + cleanTextLine + "\n");
                 }
             }
             else {
                 if(topicalTest) {
-                    bwTest.write(yhatOne + cleanLine + "\n");
+                    if(pythonArff)
+                        bwTest.write(yhatOne + cleanLine + "\n");
+                    else
+                        bwTest.write("{0 " + yhatOne + cleanLine + "}\n");
                     bwTestStrings.write(yhatOne + ((topicalTrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                 }else {
-                    bwTest.write(yhatZero + cleanLine + "\n");
+                    if(pythonArff)
+                        bwTest.write(yhatZero + cleanLine + "\n");
+                    else
+                        bwTest.write("{0 " + yhatNegOne + cleanLine + "}\n");
                     bwTestStrings.write(yhatNegOne + ((topicalTrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                 }
                 testFileSize++;
@@ -319,12 +348,14 @@ public class TweetToArff {
 
         int tweets2014Num = 0;long cDate;
         learningProblem.featureMap = new HashMap<>();
+        learningProblem.inverseFeatureMap = new HashMap<>();
         fileReaderA = new FileReader(learningProblem.path +learningProblem.featurepath + learningProblem.indexFileName + "_" + classname+"_" + k + ".csv");
         bufferedReaderA = new BufferedReader(fileReaderA);
         while ((line = bufferedReaderA.readLine()) != null) {
             splitSt = line.split(",");
             learningProblem.addFeatureOrders(Integer.valueOf(splitSt[2]));
-            learningProblem.featureMap.put(splitSt[0]+":"+splitSt[1].toLowerCase(), Integer.valueOf(splitSt[2]));
+            learningProblem.featureMap.put(splitSt[0] + ":" + splitSt[1].toLowerCase(), Integer.valueOf(splitSt[2]));
+            learningProblem.inverseFeatureMap.put(Integer.valueOf(splitSt[2]), splitSt[0]+":"+splitSt[1].toLowerCase());
         }
         bufferedReaderA.close();
         if (!configRead.getTestFlag())

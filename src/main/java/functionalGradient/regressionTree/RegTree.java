@@ -4,9 +4,7 @@ package functionalGradient.regressionTree;
  * Created by zahraiman on 1/29/16.
  */
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -119,11 +117,11 @@ public class RegTree extends REPTree {
 
             RegressionProblem cp = new RegressionProblem(dataPath);
             classifier = new RegTree();
-            classifier.setOptions(new String[]{"-M", "2", "-L", Integer.toString(10), "-V", "-1"});
+            classifier.setOptions(new String[]{"-M", "2", "-L", Integer.toString(10), "-V", "0.001"});
             cp.getData().setClassIndex(0);
 //            ArrayList<Instances> splittedData = splitData(cp, new double[]{70, 30});
             classifier.buildClassifier(cp.getData());
-            Pair<ArrayList, HashMap> resRegTree = classifier.buildRegTree(dataPath, treeDepth);
+            Pair<ArrayList, HashMap> resRegTree = tree2DDList(classifier.toString());
             return resRegTree;
             //treeVars = tree2DDList(classifier.toString());
 
@@ -289,6 +287,57 @@ public class RegTree extends REPTree {
             tree.add(left);
 
         return tree;
+    }
+
+    //BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructurePath));
+    public static ArrayList makeStepTreeFromPythonRes(HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructFilePath));
+        String line, nodeName, root = "";
+        ArrayList left, right, tmp;
+        int featureNum;
+        String[] splits;
+        HashMap<String, ArrayList> nodeValues = new HashMap<>();
+        int ind = 0;
+        double value;
+
+        while((line = bufferedReader.readLine()) != null) {
+            ind++;
+            splits = line.split(" ");
+            nodeName = splits[0];
+            if (splits[1].equals("leafNode")) {
+                value = Double.valueOf(splits[4].split("]]s")[0]);
+                ArrayList al = nodeValues.get(nodeName);
+                if(al == null)
+                    al = new ArrayList();
+                al.add(new BigDecimal(value));
+            } else {
+                featureNum = Integer.valueOf(splits[1].split("X_")[1])+1;//featureNum here starts from zero
+                if (!splits[2].equals("<=") || !splits[3].equals("0.5s"))
+                    System.out.println("Something is wrong");
+                if(nodeValues.containsKey(splits[5]))
+                    left = nodeValues.get(splits[5]);
+                else
+                    left = new ArrayList();
+                if(nodeValues.containsKey(splits[7]))
+                    right = nodeValues.get(splits[7]);
+                else
+                    right = new ArrayList();
+                nodeValues.put(splits[5], left);
+                nodeValues.put(splits[7], right);
+
+                tmp = nodeValues.get(nodeName);
+                if(tmp == null)
+                    tmp = new ArrayList();
+                tmp.add(featureNum);
+                tmp.add(left);
+                tmp.add(right);
+                nodeValues.put(nodeName, tmp);
+                if (ind == 1) {
+                    root = nodeName;
+                }
+            }
+        }
+        return nodeValues.get(root);
     }
 
 }
