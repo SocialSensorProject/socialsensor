@@ -18,11 +18,13 @@ public class TweetToArff {
     public static int k;
     public static TweetUtil tweetUtil;
     public static boolean pythonArff;
+    public static boolean liblinearSparse;
 
-    public TweetToArff(int _numOfFeatures, boolean _pythonArff) throws IOException {
+    public TweetToArff(int _numOfFeatures, boolean _pythonArff, boolean _liblinearSparse) throws IOException {
         tweetUtil = new TweetUtil();
         k = _numOfFeatures;
         pythonArff = _pythonArff;
+        liblinearSparse = _liblinearSparse;
     }
 
     public void writeHeader(BufferedWriter bw, LearningProblem learningProblem) throws IOException {
@@ -74,29 +76,11 @@ public class TweetToArff {
         HashSet<String> testHashtags = new HashSet<>();
         trainTrainHashtags = new HashSet<>();
         HashSet<String> trainValHashtags = new HashSet<>();
-        String[] hNames = {LearningProblem.trainHashtagList, LearningProblem.testHashtagList, LearningProblem.trainHashtagList + "_t", LearningProblem.trainHashtagList + "_v"};
-        boolean topicalVal, topicalTrain, topicalTraintrain, topicalTest;
-        for(String hName : hNames) {
-            fileReaderA = new FileReader(LearningProblem.path + LearningProblem.classNames[classInd-1] + "/fold" + k + "/" + hName + ".csv");
-            bufferedReaderA = new BufferedReader(fileReaderA);
-            while ((line = bufferedReaderA.readLine()) != null) {
-                switch(hName) {
-                    case("trainHashtagList"):
-                        trainHashtags.add("hashtag:" + line) ;
-                        break;
-                    case("testHashtagList"):
-                        testHashtags.add("hashtag:" + line);
-                        break;
-                    case("trainHashtagList_t"):
-                        trainTrainHashtags.add("hashtag:" + line) ;
-                        break;
-                    case("trainHashtagList_v"):
-                        trainValHashtags.add("hashtag:" + line);
-                        break;
-                }
-            }
-            bufferedReaderA.close();
-        }
+        learningProblem.MakeHashtagLists(LearningProblem.classNames[classInd - 1], trainHashtags, trainTrainHashtags, testHashtags, trainValHashtags, k);
+        boolean topicalVal;
+        boolean topicalTrain;
+        boolean topicalTraintrain;
+        boolean topicalTest;
 
 //        tweetUtil.runStringCommand("perl -MList::Util -e 'print List::Util::shuffle <>' " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv" + " > " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet2.csv");
 //        tweetUtil.runStringCommand("rm -f " + path + "out_tweet_hashtag_user_mention_term_time_location_"+(classInd+1)+"_allInnerJoins_parquet.csv");
@@ -121,7 +105,7 @@ public class TweetToArff {
         bwTestStrings = new BufferedWriter(fwTestStrings);
 
         //WRITE THE HASHTAG LIST BASED ON TIMESTAMP
-        if(!pythonArff) {
+        if(!pythonArff && !liblinearSparse) {
             writeHeader(bw, learningProblem);
             writeHeader(bwTest, learningProblem);
             writeHeader(bwVal, learningProblem);
@@ -182,6 +166,8 @@ public class TweetToArff {
             for (long st : tmp) {
                 if(pythonArff)
                     cleanLine += "," + new BigDecimal(st).toPlainString();
+                else if(liblinearSparse)
+                    cleanLine += " " + new BigDecimal(st).toPlainString() + ":1";
                 else
                     cleanLine += "," + new BigDecimal(st).toPlainString() + " 1";
             }
@@ -198,17 +184,17 @@ public class TweetToArff {
                     totalVal++;
                     if(topicalVal) {
                         positivesVal++;
-                        if(pythonArff)
+                        if(pythonArff || liblinearSparse)
                             bwVal.write(yhatOne + cleanLine + "\n");
                         else
                             bwVal.write("{0 "+ yhatOne + cleanLine + "}\n");
                         bwValStrings.write(yhatOne + ((topicalTraintrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") +cleanTextLine + "\n");
                     }else {
-                        if(pythonArff)
+                        if(pythonArff || liblinearSparse)
                             bwVal.write(yhatZero + cleanLine + "\n");
                         else
                             bwVal.write("{0 "+ yhatNegOne + cleanLine + "}\n");
-                        bwValStrings.write(yhatNegOne + ((topicalTraintrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
+                        bwValStrings.write(yhatZero + ((topicalTraintrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                     }
                     trainValFileSize++;
                 }else {//TRAIN_TRAIN
@@ -221,47 +207,47 @@ public class TweetToArff {
                             //firstClassOne = true;
                         }
                         positives++;
-                        if(pythonArff)
+                        if(pythonArff || liblinearSparse)
                             bw.write(yhatOne + cleanLine + "\n");
                         else
                             bw.write("{0 "+ yhatOne + cleanLine + "}\n");
                         bwStrings.write(yhatOne + cleanTextLine + "\n");
                     }else {
-                        if(pythonArff)
+                        if(pythonArff || liblinearSparse)
                             bw.write(yhatZero + cleanLine + "\n");
                         else
                             bw.write("{0 "+yhatNegOne + cleanLine + "}\n");
-                        bwStrings.write(yhatNegOne + cleanTextLine + "\n");
+                        bwStrings.write(yhatZero + cleanTextLine + "\n");
                     }
                     trainFileSize++;
                 }
                 if(topicalTrain) {
-                    if(pythonArff)
+                    if(pythonArff || liblinearSparse)
                         bwAllTrain.write(yhatOne + cleanLine + "\n");
                     else
                         bwAllTrain.write("{0 "+ yhatOne + cleanLine + "}\n");
                     bwAllTrainStrings.write(yhatOne + cleanTextLine + "\n");
                 }else {
-                    if(pythonArff)
+                    if(pythonArff || liblinearSparse)
                         bwAllTrain.write(yhatZero + cleanLine + "\n");
                     else
                         bwAllTrain.write("{0 "+yhatNegOne + cleanLine + "}\n");
-                    bwAllTrainStrings.write(yhatNegOne + cleanTextLine + "\n");
+                    bwAllTrainStrings.write(yhatZero + cleanTextLine + "\n");
                 }
             }
             else {
                 if(topicalTest) {
-                    if(pythonArff)
+                    if(pythonArff || liblinearSparse)
                         bwTest.write(yhatOne + cleanLine + "\n");
                     else
                         bwTest.write("{0 " + yhatOne + cleanLine + "}\n");
                     bwTestStrings.write(yhatOne + ((topicalTrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                 }else {
-                    if(pythonArff)
+                    if(pythonArff || liblinearSparse)
                         bwTest.write(yhatZero + cleanLine + "\n");
                     else
                         bwTest.write("{0 " + yhatNegOne + cleanLine + "}\n");
-                    bwTestStrings.write(yhatNegOne + ((topicalTrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
+                    bwTestStrings.write(yhatZero + ((topicalTrain)? " 1" : " 0") + ((numOfHashtags == 0)? " 0" : " 1") + cleanTextLine + "\n");
                 }
                 testFileSize++;
             }

@@ -37,11 +37,7 @@ def main():
 	row = 0;
 	for line in csvreader:
 		#print(line)
-		if line[0] == '1':
-			#matrix.data[row].append(0)
-			targets.append(1)
-		else:
-			targets.append(0)
+		targets.append(line[0])
 		for index in range(len(line)):
 			if index > 0:
 				matrix[row,int(line[index])-1] = 1
@@ -49,7 +45,7 @@ def main():
 		row = row + 1;
 		#print(row)
 	print(matrix.shape)
-	print(len(targets))
+	print(targets)
 	#=========================================================================================
 
 	from sklearn import metrics
@@ -76,7 +72,7 @@ def main():
 	values = regressor.tree_.value
 	print(len(feature))
 	print(feature)
-	print(zip(matrix[:,regressor.tree_.feature], regressor.tree_.threshold, regressor.tree_.children_left,regressor.tree_.children_right))
+	#print(zip(matrix[:,regressor.tree_.feature], regressor.tree_.threshold, regressor.tree_.children_left,regressor.tree_.children_right))
 	# The tree structure can be traversed to compute various properties such
 	# as the depth of each node and whether or not it is a leaf.
 	node_depth = np.zeros(shape=n_nodes)
@@ -115,6 +111,7 @@ def main():
 	print(X.shape)
 	csvreader = csv.reader(open(testPath), delimiter=',')
 	predictionWriter= open('RegTree/predictions_'+str(iteration)+'.txt', 'w');
+	trainEvaluateWriter= open('RegTree/trainPredictions_'+str(iteration)+'.txt', 'w');
 
 	targets_test = []
 	row = 0;
@@ -134,16 +131,21 @@ def main():
 
 	expected = targets_test
 	predicted = regressor.predict(X)
+	predictedTrain = regressor.predict(matrix)
 #	error = 0;
 	print(len(predicted))
 	for i in range(len(predicted)):
 		predictionWriter.write(str(expected[i])+" "+str(predicted[i]))
 		predictionWriter.write("\n")
+	for i in range(len(predictedTrain)):
+		trainEvaluateWriter.write(str(predictedTrain[i]))
+		trainEvaluateWriter.write("\n")
 #		error = error + abs(expected[i] - predicted[i])
 #		if( abs(expected[i] - predicted[i]) > 0):
 #			print (str(expected[i]) + " - " + str(predicted[i]))
 #		print (str(expected[i]) + " - " + str(predicted2[i]) + " - " + str(predicted5[i]) + " - " + str(predicted[i]))
-	predictionWriter.close();
+	predictionWriter.close()
+	trainEvaluateWriter.close()
 	print("error: " + str(mean_squared_error(expected,predicted)))
 	print("r2_score: " + str(r2_score(expected,predicted)))
 #	print("cross_val_score: " + str(cross_val_score(expected,predicted)))

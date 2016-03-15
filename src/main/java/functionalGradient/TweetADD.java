@@ -4,17 +4,18 @@ import ddInference.src.graph.Graph;
 import ddInference.src.logic.add.ADD;
 import ddInference.src.logic.add_gen.DD;
 import ddInference.src.logic.add_gen.FBR;
+import functionalGradient.regressionTree.RegTree;
 import machinelearning.LearningProblem;
 import util.ConfigRead;
+import util.TweetUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
  * Created by zahraiman on 2/24/16.
  */
-public class TweetToADD {
+public class TweetADD {
     public static int maxTreeSize;
     public static int maxLeafNum;
     public static FBR _context;
@@ -25,7 +26,7 @@ public class TweetToADD {
     public final static double FLUSH_PERCENT_MINIMUM = 0.3d; // Won't flush
     public static Runtime RUNTIME = Runtime.getRuntime();
 
-    public TweetToADD(LearningProblem _learningProblem, FBR context, boolean _bigram) throws IOException {
+    public TweetADD(LearningProblem _learningProblem, FBR context, boolean _bigram) throws IOException {
         ConfigRead configRead = new ConfigRead();
         maxTreeSize = configRead.getMaxTreeSize();
         maxLeafNum = configRead.getMaxLeafNum();
@@ -192,5 +193,66 @@ public class TweetToADD {
             System.out.println("time taken : " + (after-before)/1000 + " seconds");
         }
         return dd;
+    }
+
+    public double computeF0(String dataPath) throws IOException {
+        String tweet;
+        String[] splits;
+        double mean = 0;
+        int ind = 0;
+        BufferedReader sampleReader = new BufferedReader(new FileReader(dataPath));
+
+        while ( (tweet = sampleReader.readLine()) != null) {
+            splits = tweet.split(",")[0].split(" ");
+            mean += Double.valueOf(splits[splits.length - 1]); // Read label first
+            ind++;
+        }
+        mean /= ind;
+        sampleReader.close();
+        return (0.5 * Math.log((1+mean)/(1-mean)));
+    }
+
+    public Object trainBoostedRegTree(String arffDataPath, String filePath, String testArffDataPath, int iteration, int trainFileSize, int testFileSize, int numOfFeatures, int treeDepth) throws IOException, InterruptedException {
+        Object fun;
+        //Build Regression Tree
+        //treeVars = regTree.buildRegTree(dataPath, treeDepth);
+        arffDataPath = updateTargetValues(arffDataPath, iteration, filePath + learningProblem.trainFileName);
+        TweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
+                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + treeDepth + " " + iteration);
+        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + ".txt");
+        //Build ADD from the tree
+        fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
+        return fun;
+    }
+
+    private String updateTargetValues(String arffDataPath, int iteration, String path) throws IOException {
+        if(iteration < 2)
+            return arffDataPath;
+        String arffDataPath2 = path + "__t"+iteration+".arff";
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/trainPredictions_"+(iteration-1)+".txt"));
+        BufferedReader bufferedReader2 = new BufferedReader(new FileReader(arffDataPath));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(arffDataPath2));
+        String line, cleanLine;
+        double value, expected;
+        int ind = 0;
+        String[] splits;
+
+        while((line = bufferedReader2.readLine()) != null){
+            cleanLine = "";
+            splits = line.split(",");
+            expected = Double.valueOf(splits[0]);
+            if(expected == 0.0)
+                expected = -1.0;
+            value = Double.valueOf(bufferedReader.readLine());
+            value = (2*expected) / (1+Math.exp(2*expected*value));
+            for(int i = 1; i < splits.length; i++)
+                cleanLine += splits[i] + ",";
+            cleanLine = cleanLine.substring(0, cleanLine.length() - 1);
+            bufferedWriter.write(value + "," + cleanLine + "\n");
+        }
+        bufferedReader.close();
+        bufferedReader2.close();
+        bufferedWriter.close();
+        return arffDataPath2;
     }
 }

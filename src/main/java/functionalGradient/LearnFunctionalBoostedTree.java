@@ -1,22 +1,16 @@
 package functionalGradient;
 
 import ddInference.src.graph.Graph;
-import ddInference.src.logic.add_gen.ADD;
 import ddInference.src.logic.add_gen.DD;
 import ddInference.src.logic.add_gen.FBR;
 import functionalGradient.regressionTree.RegTree;
-import functionalGradient.regressionTree.RegressionProblem;
-import javafx.util.Pair;
+import machinelearning.Feature;
 import machinelearning.LearningProblem;
 import util.ConfigRead;
 import util.TweetResult;
 import util.TweetUtil;
-import weka.classifiers.Evaluation;
 
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -28,152 +22,137 @@ public class LearnFunctionalBoostedTree {
     public static ConfigRead configRead;
     public static final int MAX_ITERATION = 10000;
     public static final int MAX_TRAIN = 1500000;
-    public static final int numOfFeatures = 1000;//1166582;
+    public static int numOfFeatures;
     public static final int treeDepth = 4;
     public static FBR _context;
-    public static boolean makeADDdirectly = false;
-    public static boolean boostedRegTree = false;
-    public static boolean singleRegTree = true;
-    public static boolean pythonArff = true;
-    public static boolean bigram = false;
+    public static boolean makeADDdirectly;
+    public static boolean boostedRegTree;
+    public static boolean singleRegTree;
+    public static boolean logisticRegression;
+    public static boolean topWeightedLR;
+    public static boolean topMI;
+    public static boolean pythonArff;
+    public static boolean liblinearSparse;
+    public static boolean bigram;
     public static boolean trainVal = true;
+    public static final String trainMethod = "logisticRegression";
+    public static BufferedWriter reportWriter;
+    public static int validationBestK;
+    public static double validationBestC;
+
+    public static LogisticRegressionProblem lr;
     public static LearningProblem learningProblem;
     public static RegTree regTree;
+    public static int[] kValues = new int[]{5, 10, 100, 1000, 10000, 1000000, 1166582};
+    public static double[] cValues = {1e-8, 1e-7, 1e-6, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 1e4, 1e5, 1e7, 1e8};
 
     public static void main(String[] args) throws Exception {
+        setFlags(trainMethod);
         tweetUtil = new TweetUtil();
         configRead = new ConfigRead();
         learningProblem = new LearningProblem();
-        TweetToArff tweetToArff = new TweetToArff(numOfFeatures, pythonArff);
-        String dataPath, arffDataPath, validDataPath, validArffDataPath;
-        String testDataPath = "";
-        String testArffDataPath = "";
-        Pair<ArrayList, HashMap> treeVars;
-        ArrayList order;
-        BufferedReader sampleReader;
-        String[] splits;
-        TweetToADD tweetToADD;
-        Object fun = null, prevFun = null;
-        BufferedWriter bufferedWriter, bufferedWriter2;
-        LearningProblem.prepareDirectories(new int[]{numOfFeatures});
-        double currPrec = 0, prevPrec = 0, currMAP = 0, prevMAP = 0;
-        double[] mapP100 = new double[2];
-        Object copyADD, emptyADD;
-        double f0, mean = 0;
-        int trainFileSize, testFileSize;
-        String trainName, trainArffName, validName, validArffName, testName, testArffName, filePath;
+        learningProblem.solverType = "l2_lr";
+        reportWriter = new BufferedWriter(new FileWriter(learningProblem.path + "report_"+trainMethod));
+        for(int numFeat : new int[]{100, 1000, 10000, 100000, 1166582}) {
+            numOfFeatures = numFeat;
+            lr = new LogisticRegressionProblem(learningProblem, cValues);
 
-        for (int classInd = 1; classInd < 2/*configRead.getNumOfGroups()*/; classInd++) {
-            // Read train_train data
-            regTree = new RegTree();
-            String classname = configRead.getGroupNames()[classInd - 1];
-            learningProblem.getFeatureList(numOfFeatures, classname);
-            tweetToArff.makeHashtagSets(learningProblem, classInd);
-            order = new ArrayList();
-            order.addAll(learningProblem.featureMap.values());
-            _context = new FBR(1, learningProblem.getFeatureOrders()); // 1: ADD
-            tweetToADD = new TweetToADD(learningProblem, _context, bigram);
-            tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
-            filePath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/";
-            for(int tv = 0; tv < 2; tv++) {
-                if (trainVal) {
-                    trainName = learningProblem.trainFileName + "_t_strings.csv";
-                    trainArffName = learningProblem.trainFileName + "_t.arff";
-                    validName = learningProblem.trainFileName + "_v_strings.csv";
-                    validArffName = learningProblem.trainFileName + "_v.arff";
-                    testName = learningProblem.trainFileName + "_v_strings.csv";
-                    testArffName = learningProblem.trainFileName + "_v.arff";
-                    trainFileSize = learningProblem.getTrainFileSize()[classInd - 1];
-                    testFileSize = learningProblem.getTrainValFileSize()[classInd - 1];
-                } else {
-                    trainName = learningProblem.trainFileName + "_strings.csv";
-                    trainArffName = learningProblem.trainFileName + ".arff";
-                    validName = learningProblem.trainFileName + "_v_strings.csv";
-                    validArffName = learningProblem.trainFileName + "_v.arff";
-                    testName = learningProblem.testFileName + "_strings.csv";
-                    testArffName = learningProblem.testFileName + ".arff";
-                    trainFileSize = learningProblem.getTrainFileSize()[classInd - 1] + learningProblem.getTrainValFileSize()[classInd - 1];
-                    testFileSize = learningProblem.getTestFileSize()[classInd - 1];
-                }
-                dataPath = filePath + trainName;//.arff";
-                arffDataPath = filePath + trainArffName;
-                testDataPath = filePath + testName;
-                testArffDataPath = filePath + testArffName;
-                validDataPath = filePath + validName;
-                validArffDataPath = filePath + validArffName;
-                f0 = computeF0(dataPath);
+            TweetToArff tweetToArff = new TweetToArff(numOfFeatures, pythonArff, liblinearSparse);
+            String dataPath, arffDataPath, validDataPath, validArffDataPath, testDataPath = "", testArffDataPath = "";
+            String trainName, trainArffName, validName, validArffName, testName, testArffName, filePath;
+            LearningProblem.prepareDirectories(new int[]{numOfFeatures});
+            reportWriter.write(trainMethod + "," + numOfFeatures + "\n");
 
-                for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
-                    System.out.println("Iteration: " + iteration);
-                    sampleReader = new BufferedReader(new FileReader(dataPath));
-                    if (makeADDdirectly || bigram) {
-                        fun = tweetToADD.convertTweetsToADD(sampleReader, prevFun, iteration, classInd, f0);
-                        fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
-                        if (prevFun == null)
-                            fun = _context.scalarAdd(fun, f0);
-                        else
-                            fun = _context.applyInt(prevFun, fun, DD.ARITH_SUM);
+
+            for (int classInd = 1; classInd < configRead.getNumOfGroups(); classInd++) {
+                if (classInd != 1 && classInd != 6 && classInd != 9)
+                    continue;
+                //Split data to train/test and label them based on train/test hashtags
+                int trainFileSize, testFileSize;
+                String classname = configRead.getGroupNames()[classInd - 1];
+                reportWriter.write(classname + "\n");
+                learningProblem.getFeatureList(numOfFeatures, classname);
+                tweetToArff.makeHashtagSets(learningProblem, classInd);
+//            order = new ArrayList();
+//            order.addAll(learningProblem.featureMap.values());
+                _context = new FBR(1, learningProblem.getFeatureOrders()); // 1: ADD
+                TweetADD tweetADD = new TweetADD(learningProblem, _context, bigram);
+                tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
+
+                filePath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/";
+                ArrayList<String> sortedMIFeatures = null;
+                trainVal = true;
+                for (int tv = 0; tv < 2; tv++) {//TRAIN_VAL / TRAIN_TEST
+                    if (trainVal) {
+                        trainName = LearningProblem.trainFileName + "_t_strings.csv";
+                        trainArffName = LearningProblem.trainFileName + "_t.arff";
+                        validName = LearningProblem.trainFileName + "_v_strings.csv";
+                        validArffName = LearningProblem.trainFileName + "_v.arff";
+                        trainFileSize = learningProblem.getTrainFileSize()[classInd - 1];
+                        testFileSize = learningProblem.getTrainValFileSize()[classInd - 1];
+                    } else {
+                        trainName = LearningProblem.trainFileName + "_strings.csv";
+                        trainArffName = LearningProblem.trainFileName + ".arff";
+                        validName = LearningProblem.testFileName + "_strings.csv";
+                        validArffName = LearningProblem.testFileName + ".arff";
+                        trainFileSize = learningProblem.getTrainFileSize()[classInd - 1] + learningProblem.getTrainValFileSize()[classInd - 1];
+                        testFileSize = learningProblem.getTestFileSize()[classInd - 1];
+                    }
+                    dataPath = filePath + trainName;//.arff";
+                    arffDataPath = filePath + trainArffName;
+                    validDataPath = filePath + validName;
+                    validArffDataPath = filePath + validArffName;
+                    double f0 = tweetADD.computeF0(dataPath);
+
+                    double prevMAP = -1, prevPrec = -1;
+                    for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
+                        double currPrec = 0, currMAP = 0;
+                        System.out.println("Iteration: " + iteration);
+                        BufferedReader sampleReader = new BufferedReader(new FileReader(dataPath));
+                        Object fun = null, prevFun = null;
+
+                        if ((makeADDdirectly || bigram || boostedRegTree)) {
+                            if (boostedRegTree) {
+                                tweetADD.trainBoostedRegTree(arffDataPath, filePath, testArffDataPath, iteration, trainFileSize, testFileSize, numOfFeatures, treeDepth);
+                            } else {
+                                fun = tweetADD.convertTweetsToADD(sampleReader, prevFun, iteration, classInd, f0);
+                                sampleReader.close();
+                            }
+                            fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
+                            if (prevFun == null)
+                                prevFun = _context.scalarAdd(fun, f0);
+                            else
+                                prevFun = _context.applyInt(prevFun, fun, DD.ARITH_SUM);
+                        } else if (singleRegTree) {
+                            TweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
+                                    testFileSize + " " + arffDataPath + " " + validArffDataPath + " " + -1 + " " + iteration);
+                            ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + ".txt");
+                            fun = null;
+                        } else if (logisticRegression || topWeightedLR) {
+                            lr.trainLogisticRegression(arffDataPath, validArffDataPath, classname, classInd, numOfFeatures, trainVal);
+                        } else if (topMI) {
+                            sortedMIFeatures = learningProblem.getSortedMIFeatures(classname);
+                        }
+                        double[] mapP100 = validate(tweetADD, classname, classInd, fun, iteration, validDataPath, sortedMIFeatures, trainVal);
+                        currMAP = mapP100[0];
+                        currPrec = mapP100[1];
+                        if (currMAP < prevMAP || singleRegTree || logisticRegression || topWeightedLR || topMI) { // MAP Dropping
+                            break;
+                        }
                         sampleReader.close();
-                        prevFun = fun;
-                    } else if (boostedRegTree) {
-                        //Build Regression Tree
-                        //treeVars = regTree.buildRegTree(dataPath, treeDepth);
-                        tweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
-                                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + -1 + " " + iteration);
-                        ArrayList resRegTree = regTree.makeStepTreeFromPythonRes(null, "RegTree/treeStruct_" + iteration + ".txt");
-                        //Build ADD from the tree
-                        fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
-                    } else if (singleRegTree) {
-                        tweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
-                                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + -1 + " " + iteration);
-                        ArrayList resRegTree = regTree.makeStepTreeFromPythonRes(null, "RegTree/treeStruct_" + iteration + ".txt");
-                        fun = null;
-                        //fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
-                        //Pair<ArrayList, HashMap> resRegTree = regTree.buildSingleRegTree(arffDataPath, treeDepth);
+                        prevMAP = currMAP;
+                        reportWriter.flush();
                     }
-                    mapP100 = validate(tweetToADD, classname, classInd, fun, iteration, validDataPath, validArffDataPath);
-                /*copyADD = fun;
-                copyADD = _context.applyInt(copyADD, -1, DD.ARITH_ABS);
-                Object power2ADD = _context.applyInt(copyADD, -1, DD.ARITH_POW);
-                Object times2ADD = _context.scalarMultiply(copyADD, 2.0d);
-                copyADD = _context.applyInt(times2ADD, power2ADD, DD.ARITH_MINUS);
-                copyADD = _context.applyInt(fun, copyADD, DD.ARITH_DIV);
-                fun = _context.applyInt(fun, copyADD, DD.ARITH_PROD);*/
-
-                    currPrec = mapP100[1];
-                    currMAP = mapP100[0];
-
-                    if (currMAP < prevMAP || singleRegTree) { // MAP Dropping
-                        break;
-                    }
-                    sampleReader.close();
-                    prevMAP = currMAP;
+                    trainVal = false;
                 }
-                trainVal = false;
-            }
-            //TEST
-            /*mapP100 = validate(tweetToADD, classname, classInd, fun, -1, testDataPath, testArffDataPath);
+                //TEST
+            /*mapP100 = validate(tweetADD, classname, classInd, fun, -1, testDataPath, testArffDataPath);
             System.out.println("MAP: " + mapP100[0]);
             System.out.println("P@100: " + mapP100[1]);*/
+                reportWriter.flush();
+            }
         }
-    }
-
-
-    private static double computeF0(String dataPath) throws IOException {
-        String tweet;
-        String[] splits;
-        double mean = 0;
-        int ind = 0;
-        BufferedReader sampleReader = new BufferedReader(new FileReader(dataPath));
-
-        while ( (tweet = sampleReader.readLine()) != null) {
-            splits = tweet.split(",")[0].split(" ");
-            mean += Double.valueOf(splits[splits.length - 1]); // Read label first
-            ind++;
-        }
-        mean /= ind;
-        sampleReader.close();
-        return (0.5 * Math.log((1+mean)/(1-mean)));
+        reportWriter.close();
     }
 
     public static void visualizeGraph(Object dd, String fileName){
@@ -183,18 +162,20 @@ public class LearnFunctionalBoostedTree {
         //g.launchViewer(/*width, height*/);
     }
 
-    public static double[] validate(TweetToADD tweetToADD, String classname, int classInd, Object fun, int iteration, String testDataPath, String testArffDataPath) throws Exception {
+    public static double[] validate(TweetADD tweetADD, String classname, int classInd, Object fun, int iteration, String testDataPath, ArrayList<String> sortedMIFeatures, boolean validataion) throws Exception {
         //VALIDATION
         String[] splits;
-
-
         BufferedReader sampleReader = new BufferedReader(new FileReader(testDataPath));
         String tweet;
         int target_label;
         int validInd = 0, tp = 0, fp = 0, tn = 0, fn = 0, index;
-        List<TweetResult> tweetWeights = new ArrayList<>();
+        double bestC = -1;
+        ArrayList<TweetResult> tweetWeights = null;
+
+        reportWriter.write((validataion) ? "Validation\n" : "Test\n");
 
         if(makeADDdirectly || boostedRegTree || bigram) {
+            tweetWeights = new ArrayList<>();
             while ((tweet = sampleReader.readLine()) != null) {
                 target_label = 0;
                 splits = tweet.split(" ");
@@ -208,10 +189,11 @@ public class LearnFunctionalBoostedTree {
 
                 //Find the F_m-1 (x_i)
                 ArrayList<String> features = new ArrayList<String>();
-                for (int i = 1; i < splits.length - 1; i += 2) {
+                int startInd = 3;
+                for (int i = startInd; i < splits.length - 1; i += 2) {
                     features.add(splits[i]);
                 }
-                double value = tweetToADD.evaluateSampleInADD(learningProblem.featureMap, features, fun);
+                double value = tweetADD.evaluateSampleInADD(learningProblem.featureMap, features, fun);
                 System.out.println(validInd + " - " + target_label + " => " + value);
                 tweetWeights.add(new TweetResult(validInd, value, "", target_label));
                 double pPos = 1 / (1 + Math.exp(-2 * value));
@@ -227,28 +209,161 @@ public class LearnFunctionalBoostedTree {
 
             }
         }else if(singleRegTree) {
+            tweetWeights = new ArrayList<>();
             //tweetWeights = regTree.evaluateModel(testArffDataPath);
             BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/predictions_"+iteration+".txt"));
+            BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath));
             String line;
             validInd = 0;
             while((line = bufferedReader.readLine()) != null){
                 splits = line.split(" ");
-                tweetWeights.add(new TweetResult(validInd, Double.valueOf(splits[1]), "", Integer.valueOf(splits[0])));
+                tweetWeights.add(new TweetResult(validInd, Double.valueOf(splits[1]), bufferedReader1.readLine(), Integer.valueOf(splits[0])));
                 validInd++;
             }
             bufferedReader.close();
+            bufferedReader1.close();
+        }else if(logisticRegression){
+            double bestMap = -1, bestPrec = -1;
+            bestC = -1;
+            double[] _cValues = cValues;
+            if(!validataion) {
+                _cValues = new double[]{validationBestC};
+            }
+            for (double lambda : _cValues) {
+                tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, lambda, false);
+                Collections.sort(tweetWeights);
+                double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                if(mapP100[0] > bestMap) {
+                    bestMap = mapP100[0];
+                    bestPrec = mapP100[1];
+                    bestC = lambda;
+                }
+            }
+            validationBestC = bestC;
+            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestC" + "\n");
+            reportWriter.write(bestMap + "," + bestPrec + "," + bestC + "\n");
+            return new double[]{bestMap, bestPrec, -1, bestC};
+        }else if(topWeightedLR){
+            double bestMap = -1, bestPrec = -1;
+            int bestK = -1;
+            ArrayList<Feature> features;
+            int[] _kValues = kValues;
+            double[] _cValues = cValues;
+            if(!validataion) {
+                _kValues = new int[]{validationBestK};
+                _cValues = new double[]{validationBestC};
+            }
+            for(double cVal : _cValues) {
+                for (int k : _kValues) {
+                    features = lr.getFeatures(cVal);//TODO should fix it for the case of neg features if(firstFlag)
+                    Collections.sort(features);
+                    for (int i = 0; i < features.size() ; i++) {
+                        if((lr.isFirstFlagOne() && i >= features.size()-k) || (!lr.isFirstFlagOne() && i < k))
+                            features.get(i).setFeatureWeight(1);
+                        else
+                            features.get(i).setFeatureWeight(0);
+                    }
+                    tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, cVal, true);
+                    Collections.sort(tweetWeights);
+                    double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                    if(mapP100[0] > bestMap) {
+                        bestMap = mapP100[0];
+                        bestPrec = mapP100[1];
+                        bestK = k;
+                        bestC = cVal;
+                    }
+                }
+            }
+            validationBestC = bestC; validationBestK = bestK;
+            System.out.println("BestMAP: " + bestMap + " bestK: " + bestK + " bestC: " + bestC);
+            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestK" + "," + "bestC" + "\n");
+            reportWriter.write(bestMap + "," + bestPrec + "," + bestK + "," + bestC + "\n");
+            return new double[]{bestMap, bestPrec, bestK, bestC};
+        }else if(topMI){
+            double bestMap = -1, bestPrec = -1;
+            int bestK = -1;
+            ArrayList<Feature> features = new ArrayList<>();
+            int[] _kValues = kValues;
+            if(!validataion)
+                _kValues = new int[]{validationBestK};
+            for (int k : _kValues) {
+                for (int i = 0; i < sortedMIFeatures.size() ; i++) {
+                    if(i < k)
+                        features.add(new Feature(sortedMIFeatures.get(i), 1));
+                    else
+                        features.add(new Feature(sortedMIFeatures.get(i), 0));
+                }
+                validationBestC = bestC; validationBestK = bestK;
+                lr.setFeatures(features, 1);
+                tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, 1, true);
+                Collections.sort(tweetWeights);
+                double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                if(mapP100[0] > bestMap) {
+                    bestMap = mapP100[0];
+                    bestPrec = mapP100[1];
+                    bestK = k;
+                }
+            }
+            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestK" + "\n");
+            reportWriter.write(bestMap + "," + bestPrec + "," + bestK + "\n");
+            System.out.println("BestMAP: " + bestMap + " bestK: " + bestK);
+            return new double[]{bestMap, bestPrec, bestK, -1};
         }
         Collections.sort(tweetWeights);
         double [] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+        reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "iteration" + "\n");
+        reportWriter.write(mapP100[0] + "," + mapP100[1] + "," + iteration + "\n");
         System.out.println("Iteration: " + iteration + " - MAP: " + mapP100[0] + " P@100: " + mapP100[1]);
         System.out.println("TP: " + tp + " out of " + validInd);
         System.out.println("FP: " + fp);
         System.out.println("TN: " + tn);
         System.out.println("FN: " + fn);
-        return mapP100;
+        return new double[]{mapP100[0], mapP100[1], -1, bestC};
+    }
+
+
+
+    public static void setFlags(String trainMethod) {
+        switch (trainMethod) {
+            case ("makeADDdirectly"):// (makeADDdirectly || bigram || boostedRegTree)
+                pythonArff = true;
+                makeADDdirectly = true;
+                break;
+            case ("bigram"):
+                pythonArff = true;
+                bigram = true;
+                break;
+            case ("boostedRegTree"):
+                pythonArff = true;
+                boostedRegTree = true;
+                break;
+            case ("singleRegTree"):
+                pythonArff = true;
+                singleRegTree = true;
+                break;
+            case ("logisticRegression"):
+                liblinearSparse = true;
+                logisticRegression = true;
+                break;
+            case ("topWeightedLR"):
+                topWeightedLR = true;
+                liblinearSparse = true;
+                break;
+            case ("topMI"):
+                topMI = true;
+                break;
+        }
     }
 }
+/*copyADD = fun;
+                copyADD = _context.applyInt(copyADD, -1, DD.ARITH_ABS);
+                Object power2ADD = _context.applyInt(copyADD, -1, DD.ARITH_POW);
+                Object times2ADD = _context.scalarMultiply(copyADD, 2.0d);
+                copyADD = _context.applyInt(times2ADD, power2ADD, DD.ARITH_MINUS);
+                copyADD = _context.applyInt(fun, copyADD, DD.ARITH_DIV);
+                fun = _context.applyInt(fun, copyADD, DD.ARITH_PROD);*/
 /*
+
                 readFlag = false;
                 sampleTerminalValue = new HashMap<>();   // X \in R_jm
                 terminalNodeValues = new HashMap<>();   // R_jm

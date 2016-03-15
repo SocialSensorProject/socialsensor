@@ -46,8 +46,8 @@ public class LearningProblem {
     public static ConfigRead configRead;
     public static boolean testFlag;
     public static Map<Integer, String> invFeatures;
-    public static double percentageTrain = 0.4;
-    public static double percentageVal = 0.6;
+    public static double percentageTrain = 0.5;
+    public static double percentageVal = 0.7;
     public static Map<String, Long> hashtagDate;
     public static HashSet<String> trainHashtags;
     public static HashSet<String> trainTrainHashtags;
@@ -67,91 +67,91 @@ public class LearningProblem {
     private static int[] positivesVal;
     public static String[][] splitDatesStr;
 
-    public static int[] getTestFileSize() {
+    public int[] getTestFileSize() {
         return testFileSize;
     }
 
-    public static int[] getTrainFileSize() {
+    public int[] getTrainFileSize() {
         return trainFileSize;
     }
 
-    public static void setTrainFileSize(int _trainFileSize, int classInd) {
+    public void setTrainFileSize(int _trainFileSize, int classInd) {
         if(trainFileSize == null)
             trainFileSize = new int[configRead.getNumOfGroups()];
         trainFileSize[classInd] = _trainFileSize;
     }
 
-    public static ArrayList<Integer> getFeatureOrders() {
+    public ArrayList<Integer> getFeatureOrders() {
         return featureOrders;
     }
 
-    public static void addFeatureOrders(int _featureOrder) {
+    public void addFeatureOrders(int _featureOrder) {
         if(featureOrders == null)
             featureOrders = new ArrayList<>();
         featureOrders.add(_featureOrder);
     }
 
-    public static void setTestFileSize(int _testFileSize, int classInd) {
+    public void setTestFileSize(int _testFileSize, int classInd) {
         if(testFileSize == null)
             testFileSize = new int[configRead.getNumOfGroups()];
         testFileSize[classInd] = _testFileSize;
     }
 
-    public static int[] getTrainValFileSize() {
+    public int[] getTrainValFileSize() {
         return trainValFileSize;
     }
 
-    public static void setTrainValFileSize(int _trainValFileSize, int classInd) {
+    public void setTrainValFileSize(int _trainValFileSize, int classInd) {
         if(trainValFileSize == null)
             trainValFileSize = new int[configRead.getNumOfGroups()];
         trainValFileSize[classInd] = _trainValFileSize;
     }
 
-    public static int[] getTotal() {
+    public int[] getTotal() {
         return total;
     }
 
-    public static void setTotal(int _total, int classInd) {
+    public void setTotal(int _total, int classInd) {
         if(total == null)
             total = new int[configRead.getNumOfGroups()];
         total[classInd] = _total;
     }
 
-    public static int[] getTotalVal() {
+    public int[] getTotalVal() {
         return totalVal;
     }
 
-    public static void setTotalVal(int _totalVal, int classInd) {
+    public void setTotalVal(int _totalVal, int classInd) {
         if(totalVal == null)
             totalVal = new int[configRead.getNumOfGroups()];
         totalVal[classInd] = _totalVal;
     }
 
-    public static int[] getPositives() {
+    public int[] getPositives() {
         return positives;
     }
 
-    public static void setPositives(int _positives, int classInd) {
+    public void setPositives(int _positives, int classInd) {
         if(positives == null)
             positives = new int[configRead.getNumOfGroups()];
         positives[classInd] = _positives;
     }
 
-    public static int[] getPositivesVal() {
+    public int[] getPositivesVal() {
         return positivesVal;
     }
 
-    public static void setPositivesVal(int _positivesVal, int classInd) {
+    public void setPositivesVal(int _positivesVal, int classInd) {
         if(positivesVal == null)
             positivesVal = new int[configRead.getNumOfGroups()];
         positivesVal[classInd] = _positivesVal;
     }
 
-    public static String[][] getSplitDatesStr() {
+    public String[][] getSplitDatesStr() {
         return splitDatesStr;
     }
 
-    public static void setSplitDatesStr(String[] _splitDatesStr, int classInd) {
+    public void setSplitDatesStr(String[] _splitDatesStr, int classInd) {
         if(splitDatesStr == null)
             splitDatesStr = new String[configRead.getNumOfGroups()][2];
         splitDatesStr[classInd] = _splitDatesStr;
@@ -187,7 +187,7 @@ public class LearningProblem {
         totalVal = new int[classNames.length];
     }
 
-    public static void getFeatureList(double k, String classname) throws IOException, InterruptedException {
+    public void getFeatureList(double k, String classname) throws IOException, InterruptedException {
         FileReader fileReaderA = new FileReader(path + classname + "/featuresMI.csv");
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
         FileWriter fw = new FileWriter(path +featurepath + indexFileName + "_" + classname+"_" + (int)k + ".csv");
@@ -206,6 +206,23 @@ public class LearningProblem {
         bufferedReaderA.close();
     }
 
+    public ArrayList<String> getSortedMIFeatures(String classname) throws IOException, InterruptedException {
+        FileReader fileReaderA = new FileReader(path + classname + "/featuresMI.csv");
+        ArrayList<String> topFeaturesNames = new ArrayList<>();
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        String line = "";
+        int ind = 0;
+        String[] splits;
+
+        while((line = bufferedReaderA.readLine()) != null){
+            splits = line.split(",");
+            ind++;
+            topFeaturesNames.add(splits[0]+":"+splits[1]);
+        }
+        bufferedReaderA.close();
+        return topFeaturesNames;
+    }
+
     public static double[] computePrecisionMAP(List<TweetResult> tweetWeights, String classname, int classInd, int numOfFeatures, int iteration, String _solverType) throws IOException, InterruptedException {
         double map, p100;
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(LRPath + classname + "/" + "/fold" + numOfFeatures + "/" + "out_" + outputFileName + "_" + iteration + "_qrel" + "_csv"));
@@ -221,11 +238,15 @@ public class LearningProblem {
         bufferedWriter2.close();
 
         BufferedReader bufferedReaderA;
-        tweetUtil.runStringCommand(trecPath + "/trec_eval -a " + LRPath + classname + "/" +
+        TweetUtil.runStringCommand(trecPath + "/trec_eval -a " + LRPath + classname + "/" +
                 "/fold" + numOfFeatures + "/" + "out_" + outputFileName + "_" + iteration + "_qrel" +
                 "_csv " + LRPath + classname + "/" + "/fold" + numOfFeatures + "/" + "out_" +
                 outputFileName + "_" + iteration + "_qtop" + "_csv > " + LRPath + classname +
                 "/" + "/fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv");
+        TweetUtil.runStringCommand("rm -f " + LRPath + classname + "/" +
+                "/fold" + numOfFeatures + "/" + "out_" + outputFileName + "_" + iteration + "_qrel" + "_csv ");
+        TweetUtil.runStringCommand("rm -f "+LRPath + classname + "/" + "/fold" + numOfFeatures + "/" + "out_" +
+                        outputFileName + "_" + iteration + "_qtop" + "_csv");
 
         bufferedReaderA = new BufferedReader(new FileReader(LRPath + classname + "/" + "/fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv"));
 
@@ -267,6 +288,69 @@ public class LearningProblem {
                 tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lrd" + "/" + "fold" + k + "/bestc");
                 tweetUtil.runStringCommand("mkdir " + LRPath + classname + "/l2_lrd" + "/" + "fold" + k + "/bestk");
             }
+        }
+    }
+
+    public static ArrayList<Feature> writeFeatureFile(String classname, String modelName, int k, String featurePath, String valTest, double lambda) throws IOException, InterruptedException {
+        //build test/train data and hashtag lists
+        ArrayList<Feature> features = new ArrayList<>();
+        FileReader fileReaderA = new FileReader(modelName);
+        BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
+        FileReader fileReaderB = new FileReader(featurePath);
+        BufferedReader bufferedReaderB = new BufferedReader(fileReaderB);
+        tweetUtil.runStringCommand("mkdir " + path + classname +"/fold" + k +  "/" + valTest + "/");
+        tweetUtil.runStringCommand("mkdir " + path + classname +"/fold" + k +  "/" + valTest + "/" + solverType + "/");
+        FileWriter fw = new FileWriter(path + classname +"/fold" + k +  "/" + valTest + "/" + solverType + "/featureWeights_" + lambda + ".csv");
+        BufferedWriter bw = new BufferedWriter(fw);
+        String line = "", line2;String [] splits;int ind = 0;
+        for(int kk = 0; kk < 6; kk++)//read header
+            line = bufferedReaderA.readLine();
+        List<String> featureWeights = new ArrayList<>();
+        while ((line = bufferedReaderA.readLine()) != null) {//last line of model is the bias feature
+            featureWeights.add(new BigDecimal(Double.valueOf(line)).toPlainString());
+        }
+        for(int ik = 0; ik < featureWeights.size()-1; ik++) {
+            line2 = bufferedReaderB.readLine();
+            ind++;
+            splits = line2.split(",");
+            bw.write(splits[0].toLowerCase() + ":" + splits[1].toLowerCase() + "," + featureWeights.get(ik) + "\n");
+            features.add(new Feature(splits[0].toLowerCase() + ":" + splits[1].toLowerCase(), Double.valueOf(featureWeights.get(ik))));
+        }
+        fileReaderA.close();
+        fileReaderB.close();
+        bw.close();
+        tweetUtil.runStringCommand("sort -t',' -rn -k3,3 " + path + classname + "/fold" + k + "/" + valTest + "/" + solverType + "/featureWeights_" + lambda + ".csv > " + path + classname + "/fold" + k + "/" + valTest + "/" + solverType + "/featureWeights1_" + lambda + ".csv");
+        tweetUtil.runStringCommand("rm -rf " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights_" + lambda + ".csv");
+        tweetUtil.runStringCommand("mv " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights1_" + lambda + ".csv " + path + classname + "/fold" + k + "/" +  valTest + "/" + solverType + "/featureWeights_" + lambda + ".csv");
+        //return Double.valueOf(featureWeights.get(featureWeights.size()-1));
+        return features;
+    }
+
+    public void MakeHashtagLists(String className, HashSet<String> trainHashtags, HashSet<String> trainTrainHashtags, HashSet<String> testHashtags, HashSet<String> trainValHashtags, int numOfFeatures) throws IOException {
+        FileReader fileReaderA;
+        BufferedReader bufferedReaderA;
+        String line;
+        String[] hNames = {trainHashtagList, testHashtagList, trainHashtagList + "_t", trainHashtagList + "_v"};
+        for(String hName : hNames) {
+            fileReaderA = new FileReader(LearningProblem.path + className + "/fold" + numOfFeatures + "/" + hName + ".csv");
+            bufferedReaderA = new BufferedReader(fileReaderA);
+            while ((line = bufferedReaderA.readLine()) != null) {
+                switch(hName) {
+                    case("trainHashtagList"):
+                        trainHashtags.add("hashtag:" + line) ;
+                        break;
+                    case("testHashtagList"):
+                        testHashtags.add("hashtag:" + line);
+                        break;
+                    case("trainHashtagList_t"):
+                        trainTrainHashtags.add("hashtag:" + line) ;
+                        break;
+                    case("trainHashtagList_v"):
+                        trainValHashtags.add("hashtag:" + line);
+                        break;
+                }
+            }
+            bufferedReaderA.close();
         }
     }
 }

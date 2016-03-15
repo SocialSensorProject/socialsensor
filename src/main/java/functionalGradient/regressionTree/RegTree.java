@@ -294,7 +294,7 @@ public class RegTree extends REPTree {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructFilePath));
         String line, nodeName, root = "";
         ArrayList left, right, tmp;
-        int featureNum;
+        Object featureNum;
         String[] splits;
         HashMap<String, ArrayList> nodeValues = new HashMap<>();
         int ind = 0;
@@ -305,13 +305,16 @@ public class RegTree extends REPTree {
             splits = line.split(" ");
             nodeName = splits[0];
             if (splits[1].equals("leafNode")) {
-                value = Double.valueOf(splits[4].split("]]s")[0]);
+                if(!splits[3].equals("[["))
+                    value = Double.valueOf(splits[3].split("\\[\\[")[1].split("]]s")[0]);
+                else
+                    value = Double.valueOf(splits[4].split("]]s")[0]);
                 ArrayList al = nodeValues.get(nodeName);
                 if(al == null)
                     al = new ArrayList();
                 al.add(new BigDecimal(value));
             } else {
-                featureNum = Integer.valueOf(splits[1].split("X_")[1])+1;//featureNum here starts from zero
+                featureNum = inverseFeatureMap.get(Integer.valueOf(splits[1].split("X_")[1])+1);//featureNum here starts from zero
                 if (!splits[2].equals("<=") || !splits[3].equals("0.5s"))
                     System.out.println("Something is wrong");
                 if(nodeValues.containsKey(splits[5]))
@@ -329,8 +332,8 @@ public class RegTree extends REPTree {
                 if(tmp == null)
                     tmp = new ArrayList();
                 tmp.add(featureNum);
-                tmp.add(left);
                 tmp.add(right);
+                tmp.add(left);
                 nodeValues.put(nodeName, tmp);
                 if (ind == 1) {
                     root = nodeName;
