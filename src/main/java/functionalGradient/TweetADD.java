@@ -102,8 +102,8 @@ public class TweetADD {
             }
             _context.addTidIndicator(tid, ddr);
         }
-//        if(topicalLabel == 1.0)
-//            yhat *= (learningProblem.getTotal()[classInd-1] - (learningProblem.getPositives()[classInd-1]))/learningProblem.getPositives()[classInd-1];
+        if(topicalLabel == 1.0)
+            yhat *= (learningProblem.getTotal()[classInd-1] - (learningProblem.getPositives()[classInd-1]))/learningProblem.getPositives()[classInd-1];
         ddr = _context.scalarMultiply(ddr, yhat);
         return ddr;
     }

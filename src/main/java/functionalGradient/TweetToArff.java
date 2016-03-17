@@ -19,6 +19,24 @@ public class TweetToArff {
     public static TweetUtil tweetUtil;
     public static boolean pythonArff;
     public static boolean liblinearSparse;
+    private boolean validRegTree;
+    private boolean testRegTree;
+
+    public boolean isValidRegTree() {
+        return validRegTree;
+    }
+
+    public void setValidRegTree(boolean validRegTree) {
+        this.validRegTree = validRegTree;
+    }
+
+    public boolean isTestRegTree() {
+        return testRegTree;
+    }
+
+    public void setTestRegTree(boolean testRegTree) {
+        this.testRegTree = testRegTree;
+    }
 
     public TweetToArff(int _numOfFeatures, boolean _pythonArff, boolean _liblinearSparse) throws IOException {
         tweetUtil = new TweetUtil();
@@ -26,6 +44,7 @@ public class TweetToArff {
         pythonArff = _pythonArff;
         liblinearSparse = _liblinearSparse;
     }
+
 
     public void writeHeader(BufferedWriter bw, LearningProblem learningProblem) throws IOException {
         ConfigRead configRead = new ConfigRead();
@@ -198,6 +217,19 @@ public class TweetToArff {
                     }
                     trainValFileSize++;
                 }else {//TRAIN_TRAIN
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(",");
+                    if(testRegTree){//remove trainValhashtags from
+                        for(String st : cleanLine.split(",")) {
+                            if(st.equals("")) continue;
+                            if(!trainTrainHashtags.contains(learningProblem.inverseFeatureMap.get(Integer.valueOf(st))))
+                                stringBuilder.append(st).append(",");
+                        }
+                        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+                        cleanLine = stringBuilder.toString();
+                        if(cleanLine.equals(""))
+                            continue;
+                    }
                     //yhatOne = computeYHat(1, fFun, iteartion, trainFileSize);
                     //yhatNegOne = computeYHat(-1, fFun, iteartion, trainFileSize);
                     total++;
@@ -220,6 +252,19 @@ public class TweetToArff {
                         bwStrings.write(yhatZero + cleanTextLine + "\n");
                     }
                     trainFileSize++;
+                }
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(",");
+                if(testRegTree){//remove trainValhashtags from
+                    for(String st : cleanLine.split(",")) {
+                        if(st.equals("")) continue;
+                        if(!trainHashtags.contains(learningProblem.inverseFeatureMap.get(Integer.valueOf(st))))
+                            stringBuilder.append(st).append(",");
+                    }
+                    stringBuilder.deleteCharAt(stringBuilder.length()-1);
+                    cleanLine = stringBuilder.toString();
+                    if(cleanLine.equals(""))
+                        continue;
                 }
                 if(topicalTrain) {
                     if(pythonArff || liblinearSparse)

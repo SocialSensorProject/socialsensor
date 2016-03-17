@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Created by zahraiman on 2/17/16.
  */
-public class LearnFunctionalBoostedTree {
+public class LearnBooleanQueries {
 
     public static TweetUtil tweetUtil;
     public static ConfigRead configRead;
@@ -35,10 +35,11 @@ public class LearnFunctionalBoostedTree {
     public static boolean liblinearSparse;
     public static boolean bigram;
     public static boolean trainVal = true;
-    public static final String trainMethod = "logisticRegression";
+    public static final String trainMethod = "singleRegTree";
     public static BufferedWriter reportWriter;
     public static int validationBestK;
     public static double validationBestC;
+    public static int validationBestTreeDepth;
 
     public static LogisticRegressionProblem lr;
     public static LearningProblem learningProblem;
@@ -56,13 +57,13 @@ public class LearnFunctionalBoostedTree {
         for(int numFeat : new int[]{100, 1000, 10000, 100000, 1166582}) {
             numOfFeatures = numFeat;
             lr = new LogisticRegressionProblem(learningProblem, cValues);
-
             TweetToArff tweetToArff = new TweetToArff(numOfFeatures, pythonArff, liblinearSparse);
             String dataPath, arffDataPath, validDataPath, validArffDataPath, testDataPath = "", testArffDataPath = "";
             String trainName, trainArffName, validName, validArffName, testName, testArffName, filePath;
             LearningProblem.prepareDirectories(new int[]{numOfFeatures});
             reportWriter.write(trainMethod + "," + numOfFeatures + "\n");
-
+            if(trainMethod.contains("RegTree"))
+                tweetToArff.setTestRegTree(true);
 
             for (int classInd = 1; classInd < configRead.getNumOfGroups(); classInd++) {
                 if (classInd != 1 && classInd != 6 && classInd != 9)
@@ -124,9 +125,14 @@ public class LearnFunctionalBoostedTree {
                             else
                                 prevFun = _context.applyInt(prevFun, fun, DD.ARITH_SUM);
                         } else if (singleRegTree) {
-                            TweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
-                                    testFileSize + " " + arffDataPath + " " + validArffDataPath + " " + -1 + " " + iteration);
-                            ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + ".txt");
+                            int[] treedepthVals = new int[]{-1, 3, 5, 7, 10, 15};
+                            if(!trainVal)
+                                treedepthVals = new int[]{validationBestTreeDepth};
+                            for(int treede : treedepthVals) {
+                                TweetUtil.runStringCommand("python script/makeSingleDecTree.py " + numOfFeatures + " " + trainFileSize + " " +
+                                        testFileSize + " " + arffDataPath + " " + validArffDataPath + " " + treede + " " + iteration);
+                                //ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + ".txt");
+                            }
                             fun = null;
                         } else if (logisticRegression || topWeightedLR) {
                             lr.trainLogisticRegression(arffDataPath, validArffDataPath, classname, classInd, numOfFeatures, trainVal);
@@ -209,19 +215,43 @@ public class LearnFunctionalBoostedTree {
 
             }
         }else if(singleRegTree) {
-            tweetWeights = new ArrayList<>();
-            //tweetWeights = regTree.evaluateModel(testArffDataPath);
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/predictions_"+iteration+".txt"));
-            BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath));
-            String line;
-            validInd = 0;
-            while((line = bufferedReader.readLine()) != null){
-                splits = line.split(" ");
-                tweetWeights.add(new TweetResult(validInd, Double.valueOf(splits[1]), bufferedReader1.readLine(), Integer.valueOf(splits[0])));
-                validInd++;
+            double bestMap = -1, bestPrec = -1;
+            int[] treedepthVals = new int[]{-1, 3, 5, 7, 10, 15};
+            if(!trainVal)
+                treedepthVals = new int[]{validationBestTreeDepth};
+            for(int treede : treedepthVals) {
+                tweetWeights = new ArrayList<>();
+                //tweetWeights = regTree.evaluateModel(testArffDataPath);
+                BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/predictions_" + iteration + "_"+treede+".txt"));
+                BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath));
+                String line;
+                validInd = 0;
+                while ((line = bufferedReader.readLine()) != null) {
+                    validInd++;
+                    String line2 = bufferedReader1.readLine();
+                    target_label = 0;
+                    if (line2.substring(0, 1).equals("1"))
+                        target_label = 1;
+                    if (line2.substring(2, 3).equals("1")) { //|| line.substring(4, 5).equals("0")) {
+                        continue;
+                    }
+                    splits = line.split(" ");
+                    tweetWeights.add(new TweetResult(validInd, Double.valueOf(splits[1]), line2, target_label));
+                }
+                Collections.sort(tweetWeights);
+                double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                if(mapP100[0] > bestMap) {
+                    bestMap = mapP100[0];
+                    bestPrec = mapP100[1];
+                    validationBestTreeDepth = treede;
+                }
+                bufferedReader.close();
+                bufferedReader1.close();
             }
-            bufferedReader.close();
-            bufferedReader1.close();
+            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestTreeDepth" + "\n");
+            reportWriter.write(bestMap + "," + bestPrec + "," + validationBestTreeDepth + "\n");
+            System.out.println("BestMAP: " + bestMap + " bestTreeDepth: " + validationBestTreeDepth);
+            return new double[]{bestMap, bestPrec, -1, -1};
         }else if(logisticRegression){
             double bestMap = -1, bestPrec = -1;
             bestC = -1;
