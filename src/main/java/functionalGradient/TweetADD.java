@@ -216,20 +216,22 @@ public class TweetADD {
         Object fun;
         //Build Regression Tree
         //treeVars = regTree.buildRegTree(dataPath, treeDepth);
-        arffDataPath = updateTargetValues(arffDataPath, iteration, filePath + learningProblem.trainFileName);
+        arffDataPath = updateTargetValues(arffDataPath, iteration, filePath + learningProblem.trainFileName, treeDepth);
         TweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
                 testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + treeDepth + " " + iteration);
-        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + ".txt");
+//        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
+        HashMap<Double, Double> gradUpdates = null;
+        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates);
         //Build ADD from the tree
         fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
         return fun;
     }
 
-    private String updateTargetValues(String arffDataPath, int iteration, String path) throws IOException {
+    private String updateTargetValues(String arffDataPath, int iteration, String path, int treeDepth) throws IOException {
         if(iteration < 2)
             return arffDataPath;
         String arffDataPath2 = path + "__t"+iteration+".arff";
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/trainPredictions_"+(iteration-1)+".txt"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/trainPredictions_"+(iteration-1) + "_" + treeDepth +".txt"));
         BufferedReader bufferedReader2 = new BufferedReader(new FileReader(arffDataPath));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(arffDataPath2));
         String line, cleanLine;
@@ -243,7 +245,7 @@ public class TweetADD {
             expected = Double.valueOf(splits[0]);
             if(expected == 0.0)
                 expected = -1.0;
-            value = Double.valueOf(bufferedReader.readLine());
+            value = Double.valueOf(bufferedReader.readLine().split(" ")[1]);
             value = (2*expected) / (1+Math.exp(2*expected*value));
             for(int i = 1; i < splits.length; i++)
                 cleanLine += splits[i] + ",";
@@ -255,4 +257,38 @@ public class TweetADD {
         bufferedWriter.close();
         return arffDataPath2;
     }
+
+    private HashMap<Double, Double> computeGradientDirection(int iteration, int treeDepth) throws IOException {
+        if(iteration < 1)
+            return null;
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/trainPredictions_"+(iteration) + "_" + treeDepth +".txt"));
+        String line;
+        String[] splits;
+        HashMap<Double, ArrayList<Double>> terminalNodeToVal = new HashMap<>();
+        HashMap<Double, Double> terminalNodeGradients = new HashMap<>();
+        while((line = bufferedReader.readLine()) != null) {
+            splits = line.split(" ");
+            double yHatVal = Double.valueOf(splits[0]);
+            double pred = Double.valueOf(splits[1]);
+            ArrayList values = terminalNodeToVal.get(pred);
+            if (values == null) {
+                values = new ArrayList();
+                terminalNodeToVal.put(pred, values);
+            }
+            values.add(yHatVal);
+        }
+
+        for(double terminal : terminalNodeToVal.keySet()){
+            double sum = 0, sum2 = 0;
+            for(double val : terminalNodeToVal.get(terminal)){
+                sum += val;
+                sum2 += Math.abs(val)*(2-Math.abs(val));
+            }
+            terminalNodeGradients.put(terminal, (sum2 == 0)? 0 : (sum / sum2));
+
+        }
+        bufferedReader.close();
+        return terminalNodeGradients;
+    }
+
 }

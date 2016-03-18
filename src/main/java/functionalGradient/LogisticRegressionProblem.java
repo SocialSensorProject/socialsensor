@@ -96,10 +96,6 @@ public class LogisticRegressionProblem {
             //tid = Long.valueOf(splits[splits.length - 1]);
             for (int ij = 0; ij < splits.length - 2; ij++) {
                 feat = splits[ij].toLowerCase();
-                if (trainHashtags.contains(feat)) {
-                    tweetFlag = false;
-                    break;
-                }
                 if (featureWeights.containsKey(feat)) {
                     featWeight += featureWeights.get(feat);
                     featNormVal += featureWeights.get(feat) * featureWeights.get(feat);

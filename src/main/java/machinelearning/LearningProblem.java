@@ -46,8 +46,8 @@ public class LearningProblem {
     public static ConfigRead configRead;
     public static boolean testFlag;
     public static Map<Integer, String> invFeatures;
-    public static double percentageTrain = 0.5;
-    public static double percentageVal = 0.7;
+    public static double percentageTrain = 0.4;
+    public static double percentageVal = 0.6;
     public static Map<String, Long> hashtagDate;
     public static HashSet<String> trainHashtags;
     public static HashSet<String> trainTrainHashtags;
@@ -257,6 +257,8 @@ public class LearningProblem {
             bufferedReaderA.readLine();
         p100 = Double.valueOf(bufferedReaderA.readLine().split("P100           \tall\t")[1]);
         bufferedReaderA.close();
+        TweetUtil.runStringCommand("rm -f "+LRPath + classname +
+                "/" + "/fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv");
         return new double[]{map, p100};
     }
     
