@@ -24,18 +24,22 @@ def main():
 	testPath = sys.argv[5]
 	maxDepth = int(sys.argv[6])
 	iteration = int(sys.argv[7])
-	rows = numOfTrain
+
+	csvreader = csv.reader(open(trainPath), delimiter=',')
+	data = list(csvreader)
+	row_count = len(data)
+	rows = row_count
 	columns = numOfFeatures
 	print((rows + columns))
 	matrix = lil_matrix((rows, columns))
 
 	print(matrix.shape)
 
-	csvreader = csv.reader(open(trainPath), delimiter=',')
+
 	#csvreader = csv.reader(open('a.csv'))
 	targets = []
 	row = 0;
-	for line in csvreader:
+	for line in data:
 		#print(line)
 		targets.append(line[0])
 		for index in range(len(line)):
@@ -63,7 +67,7 @@ def main():
 	print(regressor)
 	#=====================================================================================
 	# Visualize the tree
-	treeStructWriter= open('RegTree/treeStruct_'+str(iteration)+'.txt', 'w');
+	treeStructWriter= open('RegTree/treeStruct_'+str(iteration)+'_' + str(maxDepth)+ '.txt', 'w')
 	n_nodes = regressor.tree_.node_count
 	children_left = regressor.tree_.children_left
 	children_right = regressor.tree_.children_right
@@ -110,8 +114,8 @@ def main():
 	X = lil_matrix( (rows, columns) )
 	print(X.shape)
 	csvreader = csv.reader(open(testPath), delimiter=',')
-	predictionWriter= open('RegTree/predictions_'+str(iteration)+'.txt', 'w');
-	trainEvaluateWriter= open('RegTree/trainPredictions_'+str(iteration)+'.txt', 'w');
+	predictionWriter= open('RegTree/predictions_'+str(iteration)+'_' + str(maxDepth)+ '.txt', 'w');
+	trainEvaluateWriter= open('RegTree/trainPredictions_'+str(iteration)+'_' + str(maxDepth)+ '.txt', 'w');
 
 	targets_test = []
 	row = 0;
