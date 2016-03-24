@@ -142,7 +142,7 @@ def main():
 		predictionWriter.write(str(expected[i])+" "+str(predicted[i]))
 		predictionWriter.write("\n")
 	for i in range(len(predictedTrain)):
-		trainEvaluateWriter.write(str(predictedTrain[i]))
+		trainEvaluateWriter.write(str(targets[i])+" " +str(predictedTrain[i]))
 		trainEvaluateWriter.write("\n")
 #		error = error + abs(expected[i] - predicted[i])
 #		if( abs(expected[i] - predicted[i]) > 0):

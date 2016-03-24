@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * Created by zahraiman on 2/1/16.
  */
-public class TweetToArff {
+public class TweetArff {
 
     public static int k;
     public static TweetUtil tweetUtil;
@@ -38,7 +38,7 @@ public class TweetToArff {
         this.testRegTree = testRegTree;
     }
 
-    public TweetToArff(int _numOfFeatures, boolean _pythonArff, boolean _liblinearSparse) throws IOException {
+    public TweetArff(int _numOfFeatures, boolean _pythonArff, boolean _liblinearSparse) throws IOException {
         tweetUtil = new TweetUtil();
         k = _numOfFeatures;
         pythonArff = _pythonArff;
@@ -178,17 +178,18 @@ public class TweetToArff {
             }
             //cleanTextLine += " "  + cDate + " " + tid;
             cleanTextLine += " "  + tid;
-            if(tmp.size() == 0)
-                continue;
-            Collections.sort(tmp);
             cleanLine = "";
-            for (long st : tmp) {
-                if(pythonArff)
-                    cleanLine += "," + new BigDecimal(st).toPlainString();
-                else if(liblinearSparse)
-                    cleanLine += " " + new BigDecimal(st).toPlainString() + ":1";
-                else
-                    cleanLine += "," + new BigDecimal(st).toPlainString() + " 1";
+            if(tmp.size() > 0) {
+//                continue;
+                Collections.sort(tmp);
+                for (long st : tmp) {
+                    if (pythonArff)
+                        cleanLine += "," + new BigDecimal(st).toPlainString();
+                    else if (liblinearSparse)
+                        cleanLine += " " + new BigDecimal(st).toPlainString() + ":1";
+                    else
+                        cleanLine += "," + new BigDecimal(st).toPlainString() + " 1";
+                }
             }
 
             if(cDate > 1388534339000l)

@@ -35,7 +35,7 @@ public class LearnBooleanQueries {
     public static boolean liblinearSparse;
     public static boolean bigram;
     public static boolean trainVal = true;
-    public static final String trainMethod = "boostedRegTree";
+    public static final String trainMethod = "logisticRegression";
     public static BufferedWriter reportWriter;
     public static int validationBestK;
     public static double validationBestC;
@@ -57,13 +57,13 @@ public class LearnBooleanQueries {
         for(int numFeat : new int[]{100, 1000, 10000, 100000, 1166582}) {
             numOfFeatures = numFeat;
             lr = new LogisticRegressionProblem(learningProblem, cValues);
-            TweetToArff tweetToArff = new TweetToArff(numOfFeatures, pythonArff, liblinearSparse);
+            TweetArff tweetArff = new TweetArff(numOfFeatures, pythonArff, liblinearSparse);
             String dataPath, arffDataPath, validDataPath, validArffDataPath, testDataPath = "", testArffDataPath = "";
             String trainName, trainArffName, validName, validArffName, testName, testArffName, filePath;
             LearningProblem.prepareDirectories(new int[]{numOfFeatures});
             reportWriter.write(trainMethod + "," + numOfFeatures + "\n");
             if(trainMethod.contains("RegTree"))
-                tweetToArff.setTestRegTree(true);
+                tweetArff.setTestRegTree(true);
 
             for (int classInd = 1; classInd < configRead.getNumOfGroups(); classInd++) {
                 if (classInd != 1 && classInd != 6 && classInd != 9)
@@ -73,12 +73,12 @@ public class LearnBooleanQueries {
                 String classname = configRead.getGroupNames()[classInd - 1];
                 reportWriter.write(classname + "\n");
                 learningProblem.getFeatureList(numOfFeatures, classname);
-                tweetToArff.makeHashtagSets(learningProblem, classInd);
+                tweetArff.makeHashtagSets(learningProblem, classInd);
 //            order = new ArrayList();
 //            order.addAll(learningProblem.featureMap.values());
                 _context = new FBR(1, learningProblem.getFeatureOrders()); // 1: ADD
                 TweetADD tweetADD = new TweetADD(learningProblem, _context, bigram);
-                tweetToArff.makeArffTestTrainSplits(learningProblem, classInd);
+                tweetArff.makeArffTestTrainSplits(learningProblem, classInd);
 
                 filePath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/";
                 ArrayList<String> sortedMIFeatures = null;
