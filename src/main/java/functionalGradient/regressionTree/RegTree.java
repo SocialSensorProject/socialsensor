@@ -8,8 +8,9 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
+import ddInference.src.util.Pair;
 import functionalGradient.regressionTree.RegressionProblem;
-import javafx.util.Pair;
+
 import util.ConfigRead;
 import util.TweetResult;
 import weka.classifiers.Evaluation;

@@ -89,7 +89,7 @@ def main():
 	X = X.toarray()
 	print(X.shape)
 	predicted = regressor.predict(X)
-	predictionWriter= open('RegTree/predictions_'+str(iteration)+'.txt', 'w');
+	predictionWriter= open('RegTree/predictions_gradientBoosted_'+str(iteration)+'.txt', 'w');
 	for i in range(len(predicted)):
 		predictionWriter.write(str(expected[i])+" "+str(predicted[i]))
 		predictionWriter.write("\n")

@@ -1,5 +1,6 @@
 package functionalGradient;
 
+import com.google.common.collect.LinkedListMultimap;
 import ddInference.src.graph.Graph;
 import ddInference.src.logic.add.ADD;
 import ddInference.src.logic.add_gen.DD;
@@ -24,7 +25,9 @@ public class TweetADD {
     public static LearningProblem learningProblem;
     public final static boolean ALWAYS_FLUSH = false; // Always flush DD caches?
     public final static double FLUSH_PERCENT_MINIMUM = 0.3d; // Won't flush
+    public static final String pythonPath = "/scratch/Softwares/anaconda2/bin/python";
     public static Runtime RUNTIME = Runtime.getRuntime();
+    public HashMap<Integer, Object> depthADD;
 
     public TweetADD(LearningProblem _learningProblem, FBR context, boolean _bigram) throws IOException {
         ConfigRead configRead = new ConfigRead();
@@ -33,6 +36,7 @@ public class TweetADD {
         learningProblem = _learningProblem;
         _context = context;
         bigram = _bigram;
+        depthADD = new HashMap<>();
     }
     /**
      * Compute the multiplication of indicator function of a step t for all query vars
@@ -212,19 +216,31 @@ public class TweetADD {
         return (0.5 * Math.log((1+mean)/(1-mean)));
     }
 
-    public Object trainBoostedRegTree(String arffDataPath, String filePath, String testArffDataPath, int iteration, int trainFileSize, int testFileSize, int numOfFeatures, int treeDepth) throws IOException, InterruptedException {
+    public Object trainBoostedRegTree(String arffDataPath, String filePath, String testArffDataPath, int iteration, int trainFileSize, int testFileSize, int numOfFeatures, int treeDepth, double f0) throws IOException, InterruptedException {
         Object fun;
         //Build Regression Tree
         //treeVars = regTree.buildRegTree(dataPath, treeDepth);
         arffDataPath = updateTargetValues(arffDataPath, iteration, filePath + learningProblem.trainFileName, treeDepth);
-        TweetUtil.runStringCommand("python script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
+        TweetUtil.runStringCommand(pythonPath + " script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
                 testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + treeDepth + " " + iteration);
+//        System.out.println(pythonPath + " script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
+//                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + treeDepth + " " + iteration);
+//        System.out.println("RUN");
 //        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
         HashMap<Double, Double> gradUpdates = null;
         ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates);
         //Build ADD from the tree
         fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
-        return fun;
+        fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
+        Object learnedFun;
+        if (depthADD.get(treeDepth) == null)
+            learnedFun = _context.scalarAdd(fun, f0);
+        else
+            learnedFun = _context.applyInt(depthADD.get(treeDepth), fun, DD.ARITH_SUM);
+        _context.addSpecialNode(learnedFun);
+        flushCaches();
+        depthADD.put(treeDepth, learnedFun);
+        return learnedFun;
     }
 
     private String updateTargetValues(String arffDataPath, int iteration, String path, int treeDepth) throws IOException {

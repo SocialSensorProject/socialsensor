@@ -35,7 +35,7 @@ public class LearnBooleanQueries {
     public static boolean liblinearSparse;
     public static boolean bigram;
     public static boolean trainVal = true;
-    public static final String trainMethod = "logisticRegression";
+    public static final String trainMethod = "boostedRegTree";
     public static BufferedWriter reportWriter;
     public static int validationBestK;
     public static double validationBestC;
@@ -121,7 +121,7 @@ public class LearnBooleanQueries {
                                 if(!trainVal)
                                     treedepthVals = new int[]{validationBestTreeDepth};
                                 for(int treede : treedepthVals) {
-                                    fun = tweetADD.trainBoostedRegTree(arffDataPath, filePath, validArffDataPath, iteration, trainFileSize, testFileSize, numOfFeatures, treede);
+                                    fun = tweetADD.trainBoostedRegTree(arffDataPath, filePath, validArffDataPath, iteration, trainFileSize, testFileSize, numOfFeatures, treede, f0);
                                     fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
                                     if (depthADD.get(treede) == null)
                                         learnedFun = _context.scalarAdd(fun, f0);

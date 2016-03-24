@@ -239,16 +239,16 @@ public class LearningProblem {
 
         BufferedReader bufferedReaderA;
         TweetUtil.runStringCommand(trecPath + "/trec_eval -a " + LRPath + classname + "/" +
-                "/fold" + numOfFeatures + "/" + "out_" + outputFileName + "_" + iteration + "_qrel" +
-                "_csv " + LRPath + classname + "/" + "/fold" + numOfFeatures + "/" + "out_" +
+                "fold" + numOfFeatures + "/" + "out_" + outputFileName + "_" + iteration + "_qrel" +
+                "_csv " + LRPath + classname + "/" + "fold" + numOfFeatures + "/" + "out_" +
                 outputFileName + "_" + iteration + "_qtop" + "_csv > " + LRPath + classname +
-                "/" + "/fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv");
+                "/" + "fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv");
         TweetUtil.runStringCommand("rm -f " + LRPath + classname + "/" +
-                "/fold" + numOfFeatures + "/" + "out_" + outputFileName + "_" + iteration + "_qrel" + "_csv ");
-        TweetUtil.runStringCommand("rm -f "+LRPath + classname + "/" + "/fold" + numOfFeatures + "/" + "out_" +
+                "fold" + numOfFeatures + "/" + "out_" + outputFileName + "_" + iteration + "_qrel" + "_csv ");
+        TweetUtil.runStringCommand("rm -f "+LRPath + classname + "/" + "fold" + numOfFeatures + "/" + "out_" +
                         outputFileName + "_" + iteration + "_qtop" + "_csv");
 
-        bufferedReaderA = new BufferedReader(new FileReader(LRPath + classname + "/" + "/fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv"));
+        bufferedReaderA = new BufferedReader(new FileReader(LRPath + classname + "/" + "fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv"));
 
         for (int kk = 0; kk < 4; kk++)//59//4//62
             bufferedReaderA.readLine();
@@ -258,7 +258,7 @@ public class LearningProblem {
         p100 = Double.valueOf(bufferedReaderA.readLine().split("P100           \tall\t")[1]);
         bufferedReaderA.close();
         TweetUtil.runStringCommand("rm -f "+LRPath + classname +
-                "/" + "/fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv");
+                "/" + "fold" + numOfFeatures + "/" + "out_noTrain_" + outputFileName + "_" + iteration + "_" + _solverType + ".csv");
         return new double[]{map, p100};
     }
     

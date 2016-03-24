@@ -48,8 +48,8 @@ def main():
 	#			matrix.data[row].append(int(line[index]))
 		row = row + 1;
 		#print(row)
-	print(matrix.shape)
-	print(targets)
+	#print(matrix.shape)
+	#print(targets)
 	#=========================================================================================
 	# fit a CART model to the data
 	#model = DecisionTreeRegressor()
@@ -147,9 +147,9 @@ def main():
 #		print (str(expected[i]) + " - " + str(predicted2[i]) + " - " + str(predicted5[i]) + " - " + str(predicted[i]))
 	predictionWriter.close()
 	trainEvaluateWriter.close()
-	dotfile = open("dtree1.dot", 'w')
-	tree.export_graphviz(regressor, out_file = dotfile)
-	dotfile.close()
+	#dotfile = open("dtree1.dot", 'w')
+	#tree.export_graphviz(regressor, out_file = dotfile)
+	#dotfile.close()
 	#print("error: " + str(mean_squared_error(expected,predicted)))
 	#print("r2_score: " + str(r2_score(expected,predicted)))
 #	print("cross_val_score: " + str(cross_val_score(expected,predicted)))
