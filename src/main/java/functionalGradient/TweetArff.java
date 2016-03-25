@@ -191,6 +191,8 @@ public class TweetArff {
                         cleanLine += "," + new BigDecimal(st).toPlainString() + " 1";
                 }
             }
+//            else
+//                continue;
 
             if(cDate > 1388534339000l)
                 tweets2014Num++;

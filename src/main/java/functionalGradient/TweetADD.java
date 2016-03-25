@@ -216,7 +216,7 @@ public class TweetADD {
         return (0.5 * Math.log((1+mean)/(1-mean)));
     }
 
-    public Object trainBoostedRegTree(String arffDataPath, String filePath, String testArffDataPath, int iteration, int trainFileSize, int testFileSize, int numOfFeatures, int treeDepth, double f0) throws IOException, InterruptedException {
+    public Object trainBoostedRegTree(HashSet<Double> leafValues, String arffDataPath, String filePath, String testArffDataPath, int iteration, int trainFileSize, int testFileSize, int numOfFeatures, int treeDepth, double f0) throws IOException, InterruptedException {
         Object fun;
         //Build Regression Tree
         //treeVars = regTree.buildRegTree(dataPath, treeDepth);
@@ -228,7 +228,8 @@ public class TweetADD {
 //        System.out.println("RUN");
 //        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
         HashMap<Double, Double> gradUpdates = null;
-        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates);
+
+        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(leafValues,learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false);
         //Build ADD from the tree
         fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
         fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));

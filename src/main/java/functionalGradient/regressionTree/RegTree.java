@@ -291,7 +291,7 @@ public class RegTree extends REPTree {
     }
 
     //BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructurePath));
-    public static ArrayList makeStepTreeFromPythonRes(HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates) throws IOException {
+    public static ArrayList makeStepTreeFromPythonRes(HashSet<Double> leafValues, HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates, boolean decTree) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructFilePath));
         String line, nodeName, root = "";
         ArrayList left, right, tmp;
@@ -303,20 +303,29 @@ public class RegTree extends REPTree {
 
         while((line = bufferedReader.readLine()) != null) {
             ind++;
-            splits = line.split(" ");
+            splits = line.split("[ ]");
             nodeName = splits[0];
             if (splits[1].equals("leafNode")) {
                 if(!splits[3].equals("[["))
                     value = Double.valueOf(splits[3].split("\\[\\[")[1].split("]]s")[0]);
-                else
-                    value = Double.valueOf(splits[4].split("]]s")[0]);
+                else {
+                    if(decTree) {
+                        StringTokenizer stk = new StringTokenizer(line," ");
+                        stk.nextToken();stk.nextToken();stk.nextToken();stk.nextToken();
+                        double zeroValue = Double.valueOf(stk.nextToken());
+                        double oneValue = Double.valueOf(stk.nextToken().split("]]s")[0]);
+                        value = (zeroValue >= oneValue)? 0 : 1;
+                    }else
+                        value = Double.valueOf(splits[4].split("]]s")[0]);
+                }
                 ArrayList al = nodeValues.get(nodeName);
                 if(al == null)
                     al = new ArrayList();
                 double u = 0;
-                if(gradUpdates != null && gradUpdates.get(value) != null)
-                    u = gradUpdates.get(value);
+//                if(gradUpdates != null && gradUpdates.get(value) != null)
+//                    u = gradUpdates.get(value);
                 al.add(new BigDecimal(value + u));
+                leafValues.add(u);
             } else {
                 featureNum = inverseFeatureMap.get(Integer.valueOf(splits[1].split("X_")[1])+1);//featureNum here starts from zero
                 if (!splits[2].equals("<=") || !splits[3].equals("0.5s"))
