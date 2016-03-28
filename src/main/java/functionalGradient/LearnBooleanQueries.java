@@ -520,6 +520,12 @@ public class LearnBooleanQueries {
         for(String branch : branches){
             query.append("(");
             String[] splits = branch.split(" ");
+            if(splits.length == 1) {//case that there is only one single node left in ADD
+                if (splits[splits.length - 1].equals("1"))
+                    return "1";
+                else
+                    return null;
+            }
             if(splits[splits.length-1].equals("0"))
                 continue;
             for(int i = 0; i < splits.length; i++){
