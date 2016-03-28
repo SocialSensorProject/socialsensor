@@ -186,6 +186,8 @@ public class ConfigRead {
 
     public String getLocalDataPath() { return prop.getProperty("localDataPath"); }
 
+    public String getIndexPath() { return prop.getProperty("indexPath"); }
+
     public int getTreeDepth() {
         return Integer.valueOf(prop.getProperty("treeDepth"));
     }

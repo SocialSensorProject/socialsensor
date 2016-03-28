@@ -200,7 +200,7 @@ public class TweetArff {
             yhatOne = 1;//computeYHat(1, fFun, iteartion, trainFileSize);
             yhatNegOne = -1;//computeYHat(-1, fFun, iteartion, trainFileSize);
             yhatZero = 0;
-
+            sampleInd++;
             if (cDate <= Long.valueOf(learningProblem.getSplitDatesStr()[classInd-1][1])) {
                 if(cDate >= Long.valueOf(splitDatesStr[0])){//TRAIN_VAL
                     totalVal++;
@@ -230,8 +230,8 @@ public class TweetArff {
                         }
                         stringBuilder.deleteCharAt(stringBuilder.length()-1);
                         cleanLine = stringBuilder.toString();
-                        if(cleanLine.equals(""))
-                            continue;
+//                        if(cleanLine.equals(""))
+//                            continue;
                     }
                     //yhatOne = computeYHat(1, fFun, iteartion, trainFileSize);
                     //yhatNegOne = computeYHat(-1, fFun, iteartion, trainFileSize);
@@ -266,8 +266,8 @@ public class TweetArff {
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length()-1);
                     cleanLine = stringBuilder.toString();
-                    if(cleanLine.equals(""))
-                        continue;
+//                    if(cleanLine.equals(""))
+//                        continue;
                 }
                 if(topicalTrain) {
                     if(pythonArff || liblinearSparse)
@@ -299,7 +299,6 @@ public class TweetArff {
                 }
                 testFileSize++;
             }
-            sampleInd++;
         }
         bufferedReaderA.close();
         bw.close();

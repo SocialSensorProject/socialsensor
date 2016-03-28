@@ -291,7 +291,7 @@ public class RegTree extends REPTree {
     }
 
     //BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructurePath));
-    public static ArrayList makeStepTreeFromPythonRes(HashSet<Double> leafValues, HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates, boolean decTree) throws IOException {
+    public static ArrayList makeStepTreeFromPythonRes(HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates, boolean decTree) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructFilePath));
         String line, nodeName, root = "";
         ArrayList left, right, tmp;
@@ -325,7 +325,7 @@ public class RegTree extends REPTree {
 //                if(gradUpdates != null && gradUpdates.get(value) != null)
 //                    u = gradUpdates.get(value);
                 al.add(new BigDecimal(value + u));
-                leafValues.add(u);
+                //leafValues.add(value);
             } else {
                 featureNum = inverseFeatureMap.get(Integer.valueOf(splits[1].split("X_")[1])+1);//featureNum here starts from zero
                 if (!splits[2].equals("<=") || !splits[3].equals("0.5s"))

@@ -25,7 +25,7 @@ public class TweetADD {
     public static LearningProblem learningProblem;
     public final static boolean ALWAYS_FLUSH = false; // Always flush DD caches?
     public final static double FLUSH_PERCENT_MINIMUM = 0.3d; // Won't flush
-    public static final String pythonPath = "/scratch/Softwares/anaconda2/bin/python";
+    public static final String pythonPath = "python";
     public static Runtime RUNTIME = Runtime.getRuntime();
     public HashMap<Integer, Object> depthADD;
 
@@ -129,7 +129,7 @@ public class TweetADD {
             _context.addSpecialNode(dd);
             flushCaches();
         }
-        visualizeGraph(dd, "ADDs/"+dotFileName+"_"+iteration);
+        visualizeGraph(dd, "ADDs/" + dotFileName + "_" + iteration);
         return dd;
     }
 
@@ -207,16 +207,19 @@ public class TweetADD {
         BufferedReader sampleReader = new BufferedReader(new FileReader(dataPath));
 
         while ( (tweet = sampleReader.readLine()) != null) {
-            splits = tweet.split(",")[0].split(" ");
-            mean += Double.valueOf(splits[splits.length - 1]); // Read label first
-            ind++;
+            splits = tweet.split(",");
+            if(splits.length > 1){
+                splits = splits[0].split(" ");
+                mean += Double.valueOf(splits[splits.length - 1]); // Read label first
+                ind++;
+            }
         }
         mean /= ind;
         sampleReader.close();
         return (0.5 * Math.log((1+mean)/(1-mean)));
     }
 
-    public Object trainBoostedRegTree(HashSet<Double> leafValues, String arffDataPath, String filePath, String testArffDataPath, int iteration, int trainFileSize, int testFileSize, int numOfFeatures, int treeDepth, double f0) throws IOException, InterruptedException {
+    public Object trainBoostedRegTree(String arffDataPath, String filePath, String testArffDataPath, int iteration, int trainFileSize, int testFileSize, int numOfFeatures, int treeDepth, double f0) throws IOException, InterruptedException {
         Object fun;
         //Build Regression Tree
         //treeVars = regTree.buildRegTree(dataPath, treeDepth);
@@ -229,7 +232,7 @@ public class TweetADD {
 //        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
         HashMap<Double, Double> gradUpdates = null;
 
-        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(leafValues,learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false);
+        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false);
         //Build ADD from the tree
         fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
         fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
