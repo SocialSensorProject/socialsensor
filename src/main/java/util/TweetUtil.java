@@ -377,4 +377,12 @@ public class TweetUtil {
         //splitDates.add(dates);
         //return splitDates;
     }
+
+    public static void runPythonScrip(String pythonScript) throws IOException {
+        Process p = Runtime.getRuntime().exec(pythonScript);
+        BufferedReader pythonIn = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while((line = pythonIn.readLine()) != null)
+            System.out.println(line);
+    }
 }

@@ -12,6 +12,7 @@ import util.ConfigRead;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileIndexBuilder {
@@ -115,13 +116,23 @@ public class FileIndexBuilder {
 
 		return true;
 	}
-	
-	public static void BuildIndex(String[] args) throws Exception {
+
+	public static void main(String[] args) throws Exception {
 		ConfigRead configRead = new ConfigRead();
 		String index_path = configRead.getIndexPath();
 		FileIndexBuilder b = new FileIndexBuilder(index_path);
-		b.addTweets(FileFinder.GetAllFiles("src/search/documents", ".txt", true),
-				true /*clear_old_index = false if adding*/);
+		b.buildIndex("");
+	}
+	
+	public void buildIndex(String filename) throws Exception {
+		List<File> files;
+		if(filename.equals(""))
+			files = FileFinder.GetAllFiles("doc", ".csv", true);
+		else {
+			files = new ArrayList<>();
+			files.add(new File(filename));
+		}
+		addTweets(files, true);
 		
 //		IndexDisplay.Display(index_path, System.out);
 	}

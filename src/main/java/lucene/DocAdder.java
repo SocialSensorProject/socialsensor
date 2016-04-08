@@ -67,21 +67,21 @@ public class DocAdder {
 				String[] splits = line.split(" ");
 				for(String field : splits){
 					if(field.split("hashtag:").length > 1)
-						doc.add(new Field("HASHTAG", field.split("hashtag:")[1], Field.Store.YES, Field.Index.ANALYZED,
+						doc.add(new Field("hashtag", field.split("hashtag:")[1], Field.Store.YES, Field.Index.ANALYZED,
 								Field.TermVector.WITH_POSITIONS_OFFSETS));
 					if(field.split("mention:").length > 1)
-						doc.add(new Field("MENTION", field.split("mention:")[1], Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
+						doc.add(new Field("mention", field.split("mention:")[1], Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
 					if(field.split("term:").length > 1)
-						doc.add(new Field("TERM", field.split("term:")[1], Field.Store.YES, Field.Index.ANALYZED,
+						doc.add(new Field("term", field.split("term:")[1], Field.Store.YES, Field.Index.ANALYZED,
 								Field.TermVector.WITH_POSITIONS_OFFSETS));
 					if(field.split("location:").length > 1)
-						doc.add(new Field("LOCATION", field.split("location:")[1], Field.Store.YES, Field.Index.ANALYZED,
+						doc.add(new Field("location", field.split("location:")[1], Field.Store.YES, Field.Index.ANALYZED,
 								Field.TermVector.WITH_POSITIONS_OFFSETS));
 					if(field.split("from:").length > 1)
-						doc.add(new Field("FROM", field.split("from:")[1], Field.Store.YES, Field.Index.ANALYZED,
+						doc.add(new Field("from", field.split("from:")[1], Field.Store.YES, Field.Index.ANALYZED,
 								Field.TermVector.WITH_POSITIONS_OFFSETS));
 				}
-				doc.add(new Field("PATH", splits[splits.length-1],
+				doc.add(new Field("PATH", line,
 						Field.Store.YES, Field.Index.NO));
 
 				doc.add(new Field("CONTENT", line,

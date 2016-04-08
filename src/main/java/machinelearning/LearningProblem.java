@@ -54,6 +54,8 @@ public class LearningProblem {
     public static boolean firstClassOne;
     public static int topTweetsNum = 20;
     public static int totalFeatureNum =1166582;
+    public static HashSet<String> testHashtags;
+    public static HashSet<String> trainValHashtags;
 
     public Map<String, Integer> featureMap;
     public HashMap<Integer, String> inverseFeatureMap;

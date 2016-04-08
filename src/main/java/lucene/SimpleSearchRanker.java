@@ -10,10 +10,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocCollector;
+import org.apache.lucene.search.*;
 import util.ConfigRead;
 
 import java.io.IOException;
@@ -70,7 +67,7 @@ public class SimpleSearchRanker {
 	
 	public void doSearch(String query, int num_hits, PrintStream ps) 
 		throws Exception {
-		
+		BooleanQuery.setMaxClauseCount(10240);
 		Query q = _parser.parse(query);
 		TopDocCollector collector = new TopDocCollector(num_hits);
 		
@@ -78,8 +75,7 @@ public class SimpleSearchRanker {
 		//
 		//CustomSimilarity similarity =new CustomSimilarity();
 		//_searcher.setSimilarity(similarity);
-		
-		
+
 		_searcher.search(q, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
@@ -97,7 +93,8 @@ public class SimpleSearchRanker {
 //		String index_path = "/Volumes/SocSensor/SocialSensorIndexes/lucene.index";
 		String default_field = "CONTENT";
 		
-		FileIndexBuilder b = new FileIndexBuilder(configRead.getIndexPath());
+//		FileIndexBuilder b = new FileIndexBuilder("/Volumes/Zara/SocialSensorProjectBUFiles/luceneIndex/testTrain_test__strings");
+		FileIndexBuilder b = new FileIndexBuilder("/Volumes/Zara/SocialSensorProjectBUFiles/luceneIndex/testTrain_train__v_strings");
 		SimpleSearchRanker r = new SimpleSearchRanker(b._indexPath, default_field, b._analyzer);
 		
 		// See the following for query parser syntax
@@ -125,22 +122,25 @@ public class SimpleSearchRanker {
 		
 		// Standard single term
 		System.out.println("term:weather");
-		r.doSearch("TERM:weather", 5, System.out);
+		r.doSearch("term:weather", 5, System.out);
 
 		// Multiple term (implicit OR)
 		System.out.println("hashtag:prayforthephilippines");
-		r.doSearch("HASHTAG:prayforthephilippines", 5, System.out);
+		r.doSearch("hashtag:earthquake", 5, System.out);
 
 		// Wild card
 		System.out.println("from:kamilaeo_*momento");
-		r.doSearch("FROM:kamilaeo_*momento", 5, System.out);
+		r.doSearch("hashtag:hmrd", 5, System.out);
 		
 		// Edit distance
 //		r.doSearch("~weather", 5, System.out);
 		
 		// Fielded search (FIELD:...), boolean (AND OR NOT)
 		System.out.println("term:weather AND hashtag:hinthint");
-		r.doSearch("TERM:weather OR HASHTAG:flood", 5, System.out);
+		r.doSearch("(hashtag:alert AND hashtag:warning) OR (hashtag:oklahoma AND hashtag:tornado)", 1000, System.out);
+//
+		System.out.println("Query");
+		r.doSearch("(hashtag:oklahomacity AND hashtag:terremoto) OR (hashtag:thunder AND hashtag:yyc) OR (mention:twcbreaking) OR (hashtag:pakistan AND mention:nataliegrant) OR (hashtag:ok AND hashtag:pakistan AND hashtag:nyc AND mention:wunderground) OR (hashtag:hmrd) OR (hashtag:severe AND hashtag:nyc AND hashtag:nj) OR (mention:youranonnews AND hashtag:haiti) OR (hashtag:pakistan AND hashtag:nemo AND hashtag:lua) OR (hashtag:thunder AND hashtag:toronto AND mention:cnnbrk) OR (mention:youranonnews AND hashtag:dubai AND mention:cnnbrk AND mention:bridgitmendler) OR (hashtag:pakistan AND mention:wunderground) OR (mention:bbcbreaking AND hashtag:hmrd) OR (hashtag:severe AND hashtag:dubai) OR (hashtag:thunder AND mention:youranonnews AND hashtag:lua) OR (hashtag:severe AND mention:alastormspotter) OR (hashtag:severe AND hashtag:dubai AND mention:cnnbrk AND mention:ariannatngco) OR (hashtag:pakistan AND hashtag:toronto AND mention:cnnbrk AND mention:bridgitmendler) OR (hashtag:dubai AND mention:cnnbrk AND mention:bridgitmendler) OR (hashtag:pakistan AND mention:cbcalerts) OR (hashtag:ok AND hashtag:water AND mention:cnnbrk) OR (hashtag:wellington) OR (hashtag:ok AND hashtag:nemo) OR (hashtag:pakistan AND hashtag:toronto AND mention:cnnbrk AND mention:ariannatngco) OR (hashtag:pakistan AND hashtag:miami) OR (hashtag:floodph AND hashtag:climate) OR (hashtag:nemo AND mention:cnnbrk AND mention:reedtimmertvn) OR (hashtag:thunder AND hashtag:nyc AND mention:wcl_shawn) OR (mention:jimcantore) OR (hashtag:thunder AND hashtag:nyc AND mention:jimcantore)", 1000, System.out);
 //		r.doSearch("FIRST_LINE:Obama AND NOT Hillary", 5, System.out);
 //
 //		// Phrase search (slop factor ~k allows words to be within k distance)

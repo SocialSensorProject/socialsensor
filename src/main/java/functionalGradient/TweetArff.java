@@ -92,10 +92,14 @@ public class TweetArff {
         int totalVal = 0, total = 0, positivesVal = 0, positives = 0;
 
         trainHashtags = new HashSet<>();
-        HashSet<String> testHashtags = new HashSet<>();
         trainTrainHashtags = new HashSet<>();
+        HashSet<String> testHashtags = new HashSet<>();
         HashSet<String> trainValHashtags = new HashSet<>();
         learningProblem.MakeHashtagLists(LearningProblem.classNames[classInd - 1], trainHashtags, trainTrainHashtags, testHashtags, trainValHashtags, k);
+        learningProblem.testHashtags = testHashtags;
+        learningProblem.trainValHashtags = trainValHashtags;
+        learningProblem.trainTrainHashtags = trainTrainHashtags;
+        learningProblem.trainHashtags = trainHashtags;
         boolean topicalVal;
         boolean topicalTrain;
         boolean topicalTraintrain;

@@ -224,11 +224,9 @@ public class TweetADD {
         //Build Regression Tree
         //treeVars = regTree.buildRegTree(dataPath, treeDepth);
         arffDataPath = updateTargetValues(arffDataPath, iteration, filePath + learningProblem.trainFileName, treeDepth);
-        TweetUtil.runStringCommand(pythonPath + " script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
-                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + treeDepth + " " + iteration);
-//        System.out.println(pythonPath + " script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
-//                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + treeDepth + " " + iteration);
-//        System.out.println("RUN");
+        String pythonScript = pythonPath + " script/makeSingleRegTree.py " + numOfFeatures + " " + trainFileSize + " " +
+                testFileSize + " " + arffDataPath + " " + testArffDataPath + " " + treeDepth + " " + iteration;
+        TweetUtil.runPythonScrip(pythonScript);
 //        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
         HashMap<Double, Double> gradUpdates = null;
 
