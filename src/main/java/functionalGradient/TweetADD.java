@@ -25,7 +25,7 @@ public class TweetADD {
     public static LearningProblem learningProblem;
     public final static boolean ALWAYS_FLUSH = false; // Always flush DD caches?
     public final static double FLUSH_PERCENT_MINIMUM = 0.3d; // Won't flush
-    public static final String pythonPath = "python";
+    public static String pythonPath;
     public static Runtime RUNTIME = Runtime.getRuntime();
     public HashMap<Integer, Object> depthADD;
 
@@ -36,6 +36,7 @@ public class TweetADD {
         learningProblem = _learningProblem;
         _context = context;
         bigram = _bigram;
+        pythonPath = configRead.getPythonPath();
         depthADD = new HashMap<>();
     }
     /**
@@ -142,13 +143,15 @@ public class TweetADD {
     public double evaluateSampleInADD(Map<String, Integer> var2ID, ArrayList<String> assignments, Object add){
 
         ArrayList assign = new ArrayList();
-        for(Object _id : var2ID.keySet()){
+        for(int ii = 0; ii < (_context._context)._hmGVarToLevel.size(); ii++){
             assign.add(false);
         }
 
         //assign based on current sample
         for(String _feat : assignments){
 //            assign.set(_context._context._alOrder.indexOf(new Integer(var2ID.get(_feat))), true);
+            if(var2ID.get(_feat) >= 1000)
+                System.out.println("H");
             assign.set((Integer) (_context._context)._hmGVarToLevel.get(var2ID.get(_feat)), true);
         }
 
@@ -230,7 +233,7 @@ public class TweetADD {
 //        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
         HashMap<Double, Double> gradUpdates = null;
 
-        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false);
+        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false, learningProblem.featureMap);
         //Build ADD from the tree
         fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
         fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));

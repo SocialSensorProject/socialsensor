@@ -67,24 +67,30 @@ public class SimpleSearchRanker {
 	
 	public void doSearch(String query, int num_hits, PrintStream ps) 
 		throws Exception {
-		BooleanQuery.setMaxClauseCount(10240);
-		Query q = _parser.parse(query);
-		TopDocCollector collector = new TopDocCollector(num_hits);
-		
-		//To use customized similarity function, uncomment the following codes
-		//
-		//CustomSimilarity similarity =new CustomSimilarity();
-		//_searcher.setSimilarity(similarity);
+		BooleanQuery.setMaxClauseCount(1024000);
+		try {
+			Query q = _parser.parse(query);
 
-		_searcher.search(q, collector);
-		ScoreDoc[] hits = collector.topDocs().scoreDocs;
+			TopDocCollector collector = new TopDocCollector(num_hits);
 
-		ps.println("Found " + hits.length + " hits.");
-		for (int i = 0; i < hits.length; i++) {
-		    int docId = hits[i].doc;
-		    Document d = _searcher.doc(docId);
-		    ps.println((i + 1) + ". (" + _df.format(hits[i].score) 
-		    		   + ") " + d.get("PATH"));
+			//To use customized similarity function, uncomment the following codes
+			//
+			//CustomSimilarity similarity =new CustomSimilarity();
+			//_searcher.setSimilarity(similarity);
+
+			_searcher.search(q, collector);
+			ScoreDoc[] hits = collector.topDocs().scoreDocs;
+
+			ps.println("Found " + hits.length + " hits.");
+			System.out.println("Found " + hits.length + " hits.");
+			for (int i = 0; i < hits.length; i++) {
+				int docId = hits[i].doc;
+				Document d = _searcher.doc(docId);
+				ps.println((i + 1) + ". (" + _df.format(hits[i].score)
+						+ ") " + d.get("PATH"));
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 	}
 	

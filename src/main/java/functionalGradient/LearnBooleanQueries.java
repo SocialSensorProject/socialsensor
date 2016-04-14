@@ -46,12 +46,16 @@ public class LearnBooleanQueries {
     public static double validationBestThreshold;
     public static SimpleSearchRanker simpleSearchRanker;
     public static int validationBestTreeDepth;
+    public static final int num_hits = 2000000;
 
     public static LogisticRegressionProblem lr;
     public static LearningProblem learningProblem;
     public static RegTree regTree;
     public static int[] kValues = new int[]{5, 10, 100, 1000, 10000, 1000000, 1166582};
     public static double[] cValues = {1e-8, 1e-7, 1e-6, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000, 1e4, 1e5, 1e7, 1e8};
+    public static int[] treedepthVals = new int[]{3, 5, 7, 10, 15, -1};
+    public static HashMap<Integer, Object> depthADD;
+    public static HashMap<Integer, ArrayList<String>> depthBranches;
 
     public static void main(String[] args) throws Exception {
         setFlags(trainMethod);
@@ -63,6 +67,8 @@ public class LearnBooleanQueries {
 
         for(int numFeat : new int[]{100, 1000, 10000, 100000, 1166582}) {//100,
             numOfFeatures = numFeat;
+            if(numFeat > 1000)
+                treedepthVals = new int[]{3, 5, 7, 10, 15, 100};
             lr = new LogisticRegressionProblem(learningProblem, cValues);
             TweetArff tweetArff = new TweetArff(numOfFeatures, pythonArff, liblinearSparse);
             String dataPath, arffDataPath, validDataPath, validArffDataPath, testDataPath = "", testArffDataPath = "";
@@ -73,7 +79,7 @@ public class LearnBooleanQueries {
                 tweetArff.setTestRegTree(true);
 
             for (int classInd = 1; classInd < configRead.getNumOfGroups(); classInd++) {
-                if (classInd != 1 )//&& classInd != 9 && classInd != 6)
+                if (classInd != 9)//) && classInd != 9 && classInd != 6)
                     continue;
                 //Split data to train/test and label them based on train/test hashtags
                 int trainFileSize, testFileSize;
@@ -120,10 +126,11 @@ public class LearnBooleanQueries {
                     }
                     simpleSearchRanker = new SimpleSearchRanker(b._indexPath, "CONTENT", b._analyzer);
                     double f0 = tweetADD.computeF0(dataPath);
-                    HashSet<Double> leafValues = new HashSet<Double>();
+
 
                     double prevMAP = -1, prevPrec = -1;
-                    HashMap<Integer, Object> depthADD = new HashMap<>();
+                    depthADD = new HashMap<>();
+                    depthBranches = new HashMap<>();
                     for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
                         double currPrec = 0, currMAP = 0;
                         System.out.println("Iteration: " + iteration);
@@ -132,13 +139,11 @@ public class LearnBooleanQueries {
 
                         if ((makeADDdirectly || bigram || boostedRegTree)) {
                             if (boostedRegTree) {
-                                int[] treedepthVals = new int[]{-1, 3, 5, 7, 10, 15};
+
                                 if(!trainVal)
                                     treedepthVals = new int[]{validationBestTreeDepth};
                                 for(int treede : treedepthVals) {
                                     learnedFun = tweetADD.trainBoostedRegTree(arffDataPath, filePath, validArffDataPath, iteration, trainFileSize, testFileSize, numOfFeatures, treede, f0);
-                                    visualizeGraph(learnedFun, "learnedFun", true);
-                                    ((ADD)_context._context).collectLeafValues((Integer) learnedFun, leafValues);
                                     depthADD.put(treede, learnedFun);
                                 }
                             } else {
@@ -151,15 +156,19 @@ public class LearnBooleanQueries {
                                     learnedFun = _context.applyInt(learnedFun, fun, DD.ARITH_SUM);
                             }
                         } else if (singleRegTree) {
-                            int[] treedepthVals = new int[]{-1, 3, 5, 7, 10, 15};
+
                             if(!trainVal)
                                 treedepthVals = new int[]{validationBestTreeDepth};
                             for (int treedepthVal : treedepthVals) {
-                                String pythonScript = "python script/makeSingleDecTree.py " + numOfFeatures + " " + trainFileSize + " " +
+                                String pythonScript = configRead.getPythonPath() + " script/makeSingleDecTree.py " + numOfFeatures + " " + trainFileSize + " " +
                                         testFileSize + " " + arffDataPath + " " + validArffDataPath + " " + treedepthVal + " " + iteration;
                                 TweetUtil.runPythonScrip(pythonScript);
-                                ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treedepthVal + ".txt", null, true);
-                                learnedFun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
+                                ArrayList result = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treedepthVal + ".txt", null, true, learningProblem.featureMap);
+                                depthBranches.put(treedepthVal, (ArrayList<String>) result.get(0));
+                                ArrayList resRegTree = (ArrayList) result.get(1);
+//                                learnedFun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
+//                                _context.addSpecialNode(learnedFun);
+                                _context.flushCaches(false);
 //                                ((ADD)_context._context).collectLeaves((Integer)learnedFun, leafValues);
                                 depthADD.put(treedepthVal, learnedFun);
                             }
@@ -168,7 +177,7 @@ public class LearnBooleanQueries {
                         } else if (topMI) {
                             sortedMIFeatures = learningProblem.getSortedMIFeatures(classname);
                         }
-                        double[] mapP100 = validate(tweetADD, classname, classInd, depthADD, iteration, validDataPath, sortedMIFeatures, trainVal, learnedFun, leafValues);
+                        double[] mapP100 = validate(tweetADD, classname, classInd, depthADD, iteration, validDataPath, sortedMIFeatures, trainVal, learnedFun);
                         currMAP = mapP100[0];
                         currPrec = mapP100[1];
                         if (((currMAP == prevMAP && iteration > 50) || (currMAP < prevMAP)) || singleRegTree || logisticRegression || topWeightedLR || topMI) { // MAP Dropping
@@ -201,7 +210,7 @@ public class LearnBooleanQueries {
         //g.launchViewer(/*width, height*/);
     }
 
-    public static double[] validate(TweetADD tweetADD, String classname, int classInd, HashMap<Integer, Object> depthADD, int iteration, String testDataPath, ArrayList<String> sortedMIFeatures, boolean validataion, Object learnedFun, HashSet<Double> leafValues) throws Exception {
+    public static double[] validate(TweetADD tweetADD, String classname, int classInd, HashMap<Integer, Object> depthADD, int iteration, String testDataPath, ArrayList<String> sortedMIFeatures, boolean validataion, Object learnedFun) throws Exception {
         //VALIDATION
         String[] splits;
         BufferedReader sampleReader;
@@ -213,6 +222,7 @@ public class LearnBooleanQueries {
 
         reportWriter.write((validataion) ? "Validation\n" : "Test\n");
 
+        HashSet<Double> leafValues;
         if(makeADDdirectly || bigram) {
             sampleReader = new BufferedReader(new FileReader(testDataPath));
             tweetWeights = new ArrayList<>();
@@ -249,30 +259,36 @@ public class LearnBooleanQueries {
             }
         }else if(boostedRegTree){
             double bestMap = -1, bestPrec = -1, bestAcc = -1, bestFm = -1;
-            int[] treedepthVals = new int[]{-1, 3, 5, 7, 10, 15};
-            double minVal = Double.MAX_VALUE, maxVal = Double.MIN_VALUE;
-            for(double lv : leafValues){
-                minVal = (lv < minVal)? lv : minVal;
-                maxVal = (lv > maxVal)? lv : maxVal;
-            }
-            double[] thresholds = new double[]{(minVal+maxVal)/4, (minVal+maxVal)/2, (minVal+maxVal)*3/4, (minVal+maxVal)*9/10};//(minVal+maxVal)/10,
+
+            double[] thresholds = null;
             if(!trainVal) {
                 treedepthVals = new int[]{validationBestTreeDepth};
                 thresholds = new double[]{validationBestThreshold};
             }
             for(int treede : treedepthVals) {
+                if(trainVal){
+                    leafValues = ((ADD)_context._context).collectLeafValues((Integer) depthADD.get(treede));
+                    double minVal = Double.MAX_VALUE, maxVal = Double.MIN_VALUE;
+                    for(double lv : leafValues){
+                        minVal = (lv < minVal)? lv : minVal;
+                        maxVal = (lv > maxVal)? lv : maxVal;
+                    }
+                    thresholds = new double[]{(minVal+maxVal)/10, (minVal+maxVal)/4, (minVal+maxVal)/2, (minVal+maxVal)*3/4, (minVal+maxVal)*9/10};
+                }
                 for(double threshold : thresholds) {
                     //visualizeGraph(depthADD.get(treede), "learnedFun");
                     Object prunedADD = _context.pruneNodes(depthADD.get(treede), threshold);
                     visualizeGraph(prunedADD, "learnedFun2", true);
-                    String query = getQuery((Integer) prunedADD);
+                    String query = getQuery(treede);
+                    System.out.println("***********************");
+                    System.out.println(query);
+                    System.out.println("***********************");
                     double[] mapP100;
                     if (query == null || query.length() == 1) {
                         mapP100 = new double[2];
                         mapP100[0] = 0;
                         mapP100[1] = 0;
                     } else{
-                        int num_hits = 100;
                         simpleSearchRanker.doSearch(QueryParser.escape(query), num_hits, System.out);
                     }
                     tp = 0;
@@ -342,108 +358,79 @@ public class LearnBooleanQueries {
             return new double[]{bestAcc, bestPrec, -1, -1};
         }else if(singleRegTree) {
             double bestMap = -1, bestPrec = -1;
-            double minVal = Double.MAX_VALUE, maxVal = Double.MIN_VALUE;
-            for(double lv : leafValues){
-                minVal = (lv < minVal)? lv : minVal;
-                maxVal = (lv > maxVal)? lv : maxVal;
-            }
-            double[] thresholds = new double[]{(minVal+maxVal)/10, (minVal+maxVal)/4, (minVal+maxVal)/2, (minVal+maxVal)*3/4, (minVal+maxVal)*9/10};
-            int[] treedepthVals = new int[]{-1, 3, 5, 7, 10, 15};
+            double[] thresholds = null;
+
             if(!trainVal) {
                 treedepthVals = new int[]{validationBestTreeDepth};
-                thresholds = new double[]{validationBestThreshold};
             }
             int sumNotZero = 0;
             for(int treeDe : treedepthVals) {
-                for(double threshold : thresholds) {
-                    tweetWeights = new ArrayList<>();
-                    Object prunedADD = _context.pruneNodes(depthADD.get(treeDe), threshold);
-                    visualizeGraph(prunedADD, "learnedFun2", true);
-                    String query = getQuery((Integer) prunedADD);
-                    double[] mapP100;
-                    if (query == null || query.length() == 1) {
-                        mapP100 = new double[2];
-                        mapP100[0] = 0;
-                        mapP100[1] = 0;
-                    } else{
-                        int num_hits = 10000;
-                        PrintStream ps = new PrintStream(new File(testDataPath + "queryRes.txt"));
-                        simpleSearchRanker.doSearch(query, num_hits, ps);
-                        ps.flush();
-                        BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath + "queryRes.txt"));
-                        String line = bufferedReader1.readLine();
-                        validInd = 0;
-                        while((line = bufferedReader1.readLine()) != null){
-                            target_label = 0;
-                            validInd++;
-                            splits = line.split("[) ,]");
-                            if (splits[3].equals("1") && !splits[4].equals("1"))
-                                target_label = 1;
-                            /*for(String st : splits){
-                                String[] splits2 = st.split(":");
-                                if(splits2.length > 1) {
-                                    if ((trainVal) ? (!learningProblem.trainTrainHashtags.contains(st) && learningProblem.trainValHashtags.contains(st)) : (!learningProblem.trainHashtags.contains(st) && learningProblem.testHashtags.contains(st))) {
-                                        target_label = 1;
-                                        break;
-                                    }
-                                }
-                            }*/
-                            tweetWeights.add(new TweetResult(validInd, 1, line, target_label));
-                        }
-                        bufferedReader1.close();
-                        Collections.sort(tweetWeights);
-                        mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "SingleRegTree");
-                        if (mapP100[0] > bestMap) {
-                            bestMap = mapP100[0];
-                            bestPrec = mapP100[1];
-                            validationBestTreeDepth = treeDe;
-                            validationBestThreshold = threshold;
-                        }
+                tweetWeights = new ArrayList<>();
+                //visualizeGraph((Integer) depthADD.get(treeDe), "learnedFun2", true);
+//                System.out.println("#Nodes: " + _context.countExactNodes(depthADD.get(treeDe)));
+                String query = getQuery(treeDe);
+                System.out.println("***********************");
+                System.out.println(query);
+                System.out.println("***********************");
+                double[] mapP100;
+                if (query == null || query.length() == 1) {
+                    mapP100 = new double[2];
+                    mapP100[0] = 0;
+                    mapP100[1] = 0;
+                } else{
+                        mapP100 = validateUsingQuery(query, testDataPath, classname, classInd, iteration, "SingleRegTree");
+                    if (mapP100[0] >= bestMap) {
+                        bestMap = mapP100[0];
+                        bestPrec = mapP100[2];
+                        validationBestTreeDepth = treeDe;
                     }
-
-                    /*depthADD.put(treeDe, _context.pruneNodes(depthADD.get(treeDe), threshold));
-                    String line2;
-                    //tweetWeights = regTree.evaluateModel(testArffDataPath);
-                    BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/predictions_" + iteration + "_" + treeDe + ".txt"));
-                    BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath));
-
-                    validInd = 0;
-
-                    while ((line2 = bufferedReader1.readLine()) != null) {
-                        validInd++;
-                        String line = bufferedReader.readLine();
-                        target_label = 0;
-                        if (line2.substring(0, 1).equals("1"))
-                            target_label = 1;
-                        if (line2.substring(2, 3).equals("1")) { //|| line.substring(4, 5).equals("0")) {
-                            continue;
-                        }
-                        splits = line2.split("[ ,]");
-
-                        //Find the F_m-1 (x_i)
-                        ArrayList<String> features = new ArrayList<String>();
-                        int startInd = 3;
-                        for (int i = startInd; i < splits.length - 1; i += 2) {
-                            features.add(splits[i]);
-                        }
-                        double value = tweetADD.evaluateSampleInADD(learningProblem.featureMap, features, depthADD.get(treeDe));
-                        if(!trainVal && features.size() == 0 && value != 0 )
-                            sumNotZero++;
-                        tweetWeights.add(new TweetResult(validInd, value, line2, target_label));
-                        if(Double.valueOf(line.split(" ")[1]) != value)
-                            System.out.println("HERE");
-                        //tweetWeights.add(new TweetResult(validInd, Double.valueOf(line.split(" ")[1]), line2, target_label));
-                        */
-
-
-//                    bufferedReader.close();
-//                    bufferedReader1.close();
                 }
+//                sampleReader = new BufferedReader(new FileReader(testDataPath));
+//                tweetWeights = new ArrayList<>();
+//                while ((tweet = sampleReader.readLine()) != null) {
+//                    target_label = 0;
+//                    splits = tweet.split(" ");
+//                    if (splits[0].split(",")[0].equals("1"))
+//                        target_label = 1;
+//                    if (splits[1].equals("1")) {// || line.substring(4,5).equals("0")) {//exclude tweets with no hashtag
+//                        continue;
+//                    }
+//                    validInd++;
+//                    splits = tweet.split("[ ,]");
+//
+//                    //Find the F_m-1 (x_i)
+//                    ArrayList<String> features = new ArrayList<String>();
+//                    int startInd = 3;
+//                    for (int i = startInd; i < splits.length - 1; i += 2) {
+//                        features.add(splits[i]);
+//                    }
+//                    double value = tweetADD.evaluateSampleInADD(learningProblem.featureMap, features, depthADD.get(treeDe));
+////                    System.out.println(validInd + " - " + target_label + " => " + value);
+//                    tweetWeights.add(new TweetResult(validInd, value, tweet, target_label));
+//                    double pPos = 1 / (1 + Math.exp(-2 * value));
+//                    double pNeg = 1 - pPos;
+//
+//                    if (pPos > pNeg) {
+//                        if (target_label == 1) tp++;
+//                        else fp++;
+//                    } else {
+//                        if (target_label == 1) fn++;
+//                        else tn++;
+//                    }
+//                }
+//                sampleReader.close();
+//                Collections.sort(tweetWeights);
+//                double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "SingleRegTree");
+//                if (mapP100[0] > bestMap) {
+//                    bestMap = mapP100[0];
+//                    bestPrec = mapP100[1];
+//                    validationBestTreeDepth = treeDe;
+//                }
             }
             System.out.println("SumNotZero: " + sumNotZero);
             reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestTreeDepth" + "\n");
             reportWriter.write(bestMap + "," + bestPrec + "," + validationBestTreeDepth + "\n");
-            System.out.println("BestMAP: " + bestMap + " bestTreeDepth: " + validationBestTreeDepth + " bestThreshold: " + validationBestThreshold);
+            System.out.println("BestMAP: " + bestMap + "," + "BestP@100: " + bestPrec + " bestTreeDepth: " + validationBestTreeDepth + " bestThreshold: " + validationBestThreshold);
             return new double[]{bestMap, bestPrec, -1, -1};
         }else if(logisticRegression){
             double bestMap = -1, bestPrec = -1;
@@ -467,6 +454,7 @@ public class LearnBooleanQueries {
             reportWriter.write(bestMap + "," + bestPrec + "," + bestC + "\n");
             return new double[]{bestMap, bestPrec, -1, bestC};
         }else if(topWeightedLR){
+            StringBuilder query = new StringBuilder("");
             double bestMap = -1, bestPrec = -1;
             int bestK = -1;
             ArrayList<Feature> features;
@@ -482,14 +470,18 @@ public class LearnBooleanQueries {
                     Collections.sort(features);
                     for (int i = 0; i < features.size() ; i++) {
                         if((lr.isFirstFlagOne() && features.get(i).getFeatureWeight() > 0 && i >= features.size()-k) ||
-                                (!lr.isFirstFlagOne() && i < k && features.get(i).getFeatureWeight() < 0))
+                                (!lr.isFirstFlagOne() && i < k && features.get(i).getFeatureWeight() < 0)) {
                             features.get(i).setFeatureWeight(1);
-                        else
+                            query.append(features.get(i)).append(" OR ");
+                        }else
                             features.get(i).setFeatureWeight(0);
                     }
-                    tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, cVal, true);
-                    Collections.sort(tweetWeights);
-                    double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                    int len = query.length();
+                    query.delete(len-5,len-1);
+                    double[] mapP100 = validateUsingQuery(query.toString(), testDataPath, classname, classInd, iteration, "SingleRegTree");
+//                    tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, cVal, true);
+//                    Collections.sort(tweetWeights);
+//                    double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
                     if(mapP100[0] > bestMap) {
                         bestMap = mapP100[0];
                         bestPrec = mapP100[1];
@@ -579,10 +571,15 @@ public class LearnBooleanQueries {
         }
     }
 
-    public static String getQuery(int learnedFun){
+    public static String getQuery(int treede){
+//        int learnedFun = (Integer) depthADD.get(treede);
         StringBuilder query = new StringBuilder();
         //visualizeGraph(learnedFun, "learnedFun");
-        HashSet<String> branches = _context.traverseBFSADD((Integer)learnedFun);
+        ArrayList<String> branches = depthBranches.get(treede);
+
+//        if(branches == null)
+//            branches.addAll(_context.traverseBFSADD((Integer) learnedFun));
+        _context.flushCaches(false);
         for(String branch : branches){
             String[] splits = branch.split(" ");
             if(splits.length == 1) {//case that there is only one single node left in ADD
@@ -603,7 +600,7 @@ public class LearnBooleanQueries {
                     continue;
                 }else{
                     queryAppended = true;
-                    query.append(learningProblem.inverseFeatureMap.get(Integer.valueOf(feats[0])) + " AND ");
+                    query.append(learningProblem.inverseFeatureMap.get(Integer.valueOf(feats[0])).replaceAll("!", "") + " AND ");
                 }
             }
             if(queryAppended) {
@@ -616,6 +613,37 @@ public class LearnBooleanQueries {
         for(int ij = 0; ij < 4; ij++)
             query.deleteCharAt(query.length()-1);
         return query.toString();
+    }
+
+    public static double[] validateUsingQuery(String query, String testDataPath, String classname, int classInd, int iteration, String methodName) throws Exception {
+        ArrayList<TweetResult> tweetWeights = new ArrayList<>();
+        PrintStream ps = new PrintStream(new File(testDataPath + "_queryRes.txt"));
+        simpleSearchRanker.doSearch(query, num_hits, ps);
+        ps.flush();
+        ps.close();
+        BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath + "_queryRes.txt"));
+        String line = bufferedReader1.readLine();
+        int validInd = 0, target_label, tp = 0, tpfp = 0;
+        while((line = bufferedReader1.readLine()) != null){
+            target_label = 0;
+            validInd++;
+            String[] splits = line.split("[) ,]");
+            if (splits[3].equals("1") && !splits[4].equals("1")) {
+                target_label = 1;
+                tp++;
+            }
+            tpfp++;
+            tweetWeights.add(new TweetResult(validInd, 1, line, target_label));
+        }
+        bufferedReader1.close();
+        Collections.sort(tweetWeights);
+        if(tweetWeights.size() == 0){
+            System.out.println("NO TWEET RETURNED");
+            return null;
+        }
+        double prec = (double) tp / tpfp;
+        double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, methodName);
+        return new double[]{mapP100[0], mapP100[1], prec};
     }
 }
 /*copyADD = fun;

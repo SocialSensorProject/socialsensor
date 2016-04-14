@@ -6,6 +6,7 @@ package functionalGradient.regressionTree;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 import ddInference.src.util.Pair;
@@ -291,8 +292,10 @@ public class RegTree extends REPTree {
     }
 
     //BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructurePath));
-    public static ArrayList makeStepTreeFromPythonRes(HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates, boolean decTree) throws IOException {
+    public static ArrayList makeStepTreeFromPythonRes(HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates, boolean decTree, Map<String, Integer> featureMap) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructFilePath));
+        HashMap<String, String> featureNames = new HashMap<>();
+        HashMap<String, String> nodeChildren = new HashMap<>();
         String line, nodeName, root = "";
         ArrayList left, right, tmp;
         Object featureNum;
@@ -325,11 +328,14 @@ public class RegTree extends REPTree {
 //                if(gradUpdates != null && gradUpdates.get(value) != null)
 //                    u = gradUpdates.get(value);
                 al.add(new BigDecimal(value + u));
+                nodeChildren.put(splits[0], String.valueOf(value));
                 //leafValues.add(value);
             } else {
-                featureNum = inverseFeatureMap.get(Integer.valueOf(splits[1].split("X_")[1])+1);//featureNum here starts from zero
+                int fName =Integer.valueOf(splits[1].split("X_")[1])+1;
+                featureNum = inverseFeatureMap.get(fName);//featureNum here starts from zero
+                StringBuilder children = new StringBuilder("");
                 if (!splits[2].equals("<=") || !splits[3].equals("0.5s"))
-                    System.out.println("Something is wrong");
+                    System.out.printf("Something is wrong");
                 if(nodeValues.containsKey(splits[5]))
                     left = nodeValues.get(splits[5]);
                 else
@@ -340,7 +346,8 @@ public class RegTree extends REPTree {
                     right = new ArrayList();
                 nodeValues.put(splits[5], left);
                 nodeValues.put(splits[7], right);
-
+                nodeChildren.put(splits[0], fName +":false " + ((left.size()==0)? splits[5]:left) + ";" + fName + ":true " +  ((left.size()==0)? splits[7]:right));
+                featureNames.put(splits[0], String.valueOf(fName));
                 tmp = nodeValues.get(nodeName);
                 if(tmp == null)
                     tmp = new ArrayList();
@@ -353,7 +360,71 @@ public class RegTree extends REPTree {
                 }
             }
         }
-        return nodeValues.get(root);
+//        String query = buildQueryFromTree(nodeValues.get(root), featureMap, new StringBuilder(""));List<String> allBranches = new ArrayList<>();
+        List<String> branches = concatBranches(nodeChildren, root, featureNames);
+        System.out.println("Number of branches: " + branches.size());
+        ArrayList<Object> res = new ArrayList<>();
+        res.add(branches);
+        res.add(nodeValues.get(root));
+        //return nodeValues.get(root);
+        return res;
+    }
+
+
+//    public static String buildQueryFromTree(ArrayList l, Map var2ID, List<String> branches) {
+//        Object o = l.get(0);
+//        int len = branches.size()-1;
+//        if (o instanceof String && HasOnlyDigits((String) o)) {
+//            double val = (new BigInteger((String) o)).doubleValue();
+//            String q = branches.get(len);
+//            branches.set(len, q + val);
+//            branches.add("");
+//            return q;
+//        } else if (o instanceof BigDecimal) {
+//            double val = ((BigDecimal) o).doubleValue();
+//            String q = branches.get(len);
+//            branches.set(len, q + val);
+//            branches.add("");
+//            return q;
+//        } else {
+//            String q = "";
+//            String var = (String) o;
+//            if (((Integer) var2ID.get(var)) == null) System.out.println(var);
+//            int gid = ((Integer) var2ID.get(var)).intValue();
+//            q = gid + ":false ";
+//            branche.
+//            query.append(gid).append(":false ").append("AND ");
+//            buildQueryFromTree((ArrayList) l.get(1), var2ID, query);
+//            q = gid + ":true ";
+//            query.append(gid).append(":true ").append("AND ");;
+//            buildQueryFromTree((ArrayList) l.get(2), var2ID, query);
+//            return query.toString();
+//        }
+//    }
+
+    public static boolean HasOnlyDigits(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            if (!Character.isDigit(s.charAt(i)) && s.charAt(i) != '-') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static List<String> concatBranches(HashMap<String, String> nodeBranch, String xName, HashMap<String, String> featureNames){
+        List<java.lang.String> ret = new ArrayList<>();
+        for(java.lang.String br : nodeBranch.get(xName).split(";")){
+//			System.out.println(br);
+            if(!(br.endsWith("1.0") || br.endsWith("0.0"))) {
+                String[] splits = br.split(" ");
+                for(String br2 : concatBranches(nodeBranch, splits[splits.length-1], featureNames))
+                    ret.add(((splits[0].startsWith("N"))? featureNames.get(splits[0]) : splits[0]) + " " + br2);
+            }else {
+                ret.add(br);
+            }
+            nodeBranch.put(xName, ret.get(ret.size()-1));
+        }
+        return ret;
     }
 
 }
