@@ -233,7 +233,7 @@ public class TweetADD {
 //        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
         HashMap<Double, Double> gradUpdates = null;
 
-        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false, true);
+        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false);
         //Build ADD from the tree
         fun = _context.buildDDFromUnorderedTree((ArrayList)resRegTree.get(0), learningProblem.featureMap);
         fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));

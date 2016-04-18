@@ -41,10 +41,11 @@ public class LearnBooleanQueries {
     public static boolean trainVal = true;
     public static final String trainMethod = "singleRegTree";
     public static BufferedWriter reportWriter;
+    public static BufferedWriter queryWriter;
     public static int validationBestK;
     public static double validationBestC;
     public static double validationBestThreshold;
-    //public static SimpleSearchRanker simpleSearchRanker;
+    public static SimpleSearchRanker simpleSearchRanker;
     public static int validationBestTreeDepth;
     public static final int num_hits = 2000000;
 
@@ -56,23 +57,21 @@ public class LearnBooleanQueries {
     public static int[] treedepthVals = new int[]{3, 5, 7, 10, 15, -1};
     public static HashMap<Integer, Object> depthADD;
     public static HashMap<Integer, ArrayList<String>> depthBranches;
-    public static BufferedWriter queryWriter;
+    public static HashMap<Integer, HashMap<String, Double>> depthFeatureWeights;
 
     public static void main(String[] args) throws Exception {
-        queryWriter = new BufferedWriter(new FileWriter("queries.csv"));
         setFlags(trainMethod);
         tweetUtil = new TweetUtil();
         configRead = new ConfigRead();
         learningProblem = new LearningProblem();
         learningProblem.solverType = "l2_lr";
         reportWriter = new BufferedWriter(new FileWriter(learningProblem.path + "report_"+trainMethod));
+        queryWriter = new BufferedWriter(new FileWriter(learningProblem.path + "queries_"+trainMethod));
 
-        for(int numFeat : new int[]{100, 1000, 10000, 100000, 1166582}) {//100,1000, 10000,
+        for(int numFeat : new int[]{100, 1000, 10000, 100000, 1166582}) {//100,
             numOfFeatures = numFeat;
             if(numFeat > 1000)
                 treedepthVals = new int[]{3, 5, 7, 10, 15, 100};
-            if(trainMethod.equals("boostedRegTree"))
-                treedepthVals = new int[]{3, 5, 7, 10};
             lr = new LogisticRegressionProblem(learningProblem, cValues);
             TweetArff tweetArff = new TweetArff(numOfFeatures, pythonArff, liblinearSparse);
             String dataPath, arffDataPath, validDataPath, validArffDataPath, testDataPath = "", testArffDataPath = "";
@@ -83,7 +82,7 @@ public class LearnBooleanQueries {
                 tweetArff.setTestRegTree(true);
 
             for (int classInd = 1; classInd < configRead.getNumOfGroups(); classInd++) {
-                if (classInd != 1 && classInd != 9 && classInd != 6)
+                if (classInd != 9)//) && classInd != 9 && classInd != 6)
                     continue;
                 //Split data to train/test and label them based on train/test hashtags
                 int trainFileSize, testFileSize;
@@ -98,7 +97,7 @@ public class LearnBooleanQueries {
                 tweetArff.makeArffTestTrainSplits(learningProblem, classInd);
 
                 filePath = LearningProblem.path + classname + "/fold" + numOfFeatures + "/";
-                ArrayList<String> sortedMIFeatures = null;
+                ArrayList<Feature> sortedMIFeatures = null;
                 trainVal = true;
                 Object learnedFun = null;
                 for (int tv = 0; tv < 2; tv++) {//TRAIN_VAL / TRAIN_TEST
@@ -128,7 +127,6 @@ public class LearnBooleanQueries {
                         TweetUtil.runStringCommand("mkdir " + configRead.getIndexPath() + "/" + classname + "/" + indexName);
                         b.buildIndex(validDataPath);
                     }
-//                    simpleSearchRanker = null;
 //                    simpleSearchRanker = new SimpleSearchRanker(b._indexPath, "CONTENT", b._analyzer);
                     double f0 = tweetADD.computeF0(dataPath);
 
@@ -136,6 +134,7 @@ public class LearnBooleanQueries {
                     double prevMAP = -1, prevPrec = -1;
                     depthADD = new HashMap<>();
                     depthBranches = new HashMap<>();
+                    depthFeatureWeights = new HashMap<>();
                     for (int iteration = 1; iteration < MAX_ITERATION; iteration++) {
                         double currPrec = 0, currMAP = 0;
                         System.out.println("Iteration: " + iteration);
@@ -168,9 +167,10 @@ public class LearnBooleanQueries {
                                 String pythonScript = configRead.getPythonPath() + " script/makeSingleDecTree.py " + numOfFeatures + " " + trainFileSize + " " +
                                         testFileSize + " " + arffDataPath + " " + validArffDataPath + " " + treedepthVal + " " + iteration;
                                 TweetUtil.runPythonScrip(pythonScript);
-                                ArrayList result = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treedepthVal + ".txt", null, true, false);
-                                depthBranches.put(treedepthVal, (ArrayList<String>) result.get(0));
-                                ArrayList resRegTree = (ArrayList) result.get(1);
+                                ArrayList result = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treedepthVal + ".txt", null, true);
+                                ArrayList resRegTree = (ArrayList) result.get(0);
+                                depthBranches.put(treedepthVal, (ArrayList<String>) result.get(1));
+                                depthFeatureWeights.put(treedepthVal, (HashMap<String, Double>) result.get(2));
 //                                learnedFun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
 //                                _context.addSpecialNode(learnedFun);
                                 _context.flushCaches(false);
@@ -182,12 +182,11 @@ public class LearnBooleanQueries {
                         } else if (topMI) {
                             sortedMIFeatures = learningProblem.getSortedMIFeatures(classname);
                         }
-                        queryWriter.flush();
                         double[] mapP100 = validate(tweetADD, classname, classInd, depthADD, iteration, validDataPath, sortedMIFeatures, trainVal, learnedFun, b);
+                        depthFeatureWeights.clear(); depthFeatureWeights = null;
                         currMAP = mapP100[0];
                         currPrec = mapP100[1];
                         if (((currMAP == prevMAP && iteration > 50) || (currMAP < prevMAP)) || singleRegTree || logisticRegression || topWeightedLR || topMI) { // MAP Dropping
-                            System.out.println("BREAK");
                             break;
                         }
                         sampleReader.close();
@@ -203,7 +202,6 @@ public class LearnBooleanQueries {
                 reportWriter.flush();
             }
         }
-        queryWriter.close();
         reportWriter.close();
     }
 
@@ -218,7 +216,7 @@ public class LearnBooleanQueries {
         //g.launchViewer(/*width, height*/);
     }
 
-    public static double[] validate(TweetADD tweetADD, String classname, int classInd, HashMap<Integer, Object> depthADD, int iteration, String testDataPath, ArrayList<String> sortedMIFeatures, boolean validataion, Object learnedFun, FileIndexBuilder b) throws Exception {
+    public static double[] validate(TweetADD tweetADD, String classname, int classInd, HashMap<Integer, Object> depthADD, int iteration, String testDataPath, ArrayList<Feature> sortedMIFeatures, boolean validataion, Object learnedFun, FileIndexBuilder b) throws Exception {
         //VALIDATION
         String[] splits;
         BufferedReader sampleReader;
@@ -266,7 +264,7 @@ public class LearnBooleanQueries {
                 }
             }
         }else if(boostedRegTree){
-            double bestMap = -1, bestPrec = -1, bestAcc = -1, bestFm = -1, bestTotalPrec = -1;
+            double bestMap = -1, bestPrec = -1, bestAcc = -1, bestFm = -1, bestTotalPrec = -1;;
 
             double[] thresholds = null;
             if(!trainVal) {
@@ -275,7 +273,8 @@ public class LearnBooleanQueries {
             }
             for(int treede : treedepthVals) {
                 if(trainVal){
-                    leafValues = ((ADD)_context._context).collectLeafValues((Integer) depthADD.get(treede));
+                    leafValues = new HashSet<>();
+                    ((ADD)_context._context).collectLeafValues((Integer) depthADD.get(treede), leafValues);
                     double minVal = Double.MAX_VALUE, maxVal = Double.MIN_VALUE;
                     for(double lv : leafValues){
                         minVal = (lv < minVal)? lv : minVal;
@@ -296,18 +295,8 @@ public class LearnBooleanQueries {
                         mapP100 = new double[2];
                         mapP100[0] = 0;
                         mapP100[1] = 0;
-                    } else {
-                        mapP100 = validateUsingQuery(query, testDataPath, classname, classInd, iteration, "SingleRegTree", treede, b);
-
-
-                   /* double[] mapP100;
-                    if (query == null || query.length() == 1) {
-                        mapP100 = new double[2];
-                        mapP100[0] = 0;
-                        mapP100[1] = 0;
                     } else{
-                        SimpleSearchRanker simpleSearchRanker = new SimpleSearchRanker(b._indexPath, "CONTENT", b._analyzer);
-                        simpleSearchRanker.doSearch(QueryParser.escape(query), num_hits, System.out);
+                        mapP100 = validateUsingQuery(query, testDataPath, classname, classInd, iteration, "SingleRegTree", null, treede, b);
                     }
                     tp = 0;
                     fp = 0;
@@ -348,35 +337,32 @@ public class LearnBooleanQueries {
                     }
                     sampleReader.close();
                     Collections.sort(tweetWeights);
-                    mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
-                    */
-                        if (mapP100[0] > bestMap) {
-                            bestMap = mapP100[0];
-                            bestPrec = mapP100[1];
-                            bestTotalPrec = mapP100[2];
-                            validationBestTreeDepth = treede;
-                            validationBestThreshold = threshold;
-                        }
+                    //mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                    if (mapP100[0] > bestMap) {
+                        bestMap = mapP100[0];
+                        bestPrec = mapP100[1];
+                        validationBestTreeDepth = treede;
+                        validationBestThreshold = threshold;
                     }
-//                    System.out.println("TP: " + tp + " out of " + validInd);
-//                    System.out.println("FP: " + fp);
-//                    System.out.println("TN: " + tn);
-//                    System.out.println("FN: " + fn);
-//                    double acc = (double) (tp + tn) / (tp + fp + tn + fn);
-//                    double pr = (double) (tp) / (tp + fp);
-//                    double re = (double) (tp) / (tp + fn);
-//                    double fm = (2 * pr * re) / (pr + re);
-//                    if (acc > bestAcc)
-//                        bestAcc = acc;
-//                    if (fm > bestFm)
-//                        bestFm = fm;
+                    System.out.println("TP: " + tp + " out of " + validInd);
+                    System.out.println("FP: " + fp);
+                    System.out.println("TN: " + tn);
+                    System.out.println("FN: " + fn);
+                    double acc = (double) (tp + tn) / (tp + fp + tn + fn);
+                    double pr = (double) (tp) / (tp + fp);
+                    double re = (double) (tp) / (tp + fn);
+                    double fm = (2 * pr * re) / (pr + re);
+                    if (acc > bestAcc)
+                        bestAcc = acc;
+                    if (fm > bestFm)
+                        bestFm = fm;
                 }
             }
             reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestTreeDepth" + "," + "bestTotalPrec" + "\n");
             reportWriter.write(bestMap + "," + bestPrec + "," + validationBestTreeDepth + "," + bestTotalPrec + "\n");
             System.out.println("BestMAP: " + bestMap + " bestP@100: " + bestPrec +" bestTotalPrec: " + bestTotalPrec + " bestTreeDepth: " + validationBestTreeDepth + " bestThreshold: " + validationBestThreshold);
-            //System.out.println("BestAcc: " + bestAcc  + " Best F-Measuer: " + bestFm);
-            return new double[]{bestMap, bestPrec, bestTotalPrec, -1};
+            System.out.println("BestAcc: " + bestAcc  + " Best F-Measuer: " + bestFm);
+            return new double[]{bestAcc, bestPrec, -1, -1};
         }else if(singleRegTree) {
             double bestMap = -1, bestPrec = -1, bestTotalPrec = -1;
             double[] thresholds = null;
@@ -391,22 +377,44 @@ public class LearnBooleanQueries {
 //                System.out.println("#Nodes: " + _context.countExactNodes(depthADD.get(treeDe)));
                 String query = getQuery(treeDe);
                 System.out.println("***********************");
-                queryWriter.write(numOfFeatures + "," + treeDe + "," + "NA" + "\n" + query +"\n");
+                queryWriter.write(numOfFeatures + "," + treeDe + "," + "NA" + "\n" + query + "\n");
                 System.out.println("***********************");
                 double[] mapP100;
                 if (query == null || query.length() == 1) {
-                    mapP100 = new double[2];
-                    mapP100[0] = 0;
-                    mapP100[1] = 0;
+                    mapP100 = new double[3];
                 } else{
-                        mapP100 = validateUsingQuery(query, testDataPath, classname, classInd, iteration, "SingleRegTree", treeDe, b);
-                    if (mapP100[2] >= bestTotalPrec) {
+                        mapP100 = validateUsingQuery(query, testDataPath, classname, classInd, iteration, "SingleRegTree", depthFeatureWeights.get(treeDe), treeDe, b);
+                    if (mapP100[0] >= bestMap) {
                         bestMap = mapP100[0];
-                        bestTotalPrec = mapP100[2];
                         bestPrec = mapP100[1];
+                        bestTotalPrec = mapP100[2];
                         validationBestTreeDepth = treeDe;
                     }
                 }
+                BufferedReader bufferedReader = new BufferedReader(new FileReader("RegTree/predictions_" + iteration + "_"+treeDe+".txt"));
+                BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath));
+                BufferedWriter predictionWriter = new BufferedWriter(new FileWriter(testDataPath + "_predictions.csv"));
+                String line;
+                validInd = 0;
+                while ((line = bufferedReader.readLine()) != null) {
+                    validInd++;
+                    String line2 = bufferedReader1.readLine();
+                    target_label = 0;
+                    if (line2.substring(0, 1).equals("1"))
+                        target_label = 1;
+                    if (line2.substring(2, 3).equals("1")) { //|| line.substring(4, 5).equals("0")) {
+                        continue;
+                    }
+                    splits = line.split(" ");
+                    if(Integer.valueOf(splits[1]) == 1)
+                        predictionWriter.write(line2 + "\n");
+                    tweetWeights.add(new TweetResult(validInd, Double.valueOf(splits[1]), line2, target_label));
+                }
+                Collections.sort(tweetWeights);
+                double[] mapP100_2 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                predictionWriter.close();
+                bufferedReader.close();
+                bufferedReader1.close();
 //                sampleReader = new BufferedReader(new FileReader(testDataPath));
 //                tweetWeights = new ArrayList<>();
 //                while ((tweet = sampleReader.readLine()) != null) {
@@ -476,8 +484,7 @@ public class LearnBooleanQueries {
             reportWriter.write(bestMap + "," + bestPrec + "," + bestC + "\n");
             return new double[]{bestMap, bestPrec, -1, bestC};
         }else if(topWeightedLR){
-            StringBuilder query = new StringBuilder("");
-            double bestMap = -1, bestPrec = -1;
+            double bestMap = -1, bestPrec = -1, bestOverAllPrec = -1;
             int bestK = -1;
             ArrayList<Feature> features;
             int[] _kValues = kValues;
@@ -488,63 +495,87 @@ public class LearnBooleanQueries {
             }
             for(double cVal : _cValues) {
                 for (int k : _kValues) {
-                    features = lr.getFeatures(cVal);//TODO should fix it for the case of neg features if(firstFlag)
+                    HashMap<String, Double> featureWeights = new HashMap<>();
+                    StringBuilder query = new StringBuilder("");
+                    features = new ArrayList<>();
+                    for(Feature f : lr.getFeatures(cVal))
+                        features.add(new Feature(f.getFeatureName(), f.getFeatureWeight()));//TODO should fix it for the case of neg features if(firstFlag)
                     Collections.sort(features);
                     for (int i = 0; i < features.size() ; i++) {
-                        if((lr.isFirstFlagOne() && features.get(i).getFeatureWeight() > 0 && i >= features.size()-k) ||
-                                (!lr.isFirstFlagOne() && i < k && features.get(i).getFeatureWeight() < 0)) {
-                            features.get(i).setFeatureWeight(1);
-                            query.append(features.get(i)).append(" OR ");
+                        if((lr.isFirstFlagOne() && features.get(i).getFeatureWeight() > 0 && i < k) ||
+                                (!lr.isFirstFlagOne() && i >= features.size()-k && features.get(i).getFeatureWeight() < 0)) {
+                            //features.get(i).setFeatureWeight(Math.abs(features.get(i).getFeatureWeight()));
+                            featureWeights.put(features.get(i).getFeatureName(), features.get(i).getFeatureWeight());
+                            query.append(features.get(i).getFeatureName()).append(" OR ");
                         }else
                             features.get(i).setFeatureWeight(0);
                     }
+
                     int len = query.length();
-                    query.delete(len-5,len-1);
-                    double[] mapP100 = validateUsingQuery(query.toString(), testDataPath, classname, classInd, iteration, "SingleRegTree", (int)cVal+k, b);
+                    if(len < 5) {
+                        continue;
+                    }
+                    int len2 = query.lastIndexOf(" OR ");
+                    query.delete(len2, query.length());
+                    String q = escapeCharacters(query.toString()).replaceAll("location:location:", "location:");
+                    double[] mapP100 = validateUsingQuery(q, testDataPath, classname, classInd, iteration, "SingleRegTree", featureWeights, -1, b);
 //                    tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, cVal, true);
 //                    Collections.sort(tweetWeights);
-//                    double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+//                    double[] mapP100_2 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
                     if(mapP100[0] > bestMap) {
                         bestMap = mapP100[0];
                         bestPrec = mapP100[1];
+                        bestOverAllPrec = mapP100[2];
                         bestK = k;
                         bestC = cVal;
                     }
                 }
             }
             validationBestC = bestC; validationBestK = bestK;
-            System.out.println("BestMAP: " + bestMap + " bestK: " + bestK + " bestC: " + bestC);
-            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestK" + "," + "bestC" + "\n");
-            reportWriter.write(bestMap + "," + bestPrec + "," + bestK + "," + bestC + "\n");
+            System.out.println("BestMAP: " + bestMap + " bestK: " + bestK + " bestC: " + bestC + " bestOverAllPrec: " + bestOverAllPrec);
+            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestK" + "," + "bestC" + "," + "bestOverAllPrec" + "\n");
+            reportWriter.write(bestMap + "," + bestPrec + "," + bestK + "," + bestC + "," + bestOverAllPrec + "\n");
             return new double[]{bestMap, bestPrec, bestK, bestC};
         }else if(topMI){
-            double bestMap = -1, bestPrec = -1;
+
+            double bestMap = -1, bestPrec = -1, bestOverAllPrec = -1;
             int bestK = -1;
-            ArrayList<Feature> features = new ArrayList<>();
+//            ArrayList<Feature> features = new ArrayList<>();
             int[] _kValues = kValues;
             if(!validataion)
                 _kValues = new int[]{validationBestK};
             for (int k : _kValues) {
+                HashMap<String, Double> featureWeights = new HashMap<>();
+                StringBuilder query = new StringBuilder("");
                 for (int i = 0; i < sortedMIFeatures.size() ; i++) {
-                    if(i < k)
-                        features.add(new Feature(sortedMIFeatures.get(i), 1));
-                    else
-                        features.add(new Feature(sortedMIFeatures.get(i), 0));
+                    if(i < k) {
+//                        features.add(new Feature(sortedMIFeatures.get(i).getFeatureName(), sortedMIFeatures.get(i).getFeatureWeight()));
+                        featureWeights.put(sortedMIFeatures.get(i).getFeatureName(), sortedMIFeatures.get(i).getFeatureWeight());
+                        query.append(sortedMIFeatures.get(i)).append(" OR ");
+                    }
+//                    else
+//                        features.add(new Feature(sortedMIFeatures.get(i), 0));
                 }
-                validationBestC = bestC; validationBestK = bestK;
-                lr.setFeatures(features, 1);
-                tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, 1, true);
-                Collections.sort(tweetWeights);
-                double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
+                int len = query.lastIndexOf(" OR ");
+                query.delete(len, query.length());
+                String q = escapeCharacters(query.toString()).replaceAll("location:location:", "location:");
+//                String q = query.toString().replaceAll("\"\"", ""). replaceAll("!", "").replaceAll("\\)", "");
+                double[] mapP100 = validateUsingQuery(q, testDataPath, classname, classInd, iteration, "SingleRegTree", featureWeights, -1, b);
+//                  lr.setFeatures(features, 1);
+//                tweetWeights = lr.validateModel(classname, testDataPath, numOfFeatures, classInd, 1, true);
+//                Collections.sort(tweetWeights);
+//                double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, "GradientBoosting");
                 if(mapP100[0] > bestMap) {
                     bestMap = mapP100[0];
                     bestPrec = mapP100[1];
+                    bestOverAllPrec = mapP100[2];
                     bestK = k;
                 }
             }
-            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestK" + "\n");
-            reportWriter.write(bestMap + "," + bestPrec + "," + bestK + "\n");
-            System.out.println("BestMAP: " + bestMap + " bestK: " + bestK);
+            validationBestC = bestC; validationBestK = bestK;
+            reportWriter.write("BestMAP" + "," + "BestP@100" + "," + "bestK" + "," + "bestOverAllPrec" + "\n");
+            reportWriter.write(bestMap + "," + bestPrec + "," + bestK + "," + bestOverAllPrec + "\n");
+            System.out.println("BestMAP: " + bestMap + " BestPrec: " + bestPrec + " bestOverAllPrec: " + bestOverAllPrec + " bestK: " + bestK);
             return new double[]{bestMap, bestPrec, bestK, -1};
         }
         Collections.sort(tweetWeights);
@@ -594,15 +625,17 @@ public class LearnBooleanQueries {
     }
 
     public static String getQuery(int treede){
+//        int learnedFun = (Integer) depthADD.get(treede);
         StringBuilder query = new StringBuilder();
         //visualizeGraph(learnedFun, "learnedFun");
         ArrayList<String> branches = depthBranches.get(treede);
-
         if(branches == null) {
             int learnedFun = (Integer) depthADD.get(treede);
             branches = new ArrayList<>();
             branches.addAll(_context.traverseBFSADD((Integer) learnedFun));
         }
+//        if(branches == null)
+//            branches.addAll(_context.traverseBFSADD((Integer) learnedFun));
         _context.flushCaches(false);
         for(String branch : branches){
             String[] splits = branch.split(" ");
@@ -641,14 +674,14 @@ public class LearnBooleanQueries {
         return query.toString();
     }
 
-    public static double[] validateUsingQuery(String query, String testDataPath, String classname, int classInd, int iteration, String methodName, int treeDe, FileIndexBuilder b) throws Exception {
+    public static double[] validateUsingQuery(String query, String testDataPath, String classname, int classInd, int iteration, String methodName, HashMap<String, Double> featureWeights, int treeDe, FileIndexBuilder b) throws Exception {
         ArrayList<TweetResult> tweetWeights = new ArrayList<>();
-        PrintStream ps = new PrintStream(new File(testDataPath + "_queryRes_"+treeDe+".txt"));
+        PrintStream ps = new PrintStream(new File(testDataPath + "_queryRes_" + treeDe + ".txt"));
         SimpleSearchRanker simpleSearchRanker = new SimpleSearchRanker(b._indexPath, "CONTENT", b._analyzer);
         simpleSearchRanker.doSearch(query, num_hits, ps);
         ps.flush();
         ps.close();
-        BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath + "_queryRes_"+treeDe+".txt"));
+        BufferedReader bufferedReader1 = new BufferedReader(new FileReader(testDataPath + "_queryRes_" + treeDe + ".txt"));
         String line = bufferedReader1.readLine();
         int validInd = 0, target_label, tp = 0, tpfp = 0;
         while((line = bufferedReader1.readLine()) != null){
@@ -665,11 +698,16 @@ public class LearnBooleanQueries {
                 target_label = 1;
                 tp++;
             }
+            double tweetWeight = 0;
+            for(int i = 6; i < splits.length; i+=2){
+                if(featureWeights.containsKey(splits[i]))
+                    tweetWeight += featureWeights.get(splits[i]);
+            }
             tpfp++;
-            tweetWeights.add(new TweetResult(validInd, 1, line, target_label));
+            tweetWeights.add(new TweetResult(validInd, tweetWeight, line, target_label));
         }
         bufferedReader1.close();
-//        Collections.sort(tweetWeights);
+        Collections.sort(tweetWeights);
         if(tweetWeights.size() == 0){
             System.out.println("NO TWEET RETURNED");
             return null;
@@ -677,6 +715,55 @@ public class LearnBooleanQueries {
         double prec = (double) tp / tpfp;
         double[] mapP100 = LearningProblem.computePrecisionMAP(tweetWeights, classname, classInd, numOfFeatures, iteration, methodName);
         return new double[]{mapP100[0], mapP100[1], prec};
+    }
+
+    public static String escapeCharacters(String s) {
+        StringBuilder lastWord = new StringBuilder("");
+        int ind = 0;
+        StringBuffer sb = new StringBuffer();
+
+        for(int i = 0; i < s.length(); ++i) {
+            char c = s.charAt(i);
+            lastWord.append(c);
+            ind++;
+            if(ind > 10){
+                ind--;
+                lastWord.delete(0,1);
+            }
+            if(c == 92 || c == 43 || c == 45 || c == 33 || c == 40 || c == 41 || c == 94 || c == 91 || c == 93 || c == 34 || c == 123 || c == 125 || c == 126 || c == 42 || c == 63 || c == 124 || c == 38) {
+                sb.append('\\');
+            }
+            if(c == 58) {
+//                if (i < s.length() - 1 && (s.charAt(i + 1) == 41 || s.charAt(i + 1) == 40))// || (s.charAt(i+1) > 47 && s.charAt(i+1) < 58)))
+//                    sb.append('\\');
+//                else{
+                String lw = lastWord.toString();
+                if(!(lw.contains("hashtag:") || lw.contains("mention:") ||lw.contains("location:") ||
+                        lw.contains("term:") || lw.contains("from:")))
+                    sb.append('\\');
+//                }
+            }
+            sb.append(c);
+        }
+
+        return sb.toString();
+    }
+
+    public static String unescapeCharacters(String s) {
+        StringBuffer sb = new StringBuffer();
+
+
+        for(int i = 0; i < s.length(); ++i) {
+            char c = s.charAt(i);
+            if(c == 92 || c == 43 || c == 45 || c == 33 || c == 40 || c == 41 || c == 94 || c == 91 || c == 93 || c == 34 || c == 123 || c == 125 || c == 126 || c == 42 || c == 63 || c == 124 || c == 38) {
+                sb.append('\\');
+            }
+            if(c == 58 && i < s.length()-1 && (s.charAt(i+1) == 41 || s.charAt(i+1) == 40))// || (s.charAt(i+1) > 47 && s.charAt(i+1) < 58)))
+                sb.append('\\');
+            sb.append(c);
+        }
+
+        return sb.toString();
     }
 }
 /*copyADD = fun;

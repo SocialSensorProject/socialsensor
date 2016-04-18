@@ -208,9 +208,9 @@ public class LearningProblem {
         bufferedReaderA.close();
     }
 
-    public ArrayList<String> getSortedMIFeatures(String classname) throws IOException, InterruptedException {
+    public ArrayList<Feature> getSortedMIFeatures(String classname) throws IOException, InterruptedException {
         FileReader fileReaderA = new FileReader(path + classname + "/featuresMI.csv");
-        ArrayList<String> topFeaturesNames = new ArrayList<>();
+        ArrayList<Feature> topFeaturesNames = new ArrayList<>();
         BufferedReader bufferedReaderA = new BufferedReader(fileReaderA);
         String line = "";
         int ind = 0;
@@ -219,7 +219,7 @@ public class LearningProblem {
         while((line = bufferedReaderA.readLine()) != null){
             splits = line.split(",");
             ind++;
-            topFeaturesNames.add(splits[0]+":"+splits[1]);
+            topFeaturesNames.add(new Feature(splits[0]+":"+splits[1], Double.valueOf(splits[2])));
         }
         bufferedReaderA.close();
         return topFeaturesNames;

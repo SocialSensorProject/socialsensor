@@ -163,12 +163,12 @@ public class LogisticRegressionProblem {
             predInd++;
             Arrays.copyOfRange(argumentsPred, 0, predInd - 1);
 
-            double[] measures = predict.mainPredict(argumentsPred);
+            //double[] measures = predict.mainPredict(argumentsPred);
             //if (measures[3] > bestError) { //error
-            if (measures[0] > bestMap) {
-                bestAccuracyC = c;
-                bestAccuracy = measures[0];
-            }
+//            if (measures[0] > bestMap) {
+//                bestAccuracyC = c;
+//                bestAccuracy = measures[0];
+//            }
             cInd++;
         }
         return bestAccuracyC;

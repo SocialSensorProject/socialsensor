@@ -11,7 +11,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
-import org.ninit.models.bm25.BM25Similarity;
 import util.ConfigRead;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class SimpleSearchRanker {
 	String        _indexPath;
 	Analyzer      _analyzer; 
 	QueryParser   _parser;
-	//IndexReader   _reader;
+	IndexReader   _reader;
 	IndexSearcher _searcher;
 	DecimalFormat _df = new DecimalFormat("#.####");
 	static ConfigRead configRead;
@@ -32,7 +31,7 @@ public class SimpleSearchRanker {
 		throws IOException {
 		_indexPath = index_path;
 		_parser    = new QueryParser(default_field, a);
-		//_reader    = IndexReader.open(index_path);
+		_reader    = IndexReader.open(index_path);
 		_searcher  = new IndexSearcher(index_path);
 		_analyzer  = a;
 	}
@@ -44,10 +43,8 @@ public class SimpleSearchRanker {
 	
 	public void refreshIndex() 
 		throws Exception  {
-		_searcher.close();
-		_searcher = null;
-		_searcher = new IndexSearcher(_indexPath);
-		/*if (!_reader.isCurrent()) {
+
+		if (!_reader.isCurrent()) {
 			
 			// Close the current reader and searcher
 			_reader.close();
@@ -64,23 +61,22 @@ public class SimpleSearchRanker {
 			// Load a new reader and searcher
 			_reader = IndexReader.open(_indexPath);
 			_searcher = new IndexSearcher(_indexPath);
-		}*/
+		}
 
 	}
 	
 	public void doSearch(String query, int num_hits, PrintStream ps) 
 		throws Exception {
-		refreshIndex();
-		BooleanQuery.setMaxClauseCount(10240000);
+		BooleanQuery.setMaxClauseCount(1024000);
 		try {
-			BooleanQuery q = (BooleanQuery) _parser.parse(query);
+			Query q = _parser.parse(query);
 
 			TopDocCollector collector = new TopDocCollector(num_hits);
 
 			//To use customized similarity function, uncomment the following codes
 			//
 			//CustomSimilarity similarity =new CustomSimilarity();
-			//_searcher.setSimilarity(Similarity.);
+			//_searcher.setSimilarity(similarity);
 
 			_searcher.search(q, collector);
 			ScoreDoc[] hits = collector.topDocs().scoreDocs;
@@ -96,7 +92,6 @@ public class SimpleSearchRanker {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		_searcher.close();
 	}
 	
 	public static void main(String[] args) throws Exception {
