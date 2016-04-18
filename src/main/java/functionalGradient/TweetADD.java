@@ -233,9 +233,9 @@ public class TweetADD {
 //        HashMap<Double, Double> gradUpdates = computeGradientDirection(iteration, treeDepth);
         HashMap<Double, Double> gradUpdates = null;
 
-        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false, learningProblem.featureMap);
+        ArrayList resRegTree = RegTree.makeStepTreeFromPythonRes(learningProblem.inverseFeatureMap, "RegTree/treeStruct_" + iteration + "_" + treeDepth + ".txt", gradUpdates, false, true);
         //Build ADD from the tree
-        fun = _context.buildDDFromUnorderedTree(resRegTree, learningProblem.featureMap);
+        fun = _context.buildDDFromUnorderedTree((ArrayList)resRegTree.get(0), learningProblem.featureMap);
         fun = _context.scalarMultiply(fun, (1.0 / Math.sqrt(iteration)));
         Object learnedFun;
         if (depthADD.get(treeDepth) == null)
@@ -266,11 +266,13 @@ public class TweetADD {
             expected = Double.valueOf(splits[0]);
             if(expected == 0.0)
                 expected = -1.0;
-            value = Double.valueOf(bufferedReader.readLine().split(" ")[1]);
+            String cLine = bufferedReader.readLine();
+            value = Double.valueOf(cLine.split(" ")[0]);
             value = (2*expected) / (1+Math.exp(2*expected*value));
             for(int i = 1; i < splits.length; i++)
                 cleanLine += splits[i] + ",";
-            cleanLine = cleanLine.substring(0, cleanLine.length() - 1);
+            if(cleanLine.length() > 0)
+                cleanLine = cleanLine.substring(0, cleanLine.length() - 1);
             bufferedWriter.write(value + "," + cleanLine + "\n");
         }
         bufferedReader.close();

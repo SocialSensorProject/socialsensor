@@ -292,7 +292,7 @@ public class RegTree extends REPTree {
     }
 
     //BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructurePath));
-    public static ArrayList makeStepTreeFromPythonRes(HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates, boolean decTree, Map<String, Integer> featureMap) throws IOException {
+    public static ArrayList makeStepTreeFromPythonRes(HashMap<Integer, String> inverseFeatureMap, String treeStructFilePath, HashMap<Double, Double> gradUpdates, boolean decTree, boolean regTree) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(treeStructFilePath));
         HashMap<String, String> featureNames = new HashMap<>();
         HashMap<String, String> nodeChildren = new HashMap<>();
@@ -361,10 +361,12 @@ public class RegTree extends REPTree {
             }
         }
 //        String query = buildQueryFromTree(nodeValues.get(root), featureMap, new StringBuilder(""));List<String> allBranches = new ArrayList<>();
-        List<String> branches = concatBranches(nodeChildren, root, featureNames);
-        System.out.println("Number of branches: " + branches.size());
         ArrayList<Object> res = new ArrayList<>();
-        res.add(branches);
+        if(!regTree) {
+            List<String> branches = concatBranches(nodeChildren, root, featureNames);
+            System.out.println("Number of branches: " + branches.size());
+            res.add(branches);
+        }
         res.add(nodeValues.get(root));
         //return nodeValues.get(root);
         return res;

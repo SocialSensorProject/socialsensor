@@ -188,6 +188,8 @@ public class ConfigRead {
 
     public String getIndexPath() { return prop.getProperty("indexPath"); }
 
+    public String getPythonPath() { return prop.getProperty("pythonPath"); }
+
     public int getTreeDepth() {
         return Integer.valueOf(prop.getProperty("treeDepth"));
     }
