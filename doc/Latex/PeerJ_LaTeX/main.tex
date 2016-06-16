@@ -1,0 +1,94 @@
+%% Submissions for peer-review must enable line-numbering 
+%% using the lineno option in the \documentclass command.
+%%
+%% Preprints and camera-ready submissions do not need 
+%% line numbers, and should have this option removed.
+%%
+%% Please note that the line numbering option requires
+%% version 1.1 or newer of the wlpeerj.cls file.
+
+\documentclass[fleqn,10pt,lineno]{wlpeerj} % for journal submissions
+% \documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{subfig}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{pifont}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+\useunder{\uline}{\ul}{}
+\usepackage{courier}
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{xr}
+\usepackage{enumitem}
+
+%\setlist{nosep} % dense lists with enumitem
+ 
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\starmark}{\ding{72}}%
+\frenchspacing
+%\setlength{\pdfpagewidth}{8.5in}
+%\setlength{\pdfpageheight}{11in}
+
+\title{Learning Topical Social Sensor on Twitter: A Longitudinal Study}
+
+\author[1]{First Author}
+\author[2]{Second Author}
+\affil[1]{Address of first author}
+\affil[2]{Address of second author}
+
+\keywords{Social Media Sensor, Machine Learning, Social Information Retrieval}
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\begin{document}
+
+\flushbottom
+\maketitle
+\thispagestyle{empty}
+
+\section*{Introduction}
+\input{intro}
+
+%\subsection*{About PeerJ}
+%
+%PeerJ is an award-winning open access publisher covering the biological and medical sciences.  PeerJ provides authors with three publication venues: \textit{PeerJ} and \textit{PeerJ Computer Science} (peer-reviewed academic journals) and \textit{PeerJ PrePrints} (a 'pre-print server'). See https://peerj.com/about/publications/ for more information.
+%
+%The PeerJ model allows an author to publish articles in their peer-reviewed journal via the purchase of a lifetime Publication Plan. Prices start from just \$99 (a one-off payment) which entitles an author to the lifetime ability to publish 1 article per year for free. Publication in PeerJ PrePrints is entirely free.
+
+\section*{Related Work}
+\input{relatedWork}
+
+\section*{Learning Topical Social Sensors}
+\label{sec:lss}
+\input{lss}
+
+\section*{Data Description}
+\label{sec:datasetStatistics}
+\input{datasetStatistics}
+
+\section*{Empirical Evaluation}
+\label{sec:methodology}
+\input{methodology}
+
+\section*{Feature Analysis}
+\label{label:featureanalysis}
+\input{featureAnalysis}
+
+\section*{Conclusions and Future Work}
+\input{conclusion}
+
+\section*{Acknowledgments}
+
+So long and thanks for all the fish.
+
+\bibliography{bibliography}
+
+\end{document}

@@ -1,0 +1,87 @@
+\def\year{2016}\relax
+%File: formatting-instruction.tex
+\documentclass[letterpaper]{article}
+\usepackage{aaai16}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{subfig}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{pifont}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage[normalem]{ulem}
+\useunder{\uline}{\ul}{}
+\usepackage{courier}
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{xr}
+\usepackage{enumitem}
+
+%\setlist{nosep} % dense lists with enumitem
+ 
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\starmark}{\ding{72}}%
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+\pdfinfo{
+/Title (Learning Topical Social Sensors for Twitter)
+/Author (Author1, Author2, Author3}
+\setcounter{secnumdepth}{1}  
+
+\renewcommand{\vec}[1]{\mathbf{#1}}
+
+\newcommand{\eat}[1]{}
+\newcommand{\rev}[1]{{\color{blue}{#1}}}
+
+ \begin{document}
+% The file aaai.sty is the style file for AAAI Press 
+% proceedings, working notes, and technical reports.
+%
+\title{Learning Topical Social Sensors}
+\author{Authors\\
+Affiliations
+}
+\maketitle
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\section{Introduction}
+\input{intro}
+
+\section{Related Work}
+\input{relatedWork}
+
+\section{Learning Topical Social Sensors}
+\label{sec:lss}
+\input{lss}
+
+\section{Data Description}
+\label{sec:datasetStatistics}
+\input{datasetStatistics}
+
+\section{Empirical Evaluation}
+\label{sec:methodology}
+\input{methodology}
+
+\section{Feature Analysis}
+\label{label:featureanalysis}
+\input{featureAnalysis}
+
+\section{Conclusions and Future Work}
+\input{conclusion}
+
+% No identifying information in submitted version. -SPS
+%\section{Acknowledgments}
+%\input{acknowledgements}
+%
+%\section{Copyright}
+
+\bibliographystyle{aaai}
+\bibliography{bibliography.bib}
+
+\end{document}
