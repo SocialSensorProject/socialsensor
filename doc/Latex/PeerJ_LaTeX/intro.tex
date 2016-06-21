@@ -6,8 +6,6 @@
 %	(you need to cite / cover what these ideas are to indicate what you're combining / building on -- perhaps being clear to point out that no single paper did everything you are doing) and then claim that beyond a general performance analysis of the framework over a variety of topics and a long-term dataset (not done previously?) 
 %a key objective of the work is to provide a comprehensive longitudinal feature analysis to investigate XXX
 
-
-
 \label{sec:introduction}
 % Motivation
 Social media sites such as Twitter present a double-edged sword for
@@ -22,22 +20,23 @@ an entire European Union project was focused on related ``Social Sensor''
 research\footnote{\texttt{http://www.socialsensor.eu/}}.),
 automatically learning high-precision sensors (i.e., ranking and
 retrieval methods) for arbitrary topics that generalize to future
-unseen content have been addressed recently only by a handful of researchers \citep{lin2011smoothing,yang2014large,magdy}.
+unseen content has been an under-studied problem.   
+% have been recently addressed only by a handful of researchers \citep{lin2011smoothing,yang2014large,magdy}.
 % and comprises the key problem we seek to address in this paper.
 
 % Contribution 
-% 1. One sentense: what do we do, combine, provide supervised learning, none of them has done all
-% 2. What did existing works do?
-% 3. How did we approach the problem? Build on existing ideas or expanded them?
-% 4: What is the differences?
+% 1. What do we offer? Combing recent ideas, expand, offer more
+% 2. What was the previous ideas? 
+%      2.1. Automatic labeling of lots of tweets, 
+%      2.2. Using learning methodologies for detection of general topical content
+% 3. How did we build on these ideas?
+% 4: What do we offer in addition to combination.
 
-In this work, we coalesce recent ideas on learning social sensors for general topic detection. We expand these works to learn a generalizable supervised method with minimal user curation for detecting and ranking topical content over a variety of topics and on a long-term dataset. We believe that none of the earlier works covers all the aspect of the work that is presented here. 
-%We contribute a supervised method for training
-%social sensors with minimal user curation by using a small seed set of
-%hashtags as topical proxies for automatic supervised data labeling. This works is built on the existing literature on detection and tracking general topics from social media \citep{lin2011smoothing,yang2014large,magdy}.
-Recently, \citep{lin2011smoothing,yang2014large,magdy} have explored use of social media sensors for detection and/or tracking of general topics from Twitter. One of the key challenges on dealing with general topics and large number of tweets is automatic labeled data aquisition. \cite{lin2011smoothing} discusses automatic labeling of tweets by using one hashtag as topic proxy. \cite{magdy} uses a user-defined query to label tweets and \cite{yang2014large} takes a co-training approach based on embedded URLs in the tweet and tweet text to label tweets. We build and extend on \citep{lin2011smoothing}'s idea of automatic labeling of tweets, however we choose a set of hashtags for each topic instead of a single hashtag which we will show to be imperative for evaluating generalization. To learn social sensors for general topic detection, \citep{lin2011smoothing} uses information retrieval method (language models), \cite{yang2014large} take advantage of topic modeling techniques and \cite{magdy} applies SVM classifier. Here, we leverage various supervised learning methods for the purpose of detection and ranking of topical content. However, we present a unique method for splitting hashtags and Twitter data that encourages generalization to new unseen future content. 
+In this work, we coalesce recent ideas on learning social sensors for general topic detection. We expand these works to learn a generalizable supervised method with minimal user curation for detecting and ranking topical content over a variety of topics and on a long-term dataset. We believe that no earlier works covers all the aspects of the work presented here.
+Recent works discuss leveraging learning methodologies for detection of topical content from social media for general topics \citep{lin2011smoothing,yang2014large,magdy}. One of the key challenges of using learning methods for general topics and large number of tweets is automatic labeled data aquisition. To this purpose, \cite{lin2011smoothing} discuss automatic labeling of tweets by using one hashtag as topic proxy. \cite{magdy} use a user-defined query to label tweets and \cite{yang2014large} take a co-training approach based on embedded URLs in the tweet and tweet text to label tweets. We build and extend on \citep{lin2011smoothing}'s idea of automatic labeling of tweets, however we choose a \emph{set} of hashtags for each topic instead of a single hashtag which we will show to be imperative for evaluating generalization. To learn social sensors for general topic detection, \citep{lin2011smoothing} use information retrieval method (language models), \cite{yang2014large} take advantage of topic modeling techniques and \cite{magdy} apply SVM classifier. Here, we leverage more than one supervised learning method for the purpose of detection and ranking of topical content. We present a unique method for splitting hashtags and Twitter data that encourages generalization to new unseen future content. 
+%Recently, \citep{lin2011smoothing,yang2014large,magdy} have explored use of social media sensors for detection and/or tracking of general topics from Twitter. One of the key challenges on dealing with general topics and large number of tweets is automatic labeled data aquisition. \cite{lin2011smoothing} discusses automatic labeling of tweets by using one hashtag as topic proxy. \cite{magdy} uses a user-defined query to label tweets and \cite{yang2014large} takes a co-training approach based on embedded URLs in the tweet and tweet text to label tweets. We build and extend on \citep{lin2011smoothing}'s idea of automatic labeling of tweets, however we choose a set of hashtags for each topic instead of a single hashtag which we will show to be imperative for evaluating generalization. To learn social sensors for general topic detection, \citep{lin2011smoothing} uses information retrieval method (language models), \cite{yang2014large} take advantage of topic modeling techniques and \cite{magdy} applies SVM classifier. Here, we leverage various supervised learning methods for the purpose of detection and ranking of topical content. However, we present a unique method for splitting hashtags and Twitter data that encourages generalization to new unseen future content. 
 %The methodologies mentioned in the literature use various sets of feature including hashtags, unigrams, bigrams, mentions, users, byte 4grams. We extract the main features of hashtags, mentions, users, unigrams. In addition, we add location as another set of features which we show later in feature analysis that location is the second most important feature for detection of topical content and some of the topics are quite localized geographically. To address general topic detection from social media, \cite{lin2011smoothing} uses information retrieval method (language models), \cite{yang2014large} take advantage of topic modeling techniques and \cite{magdy} uses SVM classifier. Here, we leverage various supervised learning methods for the purpose of detection and ranking of topical content. However, we present a unique method for splitting hashtags and Twitter data that encourages generalization to new unseen future content. 
-Then we proceed to train supervised classification and ranking methods
+We proceed to train supervised classification and ranking methods
 to learn topical content from a large feature space of source users
 and their locations, terms, hashtags, and mentions.  On a corpus of
 over 800 million English Tweets collected from the Twitter streaming
@@ -50,7 +49,8 @@ of their mean average precision (MAP) and Precision@$n$ for a range of
 $n$. Our results suggest that these
 sensors generalize well to unseen future topical content and provide a
 novel paradigm for the extraction of high-value content from social
-media.  Furthermore, we show that terms and locations are among the most
+media. 
+Furthermore, a key objective of this work is providing a comprehensive longitudinal feature analysis to investigate which features and which feature attributes have higher correlation with topicality. We show that terms and locations are among the most
 useful features --- surprisingly more so than hashtags, even though
 hashtags were used to label the data.  And perhaps even more
 surprisingly, the number of unique hashtags and tweets by a user
