@@ -113,7 +113,7 @@ of previously unseen hashtags as a proxy for topical generalization, we do not s
 split our data temporally into train and test sets as usually done.  Instead,
 we split $H^c$ into two disjoint sets $H^c_\mathrm{train}$ and $H^c_\mathrm{val}$ 
 according to a time stamp $t_\mathrm{split}$ and the first usage time stamp 
-$t_h^\mathrm{*}$ of hashtags $h \in H^c$. This procedure is shown visually in Fig~\ref{fig:testTrainSplit}.
+$t_h^\mathrm{*}$ of hashtags $h \in H^c$.
  Formally, we define the following:
 \begin{align*}
 H^c_\mathrm{train} & = \{ h | h \in H^c \land t_{h}^* <    t_\mathrm{split} \} ,  \\

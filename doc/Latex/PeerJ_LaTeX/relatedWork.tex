@@ -16,10 +16,10 @@
 %                (Figure 2)
 
 The concept of social media as a sensor is prevalent in the literature
-and in this section we survey five related areas of active research:
-(1) trending topic detection, (2) tweet recommendation, (3) tracking general topics, (4) friend
-sensors, (5) and specific event detection such as earthquake or
-influenza sensors.  
+and in this section we survey four broadly related areas of active research:
+(1) trending topic detection, (2) tweet recommendation, (3) friend
+sensors, (4) and specific event detection such as earthquake or
+influenza sensors and we end the section with discussion of closely related research on tracking general topics.
 %Despite the partial overlap and superficial
 %similarities between this paper and related social sensor work, we
 %argue that no prior work has learned targeted social sensors for
@@ -29,7 +29,8 @@ influenza sensors.
 %the social sensor learning work proposed here.
 
 \vspace{2mm}
-\noindent {\bf Trending Topic Detection} represents one of the most popular
+%\noindent {\bf Trending Topic Detection} 
+\subsection*{Trending Topic Detection} represents one of the most popular
 types of social sensor and can be subdivided into many categories.  The
 first general category of methods define trends as topically coherent
 content and focus on clustering across lexical, linguistic, temporal
@@ -91,7 +92,9 @@ hashtags provided by the user.
 %relevance to the work presented hereinafter.
 
 \vspace{2mm}
-\noindent {\bf Tweet Recommendation} represents an alternate use of
+\subsection*{Tweet Recommendation}
+%\noindent {\bf Tweet Recommendation} 
+represents an alternate use of
 social sensors and falls into two broad categories: personalized or
 content-oriented recommendation and retweet recommendation.  For the
 first category, the objective of personalized recommendation is to
@@ -145,14 +148,9 @@ topical content.
 %popular messages, and user activity features can further improve the
 %performance marginally.
 
-%%%%% TRACKING GENERAL TOPICS
-\vspace{2mm}
-\noindent {\bf Tracking General Topics} represents use of social media sensors for detecting and tracking general topics such as "Baseball" and "Fashion". Researchers collect labeled data either by using a single hashtag for each topic\citep{lin2011smoothing}, a user-defined query for each topic \citep{magdy}, or co-training based on the URLs and text of the tweet \citep{yang2014large}. \cite{lin2011smoothing} leverages language models to train models using unigrams and bigrams, \cite{magdy} applies SVM classifier on extracted hashtags, unigrams, users and mentions as features, and \cite{yang2014large} defines the problem as topic modeling of tweets. We expand on \citep{lin2011smoothing}'s work and use a set of hashtags instead of a single hashtag. We extract hashtags, mentions, unigrams, users as features inline with these works. However, we add location as another feature which we will show later that location is the second most important feature for detection of topical content. We take advantage of various supervised learning methods and provide a novel framework for learning in terms of splitting the data and hashtags as topical proxies that would ensure generalization to future unseen content. While these works provide a good basis for this work, there are many fine-grain but important differences between previous works and this work with the most important ones being: 
-(1) we analyzed long-term sensor performance on detecting topical content over two years of Twitter data and across a variety of topics, (2) we provide a novel and clear framework for splitting hashtags to train, validation and test in a way ensuring generalization to future unseen content, (3) we present ranking in addition to correct classification while none of the other works provide ranking, (4) we deliver a comprehensive longitudinal study on features and their attributes over two years of tweets that supports our insights for learning and relevance of features to topicality while these works had little or none analysis over their features, (5) we extract \textit{Location} as one of the features which none of these works do and as we show in our feature analysis, \textit{Location} is the second most important feature beating even hashtags in terms of correlation with topicality.
-
 %%%%% TARGETED SPECIFIC TOPIC DETECTION
 \vspace{2mm}
-\noindent {\bf Specific Event Detection} builds social sensors
+\subsection*{Specific Event Detection} builds social sensors
 as we do in this work but focuses on highly specific events 
 such as disasters or epidemics.  For the use case of earthquake
 detection, an SVM can be trained to detect earthquake events
@@ -183,7 +181,7 @@ easily generalize to learn arbitrary event-based or topic-based social
 sensors as provided in this work.
 
 \vspace{2mm}
-\noindent {\bf Friend Sensors} 
+\subsection*{Friend Sensors} 
 are a fourth and final class of social sensors intended for early
 event detection~\citep{sandy,garcia} by leveraging the concept of the
 "friendship paradox"\citep{feld}, %~\footnote{On average, most people have
@@ -196,6 +194,18 @@ analysis, user-based features are among the least informative feature
 types for our topical social sensors suggesting that general social
 sensors benefit from a wide variety of features well beyond those of
 author features alone.
+
+%%%%% TRACKING GENERAL TOPICS
+\vspace{2mm}
+\subsection*{Tracking General Topics} represents use of social media sensors for detecting and tracking general topics such as "Baseball" and "Fashion". Researchers collect labeled data either by using a single hashtag for each topic\citep{lin2011smoothing}, a user-defined query for each topic \citep{magdy}, or co-training based on the URLs and text of the tweet \citep{yang2014large}. \cite{lin2011smoothing} leverages language models to train models using unigrams and bigrams, \cite{magdy} applies SVM classifier on extracted hashtags, unigrams, users and mentions as features, and \cite{yang2014large} defines the problem as topic modeling of tweets. We expand on \citep{lin2011smoothing}'s work and use a set of hashtags instead of a single hashtag. We extract hashtags, mentions, unigrams, users as features inline with these works. However, we add location as another feature which we will show later that location is the second most important feature for detection of topical content. We take advantage of various supervised learning methods and provide a novel framework for learning in terms of splitting the data and hashtags as topical proxies that would ensure generalization to future unseen content. While these works provide a good basis for this work, there are many fine-grain but important differences between previous works and this work with the most important ones being:
+\begin{enumerate}
+\item We analyzed long-term sensor performance on detecting topical content over two years of Twitter data and across a variety of topics.
+\item We provide a novel and clear framework for splitting hashtags to train, validation and test in a way ensuring generalization to future unseen content.
+\item We present ranking in addition to correct classification while none of the other works provide ranking.
+\item We deliver a comprehensive longitudinal study on features and their attributes over two years of tweets that supports our insights for learning and relevance of features to topicality while these works had little or none analysis over their features.
+\item We extract \textit{Location} as one of the features which none of these works do and as we show in our feature analysis, \textit{Location} is the second most important feature beating even hashtags in terms of correlation with topicality.
+\end{enumerate}
+
 
 %In this regard, \citeauthor{garcia} provided a method for
 %choosing sensor groups from friends of random sets of users to find

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  21 JUN 2016 20:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  23 JUN 2016 14:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -974,7 +974,7 @@ Package microtype Info: Loading generic settings for font family
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]) (./rel
 atedWork.tex
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <9> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 152.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 182.
 
 [2]) (./lss.tex
 LaTeX Font Info:    Try loading font information for OMS+ptm on input line 16.
@@ -983,19 +983,14 @@ File: omsptm.fd
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 16.
-[3]
-
-LaTeX Warning: Reference `fig:testTrainSplit' on page 4 undefined on input line
- 116.
-
-) [4] (./datasetStatistics.tex
+[3] [4]) (./datasetStatistics.tex
 Package epstopdf Info: Source file: <images/location/world/socialsensor-world-H
 umanCausedDisaster_location.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 1045349 bytes
 (epstopdf)             Output file: <images/location/world/socialsensor-world-H
 umanCausedDisaster_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 251741 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
 alsensor-world-HumanCausedDisaster_location-eps-converted-to.pdf images/locatio
@@ -1004,7 +999,7 @@ n/world/socialsensor-world-HumanCausedDisaster_location.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/world/socialsensor-world-HumanCausedDisaster_location-eps-conv
-erted-to.pdf, id=175, 1653.17625pt x 848.16875pt>
+erted-to.pdf, id=170, 1653.17625pt x 848.16875pt>
 File: images/location/world/socialsensor-world-HumanCausedDisaster_location-eps
 -converted-to.pdf Graphic file (type pdf)
 
@@ -1017,11 +1012,11 @@ LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <8> not available
 (Font)              Font shape `OT1/phv/b/n' tried instead on input line 48.
 Package epstopdf Info: Source file: <images/location/world/socialsensor-world-i
 rannucleardeal_location.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 860094 bytes
 (epstopdf)             Output file: <images/location/world/socialsensor-world-i
 rannucleardeal_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 209614 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
 alsensor-world-irannucleardeal_location-eps-converted-to.pdf images/location/wo
@@ -1030,7 +1025,7 @@ rld/socialsensor-world-irannucleardeal_location.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/world/socialsensor-world-irannucleardeal_location-eps-converte
-d-to.pdf, id=176, 1653.17625pt x 848.16875pt>
+d-to.pdf, id=171, 1653.17625pt x 848.16875pt>
 File: images/location/world/socialsensor-world-irannucleardeal_location-eps-con
 verted-to.pdf Graphic file (type pdf)
 
@@ -1041,11 +1036,11 @@ al_location-eps-converted-to.pdf used on input line 49.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 Package epstopdf Info: Source file: <images/location/world/socialsensor-world-s
 occer_location.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 1059134 bytes
 (epstopdf)             Output file: <images/location/world/socialsensor-world-s
 occer_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 252789 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
 alsensor-world-soccer_location-eps-converted-to.pdf images/location/world/socia
@@ -1054,7 +1049,7 @@ lsensor-world-soccer_location.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/world/socialsensor-world-soccer_location-eps-converted-to.pdf,
- id=177, 1653.17625pt x 877.2775pt>
+ id=172, 1653.17625pt x 877.2775pt>
 File: images/location/world/socialsensor-world-soccer_location-eps-converted-to
 .pdf Graphic file (type pdf)
 
@@ -1065,11 +1060,11 @@ on-eps-converted-to.pdf used on input line 50.
 (pdftex.def)             Requested size: 155.77116pt x 82.65953pt.
 Package epstopdf Info: Source file: <images/location/states/SocialSensor-us-sta
 tes-health_epidemics_location.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 309844 bytes
 (epstopdf)             Output file: <images/location/states/SocialSensor-us-sta
 tes-health_epidemics_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 61158 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/location/states/Soc
 ialSensor-us-states-health_epidemics_location-eps-converted-to.pdf images/locat
@@ -1078,7 +1073,7 @@ ion/states/SocialSensor-us-states-health_epidemics_location.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/states/SocialSensor-us-states-health_epidemics_location-eps-co
-nverted-to.pdf, id=178, 1653.17625pt x 848.16875pt>
+nverted-to.pdf, id=173, 1653.17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-health_epidemics_location-e
 ps-converted-to.pdf Graphic file (type pdf)
 
@@ -1089,11 +1084,11 @@ pidemics_location-eps-converted-to.pdf used on input line 52.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 Package epstopdf Info: Source file: <images/location/states/SocialSensor-us-sta
 tes-socialissues_location.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 294045 bytes
 (epstopdf)             Output file: <images/location/states/SocialSensor-us-sta
 tes-socialissues_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 58083 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/location/states/Soc
 ialSensor-us-states-socialissues_location-eps-converted-to.pdf images/location/
@@ -1102,7 +1097,7 @@ states/SocialSensor-us-states-socialissues_location.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/states/SocialSensor-us-states-socialissues_location-eps-conver
-ted-to.pdf, id=179, 1653.17625pt x 848.16875pt>
+ted-to.pdf, id=174, 1653.17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-socialissues_location-eps-c
 onverted-to.pdf Graphic file (type pdf)
 
@@ -1112,7 +1107,7 @@ Package pdftex.def Info: images/location/states/SocialSensor-us-states-socialis
 sues_location-eps-converted-to.pdf used on input line 53.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 
-<images/location/states/SocialSensor-us-states-space_location.pdf, id=180, 1653
+<images/location/states/SocialSensor-us-states-space_location.pdf, id=175, 1653
 .17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-space_location.pdf Graphic 
 file (type pdf)
@@ -1126,20 +1121,20 @@ Overfull \hbox (7.28226pt too wide) in paragraph at lines 47--57
  [][] 
  []
 
-[5 <./images/location/world/socialsensor-world-HumanCausedDisaster_location-eps
--converted-to.pdf> <./images/location/world/socialsensor-world-irannucleardeal_
-location-eps-converted-to.pdf> <./images/location/world/socialsensor-world-socc
-er_location-eps-converted-to.pdf> <./images/location/states/SocialSensor-us-sta
-tes-health_epidemics_location-eps-converted-to.pdf> <./images/location/states/S
-ocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/loc
-ation/states/SocialSensor-us-states-space_location.pdf>]) (./methodology.tex
+[5]) (./methodology.tex
 
 Package hyperref Warning: Suppressing empty link on input line 87.
 
 
 Package hyperref Warning: Suppressing empty link on input line 88.
 
-[6]
+[6 <./images/location/world/socialsensor-world-HumanCausedDisaster_location-eps
+-converted-to.pdf> <./images/location/world/socialsensor-world-irannucleardeal_
+location-eps-converted-to.pdf> <./images/location/world/socialsensor-world-socc
+er_location-eps-converted-to.pdf> <./images/location/states/SocialSensor-us-sta
+tes-health_epidemics_location-eps-converted-to.pdf> <./images/location/states/S
+ocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/loc
+ation/states/SocialSensor-us-states-space_location.pdf>]
 
 Package hyperref Warning: Suppressing empty link on input line 112.
 
@@ -1152,7 +1147,7 @@ Package hyperref Warning: Suppressing empty link on input line 153.
 
 Package hyperref Warning: Suppressing empty link on input line 162.
 
-
+[7]
 Underfull \hbox (badness 10000) in paragraph at lines 212--248
 [][]
  []
@@ -1162,15 +1157,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 212--248
 
  []
 
-[7]) (./featureAnalysis.tex
-<images/avgMI_gray.pdf, id=245, 531.41536pt x 363.29727pt>
+[8]) (./featureAnalysis.tex
+<images/avgMI_gray.pdf, id=250, 531.41536pt x 363.29727pt>
 File: images/avgMI_gray.pdf Graphic file (type pdf)
 
 <use images/avgMI_gray.pdf>
 Package pdftex.def Info: images/avgMI_gray.pdf used on input line 11.
 (pdftex.def)             Requested size: 212.40831pt x 170.72202pt.
 
-<images/avgMIBoxPlots/TermVsTopics.pdf, id=246, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/TermVsTopics.pdf, id=251, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/TermVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/TermVsTopics.pdf>
@@ -1178,7 +1173,7 @@ Package pdftex.def Info: images/avgMIBoxPlots/TermVsTopics.pdf used on input li
 ne 23.
 (pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
 
-<images/avgMIBoxPlots/LocationVsTopics.pdf, id=247, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/LocationVsTopics.pdf, id=252, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/LocationVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/LocationVsTopics.pdf>
@@ -1186,7 +1181,7 @@ Package pdftex.def Info: images/avgMIBoxPlots/LocationVsTopics.pdf used on inpu
 t line 24.
 (pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
 
-<images/avgMIBoxPlots/HashtagVsTopics.pdf, id=248, 266.87706pt x 287.83536pt>
+<images/avgMIBoxPlots/HashtagVsTopics.pdf, id=253, 266.87706pt x 287.83536pt>
 File: images/avgMIBoxPlots/HashtagVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/HashtagVsTopics.pdf>
@@ -1194,7 +1189,7 @@ Package pdftex.def Info: images/avgMIBoxPlots/HashtagVsTopics.pdf used on input
  line 25.
 (pdftex.def)             Requested size: 91.04648pt x 99.58438pt.
 
-<images/avgMIBoxPlots/MentionVsTopics.pdf, id=249, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/MentionVsTopics.pdf, id=254, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/MentionVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/MentionVsTopics.pdf>
@@ -1202,7 +1197,7 @@ Package pdftex.def Info: images/avgMIBoxPlots/MentionVsTopics.pdf used on input
  line 26.
 (pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
 
-<images/avgMIBoxPlots/FromVsTopics.pdf, id=250, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/FromVsTopics.pdf, id=255, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/FromVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/FromVsTopics.pdf>
@@ -1211,18 +1206,18 @@ ne 27.
 (pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-favoriteCount.eps>
 
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 54293 bytes
 (epstopdf)             Output file: <images/ViolinPlots/From-favoriteCount-eps-
 converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 49426 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-fa
 voriteCount-eps-converted-to.pdf images/ViolinPlots/From-favoriteCount.eps>
 (epstopdf)             \includegraphics on input line 41.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf, id=251, 435.6275pt
+<images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf, id=256, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf Graphic file (
 type pdf)
@@ -1233,18 +1228,18 @@ Package pdftex.def Info: images/ViolinPlots/From-favoriteCount-eps-converted-to
 (pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-followersCount.eps
 >
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 58346 bytes
 (epstopdf)             Output file: <images/ViolinPlots/From-followersCount-eps
 -converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 52557 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-fo
 llowersCount-eps-converted-to.pdf images/ViolinPlots/From-followersCount.eps>
 (epstopdf)             \includegraphics on input line 42.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-followersCount-eps-converted-to.pdf, id=252, 440.64626
+<images/ViolinPlots/From-followersCount-eps-converted-to.pdf, id=257, 440.64626
 pt x 327.2225pt>
 File: images/ViolinPlots/From-followersCount-eps-converted-to.pdf Graphic file 
 (type pdf)
@@ -1254,18 +1249,18 @@ Package pdftex.def Info: images/ViolinPlots/From-followersCount-eps-converted-t
 o.pdf used on input line 42.
 (pdftex.def)             Requested size: 85.35826pt x 63.38622pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-friendsCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 58044 bytes
 (epstopdf)             Output file: <images/ViolinPlots/From-friendsCount-eps-c
 onverted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 52536 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-fr
 iendsCount-eps-converted-to.pdf images/ViolinPlots/From-friendsCount.eps>
 (epstopdf)             \includegraphics on input line 43.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-friendsCount-eps-converted-to.pdf, id=253, 435.6275pt 
+<images/ViolinPlots/From-friendsCount-eps-converted-to.pdf, id=258, 435.6275pt 
 x 327.2225pt>
 File: images/ViolinPlots/From-friendsCount-eps-converted-to.pdf Graphic file (t
 ype pdf)
@@ -1274,18 +1269,18 @@ Package pdftex.def Info: images/ViolinPlots/From-friendsCount-eps-converted-to.
 pdf used on input line 43.
 (pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-hashtagCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 52187 bytes
 (epstopdf)             Output file: <images/ViolinPlots/From-hashtagCount-eps-c
 onverted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 46848 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-ha
 shtagCount-eps-converted-to.pdf images/ViolinPlots/From-hashtagCount.eps>
 (epstopdf)             \includegraphics on input line 44.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-hashtagCount-eps-converted-to.pdf, id=254, 440.64626pt
+<images/ViolinPlots/From-hashtagCount-eps-converted-to.pdf, id=259, 440.64626pt
  x 327.2225pt>
 File: images/ViolinPlots/From-hashtagCount-eps-converted-to.pdf Graphic file (t
 ype pdf)
@@ -1294,18 +1289,18 @@ Package pdftex.def Info: images/ViolinPlots/From-hashtagCount-eps-converted-to.
 pdf used on input line 44.
 (pdftex.def)             Requested size: 85.35826pt x 63.38622pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-tweetCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 47218 bytes
 (epstopdf)             Output file: <images/ViolinPlots/From-tweetCount-eps-con
 verted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 41574 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-tw
 eetCount-eps-converted-to.pdf images/ViolinPlots/From-tweetCount.eps>
 (epstopdf)             \includegraphics on input line 45.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-tweetCount-eps-converted-to.pdf, id=255, 440.64626pt x
+<images/ViolinPlots/From-tweetCount-eps-converted-to.pdf, id=260, 440.64626pt x
  327.2225pt>
 File: images/ViolinPlots/From-tweetCount-eps-converted-to.pdf Graphic file (typ
 e pdf)
@@ -1315,18 +1310,18 @@ f used on input line 45.
 (pdftex.def)             Requested size: 85.35826pt x 63.38622pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Hashtag-tweetCount.eps>
 
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 53771 bytes
 (epstopdf)             Output file: <images/ViolinPlots/Hashtag-tweetCount-eps-
 converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 48066 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Hashtag
 -tweetCount-eps-converted-to.pdf images/ViolinPlots/Hashtag-tweetCount.eps>
 (epstopdf)             \includegraphics on input line 47.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf, id=256, 435.6275pt
+<images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf, id=261, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf Graphic file (
 type pdf)
@@ -1336,18 +1331,18 @@ Package pdftex.def Info: images/ViolinPlots/Hashtag-tweetCount-eps-converted-to
 .pdf used on input line 47.
 (pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Hashtag-userCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 52767 bytes
 (epstopdf)             Output file: <images/ViolinPlots/Hashtag-userCount-eps-c
 onverted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 47585 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Hashtag
 -userCount-eps-converted-to.pdf images/ViolinPlots/Hashtag-userCount.eps>
 (epstopdf)             \includegraphics on input line 48.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf, id=257, 435.6275pt 
+<images/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf, id=262, 435.6275pt 
 x 327.2225pt>
 File: images/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf Graphic file (t
 ype pdf)
@@ -1357,18 +1352,18 @@ pdf used on input line 48.
 (pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Location-userCount.eps>
 
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 58838 bytes
 (epstopdf)             Output file: <images/ViolinPlots/Location-userCount-eps-
 converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 52226 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Locatio
 n-userCount-eps-converted-to.pdf images/ViolinPlots/Location-userCount.eps>
 (epstopdf)             \includegraphics on input line 49.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Location-userCount-eps-converted-to.pdf, id=258, 435.6275pt
+<images/ViolinPlots/Location-userCount-eps-converted-to.pdf, id=263, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/Location-userCount-eps-converted-to.pdf Graphic file (
 type pdf)
@@ -1379,18 +1374,18 @@ Package pdftex.def Info: images/ViolinPlots/Location-userCount-eps-converted-to
 (pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Mention-tweetCount.eps>
 
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 52724 bytes
 (epstopdf)             Output file: <images/ViolinPlots/Mention-tweetCount-eps-
 converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 46562 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Mention
 -tweetCount-eps-converted-to.pdf images/ViolinPlots/Mention-tweetCount.eps>
 (epstopdf)             \includegraphics on input line 50.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Mention-tweetCount-eps-converted-to.pdf, id=259, 435.6275pt
+<images/ViolinPlots/Mention-tweetCount-eps-converted-to.pdf, id=264, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/Mention-tweetCount-eps-converted-to.pdf Graphic file (
 type pdf)
@@ -1400,18 +1395,18 @@ Package pdftex.def Info: images/ViolinPlots/Mention-tweetCount-eps-converted-to
 .pdf used on input line 50.
 (pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Term-tweetCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 54279 bytes
 (epstopdf)             Output file: <images/ViolinPlots/Term-tweetCount-eps-con
 verted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 47942 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Term-tw
 eetCount-eps-converted-to.pdf images/ViolinPlots/Term-tweetCount.eps>
 (epstopdf)             \includegraphics on input line 51.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf, id=260, 435.6275pt x 
+<images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf, id=265, 435.6275pt x 
 327.2225pt>
 File: images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf Graphic file (typ
 e pdf)
@@ -1421,11 +1416,11 @@ f used on input line 51.
 (pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-favoriteCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 70025 bytes
 (epstopdf)             Output file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-favoriteCount-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 60782 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-favoriteCount-eps-converted-to.pdf images/DensityPlots_Ira
@@ -1434,7 +1429,7 @@ nDeal/dscatterPlot_From-favoriteCount.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount-eps-converted-to.
-pdf, id=261, 435.6275pt x 327.2225pt>
+pdf, id=266, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount-eps-converte
 d-to.pdf Graphic file (type pdf)
 
@@ -1445,11 +1440,11 @@ eCount-eps-converted-to.pdf used on input line 65.
 (pdftex.def)             Requested size: 102.42992pt x 76.93724pt.
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-followersCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 59417 bytes
 (epstopdf)             Output file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-followersCount-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 52112 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-followersCount-eps-converted-to.pdf images/DensityPlots_Ir
@@ -1458,7 +1453,7 @@ anDeal/dscatterPlot_From-followersCount.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-followersCount-eps-converted-to
-.pdf, id=262, 435.6275pt x 327.2225pt>
+.pdf, id=267, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-followersCount-eps-convert
 ed-to.pdf Graphic file (type pdf)
 
@@ -1469,11 +1464,11 @@ rsCount-eps-converted-to.pdf used on input line 66.
 (pdftex.def)             Requested size: 102.42992pt x 76.93724pt.
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-friendsCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 59600 bytes
 (epstopdf)             Output file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-friendsCount-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 51711 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-friendsCount-eps-converted-to.pdf images/DensityPlots_Iran
@@ -1482,7 +1477,7 @@ Deal/dscatterPlot_From-friendsCount.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount-eps-converted-to.p
-df, id=263, 435.6275pt x 327.2225pt>
+df, id=268, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount-eps-converted
 -to.pdf Graphic file (type pdf)
 
@@ -1493,11 +1488,11 @@ Count-eps-converted-to.pdf used on input line 67.
 (pdftex.def)             Requested size: 102.42992pt x 76.93724pt.
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-hashtagCount.eps>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 58744 bytes
 (epstopdf)             Output file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-hashtagCount-eps-converted-to.pdf>
-(epstopdf)                    date: 2016-06-15 17:50:50
+(epstopdf)                    date: 2016-06-08 12:15:31
 (epstopdf)                    size: 51758 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-hashtagCount-eps-converted-to.pdf images/DensityPlots_Iran
@@ -1506,7 +1501,7 @@ Deal/dscatterPlot_From-hashtagCount.eps>
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount-eps-converted-to.p
-df, id=264, 435.6275pt x 327.2225pt>
+df, id=269, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount-eps-converted
 -to.pdf Graphic file (type pdf)
 
@@ -1519,50 +1514,42 @@ Count-eps-converted-to.pdf used on input line 68.
 
 Package hyperref Warning: Suppressing empty link on input line 119.
 
-[8]
-
-LaTeX Warning: Text page 9 contains only floats.
-
 [9 <./images/avgMI_gray.pdf> <./images/avgMIBoxPlots/TermVsTopics.pdf> <./image
 s/avgMIBoxPlots/LocationVsTopics.pdf> <./images/avgMIBoxPlots/HashtagVsTopics.p
 df> <./images/avgMIBoxPlots/MentionVsTopics.pdf> <./images/avgMIBoxPlots/FromVs
-Topics.pdf> <./images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf> <./i
-mages/ViolinPlots/From-followersCount-eps-converted-to.pdf> <./images/ViolinPlo
-ts/From-friendsCount-eps-converted-to.pdf> <./images/ViolinPlots/From-hashtagCo
-unt-eps-converted-to.pdf> <./images/ViolinPlots/From-tweetCount-eps-converted-t
-o.pdf> <./images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf> <./images
-/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf> <./images/ViolinPlots/Loca
-tion-userCount-eps-converted-to.pdf> <./images/ViolinPlots/Mention-tweetCount-e
-ps-converted-to.pdf> <./images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf
->] [10 <./images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount-eps-conv
+Topics.pdf>] [10 <./images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf>
+ <./images/ViolinPlots/From-followersCount-eps-converted-to.pdf> <./images/Viol
+inPlots/From-friendsCount-eps-converted-to.pdf> <./images/ViolinPlots/From-hash
+tagCount-eps-converted-to.pdf> <./images/ViolinPlots/From-tweetCount-eps-conver
+ted-to.pdf> <./images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf> <./i
+mages/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf> <./images/ViolinPlots
+/Location-userCount-eps-converted-to.pdf> <./images/ViolinPlots/Mention-tweetCo
+unt-eps-converted-to.pdf> <./images/ViolinPlots/Term-tweetCount-eps-converted-t
+o.pdf> <./images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount-eps-conv
 erted-to.pdf> <./images/DensityPlots_IranDeal/dscatterPlot_From-followersCount-
 eps-converted-to.pdf> <./images/DensityPlots_IranDeal/dscatterPlot_From-friends
 Count-eps-converted-to.pdf> <./images/DensityPlots_IranDeal/dscatterPlot_From-h
-ashtagCount-eps-converted-to.pdf>]) (./conclusion.tex) [11] (./main.bbl
-[12]) 
+ashtagCount-eps-converted-to.pdf>] [11]) (./conclusion.tex) (./main.bbl
+[12] [13]) 
 AED: lastpage setting LastPage
-[13]
+[14]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 94.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 94.
  (./main.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 94.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 94.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: F8C0059B247220D44A4F32052B2F58B8;182.
-
-
-LaTeX Warning: There were undefined references.
-
+(rerunfilecheck)             Checksum: 824416200515F6550995BC88BB3891C6;52.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 94.
  ) 
 Here is how much of TeX's memory you used:
- 12929 strings out of 493117
- 196190 string characters out of 6135433
- 467736 words of memory out of 5000000
- 15714 multiletter control sequences out of 15000+600000
- 76847 words of font info for 299 fonts, out of 8000000 for 9000
+ 12930 strings out of 493117
+ 196125 string characters out of 6135433
+ 455732 words of memory out of 5000000
+ 15708 multiletter control sequences out of 15000+600000
+ 76966 words of font info for 301 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,22n,49p,1453b,582s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,22n,47p,1451b,581s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
@@ -1578,10 +1565,10 @@ ype1/urw/symbol/usyr.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/ti
 mes/utmb8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/times/utmr8a
 .pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/times/utmri8a.pfb></us
 r/local/texlive/2014/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on main.pdf (13 pages, 2780335 bytes).
+Output written on main.pdf (14 pages, 2780392 bytes).
 PDF statistics:
- 538 PDF objects out of 1000 (max. 8388607)
- 408 compressed objects within 5 object streams
- 93 named destinations out of 1000 (max. 500000)
- 51355 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 541 PDF objects out of 1000 (max. 8388607)
+ 410 compressed objects within 5 object streams
+ 97 named destinations out of 1000 (max. 500000)
+ 51339 words of extra memory for PDF output out of 51595 (max. 10000000)
 
