@@ -1,0 +1,68 @@
+%!TEX root = icwsm2016.tex
+
+Social media sources such as Twitter represent a massively distributed
+social sensor over a kaleidoscope of topics ranging from social and
+political events to entertainment and sports news.
+%However, given the
+%continual evolution of social media content, querying for content from
+%individual users or containing certain keywords or hashtags is often
+%insufficient to retrieve the vast range of topical content available.
+However, due to the overwhelming volume of content, it can be
+difficult to identify novel and significant content within a broad
+theme in a timely fashion.
+% Not sure if we should mention hashtags -- doesn't this make retrieval trivial?
+% But in general since this differs from our 10 themes below, maybe omit it?  -SPS
+%
+%such as \#obamacare or a recent \#twochild policy in China.  
+%
+%such as content involving the US
+%healthcare system or the recent relaxation of the one-child policy in
+%China.
+To this end, this paper proposes a scalable and practical method to
+automatically construct social sensors for generic topics.
+Specifically, given minimal supervised training content from a user, we learn 
+%address the task of automatically learning topical
+%social sensors that generalize to future unseen content
+%As a simple
+%but critical insight, we leverage hashtags as proxies for topical
+%content to automatically label a vast corpus of social media with only
+%a small number of topical hashtags that users can easily curate.  With
+%this labeled data in hand, we train a supervised learner to identify
+to identify topical tweets 
+from millions of features capturing content, user and social interactions on Twitter.
+%over a large feature space given a small set of seed hashtags as proxies for
+%topic labels.
+On a corpus of over 800 million English Tweets
+% or 40TB of Twitter data?  does not seem like 1 billions tweets though!
+collected from the Twitter
+streaming API during 2013 and 2014 and learning for 10 diverse themes 
+ranging from social issues to celebrity deaths to the ``Iran nuclear
+deal'', we empirically show that our learned social sensor
+automatically generalizes to unseen future content 
+%\eat{(including content with no hashtags)}
+with high ranking and precision scores.  Furthermore, we provide an
+extensive analysis of features and feature types across different
+topics that reveals, for example, that (1)~largely independent of
+topic, simple terms are the most informative feature followed by
+location features and that (2)~the number of unique hashtags and
+tweets by a user correlates more with their informativeness than their
+follower or friend count.  In summary, this work provides a novel,
+effective, and efficient way to learn topical social sensors requiring
+minimal user curation effort and offering strong generalization performance
+for identifying future topical content.
+
+%Twitter represents a massively distributed social sensor of a rich
+%underlying topic space that drives its content generation.  Yet
+%Twitter content is so diverse, decentralized, and dynamic in nature,
+%that it is hard to automatically aggregate this topical content.  To
+%address this need, we provide a novel way of learning topical social
+%sensors on Twitter that learn from a provided set of topical hashtags
+%and generalize to identify topical tweets with previously unseen tags.
+%These learning social sensors leverage a variety of user-based,
+%hashtag-based, term-based, and location-based features for
+%distinguishing topical from non-topical tweets; we further analyze
+%these features to understand which features are most useful and why.
+%We further assess general global topical trends and how our learning
+%sensors are able to follow these trends by drawing from a rich variety
+%of sources on the Twittersphere to enable a first generation of
+%learning social sensors for Twitter.

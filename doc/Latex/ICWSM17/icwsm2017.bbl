@@ -1,0 +1,225 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Aiello \bgroup et al\mbox.\egroup
+  }{2013}]{aiello}
+Aiello, L.~M.; Petkos, G.; Mart{\'{\i}}n, C.~J.; Corney, D.; Papadopoulos, S.;
+  Skraba, R.; G{\"{o}}ker, A.; Kompatsiaris, I.; and Jaimes, A.
+\newblock 2013.
+\newblock Sensing trending topics in twitter.
+\newblock {\em {IEEE} Transactions on Multimedia} 15(6):1268--1282.
+
+\bibitem[\protect\citeauthoryear{Aramaki, Maskawa, and Morita}{2011}]{aramaki}
+Aramaki, E.; Maskawa, S.; and Morita, M.
+\newblock 2011.
+\newblock Twitter catches the flu: Detecting influenza epidemics using
+  {Twitter}.
+\newblock In {\em Proceedings of the Conference on Empirical Methods in Natural
+  Language Processing}, EMNLP '11.
+
+\bibitem[\protect\citeauthoryear{Becker, Naaman, and Gravano}{2011}]{becker}
+Becker, H.; Naaman, M.; and Gravano, L.
+\newblock 2011.
+\newblock Beyond trending topics: Real-world event identification on twitter.
+\newblock In {\em Proceedings of the Fifth International Conference on Weblogs
+  and Social Media, Barcelona, Catalonia, Spain, July 17-21, 2011}.
+
+\bibitem[\protect\citeauthoryear{Budak, Agrawal, and {El Abbadi}}{2011}]{budak}
+Budak, C.; Agrawal, D.; and {El Abbadi}, A.
+\newblock 2011.
+\newblock Structural trend analysis for online social networks.
+\newblock {\em {PVLDB}} 4(10):646--656.
+
+\bibitem[\protect\citeauthoryear{Can, Oktay, and Manmatha}{2013}]{can}
+Can, E.~F.; Oktay, H.; and Manmatha, R.
+\newblock 2013.
+\newblock Predicting retweet count using visual cues.
+\newblock In {\em 22nd {ACM} International Conference on Information and
+  Knowledge Management, CIKM'13, San Francisco, CA, USA, October 27 - November
+  1, 2013},  1481--1484.
+
+\bibitem[\protect\citeauthoryear{Chen \bgroup et al\mbox.\egroup }{2012}]{chen}
+Chen, K.; Chen, T.; Zheng, G.; Jin, O.; Yao, E.; and Yu, Y.
+\newblock 2012.
+\newblock Collaborative personalized tweet recommendation.
+\newblock In {\em Proceedings of the 35th International ACM SIGIR Conference on
+  Research and Development in Information Retrieval}, SIGIR '12,  661--670.
+\newblock New York, NY, USA: ACM.
+
+\bibitem[\protect\citeauthoryear{Cui \bgroup et al\mbox.\egroup
+  }{2012}]{cuiZhang}
+Cui, A.; Zhang, M.; Liu, Y.; Ma, S.; and Zhang, K.
+\newblock 2012.
+\newblock Discover breaking events with popular hashtags in {Twitter}.
+\newblock In {\em 21st {ACM} International Conference on Information and
+  Knowledge Management, CIKM'12, Maui, HI, USA, October 29 - November 02,
+  2012},  1794--1798.
+
+\bibitem[\protect\citeauthoryear{Culotta}{2010}]{culotta}
+Culotta, A.
+\newblock 2010.
+\newblock Towards detecting influenza epidemics by analyzing {Twitter}
+  messages.
+\newblock In {\em Proceedings of the First Workshop on Social Media Analytics},
+  SOMA '10.
+
+\bibitem[\protect\citeauthoryear{Fan \bgroup et al\mbox.\egroup
+  }{2008}]{liblinear}
+Fan, R.; Chang, K.; Hsieh, C.; Wang, X.; and Lin, C.
+\newblock 2008.
+\newblock {LIBLINEAR:} {A} library for large linear classification.
+\newblock {\em Journal of Machine Learning Research} 9:1871--1874.
+
+\bibitem[\protect\citeauthoryear{Feld}{1991}]{feld}
+Feld, S.~L.
+\newblock 1991.
+\newblock Why your friends have more friends than you do.
+\newblock {\em American Journal of Sociology}  1464--1477.
+
+\bibitem[\protect\citeauthoryear{Garc{\'{\i}}a{-}Herranz \bgroup et
+  al\mbox.\egroup }{2012}]{garcia}
+Garc{\'{\i}}a{-}Herranz, M.; Egido, E.~M.; Cebri{\'{a}}n, M.; Christakis,
+  N.~A.; and Fowler, J.~H.
+\newblock 2012.
+\newblock Using friends as sensors to detect global-scale contagious outbreaks.
+\newblock {\em PloS one} abs/1211.6512.
+
+\bibitem[\protect\citeauthoryear{Ishikawa \bgroup et al\mbox.\egroup
+  }{2012}]{ishikawa}
+Ishikawa, S.; Arakawa, Y.; Tagashira, S.; and Fukuda, A.
+\newblock 2012.
+\newblock Hot topic detection in local areas using {Twitter} and wikipedia.
+\newblock In {\em ARCS Workshops (ARCS), 2012},  1--5.
+
+\bibitem[\protect\citeauthoryear{Krestel \bgroup et al\mbox.\egroup
+  }{2015}]{Krestel}
+Krestel, R.; Werkmeister, T.; Wiradarma, T.~P.; and Kasneci, G.
+\newblock 2015.
+\newblock Tweet-recommender: Finding relevant tweets for news articles.
+\newblock In {\em Proceedings of the 24th International Conference on World
+  Wide Web}, WWW '15 Companion,  53--54.
+\newblock Republic and Canton of Geneva, Switzerland: International World Wide
+  Web Conferences Steering Committee.
+
+\bibitem[\protect\citeauthoryear{Kryvasheyeu \bgroup et al\mbox.\egroup
+  }{2014}]{sandy}
+Kryvasheyeu, Y.; Chen, H.; Moro, E.; Hentenryck, P.~V.; and Cebri{\'{a}}n, M.
+\newblock 2014.
+\newblock Performance of social network sensors during hurricane sandy.
+\newblock {\em PLoS one} abs/1402.2482.
+
+\bibitem[\protect\citeauthoryear{Lee and Lin}{2014}]{largescale_ranksvm}
+Lee, C.-P., and Lin, C.-J.
+\newblock 2014.
+\newblock Large-scale linear {RankSVM}.
+\newblock {\em Neural Computing} 26(4):781--817.
+
+\bibitem[\protect\citeauthoryear{Manning, Raghavan, and
+  Sch\"{u}tze}{2008}]{manning_ir}
+Manning, C.~D.; Raghavan, P.; and Sch\"{u}tze, H.
+\newblock 2008.
+\newblock {\em Introduction to Information Retrieval}.
+\newblock New York, NY, USA: Cambridge University Press.
+
+\bibitem[\protect\citeauthoryear{Mathioudakis and Koudas}{2010}]{mathioudakis}
+Mathioudakis, M., and Koudas, N.
+\newblock 2010.
+\newblock Twittermonitor: trend detection over the {Twitter} stream.
+\newblock In {\em Proceedings of the {ACM} {SIGMOD} International Conference on
+  Management of Data, {SIGMOD} 2010, Indianapolis, Indiana, USA},  1155--1158.
+
+\bibitem[\protect\citeauthoryear{McCallum and Nigam}{1998}]{mccallum98nb}
+McCallum, A., and Nigam, K.
+\newblock 1998.
+\newblock A comparison of event models for naive bayes text classification.
+\newblock In {\em In AAAI-98 Workshop On Learning For Text Categorization},
+  41--48.
+\newblock AAAI Press.
+
+\bibitem[\protect\citeauthoryear{Nichols, Mahmud, and Drews}{2012}]{nichols}
+Nichols, J.; Mahmud, J.; and Drews, C.
+\newblock 2012.
+\newblock Summarizing sporting events using {Twitter}.
+\newblock In {\em 17th International Conference on Intelligent User Interfaces,
+  IUI '12, Lisbon, Portugal, February 14-17, 2012},  189--198.
+
+\bibitem[\protect\citeauthoryear{O'Connor, Krieger, and Ahn}{2010}]{tweetmotif}
+O'Connor, B.; Krieger, M.; and Ahn, D.
+\newblock 2010.
+\newblock Tweetmotif: Exploratory search and topic summarization for {Twitter}.
+\newblock In {\em Proceedings of the Fourth International Conference on Weblogs
+  and Social Media, {ICWSM} 2010, Washington, DC, USA, May 23-26, 2010}.
+
+\bibitem[\protect\citeauthoryear{Petrovi\'{c}, Osborne, and
+  Lavrenko}{2010}]{petrovic}
+Petrovi\'{c}, S.; Osborne, M.; and Lavrenko, V.
+\newblock 2010.
+\newblock Streaming first story detection with application to twitter.
+\newblock In {\em Human Language Technologies: The 2010 Annual Conference of
+  the North American Chapter of the Association for Computational Linguistics},
+  HLT '10,  181--189.
+\newblock Stroudsburg, PA, USA: Association for Computational Linguistics.
+
+\bibitem[\protect\citeauthoryear{Petrovic, Osborne, and
+  Lavrenko}{2011}]{petrovicOsborne}
+Petrovic, S.; Osborne, M.; and Lavrenko, V.
+\newblock 2011.
+\newblock Rt to win! predicting message propagation in {Twitter}.
+\newblock In {\em ICWSM}.
+
+\bibitem[\protect\citeauthoryear{Phuvipadawat and Murata}{2010}]{murata}
+Phuvipadawat, S., and Murata, T.
+\newblock 2010.
+\newblock Breaking news detection and tracking in {Twitter}.
+\newblock In {\em Proceedings of the 2010 {IEEE/WIC/ACM} International
+  Conference on Web Intelligence and International Conference on Intelligent
+  Agent Technology - Workshops, Toronto, Canada, August 31 - September 3,
+  2010},  120--123.
+
+\bibitem[\protect\citeauthoryear{Sadilek, Kautz, and Silenzio}{2012}]{sadilek}
+Sadilek, A.; Kautz, H.~A.; and Silenzio, V.
+\newblock 2012.
+\newblock Modeling spread of disease from social interactions.
+\newblock In {\em Proceedings of the Sixth International Conference on Weblogs
+  and Social Media, Dublin, Ireland, June 4-7, 2012}.
+
+\bibitem[\protect\citeauthoryear{Sakaki, Okazaki, and Matsuo}{2013}]{sakakiEq2}
+Sakaki, T.; Okazaki, M.; and Matsuo, Y.
+\newblock 2013.
+\newblock Tweet analysis for real-time event detection and earthquake reporting
+  system development.
+\newblock {\em Knowledge and Data Engineering, IEEE Transactions on}
+  25(4):919--931.
+
+\bibitem[\protect\citeauthoryear{Weng and Lee}{2011}]{wangLee}
+Weng, J., and Lee, B.
+\newblock 2011.
+\newblock Event detection in {Twitter}.
+\newblock In {\em Proceedings of the Fifth International Conference on Weblogs
+  and Social Media, Barcelona, Catalonia, Spain, July 17-21, 2011}.
+
+\bibitem[\protect\citeauthoryear{Xu and Yang}{2012}]{xu}
+Xu, Z., and Yang, Q.
+\newblock 2012.
+\newblock Analyzing user retweet behavior on {Twitter}.
+\newblock In {\em International Conference on Advances in Social Networks
+  Analysis and Mining, {ASONAM} 2012, Istanbul, Turkey, 26-29 August 2012},
+  46--50.
+
+\bibitem[\protect\citeauthoryear{Yan, Lapata, and Li}{2012}]{Yan}
+Yan, R.; Lapata, M.; and Li, X.
+\newblock 2012.
+\newblock Tweet recommendation with graph co-ranking.
+\newblock In {\em Proceedings of the 50th Annual Meeting of the Association for
+  Computational Linguistics: Long Papers - Volume 1}, ACL '12,  516--525.
+\newblock Stroudsburg, PA, USA: Association for Computational Linguistics.
+
+\bibitem[\protect\citeauthoryear{Zhao \bgroup et al\mbox.\egroup
+  }{2011}]{zhaoSports}
+Zhao, S.; Zhong, L.; Wickramasuriya, J.; and Vasudevan, V.
+\newblock 2011.
+\newblock Human as real-time sensors of social and physical events: {A} case
+  study of {Twitter} and sports games.
+\newblock {\em Technical Report TR0620-2011, Rice University and Motorola
+  Mobility} abs/1106.4300.
+
+\end{thebibliography}
