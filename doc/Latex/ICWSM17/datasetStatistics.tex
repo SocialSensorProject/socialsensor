@@ -24,10 +24,10 @@
 %\hline
 \multicolumn{5}{c}{} \\
 \multicolumn{5}{c}{\textbf{Feature Usage in \#Tweets}} \\ \hline
-\textbf{Feature} & \textbf{Max} & \textbf{Avg} & \textbf{Median} & \textbf{Max entity} \\ \hline
+\textbf{Feature} & \textbf{Max} & \textbf{Avg} & \textbf{Median} & \textbf{Most frequent} \\ \hline
 \textbf{From} & 10,196 & 8.67 & 2 & running\_status \\ \hline
 \textbf{Hashtag} & 1,653,159 & 13.91 & 1 & \#retweet \\ \hline
-\textbf{Mention} & 6,291 & 1.26 & 1 & tweet\_all\_time$\rightarrow$null \\ \hline
+\textbf{Mention} & 6,291 & 1.26 & 1 & tweet\_all\_time \\ \hline %$\rightarrow$null \\ \hline
 \textbf{Location} & 10,848,224 & 9,562.34 & 130 & london \\ \hline
 \textbf{Term} & 241,896,559 & 492.37 & 1 & rt \\ \hline 
 \multicolumn{5}{c}{} \\
@@ -64,12 +64,12 @@
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Now we provide details of the Twitter testbed for topical social sensor learning
+Now we provide details of the Twitter testbed for topical classifier learning
 that we evaluate in this paper.  We crawled Twitter data using Twitter
 Streaming API for two years spanning 2013 and 2014 years.
 %This type of crawling provides us with a very sparse set of data, roughly $1\%$ of all tweets \footnote{\hyperref[]{http://allthingsd.com/20101110/twitter-firehose-too-intense-take-a-sip-from-the-garden-hose-or-sample-the-spritzer|}}. 
 We collected more than 2.5 TB of compressed data, which contains a total number 
-of $829,026,458$ english tweets. In the context 
+of $829,026,458$ English tweets. In the context 
 of Twitter, we consider five feature types for each tweet.  Each
 tweet has a \textit{From} feature (i.e., the person who tweeted it), a
 possible \textit{Location} (i.e., a string provided as meta-data), and

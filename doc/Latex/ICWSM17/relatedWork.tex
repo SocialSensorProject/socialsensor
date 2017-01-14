@@ -1,3 +1,5 @@
+%!TEX root = icwsm2017.tex
+
 % Scott's outline
 %
 % EU Social Sensor project: what to say?  Many works integrated
@@ -15,21 +17,22 @@
 %                however: our work suggests users are least important features
 %                (Figure 2)
 
-The concept of social media as a sensor is prevalent in the literature
-and in this section we survey four related areas of active research:
+Aside from highly related work on supervised topic classifiers for Twitter~\cite{lin2011smoothing,yang2014large,magdy} that motivated this study
+as discussed in the introduction as well as unsupervised topic discovery, e.g., \cite{unsupervised}, that departs drastically from the supervised learning approach
+evaluated here, the concept of \emph{topical tweet detectors} is prevalent in the literature. 
+In this section we survey four highly related areas of active research:
 (1) trending topic detection, (2) tweet recommendation, (3) friend
 sensors, (4) and specific event detection such as earthquake or
 influenza sensors.  Despite the partial overlap and superficial
-similarities between this paper and related social sensor work, we
-argue that no prior work has learned targeted social sensors for
-arbitrary topics using supervised learning methods as done in this
-paper.
+similarities between this paper and related work, we
+argue no prior work has performed a longitudinal analysis of supervised Twitter topical 
+classifiers as done in this paper.
 %In the following, we explain why each of these four areas is different from
 %the social sensor learning work proposed here.
 
 \vspace{2mm}
 \noindent {\bf Trending Topic Detection} represents one of the most popular
-types of social sensor and can be subdivided into many categories.  The
+types of topical tweet detector and can be subdivided into many categories.  The
 first general category of methods define trends as topically coherent
 content and focus on clustering across lexical, linguistic, temporal
 and/or spatial
@@ -52,10 +55,10 @@ phrases~\cite{mathioudakis,cuiZhang,zhaoSports,nichols,aiello}.
 The third category of methods extends the previous categories by
 additionally exploiting network structure properties~\cite{budak}.
 Despite this important and very active area of work that can be
-considered a type of social sensor, trending topic detection is
+considered a type of topical tweet detector, trending topic detection is
 intrinsically unsupervised and not intended to detect targeted topics.
 In contrast, the work in this paper is based on supervised learning of
-a specific topical social sensor derived from the topical set of
+a specific topical tweet detector trained on the topical set of
 hashtags provided by the user.
 
 % From EU Social Sensor Project...
@@ -91,7 +94,7 @@ hashtags provided by the user.
 
 \vspace{2mm}
 \noindent {\bf Tweet Recommendation} represents an alternate use of
-social sensors and falls into two broad categories: personalized or
+tweet classification and falls into two broad categories: personalized or
 content-oriented recommendation and retweet recommendation.  For the
 first category, the objective of personalized recommendation is to
 observe a user's interests and behavior from their user profile,
@@ -109,7 +112,7 @@ these methods recommend tweets, they --- and recommendation methods in
 general --- are not focused on a specific topic but rather on
 predicting tweets that correlate with the preferences of a specific
 user or that are directly related to specific content.  Rather the
-focus with learning topical social sensors is to learn to predict for
+focus with learning topical classifiers is to learn to predict for
 a broad theme (independent of a user's profile) in a way that
 generalizes beyond existing labeled topical content to novel future
 topical content.
@@ -146,7 +149,7 @@ topical content.
 
 %%%%% TARGETED SPECIFIC TOPIC DETECTION
 \vspace{2mm}
-\noindent {\bf Specific Event Detection} builds social sensors
+\noindent {\bf Specific Event Detection} builds topical tweet detectors 
 as we do in this work but focuses on highly specific events 
 such as disasters or epidemics.  For the use case of earthquake
 detection, an SVM can be trained to detect earthquake events
@@ -173,8 +176,8 @@ knowledge of users' proximity and friendship along with the contageous
 nature of influenza~\cite{sadilek}.  While these targeted event
 detectors have the potential of providing high precision event
 detection, they are highly specific to the target event and do not
-easily generalize to learn arbitrary event-based or topic-based social
-sensors as provided in this work.
+easily generalize to learn arbitrary topic-based classifiers
+for Twitter as analyzed in this work.
 
 \vspace{2mm}
 \noindent {\bf Friend Sensors} 
@@ -182,13 +185,13 @@ are a fourth and final class of social sensors intended for early
 event detection~\cite{sandy,garcia} by leveraging the concept of the
 "friendship paradox"\cite{feld}, %~\footnote{On average, most people have
 %fewer friends than their friends have.}),
-to build user-centric social sensors.  We note that our topical social
-sensors represent a \emph{superset} of friend sensors since our work
+to build user-centric social sensors.  We note that our topical classifiers 
+represent a \emph{superset} of friend sensors since our work
 includes author features that the predictor may learn to use if this
 proves effective for prediction.  However, as shown in our feature
 analysis, user-based features are among the least informative feature
-types for our topical social sensors suggesting that general social
-sensors benefit from a wide variety of features well beyond those of
+types for our topical classifier suggesting that general topical 
+classifiers can benefit from a wide variety of features well beyond those of
 author features alone.
 
 %In this regard, \citeauthor{garcia} provided a method for

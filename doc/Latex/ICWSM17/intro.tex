@@ -1,4 +1,4 @@
-%!TEX root = document.tex
+%!TEX root = icwsm2017.tex
 
 \label{sec:introduction}
 
@@ -6,51 +6,44 @@ Social media sites such as Twitter present a double-edged sword for
 users.  On one hand these sources contain a vast amount of novel and
 topical content that challenge traditional news media sources in terms
 of their timeliness and diversity.  Yet on the other hand they also
-contain a vast amount of spam and otherwise low-value content for most
+contain a vast amount of chatter and otherwise low-value content for most
 users' information needs where filtering out irrelevant content is
-extremely time-consuming.  Hence, while it is widely acknowledged that
-social media sources can be used as topical content sensors (indeed,
-an entire European Union project was focused on related ``Social Sensor''
-research\footnote{\texttt{http://www.socialsensor.eu/}}.),
-automatically learning high-precision sensors (i.e., ranking and
-retrieval methods) for arbitrary topics that generalize to future
-unseen content remains an open question in the literature and
-comprises the key problem we seek to address in this paper.
+extremely time-consuming.  Previous work~\cite{lin2011smoothing,yang2014large,magdy} 
+has noted this need for topic-based filtering and has adopted a range
+of variations on supervised classification techniques to build effective
+topic filters.
 
-In this work, we contribute a novel supervised method for training
-social sensors with minimal user curation by using a small seed set of
-hashtags as topical proxies for automatic supervised data labeling.
-Then we proceed to train supervised classification and ranking methods
-to learn topical content from a large feature space of source users
-and their locations, terms, hashtags, and mentions.  On a corpus of
-over 800 million English Tweets collected from the Twitter streaming
-API during 2013 and 2014 and covering 10 diverse topics ranging from
-social issues to celebrity deaths to the ``Iran nuclear deal'', we
-empirically show that two simple and efficiently trainable methods ---
+While these previous approaches have augmented their respective topical classifiers with extensions
+ranging from semi-supervised training to multiple stages of classification-based filtering to online tracking of foreground and background language model evolution, 
+% --- all critical for state-of-the-art performance ---
+we seek to analyze the lowest common denominator
+of all of these methods, namely the performance of the underlying (vanilla) supervised 
+classification paradigm.
+Our fundamental research questions in this paper are hence focused on a longitudinal study
+of the performance of such supervised topic classifiers.  
+%taken a variety
+%of approaches ranging from information retrieval and language models~\cite{lin2011smoothing}  
+%to topic modeling~\cite{yang2014large} to supervised classification~\cite{magdy}.
+For example, over a year or more after training, how well do such classifiers generalize to future novel topical content, and are such results stable across a range of topics?  Furthermore, what features, feature classes, and feature attributes are most critical for long-term classifier performance?  
+
+To answer these questions, we collected a corpus of over 800 million English Tweets via the Twitter streaming API during 2013 and 2014 and learned topic classifiers for 10 diverse themes ranging from social issues to celebrity deaths to the ``Iran nuclear deal''.  We leverage ideas from~\cite{lin2011smoothing} for curating hashtags to define our 10 training topics and label
+tweets for supervised training; however, we also curate a disjoint set of test hashtags and 
+% to test the generalization performance of the topic classifiers
+\emph{and use only these to label test data} (because training hashtags can be trivially memorized) to test true generalization performance of the topic filters to future novel content. 
+
+We empirically show that two simple and efficiently trainable methods ---
 logistic regression and naive Bayes --- generalize well to unseen
 future topical content (including content with no hashtags) in terms
-of their mean average precision (MAP) and Precision@$n$ for a range of
-$n$.  Furthermore, we show that terms and locations are among the most
+of their average precision (AP) and Precision@$n$ for a range of
+$n$ evaluated over long time-spans (typically one year or more).  
+Furthermore, we show that terms and locations are among the most
 useful features --- surprisingly more so than hashtags, even though
 hashtags were used to label the data.  And perhaps even more
 surprisingly, the number of unique hashtags and tweets by a user
 correlates more with their informativeness than their follower or
-friend count.
+friend count.  
 
-%Overall, our feature analysis indicates that the most
-%useful features are sometimes counter-intuitive and that in general
-%learning methods may be much more effective than manual engineering
-%for building topical social sensors.
-
-In summary, this work fills a major gap in 
-event detection and tracking from social media
-%\eat{the literature of topical social sensors and } 
-on identifying emerging topics from long-running themes with
-%\eat{how to effectively and efficiently learn them given}
-minimal user supervision.  Our results suggest that these
-sensors generalize well to unseen future topical content and provide a
-novel paradigm for the extraction of high-value content from social
-media.
+In summary, this work provides a longitudinal study of Twitter topic classifiers that further justifies supervised approaches used in existing work while providing detailed insight into feature properties critical for their performance.
 
 %Twitter hosts lots of information, on average more than $2,200$ new tweets every second. This can get up to $3$ to $4$ times increase during large events such as tsunami. \footnote{\hyperref[]{https://blog.twitter.com/2011/the-engineering-behind-twitter-s-new-search-experience}}
 %\begin{itemize}

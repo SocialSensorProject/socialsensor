@@ -43,7 +43,7 @@ Chen, K.; Chen, T.; Zheng, G.; Jin, O.; Yao, E.; and Yu, Y.
 \newblock Collaborative personalized tweet recommendation.
 \newblock In {\em Proceedings of the 35th International ACM SIGIR Conference on
   Research and Development in Information Retrieval}, SIGIR '12,  661--670.
-\newblock New York, NY, USA: ACM.
+\newblock ACM.
 
 \bibitem[\protect\citeauthoryear{Cui \bgroup et al\mbox.\egroup
   }{2012}]{cuiZhang}
@@ -51,8 +51,7 @@ Cui, A.; Zhang, M.; Liu, Y.; Ma, S.; and Zhang, K.
 \newblock 2012.
 \newblock Discover breaking events with popular hashtags in {Twitter}.
 \newblock In {\em 21st {ACM} International Conference on Information and
-  Knowledge Management, CIKM'12, Maui, HI, USA, October 29 - November 02,
-  2012},  1794--1798.
+  Knowledge Management, CIKM'12, Maui, HI, USA, 2012},  1794--1798.
 
 \bibitem[\protect\citeauthoryear{Culotta}{2010}]{culotta}
 Culotta, A.
@@ -112,6 +111,22 @@ Lee, C.-P., and Lin, C.-J.
 \newblock 2014.
 \newblock Large-scale linear {RankSVM}.
 \newblock {\em Neural Computing} 26(4):781--817.
+
+\bibitem[\protect\citeauthoryear{Lin, Snow, and
+  Morgan}{2011}]{lin2011smoothing}
+Lin, J.; Snow, R.; and Morgan, W.
+\newblock 2011.
+\newblock Smoothing techniques for adaptive online language models: topic
+  tracking in tweet streams.
+\newblock In {\em Proceedings of the 17th ACM SIGKDD international conference
+  on Knowledge discovery and data mining},  422--429.
+\newblock ACM.
+
+\bibitem[\protect\citeauthoryear{Magdy and Elsayed}{2014}]{magdy}
+Magdy, W., and Elsayed, T.
+\newblock 2014.
+\newblock Adaptive method for following dynamic topics on twitter.
+\newblock In {\em ICWSM}.
 
 \bibitem[\protect\citeauthoryear{Manning, Raghavan, and
   Sch\"{u}tze}{2008}]{manning_ir}
@@ -190,6 +205,12 @@ Sakaki, T.; Okazaki, M.; and Matsuo, Y.
 \newblock {\em Knowledge and Data Engineering, IEEE Transactions on}
   25(4):919--931.
 
+\bibitem[\protect\citeauthoryear{Vicient and Moreno}{2015}]{unsupervised}
+Vicient, C., and Moreno, A.
+\newblock 2015.
+\newblock Unsupervised topic discovery in micro-blogging networks.
+\newblock {\em Expert Syst. Appl.} 42(17):6472--6485.
+
 \bibitem[\protect\citeauthoryear{Weng and Lee}{2011}]{wangLee}
 Weng, J., and Lee, B.
 \newblock 2011.
@@ -212,6 +233,15 @@ Yan, R.; Lapata, M.; and Li, X.
 \newblock In {\em Proceedings of the 50th Annual Meeting of the Association for
   Computational Linguistics: Long Papers - Volume 1}, ACL '12,  516--525.
 \newblock Stroudsburg, PA, USA: Association for Computational Linguistics.
+
+\bibitem[\protect\citeauthoryear{Yang \bgroup et al\mbox.\egroup
+  }{2014}]{yang2014large}
+Yang, S.-H.; Kolcz, A.; Schlaikjer, A.; and Gupta, P.
+\newblock 2014.
+\newblock Large-scale high-precision topic modeling on twitter.
+\newblock In {\em Proceedings of the 20th ACM SIGKDD international conference
+  on Knowledge discovery and data mining},  1907--1916.
+\newblock ACM.
 
 \bibitem[\protect\citeauthoryear{Zhao \bgroup et al\mbox.\egroup
   }{2011}]{zhaoSports}
