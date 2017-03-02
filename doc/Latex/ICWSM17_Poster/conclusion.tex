@@ -1,0 +1,39 @@
+%!TEX root = icwsm2017.tex
+
+This work provides a long-term study of topic classifiers on Twitter that further justifies classification-based topical filtering approaches while providing detailed insight into the feature properties most critical for topic classifier performance.
+%
+%This work fills a major gap in event detection and tracking from
+%social media on identifying emerging topics from long-running themes
+%with minimal user supervision.  We contribute a novel supervised
+%method for training social sensors with minimal user curation by using
+%a small seed set of hashtags as topical proxies for automatic
+%supervised data labeling.
+%The supervised classification and ranking
+%methods learn topical content from a large feature space. We train our
+%social sensor on known topical content, but tune it on novel topical
+%validation content which ensures optimal generalization. The
+%experiments are on a corpus of over $800$ million tweets crawled with
+%Twitter Search API.
+Our results suggest that these learned topical classifiers generalize well
+to unseen future topical content over a long time horizon (i.e., one year)
+and provide a novel paradigm for the
+extraction of high-value content from social media. Furthermore, an
+extensive analysis of features and feature attributes across different
+topics has revealed key insights including the following two: 
+(i) largely independent of
+topic, generic terms are the most informative features followed by
+topic-specific locations, and (ii) the number of unique hashtags and
+tweets by a user correlates more with their informativeness than their
+follower or friend count.
+
+Among many interesting directions, future work might evaluate a range of 
+topical classifier extensions: (1)
+optimizing rankings not only for topicality but also to minimize the
+lag-time of novel content identification, (2) optimizing queries for
+boolean retrieval oriented APIs such as Twitter, (3) identification of 
+long-term temporally stable predictive features, and (4) utilizing
+more social network structure as graph-based 
+features.  Altogether, we believe these insights will facilitate 
+the continued development of effective topical classifiers for Twitter that learn to
+identify broad themes of topical information with minimal user
+interaction and enhance the overall social media user experience.
