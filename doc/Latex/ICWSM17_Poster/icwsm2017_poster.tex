@@ -38,6 +38,8 @@
 \newcommand{\eat}[1]{}
 \newcommand{\rev}[1]{{\color{blue}{#1}}}
 
+\long\def\COMMENT#1\ENDCOMMENT{\message{(Commented text...)}\par}
+
  \begin{document}
 % The file aaai.sty is the style file for AAAI Press 
 % proceedings, working notes, and technical reports.
@@ -70,8 +72,10 @@ Affiliations
 \label{label:featureanalysis}
 \input{featureAnalysis}
 
+\COMMENT
 \section{Related Work}
 \input{relatedWork}
+\ENDCOMMENT
 
 \section{Conclusions and Future Work}
 \input{conclusion}
