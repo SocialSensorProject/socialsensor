@@ -1,8 +1,7 @@
-\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.2}{Learning Topical Social Sensors}{}% 2
-\BOOKMARK [1][-]{section.3}{Data Description}{}% 3
-\BOOKMARK [1][-]{section.4}{Empirical Evaluation}{}% 4
-\BOOKMARK [2][-]{section*.6}{Supervised Learning Algorithms}{section.4}% 5
-\BOOKMARK [2][-]{section*.8}{Performance Analysis}{section.4}% 6
-\BOOKMARK [1][-]{section.5}{Feature Analysis}{}% 7
-\BOOKMARK [1][-]{section.6}{Conclusions and Future Work}{}% 8
+\BOOKMARK [1][-]{section.1}{Learning Topical Social Sensors}{}% 1
+\BOOKMARK [1][-]{section.2}{Data Description}{}% 2
+\BOOKMARK [1][-]{section.3}{Empirical Evaluation}{}% 3
+\BOOKMARK [2][-]{section*.6}{Supervised Learning Algorithms}{section.3}% 4
+\BOOKMARK [2][-]{section*.7}{Performance Analysis}{section.3}% 5
+\BOOKMARK [1][-]{section.4}{Feature Analysis}{}% 6
+\BOOKMARK [1][-]{section.5}{Conclusions and Future Work}{}% 7
