@@ -4,18 +4,19 @@
 \usepackage{aaai17}
 \usepackage{times}
 \usepackage{helvet}
+\usepackage{courier}
+\usepackage{graphicx}
+\usepackage{url}  %Required
 \usepackage{subfig}
 \usepackage{amssymb}
 \usepackage{enumitem}
 \usepackage{amsmath}
 \usepackage{pifont}
 \usepackage{multirow}
-\usepackage{hyperref}
+% \usepackage{hyperref} commented due to AAAI formatting
 \usepackage[table,xcdraw]{xcolor}
 \usepackage[normalem]{ulem}
 \useunder{\uline}{\ul}{}
-\usepackage{courier}
-\usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{epsfig}
 \usepackage{xr}
@@ -33,7 +34,7 @@
 /Author (Author1, Author2, Author3}
 \setcounter{secnumdepth}{1}  
 
-\renewcommand{\vec}[1]{\mathbf{#1}}
+%\renewcommand{\vec}[1]{\mathbf{#1}}  commented due to AAAI Formating
 
 \newcommand{\eat}[1]{}
 \newcommand{\rev}[1]{{\color{blue}{#1}}}
@@ -90,6 +91,8 @@ Affiliations
 %\section{Copyright}
 
 \bibliographystyle{aaai}
+%\fontsize{9.0pt}{10.0pt}
+%\selectfont
 \bibliography{bibliography}
 
 \end{document}
