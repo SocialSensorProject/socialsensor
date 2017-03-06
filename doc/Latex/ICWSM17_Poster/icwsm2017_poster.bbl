@@ -1,0 +1,56 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Fan \bgroup et al\mbox.\egroup
+  }{2008}]{liblinear}
+Fan, R.; Chang, K.; Hsieh, C.; Wang, X.; and Lin, C.
+\newblock 2008.
+\newblock {LIBLINEAR:} {A} library for large linear classification.
+\newblock {\em Journal of Machine Learning Research} 9:1871--1874.
+
+\bibitem[\protect\citeauthoryear{Lee and Lin}{2014}]{largescale_ranksvm}
+Lee, C.-P., and Lin, C.-J.
+\newblock 2014.
+\newblock Large-scale linear {RankSVM}.
+\newblock {\em Neural Computing} 26(4):781--817.
+
+\bibitem[\protect\citeauthoryear{Lin, Snow, and
+  Morgan}{2011}]{lin2011smoothing}
+Lin, J.; Snow, R.; and Morgan, W.
+\newblock 2011.
+\newblock Smoothing techniques for adaptive online language models: topic
+  tracking in tweet streams.
+\newblock In {\em Proceedings of the 17th ACM SIGKDD international conference
+  on Knowledge discovery and data mining},  422--429.
+\newblock ACM.
+
+\bibitem[\protect\citeauthoryear{Magdy and Elsayed}{2014}]{magdy}
+Magdy, W., and Elsayed, T.
+\newblock 2014.
+\newblock Adaptive method for following dynamic topics on twitter.
+\newblock In {\em ICWSM}.
+
+\bibitem[\protect\citeauthoryear{Manning, Raghavan, and
+  Sch\"{u}tze}{2008}]{manning_ir}
+Manning, C.~D.; Raghavan, P.; and Sch\"{u}tze, H.
+\newblock 2008.
+\newblock {\em Introduction to Information Retrieval}.
+\newblock New York, NY, USA: Cambridge University Press.
+
+\bibitem[\protect\citeauthoryear{McCallum and Nigam}{1998}]{mccallum98nb}
+McCallum, A., and Nigam, K.
+\newblock 1998.
+\newblock A comparison of event models for naive bayes text classification.
+\newblock In {\em In AAAI-98 Workshop On Learning For Text Categorization},
+  41--48.
+\newblock AAAI Press.
+
+\bibitem[\protect\citeauthoryear{Yang \bgroup et al\mbox.\egroup
+  }{2014}]{yang2014large}
+Yang, S.-H.; Kolcz, A.; Schlaikjer, A.; and Gupta, P.
+\newblock 2014.
+\newblock Large-scale high-precision topic modeling on twitter.
+\newblock In {\em Proceedings of the 20th ACM SIGKDD international conference
+  on Knowledge discovery and data mining},  1907--1916.
+\newblock ACM.
+
+\end{thebibliography}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 MAR 2017 19:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  5 MAR 2017 19:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -299,7 +299,7 @@ Package: epsfig 1999/02/16 v1.7a (e)psfig emulation (SPQR)
 (/usr/local/texlive/2016/texmf-dist/tex/latex/tools/xr.sty
 Package: xr 1994/05/28 v5.02 eXternal References (DPC)
 )
-No file icwsm2017_poster.aux.
+(./icwsm2017_poster.aux)
 \openout1 = `icwsm2017_poster.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
@@ -315,6 +315,7 @@ LaTeX Font Info:    ... okay on input line 44.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
 LaTeX Font Info:    ... okay on input line 44.
 LaTeX Font Info:    Try loading font information for OT1+ptm on input line 44.
+
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -357,28 +358,7 @@ LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 52.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
- (./abstract.tex
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 3.
-
-LaTeX Warning: Citation `lin2011smoothing' on page 1 undefined on input line 3.
-
-
-
-LaTeX Warning: Citation `yang2014large' on page 1 undefined on input line 3.
-
-
-LaTeX Warning: Citation `magdy' on page 1 undefined on input line 3.
-
-) (./lss.tex
-
-LaTeX Warning: Citation `lin2011smoothing' on page 1 undefined on input line 45
-.
-
-
-LaTeX Warning: Citation `manning_ir' on page 1 undefined on input line 127.
-
-) (./datasetStatistics.tex
+ (./abstract.tex) (./lss.tex) (./datasetStatistics.tex
 Overfull \hbox (3.43625pt too wide) in paragraph at lines 6--47
  [][] 
  []
@@ -530,89 +510,26 @@ Overfull \hbox (6.94388pt too wide) in paragraph at lines 54--64
 ]
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 83.
-
-
-LaTeX Warning: Reference `table:featureStatistics' on page 2 undefined on input
- line 88.
-
-
-LaTeX Warning: Reference `fig:choropleths' on page 2 undefined on input line 95
-.
-
-) (./methodology.tex
-
-LaTeX Warning: Reference `sec:lss' on page 2 undefined on input line 89.
-
-
-LaTeX Warning: Reference `sec:datasetStatistics' on page 2 undefined on input l
-ine 90.
-
-
-LaTeX Warning: Reference `table:sampleHashtags' on page 2 undefined on input li
-ne 93.
-
-
-LaTeX Warning: Reference `table:sampleHashtags' on page 2 undefined on input li
-ne 109.
-
-
-LaTeX Warning: Reference `sec:datasetStatistics' on page 2 undefined on input l
-ine 115.
-
-
-LaTeX Warning: Reference `table:learningFeatures' on page 2 undefined on input 
-line 125.
-
-[2 <./images/location/world/socialsensor-world-HumanCausedDisaster_location-eps
--converted-to.pdf> <./images/location/world/socialsensor-world-irannucleardeal_
-location-eps-converted-to.pdf> <./images/location/world/socialsensor-world-socc
-er_location-eps-converted-to.pdf> <./images/location/states/SocialSensor-us-sta
-tes-health_epidemics_location-eps-converted-to.pdf> <./images/location/states/S
-ocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/loc
-ation/states/SocialSensor-us-states-space_location.pdf>]
+)
+(./methodology.tex
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
+ [2 <./images/location/world/socialsensor-world-HumanCausedDisaster_location-ep
+s-converted-to.pdf> <./images/location/world/socialsensor-world-irannucleardeal
+_location-eps-converted-to.pdf> <./images/location/world/socialsensor-world-soc
+cer_location-eps-converted-to.pdf> <./images/location/states/SocialSensor-us-st
+ates-health_epidemics_location-eps-converted-to.pdf> <./images/location/states/
+SocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/lo
+cation/states/SocialSensor-us-states-space_location.pdf>]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 150.
 
-
-LaTeX Warning: Reference `sec:lss' on page 3 undefined on input line 153.
-
-
-LaTeX Warning: Reference `sec:lss' on page 3 undefined on input line 156.
-
-
-LaTeX Warning: Citation `liblinear' on page 3 undefined on input line 159.
-
-
-LaTeX Warning: Citation `mccallum98nb' on page 3 undefined on input line 160.
-
-
-LaTeX Warning: Citation `manning_ir' on page 3 undefined on input line 161.
-
-
-LaTeX Warning: Citation `largescale_ranksvm' on page 3 undefined on input line 
-162.
-
-
-LaTeX Warning: Reference `sec:lss' on page 3 undefined on input line 165.
-
-
-LaTeX Warning: Citation `manning_ir' on page 3 undefined on input line 177.
-
 (Commented text...)
-
-LaTeX Warning: Reference `table:results2' on page 3 undefined on input line 289
-.
-
 
 LaTeX Warning: Reference `table:topTweets' on page 3 undefined on input line 30
 5.
 
-[3]
-
-LaTeX Warning: Reference `table:results2' on page 4 undefined on input line 315
-.
-
-) (./featureAnalysis.tex
+[3]) (./featureAnalysis.tex
 <images/avgMI_gray.pdf, id=40, 531.41536pt x 363.29727pt>
 File: images/avgMI_gray.pdf Graphic file (type pdf)
 
@@ -666,37 +583,16 @@ Missing character: There is no Œ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no § in font ptmr7t!
 
-
-LaTeX Warning: Reference `sec:datasetStatistics' on page 4 undefined on input l
-ine 125.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-
-LaTeX Warning: Citation `manning_ir' on page 4 undefined on input line 132.
-
-
-LaTeX Warning: Reference `fig:avgMI' on page 4 undefined on input line 150.
-
-
-LaTeX Warning: Reference `fig:avgMI' on page 4 undefined on input line 151.
-
-
-LaTeX Warning: Reference `fig:avgMI' on page 4 undefined on input line 153.
-
-[4 <./images/avgMI_gray.pdf>]
-
-LaTeX Warning: Reference `fig:avgMIBP' on page 5 undefined on input line 161.
-
-
-LaTeX Warning: Reference `table:top10MItopicsLocations' on page 5 undefined on 
-input line 170.
-
+ [4 <./images/avgMI_gray.pdf>]
 
 LaTeX Warning: Reference `fig:violinplots' on page 5 undefined on input line 18
 6.
+
+
+Underfull \vbox (badness 3148) has occurred while \output is active []
+
 
 
 LaTeX Warning: Reference `fig:violinplots' on page 5 undefined on input line 21
@@ -710,22 +606,23 @@ LaTeX Warning: Reference `fig:densityplots' on page 6 undefined on input line 2
 21.
 
 ) (Commented text...) (./conclusion.tex (Commented text...))
-No file icwsm2017_poster.bbl.
-[6
+(./icwsm2017_poster.bbl
+Underfull \hbox (badness 1163) in paragraph at lines 11--15
+[]\OT1/ptm/m/n/10 Lee, C.-P., and Lin, C.-J.  2014.  Large-scale lin-ear
+ []
+
+) [6
 
 ] (./icwsm2017_poster.aux)
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 4924 strings out of 493014
- 74170 string characters out of 6133351
- 180226 words of memory out of 5000000
- 8323 multiletter control sequences out of 15000+600000
+ 4929 strings out of 493014
+ 74262 string characters out of 6133351
+ 180544 words of memory out of 5000000
+ 8324 multiletter control sequences out of 15000+600000
  25852 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  44i,17n,49p,1860b,433s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -743,7 +640,7 @@ xmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/201
 st/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/t
 ype1/urw/times/utmri8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/
 zapfding/uzdr.pfb>
-Output written on icwsm2017_poster.pdf (6 pages, 2072055 bytes).
+Output written on icwsm2017_poster.pdf (6 pages, 2076078 bytes).
 PDF statistics:
  151 PDF objects out of 1000 (max. 8388607)
  103 compressed objects within 2 object streams
