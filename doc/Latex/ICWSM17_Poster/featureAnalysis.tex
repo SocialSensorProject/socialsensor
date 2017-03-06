@@ -12,7 +12,7 @@
 \centering
 \includegraphics[width=0.45\textwidth, height=60mm]{images/avgMI_gray.pdf}
 %\vspace{-3mm}
-\caption{Matrix of mean Mutual Information values for different feature types vs. topics.  The last column as average of mean values across all topics.  All values should be multiplied by $1E+10$.)}
+\caption{Matrix of mean Mutual Information values (divided by $1E+10$ for different feature types vs. topics.  The last column is the average of mean values across all topics.)}
 \label{fig:avgMI}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,20 +132,21 @@ attributes on learning targeted topical classifiers.
 %\end{itemize}
 %To answer these questions, 
 We use Mutual Information (MI)~\cite{manning_ir} as our primary
-metric for feature evaluation.  Mutual Information is a general method
-for measuring the amount of information one random variable contains
-about another random variable and is used to select
-predictive features in machine learning.  To calculate the amount of
-information that each feature
-$j \in \{ \textit{From} \cup \textit{Hashtag} \cup \textit{Mention} \cup \textit{Term} \cup \textit{Location} \}$
-provides w.r.t.\ each topic label $t \in \{NaturalDisaster, Epidemics,...\}$,
-Mutual Information is formally defined as 
-\begin{align*}
-I(j, t) & = \!\!\! \sum_{t \in \{ \mathrm{0}, \mathrm{1} \}} \sum_{j \in \{ \mathrm{0}, \mathrm{1}\}}p(j,t)\log \left ( \frac{p(j,t)}{p(j)p(t)} \right ) , 
- \label{eq:eq1}
-\end{align*}
-with marginal probabilities of topic $p(t)$ and feature $p(j)$ occurrence and joint probability $p(t,j)$ computed over the sample space of all tweets, 
-where higher values for this metric indicate more informative features $j$ for the topic $t$.
+metric for feature evaluation,   
+%Mutual Information is a general method
+%for measuring the amount of information one random variable contains
+%about another random variable and is used to select
+%predictive features in machine learning.  To calculate the amount of
+%information that each feature
+%$j \in \{ \textit{From} \cup \textit{Hashtag} \cup \textit{Mention} \cup \textit{Term} \cup \textit{Location} \}$
+%provides w.r.t.\ each topic label $t \in \{NaturalDisaster, Epidemics,...\}$,
+%Mutual Information is formally defined as 
+%\begin{align*}
+%I(j, t) & = \!\!\! \sum_{t \in \{ \mathrm{0}, \mathrm{1} \}} \sum_{j \in \{ \mathrm{0}, %\mathrm{1}\}}p(j,t)\log \left ( \frac{p(j,t)}{p(j)p(t)} \right ) , 
+% \label{eq:eq1}
+%\end{align*}
+%with marginal probabilities of topic $p(t)$ and feature $p(j)$ occurrence and joint probability $p(t,j)$ computed over the sample space of all tweets, 
+where higher values for this metric indicate more informative features for the given topic.
 
 %In order to answer the first question regarding the best features
 %for learning topical classifiers, 
@@ -169,7 +170,8 @@ Table~\ref{fig:avgMI}, we can make a set of observations:
 %\emph{the most useful individual features may be terms}, and (2) the topic has little impact on which feature
 %is most important indicating \emph{stability of feature type informativeness over topics}.
 
-As anecdotal evidence to inspect which features are most informative, we refer to
+As anecdotal evidence to support these conclusions and inspect which features are 
+most informative, we refer to
 Table~\ref{table:top10MItopicsLocations}, which displays the top five feature instances
 for each feature type and topic.  Among many remarkable insights in this table, one key aspect  
 we note is that the \emph{terms appear to be the most generic} (and hence most generalizable) features,

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.4.27)  6 MAR 2017 07:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.4.27)  6 MAR 2017 12:59
 entering extended mode
 **./icwsm2017_poster.tex
 (icwsm2017_poster.tex
@@ -348,8 +348,6 @@ LaTeX Font Info:    Try loading font information for OMS+ptm on input line 60.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 60.
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 60.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
@@ -508,6 +506,8 @@ Overfull \hbox (6.94388pt too wide) in paragraph at lines 54--64
 (methodology.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 151.
  [2 <./images/location/world/socialsensor-world-HumanCausedDisaster_location-ep
 s-converted-to.pdf> <./images/location/world/socialsensor-world-irannucleardeal
 _location-eps-converted-to.pdf> <./images/location/world/socialsensor-world-soc
@@ -515,8 +515,8 @@ cer_location-eps-converted-to.pdf> <./images/location/states/SocialSensor-us-st
 ates-health_epidemics_location-eps-converted-to.pdf> <./images/location/states/
 SocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/lo
 cation/states/SocialSensor-us-states-space_location.pdf>]
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 150.
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 169.
 
 (Commented text...) (Commented text...)) (featureAnalysis.tex
 <images/avgMI_gray.pdf, id=37, 531.41536pt x 363.29727pt>
@@ -530,42 +530,38 @@ Missing character: There is no Â in font ptmr7t!
 Missing character: There is no Œ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no § in font ptmr7t!
- [3]
+ [3 <./images/avgMI_gray.pdf>] (Commented text...)) (acknowledgements.tex)
+(icwsm2017_poster.bbl
+Underfull \vbox (badness 1478) has occurred while \output is active []
 
-LaTeX Warning: Text page 4 contains only floats.
 
-[4 <./images/avgMI_gray.pdf>] (Commented text...)) (Commented text...)
-(conclusion.tex (Commented text...)) (icwsm2017_poster.bbl
 Underfull \hbox (badness 1163) in paragraph at lines 11--15
 []\OT1/ptm/m/n/10 Lee, C.-P., and Lin, C.-J.  2014.  Large-scale lin-ear
  []
 
-) [5
-
-] (icwsm2017_poster.aux) ) 
+) [4] (icwsm2017_poster.aux) ) 
 Here is how much of TeX's memory you used:
- 4907 strings out of 493634
- 72624 string characters out of 3143744
- 192967 words of memory out of 3000000
- 8147 multiletter control sequences out of 15000+200000
- 28940 words of font info for 72 fonts, out of 3000000 for 9000
+ 4905 strings out of 493634
+ 72643 string characters out of 3143744
+ 190967 words of memory out of 3000000
+ 8145 multiletter control sequences out of 15000+200000
+ 27844 words of font info for 70 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 44i,17n,49p,1862b,430s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname
-/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb>
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Prog
-ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
-nts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
-sy9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Progr
-am Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icwsm2017_poster.pdf (5 pages, 1070622 bytes).
+ 44i,17n,49p,1416b,430s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/font
+name/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.
+pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/P
+rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
+sfonts/cm/cmsy9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.p
+fb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on icwsm2017_poster.pdf (4 pages, 1051041 bytes).
 PDF statistics:
- 96 PDF objects out of 1000 (max. 8388607)
+ 89 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -12,9 +12,10 @@
 
 % (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
 %TODO: Formal learning framework.
-Our objective is to build a binary classifier that can label
-a previously unseen tweet as topical (or not) by training on 
-topically labeled historical tweets.  
+Our objective is to evaluate binary classifiers that can label
+a previously unseen tweet as topical (or not).
+% by training on 
+%topically labeled historical tweets.  
 %
 %Formally, 
 %given an arbitrary tweet $d$ (a document in text classification parlance) 
@@ -44,7 +45,7 @@ topically labeled historical tweets.
 Following
 the approach of~\cite{lin2011smoothing}, for each topic $t \in T$, we leverage a (small) set of
 user-curated topical hashtags $H^t$ to efficiently provide a large number of
-supervised topic labels for social media content.  
+supervised topic labels for training.  
 %Next we provide
 %a procedure for labeling data with $H^t$ for training and validation.
 %Following this, we proceed to train
@@ -66,7 +67,7 @@ we split $H^t$ into three disjoint sets $H^t_\mathrm{train}$, $H^t_\mathrm{val}$
 $H^t_\mathrm{test}$ 
 according to two time stamps $t^\mathrm{val}_\mathrm{split}$ and $t^\mathrm{test}_\mathrm{split}$ for topic $t$ and the first usage time stamp 
 $h_\mathrm{time*}$ of each hashtag $h \in H^t$.  In short, all hashtags $h \in H^t$ with
-$h_\mathrm{time*} < t^\mathrm{val}_\mathrm{split}$ are used to generate positive labels in the training data, those with $h_\mathrm{time*} \geq t^\mathrm{test}_\mathrm{split}$ are used to generate positive labels in the test data and the remainder are used to label the validation data.
+$h_\mathrm{time*} < t^\mathrm{val}_\mathrm{split}$ are used to generate positive labels in the training data, those with $h_\mathrm{time*} \geq t^\mathrm{test}_\mathrm{split}$ are used for positive labels in the test data and the remainder are used for positive labels in the validation data.
 
 %To achieve this effect formally, we define the following:
 %\begin{align*}
@@ -107,7 +108,7 @@ $h_\mathrm{time*} < t^\mathrm{val}_\mathrm{split}$ are used to generate positive
 %Finally, we label a tweet in the train (validation) data set as positive if it contains
 %a hashtag in the train (validation) hashtag set.  
 
-The critical insight here is that we not only partition the train, validation, and test data 
+A \emph{critical insight} here is that we not only partition the train, validation, and test data 
 temporally, but we also divide the hashtag labels temporally and label each data partition with
 an entirely disjoint set of topical hashtags.
 %Selection of a set of documents and temporally splitting them into
@@ -122,14 +123,14 @@ We remark that a classifier that simply
 memorizes training hashtags will fail to correctly classify the validation data except in 
 cases where a tweet contains both a training and validation hashtag.  
 
-Next we proceed to train our classifier and  
-%scoring function $f^t$ on $D^t_\mathrm{train}$ and
-select hyperparameters to optimize Average Precision (AP)~\cite{manning_ir} (a ranking
-metric) on the validation data (and hashtag labels).
-Because all of our classifiers provide a real-valued score (e.g., logistic regression
-provides the probability of the class), the classifiers can be used to rank.
-In our results, we report final evaluations on the held-out test data with their own
-disjoint set of topical hashtag labels.
+%Next we proceed to train our classifier and  
+%%scoring function $f^t$ on $D^t_\mathrm{train}$ and
+%select hyperparameters to optimize Average Precision (AP)~\cite{manning_ir} (a ranking
+%metric) on the validation data (and hashtag labels).
+%Because all of our classifiers provide a real-valued score (e.g., logistic regression
+%provides the probability of the class), the classifiers can be used to rank.
+%In our results, we report final evaluations on the held-out test data with their own
+%disjoint set of topical hashtag labels.
 
 %Analogously to train and validation data, test data is generated the same way, but 
 %we omit formal notation (identical to the above) in order to reduce clutter.

@@ -61,13 +61,14 @@
 \subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location}} \\
 \end{tabular}
 %\vspace{-2mm}
-\caption {Per capita tweet frequency across different international and U.S. locations for different topics. The legend provides the number of tweets per 1 Million capita.}
+\caption {Tweets per 1 Million capita tweet frequency across different international and U.S. locations for different topics.}
 \label{fig:choropleths}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Now we provide details of the Twitter testbed for topical classifier learning
-that we evaluate in this paper.  We crawled Twitter data using Twitter
+%Now we provide details of the Twitter testbed for topical classifier learning
+%that we evaluate in this paper.  
+We crawled Twitter data using Twitter
 Streaming API for two years spanning 2013 and 2014 years.
 %This type of crawling provides us with a very sparse set of data, roughly $1\%$ of all tweets \footnote{\hyperref[]{http://allthingsd.com/20101110/twitter-firehose-too-intense-take-a-sip-from-the-garden-hose-or-sample-the-spritzer|}}. 
 We collected more than 2.5 TB of compressed data, which contains a total number 
@@ -77,20 +78,23 @@ tweet has a \textit{From} feature (i.e., the person who tweeted it), a
 possible \textit{Location} (i.e., a string provided as meta-data), and
 a time stamp when it was posted.  A tweet can also contain one or more
 of the following:
-\begin{itemize}
+%\begin{itemize}[noitemsep] %nolistsep
 %NOTE: $$ is not for italics... it is for math mode and has larger math mode spacing
 %since adjacent letters are implicitly multiplied.  Use \textit -SPS
-\item \textit{Hashtag}: a topical keyword specified using the \# sign.
-\item \textit{Mention}: a Twitter username reference using the @ sign. % reply?
-\item \textit{Term}:    any non-hashtag and non-mention unigrams. %These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
-\end{itemize}
-We provide more detailed statistics about each feature in
-Table~\ref{table:featureStatistics}.  For example, there are
-over 11 million unique hashtags, the most frequent unique hashtag
-occurred in over 1.6 million tweets,
-a hashtag has been used on average by $10.08$ unique users, and 
-authors (\textit{From} users) have used a median value of $2$
-tweets. % not average, median!!! -SPS
+%\item 
+\textit{Hashtag} (i.e., a topical keyword specified using the \# sign), 
+%\item 
+\textit{Mention} (i.e., a Twitter username reference using the @ sign), % reply?
+%\item 
+\textit{Term} (i.e., any non-hashtag and non-mention unigrams). %These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
+%\end{itemize}
+We provide more detailed feature statistics in Table~\ref{table:featureStatistics}.  
+%For example, there are
+%over 11 million unique hashtags, the most frequent unique hashtag
+%occurred in over 1.6 million tweets,
+%a hashtag has been used on average by $10.08$ unique users, and 
+%authors (\textit{From} users) have used a median value of $2$
+%tweets. % not average, median!!! -SPS
 
 Fig.~\ref{fig:choropleths} shows per capita tweet frequency across
 different international and U.S. locations for different topics.
