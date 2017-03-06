@@ -1,4 +1,4 @@
-%!TEX root = icwsm2017.tex
+%!TEX root = icwsm2017_poster.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\begin{figure}[h!]
@@ -17,23 +17,23 @@
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[tp!]
-\centering
-\begin{tabular}{ccccc}
-%\fbox{\rule{10cm}{3.85cm}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/TermVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/LocationVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/HashtagVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/MentionVsTopics.pdf}}
-\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/FromVsTopics.pdf}} \\
-\end{tabular}
-%\vspace{-2mm}
-\caption {Box plots of Mutual Information values (y-axis) per feature type across topics (x-axis labels).}
-\label{fig:avgMIBP}
-%\vspace{2mm} commented due to AAAI Formating
-\end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{figure*}[tp!]
+%\centering
+%\begin{tabular}{ccccc}
+%%\fbox{\rule{10cm}{3.85cm}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/TermVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/LocationVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/HashtagVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/MentionVsTopics.pdf}}
+%\subfloat[Fig:][]{\includegraphics[width=34mm, height=35mm]{images/avgMIBoxPlots/FromVsTopics.pdf}} \\
+%\end{tabular}
+%%\vspace{-2mm}
+%\caption {Box plots of Mutual Information values (y-axis) per feature type across topics (x-axis labels).}
+%\label{fig:avgMIBP}
+%%\vspace{2mm} commented due to AAAI Formating
+%\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \COMMENT
@@ -123,13 +123,15 @@
 %\textbf{What we have to work with: topics, features, feature attributes}
 In this section, we analyze the informativeness of our defined
 features in Sec~\ref{sec:datasetStatistics} and the effect of their
-attributes on learning targeted topical classifiers. To this end,
-our goal in this section is to answer the following questions:
-\begin{itemize}
-\item What are the best features for learning classifiers and do they differ by topic?
-\item For each feature type, do any attributes correlate with importance?
-\end{itemize}
-To answer these questions, we use Mutual Information (MI)~\cite{manning_ir} as our primary
+attributes on learning targeted topical classifiers. 
+%To this end,
+%our goal in this section is to answer the following questions:
+%\begin{itemize}
+%\item What are the best features for learning classifiers and do they differ by topic?
+%\item For each feature type, do any attributes correlate with importance?
+%\end{itemize}
+%To answer these questions, 
+We use Mutual Information (MI)~\cite{manning_ir} as our primary
 metric for feature evaluation.  Mutual Information is a general method
 for measuring the amount of information one random variable contains
 about another random variable and is used to select
@@ -145,8 +147,9 @@ I(j, t) & = \!\!\! \sum_{t \in \{ \mathrm{0}, \mathrm{1} \}} \sum_{j \in \{ \mat
 with marginal probabilities of topic $p(t)$ and feature $p(j)$ occurrence and joint probability $p(t,j)$ computed over the sample space of all tweets, 
 where higher values for this metric indicate more informative features $j$ for the topic $t$.
 
-In order to answer the first question regarding the best features
-for learning topical classifiers, we provide the mean Mutual Information
+%In order to answer the first question regarding the best features
+%for learning topical classifiers, 
+We provide the mean Mutual Information
 values for each feature across different topics in Fig.~\ref{fig:avgMI}.
 The last column in Fig.~\ref{fig:avgMI} shows the
 average of the mean Mutual Information for each feature type. From analysis of
@@ -157,14 +160,14 @@ Table~\ref{fig:avgMI}, we can make a set of observations:
 \item The Location feature provides the highest MI regarding the topics of \textit{HumanDisaster}, \textit{LBGT}, and \textit{Soccer} indicating a lot of content in these topics is heavily localized.
 \item Looking at the overall average values, the order of informativeness of feature types appears to be the following: \textit{Term}, \textit{Location}, \textit{Hashtag}, \textit{Mention}, \textit{From}.
 \end{itemize}
-To further analyze the relationship between the informativeness of feature types and topics,
-we refer to the box plots of Fig.~\ref{fig:avgMIBP}.  Here we see the quartiles and outliers of
-the distribution rather than just the average of the MI values in order to ensure the mean MI
-values were not misleading our interpretations.  Overall, the story is the same: term
-and location features dominate in terms of MI followed by the other less informative
-features.  Furthermore, two observations are apparent: (1) terms have more outliers indicating that
-\emph{the most useful individual features may be terms}, and (2) the topic has little impact on which feature
-is most important indicating \emph{stability of feature type informativeness over topics}.
+%To further analyze the relationship between the informativeness of feature types and topics,
+%we refer to the box plots of Fig.~\ref{fig:avgMIBP}.  Here we see the quartiles and outliers of
+%the distribution rather than just the average of the MI values in order to ensure the mean MI
+%values were not misleading our interpretations.  Overall, the story is the same: term
+%and location features dominate in terms of MI followed by the other less informative
+%features.  Furthermore, two observations are apparent: (1) terms have more outliers indicating that
+%\emph{the most useful individual features may be terms}, and (2) the topic has little impact on which feature
+%is most important indicating \emph{stability of feature type informativeness over topics}.
 
 As anecdotal evidence to inspect which features are most informative, we refer to
 Table~\ref{table:top10MItopicsLocations}, which displays the top five feature instances
@@ -181,6 +184,7 @@ the overall importance of these tweet features for identifying topical tweets.
 %shown as the top features based on Mutual Information are actually in
 %relation with the specific topic.
 
+\COMMENT
 In order to answer the second question on whether any attributes
 correlate with importance for each feature, we provide two types of
 analysis. The first analysis shown in Fig.~\ref{fig:violinplots}
@@ -228,4 +232,4 @@ tweet whereas the bottom mode occurs in no topical tweets.  While the
 bottom mode features may serve as good indicators of non-topicality,
 the top mode are inherently more indicative of topicality, which
 justifies feature selection by mutual information.
-
+\ENDCOMMENT
