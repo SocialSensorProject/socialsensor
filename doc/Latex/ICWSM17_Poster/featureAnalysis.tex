@@ -121,7 +121,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\textbf{What we have to work with: topics, features, feature attributes}
-In this section, we analyze the informativeness of our defined
+We now analyze the informativeness of our defined
 features in Sec~\ref{sec:datasetStatistics} and the effect of their
 attributes on learning targeted topical classifiers. 
 %To this end,
@@ -153,9 +153,9 @@ where higher values for this metric indicate more informative features for the g
 We provide the mean Mutual Information
 values for each feature across different topics in Fig.~\ref{fig:avgMI}.
 The last column in Fig.~\ref{fig:avgMI} shows the
-average of the mean Mutual Information for each feature type. From analysis of
-Table~\ref{fig:avgMI}, we can make a set of observations:
-\begin{itemize}
+average of the mean Mutual Information for each feature type.  We observe
+the following:
+\begin{itemize}%[noitemsep] %nolistsep
 \item The \textit{Term} and \textit{Location} features are the most informative features on average.% and in general, the more features you have, the better the chance that one is useful.
 %\item There are a few topics such as \textit{IranDeal} and \textit{tennis}, that are less sensitive to the selection of a specific set of features and are in the list of top $4$ MAP scores of \textit{Logistic Regression}.%providing evidence on the power of learning social sensors for these cases.
 \item The Location feature provides the highest MI regarding the topics of \textit{HumanDisaster}, \textit{LBGT}, and \textit{Soccer} indicating a lot of content in these topics is heavily localized.
@@ -170,8 +170,8 @@ Table~\ref{fig:avgMI}, we can make a set of observations:
 %\emph{the most useful individual features may be terms}, and (2) the topic has little impact on which feature
 %is most important indicating \emph{stability of feature type informativeness over topics}.
 
-As anecdotal evidence to support these conclusions and inspect which features are 
-most informative, we refer to
+As anecdotal evidence to support these conclusions and provide additional insights regarding
+the informativeness of each feature type, we refer to
 Table~\ref{table:top10MItopicsLocations}, which displays the top five feature instances
 for each feature type and topic.  Among many remarkable insights in this table, one key aspect  
 we note is that the \emph{terms appear to be the most generic} (and hence most generalizable) features,
