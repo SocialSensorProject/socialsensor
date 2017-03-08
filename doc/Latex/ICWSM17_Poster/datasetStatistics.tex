@@ -68,10 +68,10 @@
 
 %Now we provide details of the Twitter testbed for topical classifier learning
 %that we evaluate in this paper.  
-We crawled Twitter data using Twitter
-Streaming API for two years spanning 2013 and 2014 years.
+We crawled Twitter data using the Twitter 
+Streaming API for two years spanning 2013 and 2014.
 %This type of crawling provides us with a very sparse set of data, roughly $1\%$ of all tweets \footnote{\hyperref[]{http://allthingsd.com/20101110/twitter-firehose-too-intense-take-a-sip-from-the-garden-hose-or-sample-the-spritzer|}}. 
-We collected more than 2.5 TB of compressed data, which contains a total number 
+We collected more than 2.5 TB of compressed data, which contains a total  
 of $829,026,458$ English tweets. In the context 
 of Twitter, we consider five feature types for each tweet.  Each
 tweet has a \textit{From} feature (i.e., the person who tweeted it), a
@@ -88,7 +88,7 @@ of the following:
 %\item 
 \textit{Term} (i.e., any non-hashtag and non-mention unigrams). %These uni-grams are later cleaned to remove $Term$s with no meaning (total number of $Term$s before cleaning was $20,234,729$)
 %\end{itemize}
-We provide more detailed feature statistics in Table~\ref{table:featureStatistics}.  
+We provide detailed feature statistics in Table~\ref{table:featureStatistics}.  
 %For example, there are
 %over 11 million unique hashtags, the most frequent unique hashtag
 %occurred in over 1.6 million tweets,
@@ -103,8 +103,9 @@ the Middle East and Malaysia additionally stand out for the topic of
 Human Caused Disaster (MH370 incident), Iran, U.S., and Europe for nuclear
 negotiations the ``Iran deal'', and soccer for some (English-speaking)
 countries where it is popular.  For U.S. states, we see that Colorado
-stands out for health epidemics (both whooping cough and pneumonic
-plague), Missouri stands out for social issues (\#blacklivesmatter in
+stands out for health epidemics (whooping cough and pneumonic
+plague occurred in the data collection period), 
+Missouri stands out for social issues (\#blacklivesmatter in
 St. Louis), and Texas stands out for space due to NASA's presence
 there.
 

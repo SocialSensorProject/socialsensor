@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.4.27)  7 MAR 2017 11:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.4.27)  7 MAR 2017 20:06
 entering extended mode
 **./icwsm2017_poster.tex
 (icwsm2017_poster.tex
@@ -530,8 +530,26 @@ ates-health_epidemics_location-eps-converted-to.pdf> <./images/location/states/
 SocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/lo
 cation/states/SocialSensor-us-states-space_location-eps-converted-to.pdf>]
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 169.
- (Commented text...) (Commented text...)) (featureAnalysis.tex
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 175.
+
+Underfull \hbox (badness 1014) in paragraph at lines 175--176
+[]\OT1/ptm/m/it/10 Logistic Re-gres-sion and RankSVM\OT1/ptm/m/n/10 : $\OML/cmm
+/m/it/10 L[]$ \OT1/ptm/m/n/10 reg-u-lar-iza-tion
+ []
+
+
+Underfull \hbox (badness 3209) in paragraph at lines 175--176
+\OT1/ptm/m/n/10 con-stant $\OML/cmm/m/it/10 C$ \OT1/ptm/m/n/10 for both meth-od
+s is tuned for $\OML/cmm/m/it/10 C \OMS/cmsy/m/n/10 2$
+ []
+
+
+Underfull \hbox (badness 2213) in paragraph at lines 176--178
+[]\OT1/ptm/m/it/10 Na[]ve Bayes\OT1/ptm/m/n/10 : Dirich-let prior $\OML/cmm/m/
+it/10 $ \OT1/ptm/m/n/10 is tuned for $\OML/cmm/m/it/10  \OMS/cmsy/m/n/10 2$
+ []
+
+(Commented text...) (Commented text...)) (featureAnalysis.tex
 <images/avgMI_gray.pdf, id=100, 531.41536pt x 363.29727pt>
 File: images/avgMI_gray.pdf Graphic file (type pdf)
 
@@ -551,10 +569,10 @@ Underfull \hbox (badness 1163) in paragraph at lines 11--15
 
 ) [4] (icwsm2017_poster.aux) ) 
 Here is how much of TeX's memory you used:
- 4916 strings out of 493634
- 72761 string characters out of 3143744
+ 4914 strings out of 493634
+ 72697 string characters out of 3143744
  190967 words of memory out of 3000000
- 8145 multiletter control sequences out of 15000+200000
+ 8143 multiletter control sequences out of 15000+200000
  27844 words of font info for 70 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  44i,17n,49p,1416b,430s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -569,7 +587,7 @@ public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
 sfonts/cm/cmsy9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.p
 fb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icwsm2017_poster.pdf (4 pages, 856069 bytes).
+Output written on icwsm2017_poster.pdf (4 pages, 856182 bytes).
 PDF statistics:
  152 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

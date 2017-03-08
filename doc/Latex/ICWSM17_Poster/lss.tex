@@ -43,7 +43,7 @@ a previously unseen tweet as topical (or not).
 %media platforms such as Instagram, Tumblr, and Facebook.  
 %
 Following
-the approach of~\cite{lin2011smoothing}, for each topic $t \in T$, we leverage a (small) set of
+the approach of~\cite{lin2011smoothing}, for a topic~$t$, we leverage a (small) set of
 user-curated topical hashtags $H^t$ to efficiently provide a large number of
 supervised topic labels for training.  
 %Next we provide
@@ -108,8 +108,8 @@ $h_\mathrm{time*} < t^\mathrm{val}_\mathrm{split}$ are used to generate positive
 %Finally, we label a tweet in the train (validation) data set as positive if it contains
 %a hashtag in the train (validation) hashtag set.  
 
-A \emph{critical insight} here is that we not only partition the train, validation, and test data 
-temporally, but we also divide the hashtag labels temporally and label each data partition with
+The key point to observe is that we not only partition the train, validation, and test data 
+temporally, but we also divide the hashtag class labels temporally and label each data partition with
 an entirely disjoint set of topical hashtags.
 %Selection of a set of documents and temporally splitting them into
 %train and validation documents. The split is based on a split-time
