@@ -3,7 +3,7 @@
 \begin{table}[t!]
 \centering
 {%\renewcommand{\arraystretch}{1.2}commented due to AAAI Formating
-\resizebox{0.48\textwidth}{!}{%
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|c|c|c|c|c|}
 %\hline
 \multicolumn{5}{c}{\textbf{\#Unique Features}} \\ \hline
@@ -20,7 +20,7 @@
 %\begin{table}[t!]
 %\centering
 {%\renewcommand{\arraystretch}{1.2} commented due to AAAI Formating
-\resizebox{0.48\textwidth}{!}{%
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{|l|c|c|c|c|}
 %\hline
 \multicolumn{5}{c}{} \\
@@ -51,15 +51,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure*}[t!]
 \centering
+\resizebox{\textwidth}{!}{
 \begin{tabular}{ccc}
-\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-HumanCausedDisaster_location.eps}}
-\subfloat[Fig:][Iran Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.eps}}
-\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.eps}} \\
+\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf}}
+\subfloat[Fig:][Iran Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.pdf}}
+\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.pdf}} \\
 %\vspace{-10mm}
-\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.eps}}
-\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.eps}}
-\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location}} \\
+\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.pdf}}
+\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.pdf}}
+\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location.pdf}} \\
 \end{tabular}
+}
 %\vspace{-2mm}
 \caption {Tweets per 1 Million capita tweet frequency across different international and U.S. locations for different topics.}
 \label{fig:choropleths}
