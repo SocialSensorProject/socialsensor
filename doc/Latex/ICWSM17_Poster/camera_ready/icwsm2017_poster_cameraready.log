@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  8 MAR 2017 22:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  9 MAR 2017 07:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -214,37 +214,37 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
 
 <images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf, id=
-1, 1653.17625pt x 848.16875pt>
+1, 1468.48625pt x 784.9325pt>
 File: images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf
  Graphic file (type pdf)
 
 <use images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-HumanCausedDi
 saster_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
+(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
 
 <images/location/world/socialsensor-world-irannucleardeal_location.pdf, id=2, 1
-653.17625pt x 848.16875pt>
+468.48625pt x 784.9325pt>
 File: images/location/world/socialsensor-world-irannucleardeal_location.pdf Gra
 phic file (type pdf)
 
 <use images/location/world/socialsensor-world-irannucleardeal_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-irannuclearde
 al_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
+(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
 
-<images/location/world/socialsensor-world-soccer_location.pdf, id=3, 1653.17625
-pt x 877.2775pt>
+<images/location/world/socialsensor-world-soccer_location.pdf, id=3, 1468.48625
+pt x 784.9325pt>
 File: images/location/world/socialsensor-world-soccer_location.pdf Graphic file
  (type pdf)
 
 <use images/location/world/socialsensor-world-soccer_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-soccer_locati
 on.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 88.5896pt.
+(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
 
 <images/location/states/SocialSensor-us-states-health_epidemics_location.pdf, i
-d=4, 1653.17625pt x 848.16875pt>
+d=4, 1394.20876pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-health_epidemics_location.p
 df Graphic file (type pdf)
 
@@ -252,17 +252,17 @@ df Graphic file (type pdf)
 f>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-health_e
 pidemics_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
+(pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
 
 <images/location/states/SocialSensor-us-states-socialissues_location.pdf, id=5,
- 1653.17625pt x 848.16875pt>
+ 1394.20876pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-socialissues_location.pdf G
 raphic file (type pdf)
 
 <use images/location/states/SocialSensor-us-states-socialissues_location.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-socialis
 sues_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
+(pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
 
 <images/location/states/SocialSensor-us-states-space_location.pdf, id=6, 1394.2
 0876pt x 848.16875pt>
@@ -298,22 +298,22 @@ Underfull \hbox (badness 1014) in paragraph at lines 320--321
 /m/it/10 L[]$ \OT1/ptm/m/n/10 reg-u-lar-iza-tion
  []
 
-<images/avgMI_gray2.pdf, id=48, 361.35pt x 201.75375pt>
-File: images/avgMI_gray2.pdf Graphic file (type pdf)
+<images/avgMI_gray.pdf, id=101, 531.41536pt x 363.29727pt>
+File: images/avgMI_gray.pdf Graphic file (type pdf)
 
-<use images/avgMI_gray2.pdf>
-Package pdftex.def Info: images/avgMI_gray2.pdf used on input line 379.
-(pdftex.def)             Requested size: 239.39438pt x 133.66275pt.
+<use images/avgMI_gray.pdf>
+Package pdftex.def Info: images/avgMI_gray.pdf used on input line 379.
+(pdftex.def)             Requested size: 239.39438pt x 163.65965pt.
 Missing character: There is no Â in font ptmr7t!
 Missing character: There is no Œ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no § in font ptmr7t!
- [3 <./images/avgMI_gray2.pdf>]
+ [3 <./images/avgMI_gray.pdf>]
 (./icwsm2017_poster_cameraready.bbl) [4] (./icwsm2017_poster_cameraready.aux) )
  
 Here is how much of TeX's memory you used:
  2982 strings out of 493014
- 49233 string characters out of 6133351
+ 49228 string characters out of 6133351
  173965 words of memory out of 5000000
  6475 multiletter control sequences out of 15000+600000
  21793 words of font info for 45 fonts, out of 8000000 for 9000
@@ -331,10 +331,10 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2016/texmf
 -dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/font
 s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/ur
 w/times/utmri8a.pfb>
-Output written on icwsm2017_poster_cameraready.pdf (4 pages, 1025137 bytes).
+Output written on icwsm2017_poster_cameraready.pdf (4 pages, 838356 bytes).
 PDF statistics:
- 101 PDF objects out of 1000 (max. 8388607)
- 69 compressed objects within 1 object stream
+ 154 PDF objects out of 1000 (max. 8388607)
+ 96 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
