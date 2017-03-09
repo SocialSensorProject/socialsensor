@@ -324,7 +324,7 @@ $C \in \{10^{-12}, 10^{-11}, ..., 10^{11}, 10^{12} \}$.
 
 $\alpha \in \{10^{-20}, 10^{-15}, 10^{-8}, 10^{-3}, 10^{-1}, 1\}$.
 %\item \textit{RankSVM}: constant $C$ is tuned for $C \in {10^{-12}, 10^{-11}, ..., 10^{11}, 10^{12} \}$.
-\item \textit{All Classfiers}: The number of top features $M$ selected based on their Mutual Information is tuned for
+\item \textit{All}: Number $M$ of features selected based on highest Mutual Information~\cite{manning_ir} [Sec. 13.5.1] with the class topic label is tuned for
 
  $M \in \{10^{2}, 10^{3}, 10^{4}, 10^{5}, 1166582 \textrm{ (all features) } \}$.
 \end{itemize}
@@ -334,7 +334,7 @@ selection for all algorithms (nb., it is possible to select all
 features).  
 We tune the hyperparameters via exhaustive grid search
 and select the configuration with the highest Average Precision
-(AP)~\cite{manning_ir} ranking metric discussed more below.
+(AP)~\cite{manning_ir} [Sec. 8.4] ranking metric discussed below.
 
 \subsection{Performance Analysis}
 
@@ -345,7 +345,7 @@ to \emph{examine only the highest ranked tweets}.  Hence we believe ranking
 metrics represent the best performance measures for the intended use case of this work.
 While RankSVM naturally produces a ranking, all classifiers are score-based, which also allows
 them to provide a natural ranking of the test data that we evaluate via the following
-ranking metrics:
+ranking metrics defined in~\cite{manning_ir} [Sec. 8.4]:
 \begin{itemize}
 \item {\bf AP:} Average precision over the ranked list; the mean over
 all topics provides mean AP (mAP).
@@ -369,7 +369,7 @@ learners % with \textit{Na\"{i}ve Bayes} useful for
 and generalize to new unseen topics up to a year after training.
 Also notable is that 
 trained classifiers outperform RankSVM on the ranking task thus justifying
-the use of trained topic classifiers for ranking.
+the use of trained topic \emph{classifiers} for ranking.
 
 
 \subsection{Feature Analysis}
@@ -426,9 +426,9 @@ the use of trained topic classifiers for ranking.
 We now analyze the informativeness of our defined
 features in Sec~\ref{sec:datasetStatistics} and the effect of their
 attributes on learning targeted topical classifiers. 
-We use Mutual Information (MI)~\cite{manning_ir} as our primary
+We use Mutual Information (MI)~\cite{manning_ir} [Sec. 13.5.1] as our primary
 metric for feature evaluation,   
-where higher values for this metric indicate more informative features for the given topic.
+where higher values for MI indicate more informative features for the given topic.
 
 We provide the mean Mutual Information
 values for each feature across different topics in Fig.~\ref{fig:avgMI}.
@@ -436,9 +436,10 @@ The last column in Fig.~\ref{fig:avgMI} shows the
 average of the mean Mutual Information for each feature type.  We observe
 the following:
 \begin{itemize}%[noitemsep] %nolistsep
-\item The \textit{Term} and \textit{Location} features are the most informative features on average (despite class labels being \emph{Hashtags}).
-\item The \textit{Location} feature provides second highest MI regarding the topics of \textit{HumanDisaster}, \textit{LBGT}, and \textit{Soccer} indicating that the content in these topics is heavily localized.
-\item Looking at the overall average values, the order of informativeness of feature types appears to be the following: \textit{Term}, \textit{Location}, \textit{Hashtag}, \textit{Mention}, \textit{From}.
+\item Across all topics, the \textit{Term} and \textit{Location} features are the most informative features on average (despite training on topics with class labels determined by hashtags).
+% (despite class labels being \emph{Hashtags}).
+\item Looking at only the \textit{Location} feature, the highest MI across topics occurs for  \textit{HumanDisaster}, \textit{LBGT}, and \textit{Soccer} indicating that the content in these topics is likely to be more geographically localized than the other topics.
+\item Looking at the overall mean MI values, the order of feature types from most to least informative is the following: \textit{Term}, \textit{Location}, \textit{Hashtag}, \textit{Mention}, \textit{From}.  We also remark that the mean MI values for \textit{Term} and \textit{Location} are an order of magnitude or greater than the other feature types.
 \end{itemize}
 
 As anecdotal evidence to support these conclusions and provide additional insights regarding
