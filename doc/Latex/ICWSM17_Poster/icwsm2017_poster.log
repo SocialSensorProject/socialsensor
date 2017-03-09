@@ -1,15 +1,14 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.1)  9 MAR 2017 13:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  8 MAR 2017 18:34
 entering extended mode
  restricted \write18 enabled.
- file:line:error style messages enabled.
  %&-line parsing enabled.
 **icwsm2017_poster.tex
 (./icwsm2017_poster.tex
-LaTeX2e <2015/01/01>
-Babel <3.9l> and hyphenation patterns for 79 languages loaded.
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
+LaTeX2e <2016/03/31>
+Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/size10.clo
+(/usr/local/texlive/2016/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -26,244 +25,130 @@ File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 ) (./aaai17.sty
 Conference Style for AAAI for LaTeX 2e -- version of 14 January 2017
 \titlebox=\skip43
-) (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/times.sty
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/times.sty
 Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/helvet.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/helvet.sty
 Package: helvet 2005/04/12 PSNFSS-v9.2a (WaS) 
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks14
 ))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/courier.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/courier.sty
 Package: courier 2005/04/12 PSNFSS-v9.2a (WaS) 
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2016/05/09 v1.0r Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
-File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/01/02 v1.10 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 94.
+Package graphics Info: Driver file: pdftex.def on input line 96.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/pdftex-def/pdftex.def
+(/usr/local/texlive/2016/texmf-dist/tex/latex/pdftex-def/pdftex.def
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
 )
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count87
 ))
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/url/url.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/subfig/subfig.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/enumitem/enumitem.sty
+Package: enumitem 2011/09/28 v3.5.2 Customized lists
+\labelindent=\skip44
+\enit@outerparindent=\dimen105
+\enit@toks=\toks15
+\enit@inbox=\box26
+\enitdp@description=\count88
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/subfig/subfig.sty
 Package: subfig 2005/06/28 ver: 1.3 subfig package
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/caption/caption.sty
-Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/caption/caption3.sty
-Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
-Package caption3 Info: TeX engine: e-TeX on input line 57.
-\captionmargin=\dimen105
-\captionmargin@=\dimen106
-\captionwidth=\dimen107
-\caption@tempdima=\dimen108
-\caption@indent=\dimen109
-\caption@parindent=\dimen110
-\caption@hangindent=\dimen111
+(/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2016/02/04 v1.7-139 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 67.
+\captionmargin=\dimen106
+\captionmargin@=\dimen107
+\captionwidth=\dimen108
+\caption@tempdima=\dimen109
+\caption@indent=\dimen110
+\caption@parindent=\dimen111
+\caption@hangindent=\dimen112
 )
-\c@ContinuedFloat=\count88
+\c@ContinuedFloat=\count89
 )
-\c@KVtest=\count89
-\sf@farskip=\skip44
-\sf@captopadj=\dimen112
-\sf@capskip=\skip45
-\sf@nearskip=\skip46
-\c@subfigure=\count90
-\c@subfigure@save=\count91
-\c@lofdepth=\count92
-\c@subtable=\count93
-\c@subtable@save=\count94
-\c@lotdepth=\count95
-\sf@top=\skip47
-\sf@bottom=\skip48
+\c@KVtest=\count90
+\sf@farskip=\skip45
+\sf@captopadj=\dimen113
+\sf@capskip=\skip46
+\sf@nearskip=\skip47
+\c@subfigure=\count91
+\c@subfigure@save=\count92
+\c@lofdepth=\count93
+\c@subtable=\count94
+\c@subtable@save=\count95
+\c@lotdepth=\count96
+\sf@top=\skip48
+\sf@bottom=\skip49
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amssymb.sty
-Package: amssymb 2013/01/14 v3.01 AMS font symbols
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amsfonts.sty
-Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
-\@emptytoks=\toks15
-\symAMSa=\mathgroup4
-\symAMSb=\mathgroup5
-LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
-(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/enumitem/enumitem.sty
-Package: enumitem 2011/09/28 v3.5.2 Customized lists
-\labelindent=\skip49
-\enit@outerparindent=\dimen113
-\enit@toks=\toks16
-\enit@inbox=\box26
-\enitdp@description=\count96
+(/usr/local/texlive/2016/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen114
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2013/01/14 v2.14 AMS math features
-\@mathmargin=\skip50
-
-For additional information on amsmath, use the `?' option.
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amstext.sty
-Package: amstext 2000/06/29 v2.01
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsgen.sty
-File: amsgen.sty 1999/11/30 v2.0
-\@emptytoks=\toks17
-\ex@=\dimen114
-))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsbsy.sty
-Package: amsbsy 1999/11/29 v1.2d
-\pmbraise@=\dimen115
-)
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsopn.sty
-Package: amsopn 1999/12/14 v2.01 operator names
-)
-\inf@bad=\count97
-LaTeX Info: Redefining \frac on input line 210.
-\uproot@=\count98
-\leftroot@=\count99
-LaTeX Info: Redefining \overline on input line 306.
-\classnum@=\count100
-\DOTSCASE@=\count101
-LaTeX Info: Redefining \ldots on input line 378.
-LaTeX Info: Redefining \dots on input line 381.
-LaTeX Info: Redefining \cdots on input line 466.
-\Mathstrutbox@=\box27
-\strutbox@=\box28
-\big@size=\dimen116
-LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
-\macc@depth=\count102
-\c@MaxMatrixCols=\count103
-\dotsspace@=\muskip11
-\c@parentequation=\count104
-\dspbrk@lvl=\count105
-\tag@help=\toks18
-\row@=\count106
-\column@=\count107
-\maxfields@=\count108
-\andhelp@=\toks19
-\eqnshift@=\dimen117
-\alignsep@=\dimen118
-\tagshift@=\dimen119
-\tagwidth@=\dimen120
-\totwidth@=\dimen121
-\lineht@=\dimen122
-\@envbody=\toks20
-\multlinegap=\skip51
-\multlinetaggap=\skip52
-\mathdisplay@stack=\toks21
-LaTeX Info: Redefining \[ on input line 2665.
-LaTeX Info: Redefining \] on input line 2666.
-)
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/pifont.sty
-Package: pifont 2005/04/12 PSNFSS-v9.2a Pi font support (SPQR) 
-LaTeX Font Info:    Try loading font information for U+pzd on input line 63.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/upzd.fd
-File: upzd.fd 2001/06/04 font definitions for U/pzd.
-)
-LaTeX Font Info:    Try loading font information for U+psy on input line 64.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/upsy.fd
-File: upsy.fd 2001/06/04 font definitions for U/psy.
-))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/multirow/multirow.sty
-\bigstrutjot=\dimen123
-)
-(/usr/local/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty
-Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/color.cfg
-File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
-)
-Package xcolor Info: Driver file: pdftex.def on input line 225.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/colortbl/colortbl.sty
-Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/tools/array.sty
-Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
-\col@sep=\dimen124
-\extrarowheight=\dimen125
-\NC@list=\toks22
-\extratabsurround=\skip53
-\backup@length=\skip54
-)
-\everycr=\toks23
-\minrowclearance=\skip55
-)
-\rownum=\count109
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
-Package xcolor Info: Model `RGB' extended on input line 1353.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
-)
-(/usr/local/texlive/2015/texmf-dist/tex/generic/ulem/ulem.sty
-\UL@box=\box29
-\UL@hyphenbox=\box30
-\UL@skip=\skip56
-\UL@hook=\toks24
-\UL@height=\dimen126
-\UL@pe=\count110
-\UL@pixel=\dimen127
-\ULC@box=\box31
+(/usr/local/texlive/2016/texmf-dist/tex/generic/ulem/ulem.sty
+\UL@box=\box27
+\UL@hyphenbox=\box28
+\UL@skip=\skip50
+\UL@hook=\toks16
+\UL@height=\dimen115
+\UL@pe=\count97
+\UL@pixel=\dimen116
+\ULC@box=\box29
 Package: ulem 2012/05/18
-\ULdepth=\dimen128
+\ULdepth=\dimen117
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf.sty
-Package: epstopdf 2010/02/09 v2.5 Conversion with epstopdf on the fly (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf.sty
+Package: epstopdf 2016/05/15 v2.6 Conversion with epstopdf on the fly (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
 ))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 )
 Package etexcmds Info: Could not find \expanded.
@@ -271,13 +156,12 @@ Package etexcmds Info: Could not find \expanded.
 (etexcmds)             that some package has redefined \expanded.
 (etexcmds)             In the latter case, load this package earlier.
 )))
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2016/05/10 v0.21 Utility functions of pdfTeX for LuaTeX (HO
 )
 
-(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
-Package ifpdf Info: pdfTeX in PDF mode is detected.
+(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2016/05/14 v3.1 Provides the ifpdf switch
 )
 Package pdftexcmds Info: LuaTeX not detected.
 Package pdftexcmds Info: \pdf@primitive is available.
@@ -287,255 +171,156 @@ Package pdftexcmds Info: \pdfdraftmode found.
 Package grfext Info: Graphics extension search list:
 (grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
 G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 452.
+(grfext)             \AppendGraphicsExtensions on input line 456.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+(/usr/local/texlive/2016/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 )))
-(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/epsfig.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/epsfig.sty
 Package: epsfig 1999/02/16 v1.7a (e)psfig emulation (SPQR)
-\epsfxsize=\dimen129
-\epsfysize=\dimen130
-)
-(/usr/local/texlive/2015/texmf-dist/tex/latex/tools/xr.sty
-Package: xr 1994/05/28 v5.02 eXternal References (DPC)
+\epsfxsize=\dimen118
+\epsfysize=\dimen119
 )
 (./icwsm2017_poster.aux)
 \openout1 = `icwsm2017_poster.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 44.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 41.
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
-(/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
+(/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count111
-\scratchdimen=\dimen131
-\scratchbox=\box32
-\nofMPsegments=\count112
-\nofMParguments=\count113
-\everyMPshowfont=\toks25
-\MPscratchCnt=\count114
-\MPscratchDim=\dimen132
-\MPnumerator=\count115
-\makeMPintoPDFobject=\count116
-\everyMPtoPDFconversion=\toks26
+\scratchcounter=\count98
+\scratchdimen=\dimen120
+\scratchbox=\box30
+\nofMPsegments=\count99
+\nofMParguments=\count100
+\everyMPshowfont=\toks17
+\MPscratchCnt=\count101
+\MPscratchDim=\dimen121
+\MPnumerator=\count102
+\makeMPintoPDFobject=\count103
+\everyMPtoPDFconversion=\toks18
 )
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 60.
-LaTeX Font Info:    Try loading font information for U+msa on input line 60.
- (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 60.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 57.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 57.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 60.
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 60.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/omsptm.fd
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 57.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 57.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 57.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 57.
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 60.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 61.
- (./abstract.tex) (./lss.tex) (./datasetStatistics.tex
-Overfull \hbox (3.43625pt too wide) in paragraph at lines 6--47
- [][] 
- []
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
 
+(./abstract.tex) (./lss.tex) (./datasetStatistics.tex
+<images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf, id=
+1, 1653.17625pt x 848.16875pt>
+File: images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf
+ Graphic file (type pdf)
 
-Overfull \hbox (3.43152pt too wide) in paragraph at lines 6--47
- [] 
- []
-
-Package epstopdf Info: Source file: <images/location/world/socialsensor-world-H
-umanCausedDisaster_location.eps>
-(epstopdf)                    date: 2017-03-07 13:49:36
-(epstopdf)                    size: 825945 bytes
-(epstopdf)             Output file: <images/location/world/socialsensor-world-H
-umanCausedDisaster_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-03-07 13:50:24
-(epstopdf)                    size: 190954 bytes
-(epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
-alsensor-world-HumanCausedDisaster_location-eps-converted-to.pdf images/locatio
-n/world/socialsensor-world-HumanCausedDisaster_location.eps>
-(epstopdf)             \includegraphics on input line 55.
-Package epstopdf Info: Output file is already uptodate.
-
-<images/location/world/socialsensor-world-HumanCausedDisaster_location-eps-conv
-erted-to.pdf, id=1, 1468.48625pt x 784.9325pt>
-File: images/location/world/socialsensor-world-HumanCausedDisaster_location-eps
--converted-to.pdf Graphic file (type pdf)
-
-<use images/location/world/socialsensor-world-HumanCausedDisaster_location-eps-
-converted-to.pdf>
+<use images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-HumanCausedDi
-saster_location-eps-converted-to.pdf used on input line 55.
-(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
-Package epstopdf Info: Source file: <images/location/world/socialsensor-world-i
-rannucleardeal_location.eps>
-(epstopdf)                    date: 2017-03-07 13:49:56
-(epstopdf)                    size: 726779 bytes
-(epstopdf)             Output file: <images/location/world/socialsensor-world-i
-rannucleardeal_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-03-07 13:50:29
-(epstopdf)                    size: 173833 bytes
-(epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
-alsensor-world-irannucleardeal_location-eps-converted-to.pdf images/location/wo
-rld/socialsensor-world-irannucleardeal_location.eps>
-(epstopdf)             \includegraphics on input line 56.
-Package epstopdf Info: Output file is already uptodate.
+saster_location.pdf used on input line 64.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
-<images/location/world/socialsensor-world-irannucleardeal_location-eps-converte
-d-to.pdf, id=2, 1468.48625pt x 784.9325pt>
-File: images/location/world/socialsensor-world-irannucleardeal_location-eps-con
-verted-to.pdf Graphic file (type pdf)
+<images/location/world/socialsensor-world-irannucleardeal_location.pdf, id=2, 1
+653.17625pt x 848.16875pt>
+File: images/location/world/socialsensor-world-irannucleardeal_location.pdf Gra
+phic file (type pdf)
 
-<use images/location/world/socialsensor-world-irannucleardeal_location-eps-conv
-erted-to.pdf>
+<use images/location/world/socialsensor-world-irannucleardeal_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-irannuclearde
-al_location-eps-converted-to.pdf used on input line 56.
-(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
-Package epstopdf Info: Source file: <images/location/world/socialsensor-world-s
-occer_location.eps>
-(epstopdf)                    date: 2017-03-07 13:50:03
-(epstopdf)                    size: 852546 bytes
-(epstopdf)             Output file: <images/location/world/socialsensor-world-s
-occer_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-03-07 13:50:32
-(epstopdf)                    size: 193497 bytes
-(epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
-alsensor-world-soccer_location-eps-converted-to.pdf images/location/world/socia
-lsensor-world-soccer_location.eps>
-(epstopdf)             \includegraphics on input line 57.
-Package epstopdf Info: Output file is already uptodate.
+al_location.pdf used on input line 64.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
-<images/location/world/socialsensor-world-soccer_location-eps-converted-to.pdf,
- id=3, 1468.48625pt x 784.9325pt>
-File: images/location/world/socialsensor-world-soccer_location-eps-converted-to
-.pdf Graphic file (type pdf)
+<images/location/world/socialsensor-world-soccer_location.pdf, id=3, 1653.17625
+pt x 877.2775pt>
+File: images/location/world/socialsensor-world-soccer_location.pdf Graphic file
+ (type pdf)
 
-<use images/location/world/socialsensor-world-soccer_location-eps-converted-to.
-pdf>
+<use images/location/world/socialsensor-world-soccer_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-soccer_locati
-on-eps-converted-to.pdf used on input line 57.
-(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
-Package epstopdf Info: Source file: <images/location/states/SocialSensor-us-sta
-tes-health_epidemics_location.eps>
-(epstopdf)                    date: 2017-03-07 14:04:25
-(epstopdf)                    size: 252219 bytes
-(epstopdf)             Output file: <images/location/states/SocialSensor-us-sta
-tes-health_epidemics_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-03-07 14:05:11
-(epstopdf)                    size: 46866 bytes
-(epstopdf)             Command: <repstopdf --outfile=images/location/states/Soc
-ialSensor-us-states-health_epidemics_location-eps-converted-to.pdf images/locat
-ion/states/SocialSensor-us-states-health_epidemics_location.eps>
-(epstopdf)             \includegraphics on input line 59.
-Package epstopdf Info: Output file is already uptodate.
+on.pdf used on input line 64.
+(pdftex.def)             Requested size: 166.94463pt x 88.5896pt.
 
-<images/location/states/SocialSensor-us-states-health_epidemics_location-eps-co
-nverted-to.pdf, id=4, 1394.20876pt x 848.16875pt>
-File: images/location/states/SocialSensor-us-states-health_epidemics_location-e
-ps-converted-to.pdf Graphic file (type pdf)
+<images/location/states/SocialSensor-us-states-health_epidemics_location.pdf, i
+d=4, 1653.17625pt x 848.16875pt>
+File: images/location/states/SocialSensor-us-states-health_epidemics_location.p
+df Graphic file (type pdf)
 
-<use images/location/states/SocialSensor-us-states-health_epidemics_location-ep
-s-converted-to.pdf>
+<use images/location/states/SocialSensor-us-states-health_epidemics_location.pd
+f>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-health_e
-pidemics_location-eps-converted-to.pdf used on input line 59.
-(pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
-Package epstopdf Info: Source file: <images/location/states/SocialSensor-us-sta
-tes-socialissues_location.eps>
-(epstopdf)                    date: 2017-03-07 14:04:30
-(epstopdf)                    size: 253354 bytes
-(epstopdf)             Output file: <images/location/states/SocialSensor-us-sta
-tes-socialissues_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-03-07 14:05:16
-(epstopdf)                    size: 47044 bytes
-(epstopdf)             Command: <repstopdf --outfile=images/location/states/Soc
-ialSensor-us-states-socialissues_location-eps-converted-to.pdf images/location/
-states/SocialSensor-us-states-socialissues_location.eps>
-(epstopdf)             \includegraphics on input line 60.
-Package epstopdf Info: Output file is already uptodate.
+pidemics_location.pdf used on input line 64.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
-<images/location/states/SocialSensor-us-states-socialissues_location-eps-conver
-ted-to.pdf, id=5, 1394.20876pt x 848.16875pt>
-File: images/location/states/SocialSensor-us-states-socialissues_location-eps-c
-onverted-to.pdf Graphic file (type pdf)
+<images/location/states/SocialSensor-us-states-socialissues_location.pdf, id=5,
+ 1653.17625pt x 848.16875pt>
+File: images/location/states/SocialSensor-us-states-socialissues_location.pdf G
+raphic file (type pdf)
 
-<use images/location/states/SocialSensor-us-states-socialissues_location-eps-co
-nverted-to.pdf>
+<use images/location/states/SocialSensor-us-states-socialissues_location.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-socialis
-sues_location-eps-converted-to.pdf used on input line 60.
-(pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
-Package epstopdf Info: Source file: <images/location/states/SocialSensor-us-sta
-tes-space_location.eps>
-(epstopdf)                    date: 2017-03-07 14:05:44
-(epstopdf)                    size: 252269 bytes
-(epstopdf)             Output file: <images/location/states/SocialSensor-us-sta
-tes-space_location-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-03-07 14:07:05
-(epstopdf)                    size: 46843 bytes
-(epstopdf)             Command: <repstopdf --outfile=images/location/states/Soc
-ialSensor-us-states-space_location-eps-converted-to.pdf images/location/states/
-SocialSensor-us-states-space_location.eps>
-(epstopdf)             \includegraphics on input line 61.
-Package epstopdf Info: Output file is already uptodate.
+sues_location.pdf used on input line 64.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
-<images/location/states/SocialSensor-us-states-space_location-eps-converted-to.
-pdf, id=6, 1394.20876pt x 848.16875pt>
-File: images/location/states/SocialSensor-us-states-space_location-eps-converte
-d-to.pdf Graphic file (type pdf)
+<images/location/states/SocialSensor-us-states-space_location.pdf, id=6, 1394.2
+0876pt x 848.16875pt>
+File: images/location/states/SocialSensor-us-states-space_location.pdf Graphic 
+file (type pdf)
 
-<use images/location/states/SocialSensor-us-states-space_location-eps-converted
--to.pdf>
+<use images/location/states/SocialSensor-us-states-space_location.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-space_lo
-cation-eps-converted-to.pdf used on input line 61.
+cation.pdf used on input line 64.
 (pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
-
-Overfull \hbox (6.94388pt too wide) in paragraph at lines 54--64
- [][] 
- []
-
-[1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+ [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 
 ])
 (./methodology.tex
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 35.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 151.
- [2 <./images/location/world/socialsensor-world-HumanCausedDisaster_location-ep
-s-converted-to.pdf> <./images/location/world/socialsensor-world-irannucleardeal
-_location-eps-converted-to.pdf> <./images/location/world/socialsensor-world-soc
-cer_location-eps-converted-to.pdf> <./images/location/states/SocialSensor-us-st
-ates-health_epidemics_location-eps-converted-to.pdf> <./images/location/states/
-SocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/lo
-cation/states/SocialSensor-us-states-space_location-eps-converted-to.pdf>]
+ [2 <./images/location/world/socialsensor-world-HumanCausedDisaster_location.pd
+f> <./images/location/world/socialsensor-world-irannucleardeal_location.pdf> <.
+/images/location/world/socialsensor-world-soccer_location.pdf> <./images/locati
+on/states/SocialSensor-us-states-health_epidemics_location.pdf> <./images/locat
+ion/states/SocialSensor-us-states-socialissues_location.pdf> <./images/location
+/states/SocialSensor-us-states-space_location.pdf>]
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 175.
 
@@ -551,77 +336,57 @@ s is tuned for $\OML/cmm/m/it/10 C \OMS/cmsy/m/n/10 2
  []
 
 
-Underfull \hbox (badness 2213) in paragraph at lines 176--178
+Underfull \hbox (badness 2221) in paragraph at lines 176--178
 []\OT1/ptm/m/it/10 Na[]^^Pve Bayes\OT1/ptm/m/n/10 : Dirich-let prior $\OML/cmm/
 m/it/10 $ \OT1/ptm/m/n/10 is tuned for $\OML/cmm/m/it/10  \OMS/cmsy/m/n/10 2
  []
 
 (Commented text...) (Commented text...)) (./featureAnalysis.tex
-Package epstopdf Info: Source file: <images/avgMI_gray2.eps>
-(epstopdf)                    date: 2017-03-09 13:08:57
-(epstopdf)                    size: 32410 bytes
-(epstopdf)             Output file: <images/avgMI_gray2-eps-converted-to.pdf>
-(epstopdf)             Command: <repstopdf --outfile=images/avgMI_gray2-eps-con
-verted-to.pdf images/avgMI_gray2.eps>
-(epstopdf)             \includegraphics on input line 13.
-runsystem(repstopdf --outfile=images/avgMI_gray2-eps-converted-to.pdf images/av
-gMI_gray2.eps)...executed safely (allowed).
+<images/avgMI_gray2.pdf, id=48, 361.35pt x 201.75375pt>
+File: images/avgMI_gray2.pdf Graphic file (type pdf)
 
-Package epstopdf Info: Result file: <images/avgMI_gray2-eps-converted-to.pdf>
-(epstopdf)                    date: 2017-03-09 13:09:14
-(epstopdf)                    size: 14431 bytes.
-
-<images/avgMI_gray2-eps-converted-to.pdf, id=101, 361.35pt x 201.75375pt>
-File: images/avgMI_gray2-eps-converted-to.pdf Graphic file (type pdf)
-
-<use images/avgMI_gray2-eps-converted-to.pdf>
-Package pdftex.def Info: images/avgMI_gray2-eps-converted-to.pdf used on input 
-line 13.
-(pdftex.def)             Requested size: 244.612pt x 136.57323pt.
-
-Overfull \hbox (5.21762pt too wide) in paragraph at lines 13--15
- [][] 
- []
-
-(Commented text...) (Commented text...)
+<use images/avgMI_gray2.pdf>
+Package pdftex.def Info: images/avgMI_gray2.pdf used on input line 13.
+(pdftex.def)             Requested size: 239.39438pt x 133.66275pt.
+ (Commented text...) (Commented text...)
 Missing character: There is no Â in font ptmr7t!
 Missing character: There is no Œ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no § in font ptmr7t!
- [3 <./images/avgMI_gray2-eps-converted-to.pdf>] (Commented text...)) (./acknow
-ledgements.tex) (./icwsm2017_poster.bbl
-Underfull \vbox (badness 4120) has occurred while \output is active []
+ [3 <./images/avgMI_gray2.pdf>] (Commented text...)) (./acknowledgements.tex)
+(./icwsm2017_poster.bbl
+Underfull \vbox (badness 3000) has occurred while \output is active []
 
 
-Underfull \hbox (badness 1163) in paragraph at lines 11--15
+Underfull \hbox (badness 1168) in paragraph at lines 11--15
 []\OT1/ptm/m/n/10 Lee, C.-P., and Lin, C.-J.  2014.  Large-scale lin-ear
  []
 
 ) [4] (./icwsm2017_poster.aux) ) 
 Here is how much of TeX's memory you used:
- 4897 strings out of 493089
- 73109 string characters out of 6134842
- 191729 words of memory out of 5000000
- 8224 multiletter control sequences out of 15000+600000
- 27844 words of font info for 70 fonts, out of 8000000 for 9000
+ 3400 strings out of 493014
+ 55546 string characters out of 6133351
+ 181373 words of memory out of 5000000
+ 6862 multiletter control sequences out of 15000+600000
+ 21899 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,17n,47p,1414b,430s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2015/texmf-dist/fonts/enc/d
-vips/base/8r.enc}</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmmi7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cms
-y10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
-7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.
-pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pf
-b></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/lo
-cal/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texliv
-e/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icwsm2017_poster.pdf (4 pages, 839986 bytes).
+ 44i,16n,54p,1414b,427s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/d
+vips/base/8r.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cms
+y10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
+7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.
+pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pf
+b></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/lo
+cal/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texliv
+e/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on icwsm2017_poster.pdf (4 pages, 1025141 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
- 97 compressed objects within 1 object stream
+ 101 PDF objects out of 1000 (max. 8388607)
+ 69 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
