@@ -162,7 +162,7 @@ the following four classifiers or rankers:%state-of-the-art supervised classific
 \item {\bf Logistic Regression} using LibLinear~\cite{liblinear}
 \item {\bf Bernoulli Na\"{i}ve Bayes}~\cite{mccallum98nb}
 \item {\bf Rocchio}~\cite{manning_ir}\\(a centroid-based classifier)
-\item {\bf RankSVM}~\cite{largescale_ranksvm}
+\item {\bf RankSVM}~\cite{rsvm}
 \end{enumerate}
 %In this paper, we focus on ranking metrics since ultimately the output of the topical filters
 %will be for user consumption.  
@@ -172,10 +172,16 @@ the following four classifiers or rankers:%state-of-the-art supervised classific
 As noted in Sec~\ref{sec:lss}, tuning of hyperparameters on validation
 data is critical.  In our experiments, we tune as follows: %the following hyperparameters:
 \begin{itemize}%[noitemsep] %nolistsep
-\item \textit{Logistic Regression and RankSVM}: $L_2$ regularization constant $C$ for both methods is tuned for $C \in \{10^{-12}, 10^{-11}, ..., 10^{11}, 10^{12} \}$.
-\item \textit{Na\"{i}ve Bayes}: Dirichlet prior $\alpha$ is tuned for $\alpha \in \{10^{-20}, 10^{-15}, 10^{-8}, 10^{-3}, 10^{-1}, 1\}$.
+\item \textit{Logistic Regression and RankSVM}: $L_2$ regularization constant $C$ for both methods is tuned for 
+
+$C \in \{10^{-12}, 10^{-11}, ..., 10^{11}, 10^{12} \}$.
+\item \textit{Na\"{i}ve Bayes}: Dirichlet prior $\alpha$ is tuned for 
+
+$\alpha \in \{10^{-20}, 10^{-15}, 10^{-8}, 10^{-3}, 10^{-1}, 1\}$.
 %\item \textit{RankSVM}: constant $C$ is tuned for $C \in {10^{-12}, 10^{-11}, ..., 10^{11}, 10^{12} \}$.
-\item \textit{All Classfiers}: The number of top features $M$ selected based on their Mutual Information is tuned for $M \in \{10^{2}, 10^{3}, 10^{4}, 10^{5}, 1166582 \textrm{ (all features) } \}$.
+\item \textit{All Classfiers}: The number of top features $M$ selected based on their Mutual Information is tuned for 
+
+$M \in \{10^{2}, 10^{3}, 10^{4}, 10^{5}, 1166582 \textrm{ (all features) } \}$.
 \end{itemize}
 We remark that many algorithms such as Naive Bayes and Rocchio
 performed better with feature selection and hence we used feature
