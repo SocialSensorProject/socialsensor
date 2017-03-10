@@ -1,14 +1,12 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  9 MAR 2017 07:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.4.27)  9 MAR 2017 11:09
 entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**icwsm2017_poster_cameraready.tex
-(./icwsm2017_poster_cameraready.tex
-LaTeX2e <2016/03/31>
-Babel <3.9r> and hyphenation patterns for 83 language(s) loaded.
-(/usr/local/texlive/2016/texmf-dist/tex/latex/base/article.cls
+**./icwsm2017_poster_cameraready.tex
+(icwsm2017_poster_cameraready.tex
+LaTeX2e <2015/10/01> patch level 2
+Babel <3.9n> and hyphenation patterns for 69 languages loaded.
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2016/texmf-dist/tex/latex/base/size10.clo
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
 File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -22,65 +20,65 @@ File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
-) (./aaai17.sty
+) (aaai17.sty
 Conference Style for AAAI for LaTeX 2e -- version of 14 January 2017
 \titlebox=\skip43
-) (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/times.sty
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\times.sty"
 Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/helvet.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\helvet.sty"
 Package: helvet 2005/04/12 PSNFSS-v9.2a (WaS) 
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/keyval.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks14
 ))
-(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/courier.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\courier.sty"
 Package: courier 2005/04/12 PSNFSS-v9.2a (WaS) 
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphicx.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2016/05/09 v1.0r Standard LaTeX Graphics (DPC,SPQR)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics/trig.sty
-Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-File: graphics.cfg 2016/01/02 v1.10 sample graphics configuration
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
-Package graphics Info: Driver file: pdftex.def on input line 96.
+Package graphics Info: Driver file: pdftex.def on input line 94.
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/pdftex-def/pdftex.def
+("C:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 )
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count87
 ))
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/url/url.sty
+(C:\Users\ssann\AppData\Roaming\MiKTeX\2.9\tex\latex\url\url.sty
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/multirow/multirow.sty
+("C:\Program Files\MiKTeX 2.9\tex\latex\multirow\multirow.sty"
 \bigstrutjot=\dimen105
 )
-(/usr/local/texlive/2016/texmf-dist/tex/latex/subfig/subfig.sty
+(C:\Users\ssann\AppData\Roaming\MiKTeX\2.9\tex\latex\subfig\subfig.sty
 Package: subfig 2005/06/28 ver: 1.3 subfig package
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption.sty
+(C:\Users\ssann\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption.sty
 Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/caption/caption3.sty
-Package: caption3 2016/02/04 v1.7-139 caption3 kernel (AR)
+(C:\Users\ssann\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption3.sty
+Package: caption3 2016/05/22 v1.7-166 caption3 kernel (AR)
 Package caption3 Info: TeX engine: e-TeX on input line 67.
 \captionmargin=\dimen106
 \captionmargin@=\dimen107
@@ -106,7 +104,7 @@ Package caption3 Info: TeX engine: e-TeX on input line 67.
 \sf@top=\skip47
 \sf@bottom=\skip48
 )
-(./icwsm2017_poster_cameraready.aux)
+(icwsm2017_poster_cameraready.aux)
 \openout1 = `icwsm2017_poster_cameraready.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
@@ -123,10 +121,10 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
 LaTeX Font Info:    ... okay on input line 33.
 LaTeX Font Info:    Try loading font information for OT1+ptm on input line 33.
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
-(/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(C:\Users\ssann\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count96
 \scratchdimen=\dimen114
@@ -139,53 +137,7 @@ File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 \MPnumerator=\count100
 \makeMPintoPDFobject=\count101
 \everyMPtoPDFconversion=\toks16
-) (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2016/05/10 v0.21 Utility functions of pdfTeX for LuaTeX (HO
 )
-
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ifluatex.sty
-Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
-)
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/ifpdf.sty
-Package: ifpdf 2016/05/14 v3.1 Provides the ifpdf switch
-)
-Package pdftexcmds Info: LuaTeX not detected.
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
-)
-(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
-
-(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/grfext.sty
-Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
-
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
-))
-(/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
-
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
-
-(/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
-Package etexcmds Info: Could not find \expanded.
-(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
-(etexcmds)             that some package has redefined \expanded.
-(etexcmds)             In the latter case, load this package earlier.
-)))
-Package grfext Info: Graphics extension search list:
-(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
-(grfext)             \AppendGraphicsExtensions on input line 456.
-
-(/usr/local/texlive/2016/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
@@ -204,8 +156,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 49.
 LaTeX Font Info:    Try loading font information for OMS+ptm on input line 49.
-
-(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
@@ -214,37 +165,37 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
 
 <images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf, id=
-1, 1468.48625pt x 784.9325pt>
+1, 1653.17625pt x 848.16875pt>
 File: images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf
  Graphic file (type pdf)
 
 <use images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-HumanCausedDi
 saster_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
 <images/location/world/socialsensor-world-irannucleardeal_location.pdf, id=2, 1
-468.48625pt x 784.9325pt>
+653.17625pt x 848.16875pt>
 File: images/location/world/socialsensor-world-irannucleardeal_location.pdf Gra
 phic file (type pdf)
 
 <use images/location/world/socialsensor-world-irannucleardeal_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-irannuclearde
 al_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
-<images/location/world/socialsensor-world-soccer_location.pdf, id=3, 1468.48625
-pt x 784.9325pt>
+<images/location/world/socialsensor-world-soccer_location.pdf, id=3, 1653.17625
+pt x 877.2775pt>
 File: images/location/world/socialsensor-world-soccer_location.pdf Graphic file
  (type pdf)
 
 <use images/location/world/socialsensor-world-soccer_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-soccer_locati
 on.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
+(pdftex.def)             Requested size: 166.94463pt x 88.5896pt.
 
 <images/location/states/SocialSensor-us-states-health_epidemics_location.pdf, i
-d=4, 1394.20876pt x 848.16875pt>
+d=4, 1653.17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-health_epidemics_location.p
 df Graphic file (type pdf)
 
@@ -252,17 +203,17 @@ df Graphic file (type pdf)
 f>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-health_e
 pidemics_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
 <images/location/states/SocialSensor-us-states-socialissues_location.pdf, id=5,
- 1394.20876pt x 848.16875pt>
+ 1653.17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-socialissues_location.pdf G
 raphic file (type pdf)
 
 <use images/location/states/SocialSensor-us-states-socialissues_location.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-socialis
 sues_location.pdf used on input line 139.
-(pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
+(pdftex.def)             Requested size: 166.94463pt x 85.65013pt.
 
 <images/location/states/SocialSensor-us-states-space_location.pdf, id=6, 1394.2
 0876pt x 848.16875pt>
@@ -273,7 +224,7 @@ file (type pdf)
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-space_lo
 cation.pdf used on input line 139.
 (pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
- [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+ [1{C:/Users/ssann/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 
@@ -298,43 +249,41 @@ Underfull \hbox (badness 1014) in paragraph at lines 320--321
 /m/it/10 L[]$ \OT1/ptm/m/n/10 reg-u-lar-iza-tion
  []
 
-<images/avgMI_gray.pdf, id=101, 531.41536pt x 363.29727pt>
-File: images/avgMI_gray.pdf Graphic file (type pdf)
+<images/avgMI_gray2.pdf, id=47, 361.35pt x 201.75375pt>
+File: images/avgMI_gray2.pdf Graphic file (type pdf)
 
-<use images/avgMI_gray.pdf>
-Package pdftex.def Info: images/avgMI_gray.pdf used on input line 379.
-(pdftex.def)             Requested size: 239.39438pt x 163.65965pt.
+<use images/avgMI_gray2.pdf>
+Package pdftex.def Info: images/avgMI_gray2.pdf used on input line 379.
+(pdftex.def)             Requested size: 239.39438pt x 133.66275pt.
 Missing character: There is no Â in font ptmr7t!
 Missing character: There is no Œ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no § in font ptmr7t!
- [3 <./images/avgMI_gray.pdf>]
-(./icwsm2017_poster_cameraready.bbl) [4] (./icwsm2017_poster_cameraready.aux) )
- 
+ [3 <./images/avgMI_gray2.pdf>]
+(icwsm2017_poster_cameraready.bbl) [4] (icwsm2017_poster_cameraready.aux) ) 
 Here is how much of TeX's memory you used:
- 2982 strings out of 493014
- 49228 string characters out of 6133351
- 173965 words of memory out of 5000000
- 6475 multiletter control sequences out of 15000+600000
- 21793 words of font info for 45 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 44i,16n,54p,1409b,425s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
-live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texl
-ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texliv
-e/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/
-2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/201
-6/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2016/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2016/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2016/texmf
--dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/font
-s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/ur
-w/times/utmri8a.pfb>
-Output written on icwsm2017_poster_cameraready.pdf (4 pages, 838356 bytes).
+ 2627 strings out of 493634
+ 42461 string characters out of 3143744
+ 168300 words of memory out of 3000000
+ 5995 multiletter control sequences out of 15000+200000
+ 21793 words of font info for 45 fonts, out of 3000000 for 9000
+ 1025 hyphenation exceptions out of 8191
+ 44i,16n,54p,1411b,425s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/
+Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.
+pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/P
+rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fo
+nts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/tim
+es/utmri8a.pfb>
+Output written on icwsm2017_poster_cameraready.pdf (4 pages, 1040870 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
- 96 compressed objects within 1 object stream
+ 99 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
