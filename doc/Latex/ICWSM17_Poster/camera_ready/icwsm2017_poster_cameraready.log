@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  9 MAR 2017 16:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  9 MAR 2017 18:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -109,19 +109,19 @@ Package caption3 Info: TeX engine: e-TeX on input line 67.
 (./icwsm2017_poster_cameraready.aux)
 \openout1 = `icwsm2017_poster_cameraready.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 33.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 35.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -190,28 +190,28 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 48.
+(Font)              <7> on input line 50.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 48.
+(Font)              <5> on input line 50.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 48.
+(Font)              <12> on input line 50.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 48.
+(Font)              <8> on input line 50.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 48.
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 48.
+(Font)              <6> on input line 50.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 50.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 48.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 50.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
 
 <images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf, id=
 1, 1468.48625pt x 784.9325pt>
@@ -220,7 +220,7 @@ File: images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf
 
 <use images/location/world/socialsensor-world-HumanCausedDisaster_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-HumanCausedDi
-saster_location.pdf used on input line 138.
+saster_location.pdf used on input line 140.
 (pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
 
 <images/location/world/socialsensor-world-irannucleardeal_location.pdf, id=2, 1
@@ -230,7 +230,7 @@ phic file (type pdf)
 
 <use images/location/world/socialsensor-world-irannucleardeal_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-irannuclearde
-al_location.pdf used on input line 138.
+al_location.pdf used on input line 140.
 (pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
 
 <images/location/world/socialsensor-world-soccer_location.pdf, id=3, 1468.48625
@@ -240,7 +240,7 @@ File: images/location/world/socialsensor-world-soccer_location.pdf Graphic file
 
 <use images/location/world/socialsensor-world-soccer_location.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-soccer_locati
-on.pdf used on input line 138.
+on.pdf used on input line 140.
 (pdftex.def)             Requested size: 166.94463pt x 89.22931pt.
 
 <images/location/states/SocialSensor-us-states-health_epidemics_location.pdf, i
@@ -251,7 +251,7 @@ df Graphic file (type pdf)
 <use images/location/states/SocialSensor-us-states-health_epidemics_location.pd
 f>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-health_e
-pidemics_location.pdf used on input line 138.
+pidemics_location.pdf used on input line 140.
 (pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
 
 <images/location/states/SocialSensor-us-states-socialissues_location.pdf, id=5,
@@ -261,7 +261,7 @@ raphic file (type pdf)
 
 <use images/location/states/SocialSensor-us-states-socialissues_location.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-socialis
-sues_location.pdf used on input line 138.
+sues_location.pdf used on input line 140.
 (pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
 
 <images/location/states/SocialSensor-us-states-space_location.pdf, id=6, 1394.2
@@ -271,7 +271,7 @@ file (type pdf)
 
 <use images/location/states/SocialSensor-us-states-space_location.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-space_lo
-cation.pdf used on input line 138.
+cation.pdf used on input line 140.
 (pdftex.def)             Requested size: 166.94463pt x 101.55583pt.
  [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
@@ -279,11 +279,11 @@ cation.pdf used on input line 138.
 
 ]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 206.
+(Font)              <9> on input line 208.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 208.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 210.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 299.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 301.
  [2 <./images/location/world/socialsensor-world-HumanCausedDisaster_location.pd
 f> <./images/location/world/socialsensor-world-irannucleardeal_location.pdf> <.
 /images/location/world/socialsensor-world-soccer_location.pdf> <./images/locati
@@ -291,9 +291,9 @@ on/states/SocialSensor-us-states-health_epidemics_location.pdf> <./images/locat
 ion/states/SocialSensor-us-states-socialissues_location.pdf> <./images/location
 /states/SocialSensor-us-states-space_location.pdf>]
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 319.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 321.
 
-Underfull \hbox (badness 1014) in paragraph at lines 319--320
+Underfull \hbox (badness 1014) in paragraph at lines 321--322
 []\OT1/ptm/m/it/10 Logistic Re-gres-sion and RankSVM\OT1/ptm/m/n/10 : $\OML/cmm
 /m/it/10 L[]$ \OT1/ptm/m/n/10 reg-u-lar-iza-tion
  []
@@ -301,7 +301,7 @@ Underfull \hbox (badness 1014) in paragraph at lines 319--320
 <images/avgMI.pdf, id=101, 361.35pt x 201.75375pt>
 File: images/avgMI.pdf Graphic file (type pdf)
  <use images/avgMI.pdf>
-Package pdftex.def Info: images/avgMI.pdf used on input line 378.
+Package pdftex.def Info: images/avgMI.pdf used on input line 380.
 (pdftex.def)             Requested size: 239.39438pt x 133.66275pt.
 Missing character: There is no Â in font ptmr7t!
 Missing character: There is no Œ in font ptmr7t!
@@ -313,7 +313,7 @@ Missing character: There is no § in font ptmr7t!
 Here is how much of TeX's memory you used:
  2982 strings out of 493014
  49203 string characters out of 6133351
- 173965 words of memory out of 5000000
+ 174041 words of memory out of 5000000
  6475 multiletter control sequences out of 15000+600000
  21793 words of font info for 45 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -330,7 +330,7 @@ cmsy8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 sy9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></
 usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/
 texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icwsm2017_poster_cameraready.pdf (4 pages, 840089 bytes).
+Output written on icwsm2017_poster_cameraready.pdf (4 pages, 840164 bytes).
 PDF statistics:
  154 PDF objects out of 1000 (max. 8388607)
  97 compressed objects within 1 object stream
