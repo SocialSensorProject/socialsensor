@@ -1,11 +1,12 @@
-This is BibTeX, Version 0.99d (TeX Live 2014)
+This is BibTeX, Version 0.99d (TeX Live 2016)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: main.aux
 The style file: apalike.bst
 Database file #1: bibliography.bib
+Warning--I didn't find a database entry for "unsupervised"
 You've used 32 entries,
             1935 wiz_defined-function locations,
-            658 strings with 10510 characters,
+            659 strings with 10522 characters,
 and the built_in function-call counts, 15118 in all, are:
 = -- 1513
 > -- 624
@@ -44,3 +45,4 @@ warning$ -- 0
 while$ -- 117
 width$ -- 0
 write$ -- 427
+(There was 1 warning)
