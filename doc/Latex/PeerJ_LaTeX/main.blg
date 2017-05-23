@@ -3,46 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: main.aux
 The style file: apalike.bst
 Database file #1: bibliography.bib
-Warning--I didn't find a database entry for "unsupervised"
-You've used 32 entries,
+You've used 33 entries,
             1935 wiz_defined-function locations,
-            659 strings with 10522 characters,
-and the built_in function-call counts, 15118 in all, are:
-= -- 1513
-> -- 624
-< -- 24
-+ -- 214
-- -- 212
-* -- 1177
-:= -- 2456
-add.period$ -- 103
-call.type$ -- 32
-change.case$ -- 265
-chr.to.int$ -- 32
-cite$ -- 32
-duplicate$ -- 668
-empty$ -- 1092
-format.name$ -- 258
-if$ -- 3141
+            667 strings with 10656 characters,
+and the built_in function-call counts, 15536 in all, are:
+= -- 1556
+> -- 637
+< -- 25
++ -- 218
+- -- 216
+* -- 1215
+:= -- 2525
+add.period$ -- 106
+call.type$ -- 33
+change.case$ -- 272
+chr.to.int$ -- 33
+cite$ -- 33
+duplicate$ -- 682
+empty$ -- 1124
+format.name$ -- 265
+if$ -- 3223
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 33
-newline$ -- 163
-num.names$ -- 96
-pop$ -- 316
+missing$ -- 34
+newline$ -- 168
+num.names$ -- 99
+pop$ -- 321
 preamble$ -- 1
-purify$ -- 266
+purify$ -- 273
 quote$ -- 0
-skip$ -- 488
+skip$ -- 499
 stack$ -- 0
-substring$ -- 995
-swap$ -- 167
+substring$ -- 1038
+swap$ -- 168
 text.length$ -- 15
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 190
+type$ -- 196
 warning$ -- 0
-while$ -- 117
+while$ -- 121
 width$ -- 0
-write$ -- 427
-(There was 1 warning)
+write$ -- 439

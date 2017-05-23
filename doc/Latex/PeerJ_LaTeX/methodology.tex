@@ -1,8 +1,9 @@
+%!TEX root = main.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}[t!]
 \centering
-{\renewcommand{\arraystretch}{1.2}
+{\def\arraystretch{1.2}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
 \hline
@@ -30,7 +31,7 @@
 \centering
 {\footnotesize
 %\small
-\renewcommand{\arraystretch}{1.2}
+\def\arraystretch{1.2}
 \begin{tabular}{|l|c|c|}
 \hline
  & \textbf{Threshold} & \textbf{\#Unique Values} \\ \hline
@@ -53,7 +54,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}[t!]
 \centering
-{\renewcommand{\arraystretch}{1.2}
+{\def\arraystretch{1.2}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|l|}
 \hline
@@ -76,15 +77,15 @@
 \textbf{RankSVM} & \textbf{P@1000} & 0.799 & 0.922 & 0.764 & \textbf{0.218} & 0.525 & 0.547 & \textbf{0.215} & 0.173 & 0.154 & 0.064 & 0.438$\pm$0.22 \\ \hline
 \end{tabular}
 }}
-\caption{Performance of topical social sensor learning algorithms across metrics and topics with the
+\caption{Performance of topical classifier learning algorithms across metrics and topics with the
 mean performance over all topics shown in the right column. The best performance per metric is shown in bold.} 
 \label{table:results2}
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
-With the formal definition of learning topical social sensors provided
-in Sec.~\ref{sec:lss} and the overview of our data in
+With the formal definition of learning topical classifiers provided
+in Sec.~\hyperref{sec:lss}{LTT} and the overview of our data in
 Sec.~\ref{sec:datasetStatistics}, we proceed to outline our
 experimental methodology on our Twitter corpus.  We manually curated a
 broad thematic range of 10 topics shown in the top row of
@@ -100,7 +101,8 @@ candidate hashtags for each topic, requiring an inner-annotator
 agreement of 3 annotators to permit a hashtag to be assigned to a
 topic set.  Per topic, hashtags were split into train and test sets
 according to their first usage time stamp roughly according to a 3/5
-to 2/5 proportion.  The train set was further temporally subdivided
+to 2/5 proportion (the test interval spanned between 9-14 months).  
+The train set was further temporally subdivided
 into train and validation hashtag sets according to a 5/6 to 1/6
 proportion.  We show a variety of statistics and five sample hashtags
 per topic in Table~\ref{table:sampleHashtags}.  Here we can see that
@@ -128,7 +130,7 @@ the threshold for terms and locations noting that even at these
 adjusted thresholds, we still have more authors than terms.  We
 also removed common English stopwords which further reduced the
 unique term count.  Overall, we end up with $1,166,582$
-candidate features (\textit{CF}) for learning social sensors.
+candidate features (\textit{CF}) for learning topical classifiers.
 
 %Regarding feature selection, it is impossible to learn a model on total number of $538,365,507$ features. To learn such a model would require a very large set of training samples, and, feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature by:
 %\begin{itemize}
@@ -149,9 +151,9 @@ candidate features (\textit{CF}) for learning social sensors.
 With our labeled training and validation datasets defined in
 Sec.~\ref{sec:lss} and our candidate feature set \textit{CF} defined
 previously, we proceed to apply different probabilistic classification and ranking
-algorithms to generate a score function $f$ for learning social sensors
+algorithms to generate a score function $f^t$ for learning topical classifiers 
 as defined in Sec.~\ref{sec:lss}.  In this paper, we experiment with
-the following four state-of-the-art classification and ranking methods:
+the following four state-of-the-art supervised classification and ranking methods:
 \begin{enumerate}
 \item {\bf Logistic Regression} using LibLinear~\cite{liblinear}
 \item {\bf Bernoulli Na\"{i}ve Bayes}~\cite{mccallum98nb}
@@ -171,9 +173,9 @@ performed better with feature selection and hence we used feature
 selection for all algorithms (where it is possible to select all
 features).  Hyperparameter tuning is done via exhaustive grid search
 and using the Average Precision
-(AP) to select the best scoring function $f$ on the validation data.
-Once found, $f$ can be applied to any tweet $d_i$ to provide a score $f(d_i)$
-used to rank tweets in the test data.
+(AP)~\cite{manning_ir} ranking metric to select the best scoring function $f^t$ on the validation data.
+Once found, $f^t$ can be applied to any tweet $d_i$ to provide a score $f^t(d_i)$
+used to \emph{rank} tweets in the test data.
 %After tuning the
 %hyperparameters, all models learn a weight vector $W \in \Re^{M}$
 %on train data. Then, each tweet ${d_{i}} \in D$ is scored for a given
@@ -207,8 +209,8 @@ used to rank tweets in the test data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table*}[t!]
-\large
-{\renewcommand{\arraystretch}{1.4}
+\centering
+{\def\arraystretch{1.4}
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|l|}
 \hline
@@ -234,29 +236,32 @@ used to rank tweets in the test data.
 \starmark  the us doesn't actually borrow is the thing. i believe in a creationist theory of the us dollar @usanationdebt... & \xmark  us execution in \#oklahoma :  not cruel and unusual?  maybe just barbaric, inhumane and reminiscent of the...\\ \hline
 \starmark  rt @2anow: according to @njsenatepres women's rights do not include this poor nj mother's right to defend... & \xmark  \#haiti \#politics - the haiti-dominican crisis - i agree with how martelly is handling the situation: i totally... http... \\ \hline
 \starmark  rt @2anow: confiscation ? how many carry permits are in the senate and assembly? give us ours or turn ... & \starmark  rt @soilhaiti: a new reforestation effort in \#haiti. local compost, anyone? http://t.co/xpad0rqbjk @richardbran... \\ \hline
-\starmark  rt @2anow: vote with your wallet against \#guncontrolforest city enterprises does not support the \#2a http... & \xmark mes cousins jamais ns hantent les nuits de duvalier \#haiti \#duvalier \\ \hline
+\starmark  rt @2anow: vote with your wallet against \#guncontrolforest city enterprises does not support the \#2a http... & \xmark  mes cousins jamais ns hantent les nuits de duvalier \#haiti \#duvalier \\ \hline
 \starmark  @2anow @momsdemand @jstines3 they dont have a plan for that,which is why they should never be allow... & \checkmark tony burgener of @swisssolidarity says you can't compare the disaster response in \#haiti with the response to... \\ \hline
 \textbf{Epidemics} & \textbf{LGBT} \\ \hline
 \checkmark rt @who: fourteen of the susp. \&amp; conf. ebola cases in \#conakry, \#guinea, are health care workers, of... & \starmark  rt @jackmcoldcuts: @lunaticrex @fingersmalloy @toddkincannon @theanonliberal anthony kennedy just wro...\\ \hline
 \xmark  @who who can afford also been cover in government health insurance {[}with universal health coverage{]} & \xmark  @toddkincannon your personal account, your interest. separate from your business. \\ \hline
-\checkmark \#ebolaoutbreak this health crisis..unparalleled in modern times,Ó @who dir. aylward - requires \$1 billion ... & \xmark  why would you report someone as spam if he is not spam? @illygirlbrea @toddkincannon \\ \hline
+\checkmark \#ebolaoutbreak this health crisis..unparalleled in modern times,\'{o} @who dir. aylward - requires \$1 billion ... & \xmark  why would you report someone as spam if he is not spam? @illygirlbrea @toddkincannon \\ \hline
 \xmark  rt @medsin: @who are conducting a survey on the social determinants of health in medical teaching. fill... & \xmark  rt @t3h\_arch3r: @toddkincannon thanks for your tl having the female realbrother. between them is 600 lbs.... \\ \hline
 \xmark  augmentation vertigineuse de 57,4\% en 1 an des actes islamophobes en france, dit le collectif contre l'is... & \xmark  @toddkincannon who us dick trickle. \\ \hline
 \end{tabular}
 }
 }
-\caption{Top tweets for each topic from \textit{Logistic Regression} method results, marked with \xmark as irrelevant, \checkmark as relevant and labeled as topical, and \starmark as relevant but labeled as non-topical}
+\caption{Top tweets for each topic from \textit{Logistic Regression} method results, marked with \xmark as irrelevant, \checkmark as relevant and labeled as topical, and \starmark as relevant but labeled as non-topical (a false negative).}
 \label{table:topTweets}
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection*{Performance Analysis}
 
-We now proceed to evaluate the performance of each of the four
-aforementioned supervised learning algorithms for the task of
-learning social sensors.  Once each a scoring function is trained
-via each method, we use it to rank tweets and then compute the
-following ranking metrics on the resulting ranked list:
+While our training data
+is provided as supervised class labels, we remark that topical classifiers
+are targeted towards individual users who will naturally be inclined 
+to \emph{examine only the highest ranked tweets}.  Hence we believe ranking
+metrics represent the best performance measures for the intended use case of this work.
+While RankSVM naturally produces a ranking, all classifiers are score-based, which also allows
+them to provide a natural ranking of the test data that we evaluate via the following
+ranking metrics:
 %After learning the weight vector $W$ using \textit{Logistic
 %Regression}, \textit{Na\"{i}ve Bayes}, \textit{Rocchio},
 %and \textit{Rank SVM} methods, we now proceed to analysis of learned
@@ -267,7 +272,7 @@ following ranking metrics on the resulting ranked list:
 %metrics are computed on this top $10,000$ set of tweets:
 \begin{itemize}
 \item {\bf AP:} Average precision over the ranked list; the mean over
-all topics provides mean AP (MAP).
+all topics provides mean AP (mAP).
 \item {\bf P@$k$:} Precision at $k$ for $k \in \{ 10, 100, 1000 \}$.
 \end{itemize}
 While P@10 may be a more standard retrieval metric for tasks such
@@ -282,35 +287,35 @@ of tweets, hence the reason for also evaluating P@100 and P@1000.
 Table~\ref{table:results2} evaluates these metrics for each
 topic. \textit{Logistic Regression} is the best performing
 method on average except for $P@10$.  We conjecture the reason
-for this is that \textit{Na\"{i}ve Bayes} tends to select fewer
+is that \textit{Na\"{i}ve Bayes} tends to select fewer
 features for training, which allows it to achieve higher precision
-over the top of the ranked list but which causes it suffer slightly
-more lower down the list due to having fewer features and lower recall.
+over the top-10 at the expense of lower $P@100$ and $P@1000$.
 These results suggest that in general both \textit{Logistic Regression}
-and \textit{Na\"{i}ve Bayes} make for effective topical social sensor
-learners with \textit{Na\"{i}ve Bayes} being a good choice in terms
-of its efficiency compared to it's overall performance.
+and \textit{Na\"{i}ve Bayes} make for effective topical 
+learners with \textit{Na\"{i}ve Bayes} useful for 
+its efficiency compared to its overall performance.  \emph{Notably,
+trained classifiers outperform RankSVM on the ranking task thus justifying
+the use of trained topic classifiers for ranking.}
 
 To provide more insight into the general performance of our learning
-topical social sensor framework, we provide the top five tweets for
-each topic returned by \textit{Logistic Regression} in Table
-~\ref{table:topTweets}.  We've annotated all tweets in this table with
-the following symbols:
+topical classifier framework, we provide the top five tweets for
+each topic according to \textit{Logistic Regression} in Table
+~\ref{table:topTweets}.  We've annotated tweets with symbols as follows:
 \begin{itemize}
-\item \checkmark: \; the tweet was topical according to our curated test hashtag set.
+\item \checkmark: \; the tweet was labeled topical by our test hashtag set.
 \item \starmark:\ \; the tweet was determined to be topical through manual evaluation
-even though it did not contain a hashtag in our curated hashtag set (this corresponds
-to a false negative due to non-exhaustive labeling of the data).
+even though it did not contain a hashtag in our curated hashtag set (\emph{this corresponds
+to a false negative due to non-exhaustive labeling of the data}).
 \item \xmark: \; the tweet was not topical.
 \end{itemize}  
-In general, we remark that our learning social sensor based on
+In general, we remark that our topical classifier based on
 logistic regression performs even better than the quantitative results
 in Table~\ref{table:results2} would indicate: many of the highly
-ranked tweets are false negatives --- they are actually relevant.
-Furthermore, we remark that even though we use hashtags to label our
-training, validation, and testing data, our learning social sensor has
-highly (and correctly) ranked topical tweets that do not contain
-hashtags indicating encouraging generalization properties from a
+ranked tweets are false negatives --- \emph{they are actually relevant}.
+Furthermore, even though we use hashtags to label our
+training, validation, and testing data, our topical classifier has
+highly (and correctly) ranked topical tweets that \emph{do not contain
+hashtags}, indicating strong generalization properties from a
 relatively small set of curated topical hashtags.
 
 %Having cases of topical tweets not being correctly labeled as topical,

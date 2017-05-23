@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  18 MAY 2017 12:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  23 MAY 2017 13:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -870,21 +870,21 @@ Package: xr 1994/05/28 v5.02 eXternal References (DPC)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 52.
-LaTeX Font Info:    ... okay on input line 52.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 52.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 53.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -957,8 +957,8 @@ Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 52.
-LaTeX Info: Redefining \microtypecontext on input line 52.
+(lastpage)             ! on input line 53.
+LaTeX Info: Redefining \microtypecontext on input line 53.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -972,7 +972,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 )
 \AtBeginShipoutBox=\box35
-Package hyperref Info: Link coloring OFF on input line 52.
+Package hyperref Info: Link coloring OFF on input line 53.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -982,15 +982,15 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count151
 )
-LaTeX Info: Redefining \ref on input line 52.
-LaTeX Info: Redefining \pageref on input line 52.
-LaTeX Info: Redefining \nameref on input line 52.
+LaTeX Info: Redefining \ref on input line 53.
+LaTeX Info: Redefining \pageref on input line 53.
+LaTeX Info: Redefining \nameref on input line 53.
 
 (./main.out) (./main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
 
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 56.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 57.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
@@ -1000,10 +1000,10 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <10> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <20> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 56.
-LaTeX Font Info:    Try loading font information for OT1+ztmcm on input line 56
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 57.
+LaTeX Font Info:    Try loading font information for OT1+ztmcm on input line 57
 .
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
@@ -1013,30 +1013,30 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `ztmcm' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    Try loading font information for OML+ztmcm on input line 56
+LaTeX Font Info:    Try loading font information for OML+ztmcm on input line 57
 .
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
-LaTeX Font Info:    Try loading font information for OMS+ztmcm on input line 56
+LaTeX Font Info:    Try loading font information for OMS+ztmcm on input line 57
 .
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
-LaTeX Font Info:    Try loading font information for OMX+ztmcm on input line 56
+LaTeX Font Info:    Try loading font information for OMX+ztmcm on input line 57
 .
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
@@ -1045,31 +1045,29 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 57.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <12> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 57.
 
 (./abstract.tex) (./intro.tex [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (Commen
 ted text...)) (./relatedWork.tex
-
-Package natbib Warning: Citation `unsupervised' on page 2 undefined on input li
-ne 19.
-
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <9> not available
 (Font)              Font shape `OT1/phv/b/n' tried instead on input line 194.
-[2]) (./lss.tex
+ [2])
+(./lss.tex
 LaTeX Font Info:    Try loading font information for OMS+ptm on input line 22.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 22.
+
 [3]) [4] (./datasetStatistics.tex
 Package epstopdf Info: Source file: <images/location/world/socialsensor-world-H
 umanCausedDisaster_location.eps>
@@ -1082,23 +1080,23 @@ umanCausedDisaster_location-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
 alsensor-world-HumanCausedDisaster_location-eps-converted-to.pdf images/locatio
 n/world/socialsensor-world-HumanCausedDisaster_location.eps>
-(epstopdf)             \includegraphics on input line 54.
+(epstopdf)             \includegraphics on input line 7.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/world/socialsensor-world-HumanCausedDisaster_location-eps-conv
-erted-to.pdf, id=174, 1653.17625pt x 848.16875pt>
+erted-to.pdf, id=165, 1653.17625pt x 848.16875pt>
 File: images/location/world/socialsensor-world-HumanCausedDisaster_location-eps
 -converted-to.pdf Graphic file (type pdf)
 
 <use images/location/world/socialsensor-world-HumanCausedDisaster_location-eps-
 converted-to.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-HumanCausedDi
-saster_location-eps-converted-to.pdf used on input line 54.
+saster_location-eps-converted-to.pdf used on input line 7.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 54.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 7.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <8> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 54.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 7.
 Package epstopdf Info: Source file: <images/location/world/socialsensor-world-i
 rannucleardeal_location.eps>
 (epstopdf)                    date: 2017-03-08 18:00:25
@@ -1110,18 +1108,18 @@ rannucleardeal_location-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
 alsensor-world-irannucleardeal_location-eps-converted-to.pdf images/location/wo
 rld/socialsensor-world-irannucleardeal_location.eps>
-(epstopdf)             \includegraphics on input line 55.
+(epstopdf)             \includegraphics on input line 8.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/world/socialsensor-world-irannucleardeal_location-eps-converte
-d-to.pdf, id=175, 1653.17625pt x 848.16875pt>
+d-to.pdf, id=166, 1653.17625pt x 848.16875pt>
 File: images/location/world/socialsensor-world-irannucleardeal_location-eps-con
 verted-to.pdf Graphic file (type pdf)
 
 <use images/location/world/socialsensor-world-irannucleardeal_location-eps-conv
 erted-to.pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-irannuclearde
-al_location-eps-converted-to.pdf used on input line 55.
+al_location-eps-converted-to.pdf used on input line 8.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 Package epstopdf Info: Source file: <images/location/world/socialsensor-world-s
 occer_location.eps>
@@ -1134,18 +1132,18 @@ occer_location-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/location/world/soci
 alsensor-world-soccer_location-eps-converted-to.pdf images/location/world/socia
 lsensor-world-soccer_location.eps>
-(epstopdf)             \includegraphics on input line 56.
+(epstopdf)             \includegraphics on input line 9.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/world/socialsensor-world-soccer_location-eps-converted-to.pdf,
- id=176, 1653.17625pt x 877.2775pt>
+ id=167, 1653.17625pt x 877.2775pt>
 File: images/location/world/socialsensor-world-soccer_location-eps-converted-to
 .pdf Graphic file (type pdf)
 
 <use images/location/world/socialsensor-world-soccer_location-eps-converted-to.
 pdf>
 Package pdftex.def Info: images/location/world/socialsensor-world-soccer_locati
-on-eps-converted-to.pdf used on input line 56.
+on-eps-converted-to.pdf used on input line 9.
 (pdftex.def)             Requested size: 155.77116pt x 82.65953pt.
 Package epstopdf Info: Source file: <images/location/states/SocialSensor-us-sta
 tes-health_epidemics_location.eps>
@@ -1158,18 +1156,18 @@ tes-health_epidemics_location-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/location/states/Soc
 ialSensor-us-states-health_epidemics_location-eps-converted-to.pdf images/locat
 ion/states/SocialSensor-us-states-health_epidemics_location.eps>
-(epstopdf)             \includegraphics on input line 58.
+(epstopdf)             \includegraphics on input line 11.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/states/SocialSensor-us-states-health_epidemics_location-eps-co
-nverted-to.pdf, id=177, 1653.17625pt x 848.16875pt>
+nverted-to.pdf, id=168, 1653.17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-health_epidemics_location-e
 ps-converted-to.pdf Graphic file (type pdf)
 
 <use images/location/states/SocialSensor-us-states-health_epidemics_location-ep
 s-converted-to.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-health_e
-pidemics_location-eps-converted-to.pdf used on input line 58.
+pidemics_location-eps-converted-to.pdf used on input line 11.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 Package epstopdf Info: Source file: <images/location/states/SocialSensor-us-sta
 tes-socialissues_location.eps>
@@ -1182,31 +1180,31 @@ tes-socialissues_location-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/location/states/Soc
 ialSensor-us-states-socialissues_location-eps-converted-to.pdf images/location/
 states/SocialSensor-us-states-socialissues_location.eps>
-(epstopdf)             \includegraphics on input line 59.
+(epstopdf)             \includegraphics on input line 12.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/location/states/SocialSensor-us-states-socialissues_location-eps-conver
-ted-to.pdf, id=178, 1653.17625pt x 848.16875pt>
+ted-to.pdf, id=169, 1653.17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-socialissues_location-eps-c
 onverted-to.pdf Graphic file (type pdf)
 
 <use images/location/states/SocialSensor-us-states-socialissues_location-eps-co
 nverted-to.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-socialis
-sues_location-eps-converted-to.pdf used on input line 59.
+sues_location-eps-converted-to.pdf used on input line 12.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 
-<images/location/states/SocialSensor-us-states-space_location.pdf, id=179, 1653
+<images/location/states/SocialSensor-us-states-space_location.pdf, id=170, 1653
 .17625pt x 848.16875pt>
 File: images/location/states/SocialSensor-us-states-space_location.pdf Graphic 
 file (type pdf)
 
 <use images/location/states/SocialSensor-us-states-space_location.pdf>
 Package pdftex.def Info: images/location/states/SocialSensor-us-states-space_lo
-cation.pdf used on input line 60.
+cation.pdf used on input line 13.
 (pdftex.def)             Requested size: 155.77116pt x 79.91682pt.
 
-Overfull \hbox (7.28226pt too wide) in paragraph at lines 53--63
+Overfull \hbox (7.28226pt too wide) in paragraph at lines 6--16
  [][] 
  []
 
@@ -1219,9 +1217,6 @@ ocialSensor-us-states-socialissues_location-eps-converted-to.pdf> <./images/loc
 ation/states/SocialSensor-us-states-space_location.pdf>]) (./methodology.tex
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
-
-
-Package hyperref Warning: Suppressing empty link on input line 88.
 
 
 Package hyperref Warning: Suppressing empty link on input line 89.
@@ -1239,77 +1234,58 @@ Package hyperref Warning: Suppressing empty link on input line 155.
 
 Package hyperref Warning: Suppressing empty link on input line 164.
 
-
-! Package inputenc Error: Unicode char  (U+8E)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.248 }
-       
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 214--250
-[][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 214--250
-
- []
-
 [7] [8]) (./featureAnalysis.tex
-<images/avgMI_gray.pdf, id=253, 531.41536pt x 363.29727pt>
+<images/avgMI_gray.pdf, id=245, 531.41536pt x 363.29727pt>
 File: images/avgMI_gray.pdf Graphic file (type pdf)
 
 <use images/avgMI_gray.pdf>
-Package pdftex.def Info: images/avgMI_gray.pdf used on input line 11.
+Package pdftex.def Info: images/avgMI_gray.pdf used on input line 13.
 (pdftex.def)             Requested size: 212.40831pt x 170.72202pt.
 
-<images/avgMIBoxPlots/TermVsTopics.pdf, id=254, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/TermVsTopics.pdf, id=246, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/TermVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/TermVsTopics.pdf>
 Package pdftex.def Info: images/avgMIBoxPlots/TermVsTopics.pdf used on input li
-ne 23.
-(pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
+ne 25.
+(pdftex.def)             Requested size: 96.73941pt x 99.5847pt.
 
-<images/avgMIBoxPlots/LocationVsTopics.pdf, id=255, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/LocationVsTopics.pdf, id=247, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/LocationVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/LocationVsTopics.pdf>
 Package pdftex.def Info: images/avgMIBoxPlots/LocationVsTopics.pdf used on inpu
-t line 24.
-(pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
+t line 26.
+(pdftex.def)             Requested size: 96.73941pt x 99.5847pt.
 
-<images/avgMIBoxPlots/HashtagVsTopics.pdf, id=256, 266.87706pt x 287.83536pt>
+<images/avgMIBoxPlots/HashtagVsTopics.pdf, id=248, 266.87706pt x 287.83536pt>
 File: images/avgMIBoxPlots/HashtagVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/HashtagVsTopics.pdf>
 Package pdftex.def Info: images/avgMIBoxPlots/HashtagVsTopics.pdf used on input
- line 25.
-(pdftex.def)             Requested size: 91.04648pt x 99.58438pt.
+ line 27.
+(pdftex.def)             Requested size: 96.73943pt x 99.58438pt.
 
-<images/avgMIBoxPlots/MentionVsTopics.pdf, id=257, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/MentionVsTopics.pdf, id=249, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/MentionVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/MentionVsTopics.pdf>
 Package pdftex.def Info: images/avgMIBoxPlots/MentionVsTopics.pdf used on input
- line 26.
-(pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
+ line 28.
+(pdftex.def)             Requested size: 96.73941pt x 99.5847pt.
 
-<images/avgMIBoxPlots/FromVsTopics.pdf, id=258, 274.64607pt x 304.92921pt>
+<images/avgMIBoxPlots/FromVsTopics.pdf, id=250, 274.64607pt x 304.92921pt>
 File: images/avgMIBoxPlots/FromVsTopics.pdf Graphic file (type pdf)
 
 <use images/avgMIBoxPlots/FromVsTopics.pdf>
 Package pdftex.def Info: images/avgMIBoxPlots/FromVsTopics.pdf used on input li
-ne 27.
-(pdftex.def)             Requested size: 91.04836pt x 99.5847pt.
+ne 29.
+(pdftex.def)             Requested size: 96.73941pt x 99.5847pt.
+
+Overfull \hbox (23.66583pt too wide) in paragraph at lines 23--32
+ [][] 
+ []
+
 Package epstopdf Info: Source file: <images/ViolinPlots/From-favoriteCount.eps>
 
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1320,18 +1296,18 @@ converted-to.pdf>
 (epstopdf)                    size: 49426 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-fa
 voriteCount-eps-converted-to.pdf images/ViolinPlots/From-favoriteCount.eps>
-(epstopdf)             \includegraphics on input line 41.
+(epstopdf)             \includegraphics on input line 43.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf, id=259, 435.6275pt
+<images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf, id=251, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf Graphic file (
 type pdf)
 
 <use images/ViolinPlots/From-favoriteCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/From-favoriteCount-eps-converted-to
-.pdf used on input line 41.
-(pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
+.pdf used on input line 43.
+(pdftex.def)             Requested size: 96.73936pt x 72.66322pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-followersCount.eps
 >
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1342,18 +1318,18 @@ Package epstopdf Info: Source file: <images/ViolinPlots/From-followersCount.eps
 (epstopdf)                    size: 52557 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-fo
 llowersCount-eps-converted-to.pdf images/ViolinPlots/From-followersCount.eps>
-(epstopdf)             \includegraphics on input line 42.
+(epstopdf)             \includegraphics on input line 44.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-followersCount-eps-converted-to.pdf, id=260, 440.64626
+<images/ViolinPlots/From-followersCount-eps-converted-to.pdf, id=252, 440.64626
 pt x 327.2225pt>
 File: images/ViolinPlots/From-followersCount-eps-converted-to.pdf Graphic file 
 (type pdf)
 
 <use images/ViolinPlots/From-followersCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/From-followersCount-eps-converted-t
-o.pdf used on input line 42.
-(pdftex.def)             Requested size: 85.35826pt x 63.38622pt.
+o.pdf used on input line 44.
+(pdftex.def)             Requested size: 96.73936pt x 71.83438pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-friendsCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
 (epstopdf)                    size: 58044 bytes
@@ -1363,17 +1339,17 @@ onverted-to.pdf>
 (epstopdf)                    size: 52536 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-fr
 iendsCount-eps-converted-to.pdf images/ViolinPlots/From-friendsCount.eps>
-(epstopdf)             \includegraphics on input line 43.
+(epstopdf)             \includegraphics on input line 45.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-friendsCount-eps-converted-to.pdf, id=261, 435.6275pt 
+<images/ViolinPlots/From-friendsCount-eps-converted-to.pdf, id=253, 435.6275pt 
 x 327.2225pt>
 File: images/ViolinPlots/From-friendsCount-eps-converted-to.pdf Graphic file (t
 ype pdf)
  <use images/ViolinPlots/From-friendsCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/From-friendsCount-eps-converted-to.
-pdf used on input line 43.
-(pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
+pdf used on input line 45.
+(pdftex.def)             Requested size: 96.73936pt x 72.66322pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-hashtagCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
 (epstopdf)                    size: 52187 bytes
@@ -1383,17 +1359,17 @@ onverted-to.pdf>
 (epstopdf)                    size: 46848 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-ha
 shtagCount-eps-converted-to.pdf images/ViolinPlots/From-hashtagCount.eps>
-(epstopdf)             \includegraphics on input line 44.
+(epstopdf)             \includegraphics on input line 46.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-hashtagCount-eps-converted-to.pdf, id=262, 440.64626pt
+<images/ViolinPlots/From-hashtagCount-eps-converted-to.pdf, id=254, 440.64626pt
  x 327.2225pt>
 File: images/ViolinPlots/From-hashtagCount-eps-converted-to.pdf Graphic file (t
 ype pdf)
  <use images/ViolinPlots/From-hashtagCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/From-hashtagCount-eps-converted-to.
-pdf used on input line 44.
-(pdftex.def)             Requested size: 85.35826pt x 63.38622pt.
+pdf used on input line 46.
+(pdftex.def)             Requested size: 96.73936pt x 71.83438pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/From-tweetCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
 (epstopdf)                    size: 47218 bytes
@@ -1403,17 +1379,17 @@ verted-to.pdf>
 (epstopdf)                    size: 41574 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/From-tw
 eetCount-eps-converted-to.pdf images/ViolinPlots/From-tweetCount.eps>
-(epstopdf)             \includegraphics on input line 45.
+(epstopdf)             \includegraphics on input line 47.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/From-tweetCount-eps-converted-to.pdf, id=263, 440.64626pt x
+<images/ViolinPlots/From-tweetCount-eps-converted-to.pdf, id=255, 440.64626pt x
  327.2225pt>
 File: images/ViolinPlots/From-tweetCount-eps-converted-to.pdf Graphic file (typ
 e pdf)
  <use images/ViolinPlots/From-tweetCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/From-tweetCount-eps-converted-to.pd
-f used on input line 45.
-(pdftex.def)             Requested size: 85.35826pt x 63.38622pt.
+f used on input line 47.
+(pdftex.def)             Requested size: 96.73936pt x 71.83438pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Hashtag-tweetCount.eps>
 
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1424,18 +1400,18 @@ converted-to.pdf>
 (epstopdf)                    size: 48066 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Hashtag
 -tweetCount-eps-converted-to.pdf images/ViolinPlots/Hashtag-tweetCount.eps>
-(epstopdf)             \includegraphics on input line 47.
+(epstopdf)             \includegraphics on input line 49.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf, id=264, 435.6275pt
+<images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf, id=256, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf Graphic file (
 type pdf)
 
 <use images/ViolinPlots/Hashtag-tweetCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/Hashtag-tweetCount-eps-converted-to
-.pdf used on input line 47.
-(pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
+.pdf used on input line 49.
+(pdftex.def)             Requested size: 96.73936pt x 72.66322pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Hashtag-userCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
 (epstopdf)                    size: 52767 bytes
@@ -1445,17 +1421,17 @@ onverted-to.pdf>
 (epstopdf)                    size: 47585 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Hashtag
 -userCount-eps-converted-to.pdf images/ViolinPlots/Hashtag-userCount.eps>
-(epstopdf)             \includegraphics on input line 48.
+(epstopdf)             \includegraphics on input line 50.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf, id=265, 435.6275pt 
+<images/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf, id=257, 435.6275pt 
 x 327.2225pt>
 File: images/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf Graphic file (t
 ype pdf)
  <use images/ViolinPlots/Hashtag-userCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/Hashtag-userCount-eps-converted-to.
-pdf used on input line 48.
-(pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
+pdf used on input line 50.
+(pdftex.def)             Requested size: 96.73936pt x 72.66322pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Location-userCount.eps>
 
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1466,18 +1442,18 @@ converted-to.pdf>
 (epstopdf)                    size: 52226 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Locatio
 n-userCount-eps-converted-to.pdf images/ViolinPlots/Location-userCount.eps>
-(epstopdf)             \includegraphics on input line 49.
+(epstopdf)             \includegraphics on input line 51.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Location-userCount-eps-converted-to.pdf, id=266, 435.6275pt
+<images/ViolinPlots/Location-userCount-eps-converted-to.pdf, id=258, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/Location-userCount-eps-converted-to.pdf Graphic file (
 type pdf)
 
 <use images/ViolinPlots/Location-userCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/Location-userCount-eps-converted-to
-.pdf used on input line 49.
-(pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
+.pdf used on input line 51.
+(pdftex.def)             Requested size: 96.73936pt x 72.66322pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Mention-tweetCount.eps>
 
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1488,18 +1464,18 @@ converted-to.pdf>
 (epstopdf)                    size: 46562 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Mention
 -tweetCount-eps-converted-to.pdf images/ViolinPlots/Mention-tweetCount.eps>
-(epstopdf)             \includegraphics on input line 50.
+(epstopdf)             \includegraphics on input line 52.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Mention-tweetCount-eps-converted-to.pdf, id=267, 435.6275pt
+<images/ViolinPlots/Mention-tweetCount-eps-converted-to.pdf, id=259, 435.6275pt
  x 327.2225pt>
 File: images/ViolinPlots/Mention-tweetCount-eps-converted-to.pdf Graphic file (
 type pdf)
 
 <use images/ViolinPlots/Mention-tweetCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/Mention-tweetCount-eps-converted-to
-.pdf used on input line 50.
-(pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
+.pdf used on input line 52.
+(pdftex.def)             Requested size: 96.73936pt x 72.66322pt.
 Package epstopdf Info: Source file: <images/ViolinPlots/Term-tweetCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
 (epstopdf)                    size: 54279 bytes
@@ -1509,17 +1485,22 @@ verted-to.pdf>
 (epstopdf)                    size: 47942 bytes
 (epstopdf)             Command: <repstopdf --outfile=images/ViolinPlots/Term-tw
 eetCount-eps-converted-to.pdf images/ViolinPlots/Term-tweetCount.eps>
-(epstopdf)             \includegraphics on input line 51.
+(epstopdf)             \includegraphics on input line 53.
 Package epstopdf Info: Output file is already uptodate.
 
-<images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf, id=268, 435.6275pt x 
+<images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf, id=260, 435.6275pt x 
 327.2225pt>
 File: images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf Graphic file (typ
 e pdf)
  <use images/ViolinPlots/Term-tweetCount-eps-converted-to.pdf>
 Package pdftex.def Info: images/ViolinPlots/Term-tweetCount-eps-converted-to.pd
-f used on input line 51.
-(pdftex.def)             Requested size: 85.35826pt x 64.11519pt.
+f used on input line 53.
+(pdftex.def)             Requested size: 96.73936pt x 72.66322pt.
+
+Overfull \hbox (35.66559pt too wide) in paragraph at lines 41--57
+ [][] 
+ []
+
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-favoriteCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1531,19 +1512,19 @@ From-favoriteCount-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-favoriteCount-eps-converted-to.pdf images/DensityPlots_Ira
 nDeal/dscatterPlot_From-favoriteCount.eps>
-(epstopdf)             \includegraphics on input line 65.
+(epstopdf)             \includegraphics on input line 67.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount-eps-converted-to.
-pdf, id=269, 435.6275pt x 327.2225pt>
+pdf, id=261, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount-eps-converte
 d-to.pdf Graphic file (type pdf)
 
 <use images/DensityPlots_IranDeal/dscatterPlot_From-favoriteCount-eps-converted
 -to.pdf>
 Package pdftex.def Info: images/DensityPlots_IranDeal/dscatterPlot_From-favorit
-eCount-eps-converted-to.pdf used on input line 65.
-(pdftex.def)             Requested size: 102.42992pt x 76.93724pt.
+eCount-eps-converted-to.pdf used on input line 67.
+(pdftex.def)             Requested size: 113.81102pt x 85.48526pt.
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-followersCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1555,19 +1536,19 @@ From-followersCount-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-followersCount-eps-converted-to.pdf images/DensityPlots_Ir
 anDeal/dscatterPlot_From-followersCount.eps>
-(epstopdf)             \includegraphics on input line 66.
+(epstopdf)             \includegraphics on input line 68.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-followersCount-eps-converted-to
-.pdf, id=270, 435.6275pt x 327.2225pt>
+.pdf, id=262, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-followersCount-eps-convert
 ed-to.pdf Graphic file (type pdf)
 
 <use images/DensityPlots_IranDeal/dscatterPlot_From-followersCount-eps-converte
 d-to.pdf>
 Package pdftex.def Info: images/DensityPlots_IranDeal/dscatterPlot_From-followe
-rsCount-eps-converted-to.pdf used on input line 66.
-(pdftex.def)             Requested size: 102.42992pt x 76.93724pt.
+rsCount-eps-converted-to.pdf used on input line 68.
+(pdftex.def)             Requested size: 113.81102pt x 85.48526pt.
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-friendsCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1579,19 +1560,19 @@ From-friendsCount-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-friendsCount-eps-converted-to.pdf images/DensityPlots_Iran
 Deal/dscatterPlot_From-friendsCount.eps>
-(epstopdf)             \includegraphics on input line 67.
+(epstopdf)             \includegraphics on input line 69.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount-eps-converted-to.p
-df, id=271, 435.6275pt x 327.2225pt>
+df, id=263, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount-eps-converted
 -to.pdf Graphic file (type pdf)
 
 <use images/DensityPlots_IranDeal/dscatterPlot_From-friendsCount-eps-converted-
 to.pdf>
 Package pdftex.def Info: images/DensityPlots_IranDeal/dscatterPlot_From-friends
-Count-eps-converted-to.pdf used on input line 67.
-(pdftex.def)             Requested size: 102.42992pt x 76.93724pt.
+Count-eps-converted-to.pdf used on input line 69.
+(pdftex.def)             Requested size: 113.81102pt x 85.48526pt.
 Package epstopdf Info: Source file: <images/DensityPlots_IranDeal/dscatterPlot_
 From-hashtagCount.eps>
 (epstopdf)                    date: 2017-03-08 18:00:24
@@ -1603,22 +1584,26 @@ From-hashtagCount-eps-converted-to.pdf>
 (epstopdf)             Command: <repstopdf --outfile=images/DensityPlots_IranDe
 al/dscatterPlot_From-hashtagCount-eps-converted-to.pdf images/DensityPlots_Iran
 Deal/dscatterPlot_From-hashtagCount.eps>
-(epstopdf)             \includegraphics on input line 68.
+(epstopdf)             \includegraphics on input line 70.
 Package epstopdf Info: Output file is already uptodate.
 
 <images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount-eps-converted-to.p
-df, id=272, 435.6275pt x 327.2225pt>
+df, id=264, 435.6275pt x 327.2225pt>
 File: images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount-eps-converted
 -to.pdf Graphic file (type pdf)
 
 <use images/DensityPlots_IranDeal/dscatterPlot_From-hashtagCount-eps-converted-
 to.pdf>
 Package pdftex.def Info: images/DensityPlots_IranDeal/dscatterPlot_From-hashtag
-Count-eps-converted-to.pdf used on input line 68.
-(pdftex.def)             Requested size: 102.42992pt x 76.93724pt.
+Count-eps-converted-to.pdf used on input line 70.
+(pdftex.def)             Requested size: 113.81102pt x 85.48526pt.
+
+Overfull \hbox (25.21284pt too wide) in paragraph at lines 66--73
+ [][] 
+ []
 
 
-Package hyperref Warning: Suppressing empty link on input line 119.
+Package hyperref Warning: Suppressing empty link on input line 121.
 
 [9 <./images/avgMI_gray.pdf> <./images/avgMIBoxPlots/TermVsTopics.pdf> <./image
 s/avgMIBoxPlots/LocationVsTopics.pdf> <./images/avgMIBoxPlots/HashtagVsTopics.p
@@ -1636,51 +1621,57 @@ erted-to.pdf> <./images/DensityPlots_IranDeal/dscatterPlot_From-followersCount-
 eps-converted-to.pdf> <./images/DensityPlots_IranDeal/dscatterPlot_From-friends
 Count-eps-converted-to.pdf> <./images/DensityPlots_IranDeal/dscatterPlot_From-h
 ashtagCount-eps-converted-to.pdf>] [11]) (./conclusion.tex) (./main.bbl
-[12]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [13])
-
-Package natbib Warning: There were undefined citations.
-
-
+[12]) 
 AED: lastpage setting LastPage
-[14]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 93.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 93.
+[13]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 88.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 88.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 93.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 93.
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: F8C0059B247220D44A4F32052B2F58B8;182.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 93.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 88.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 88.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 71FB65D42377518DAEB1D80D05069750;51
+(rerunfilecheck)             After:  824416200515F6550995BC88BB3891C6;52.
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 88.
  ) 
 Here is how much of TeX's memory you used:
- 13080 strings out of 493014
- 198093 string characters out of 6133351
- 466102 words of memory out of 5000000
- 15956 multiletter control sequences out of 15000+600000
- 75899 words of font info for 291 fonts, out of 8000000 for 9000
+ 13077 strings out of 493014
+ 198035 string characters out of 6133351
+ 467212 words of memory out of 5000000
+ 15948 multiletter control sequences out of 15000+600000
+ 73862 words of font info for 294 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,22n,49p,1821b,582s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
-xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
-live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texli
-ve/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texliv
-e/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/te
-xlive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/loca
-l/texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texli
-ve/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016
-/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive/2016/texmf-dist
-/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type
-1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/time
-s/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.
-pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on main.pdf (14 pages, 2773778 bytes).
+ 43i,22n,49p,1821b,580s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{table.caption.9} has been referenced but does not
+ exist, replaced by a fixed one
+
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
+live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texl
+ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texli
+ve/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive
+/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/
+2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texl
+ive/2016/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/
+texlive/2016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive
+/2016/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/t
+exmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive/2016/texmf-dist/f
+onts/type1/urw/symbol/usyr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/
+urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/
+utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/utmri8a.pf
+b></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/zapfding/uzdr.pfb>
+Output written on main.pdf (13 pages, 2774296 bytes).
 PDF statistics:
- 540 PDF objects out of 1000 (max. 8388607)
- 410 compressed objects within 5 object streams
- 96 named destinations out of 1000 (max. 500000)
- 50843 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 530 PDF objects out of 1000 (max. 8388607)
+ 401 compressed objects within 5 object streams
+ 95 named destinations out of 1000 (max. 500000)
+ 48779 words of extra memory for PDF output out of 51595 (max. 10000000)
 

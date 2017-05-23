@@ -1,5 +1,22 @@
  %!TEX root = main.tex
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure*}[t]
+\centering
+\begin{tabular}{ccc}
+\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-HumanCausedDisaster_location.eps}}
+\subfloat[Fig:][Iran Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.eps}}
+\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.eps}} \\
+%\vspace{-10mm}
+\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.eps}}
+\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.eps}}
+\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location}} \\
+\end{tabular}
+%\vspace{-2mm}
+\caption {Per capita tweet frequency across different international and U.S. locations for different topics. The legend provides the number of tweets per 1 Million capita.}
+\label{fig:choropleths}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table}[t!]
 \centering
@@ -10,8 +27,8 @@
 \multicolumn{5}{c}{\textbf{\#Unique Features}} \\ \hline
 \textbf{From} & \textbf{Hashtag} & \textbf{Mention} & \textbf{Location} & \textbf{Term} \\ \hline
 95,547,198 & 11,183,410 & 411,341,569 & 58,601 & 20,234,728 \\ \hline %14,197,509
-\end{tabular}
-}}
+%\end{tabular}
+%}}
 %\vspace{.5mm}
 %\caption{Number of unique features for each type.}%values for each feature of $829,026,458$ tweets in our Twitter dataset}
 %\label{table:featureUnique}
@@ -19,9 +36,9 @@
 %
 %\begin{table}[t!]
 %\centering
-{\renewcommand{\arraystretch}{1.2}
-\resizebox{0.48\textwidth}{!}{%
-\begin{tabular}{|l|c|c|c|c|}
+%{\renewcommand{\arraystretch}{1.2}
+%\resizebox{0.48\textwidth}{!}{%
+%\begin{tabular}{|l|c|c|c|c|}
 %\hline
 \multicolumn{5}{c}{} \\
 \multicolumn{5}{c}{\textbf{Feature Usage in \#Tweets}} \\ \hline
@@ -43,27 +60,9 @@
 \textbf{Location} & 2,440,969 & 1,837.79 & 21 & uk \\ \hline
 \end{tabular}
 }}
-\caption{Feature Statistics of our $829,026,458$ tweet corpus.} % in our Twitter dataset}
-\label{table:featureStatistics}
+\caption{\label{table:featureStatistics}Feature Statistics of our $829,026,458$ tweet corpus.} % in our Twitter dataset}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[t!]
-\centering
-\begin{tabular}{ccc}
-\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-HumanCausedDisaster_location.eps}}
-\subfloat[Fig:][Iran Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.eps}}
-\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.eps}} \\
-%\vspace{-10mm}
-\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.eps}}
-\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.eps}}
-\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location}} \\
-\end{tabular}
-%\vspace{-2mm}
-\caption {Per capita tweet frequency across different international and U.S. locations for different topics. The legend provides the number of tweets per 1 Million capita.}
-\label{fig:choropleths}
-\end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Now we provide details of the Twitter testbed for topical classifier learning
 that we evaluate in this paper.  We crawled Twitter data using Twitter

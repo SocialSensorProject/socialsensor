@@ -36,14 +36,13 @@ Chen, K., Chen, T., Zheng, G., Jin, O., Yao, E., and Yu, Y. (2012).
 \newblock Collaborative personalized tweet recommendation.
 \newblock In {\em Proceedings of the 35th International ACM SIGIR Conference on
   Research and Development in Information Retrieval}, SIGIR '12, pages
-  661--670, New York, NY, USA. ACM.
+  661--670. ACM.
 
 \bibitem[Cui et~al., 2012]{cuiZhang}
 Cui, A., Zhang, M., Liu, Y., Ma, S., and Zhang, K. (2012).
 \newblock Discover breaking events with popular hashtags in {Twitter}.
 \newblock In {\em 21st {ACM} International Conference on Information and
-  Knowledge Management, CIKM'12, Maui, HI, USA, October 29 - November 02,
-  2012}, pages 1794--1798.
+  Knowledge Management, CIKM'12, Maui, HI, USA, 2012}, pages 1794--1798.
 
 \bibitem[Culotta, 2010]{culotta}
 Culotta, A. (2010).
@@ -166,6 +165,11 @@ Sakaki, T., Okazaki, M., and Matsuo, Y. (2013).
   system development.
 \newblock {\em Knowledge and Data Engineering, IEEE Transactions on},
   25(4):919--931.
+
+\bibitem[Vicient and Moreno, 2015]{unsupervised}
+Vicient, C. and Moreno, A. (2015).
+\newblock Unsupervised topic discovery in micro-blogging networks.
+\newblock {\em Expert Syst. Appl.}, 42(17):6472--6485.
 
 \bibitem[Weng and Lee, 2011]{wangLee}
 Weng, J. and Lee, B. (2011).
