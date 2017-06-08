@@ -85,8 +85,8 @@ mean performance over all topics shown in the right column. The best performance
 
 %How we curated hashtags: need to make up good story here.  Inner-annotator agreement of 3/4.
 With the formal definition of learning topical classifiers provided
-in Sec.~\hyperref{sec:lss}{LTT} and the overview of our data in
-Sec.~\ref{sec:datasetStatistics}, we proceed to outline our
+in Sec.~\hyperref[sec:lss]{Learning Topical Social Sensors} and the overview of our data in
+Sec.~\hyperref[sec:datasetStatistics]{Data Description}, we proceed to outline our
 experimental methodology on our Twitter corpus.  We manually curated a
 broad thematic range of 10 topics shown in the top row of
 Table~\ref{table:sampleHashtags}
@@ -111,7 +111,7 @@ with \textit{Soccer} being the most tweeted topic
 and \textit{IranDeal} being the least tweeted according to our curated
 hashtags.
 
-As noted in Sec.~\ref{sec:datasetStatistics}, positively occurring
+As noted in Sec.~\hyperref[sec:datasetStatistics]{Data Description}, positively occurring
 features $D_i^+$ in our $d_i$ may include
 \textit{From}, \textit{Mention}, \textit{Location}, \textit{Term}, and \textit{Hashtag} features.
 %The summation of number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features. As noted earlier, we are working on a $829,026,458$ tweet corpus. Thus with great number of features and tweets, there is a need for techniques to annotate the data and select a subset of features for learning. 
@@ -149,10 +149,10 @@ candidate features (\textit{CF}) for learning topical classifiers.
 \subsection*{Supervised Learning Algorithms}
 
 With our labeled training and validation datasets defined in
-Sec.~\ref{sec:lss} and our candidate feature set \textit{CF} defined
+Sec.~\hyperref[sec:lss]{Learning Topical Social Sensors} and our candidate feature set \textit{CF} defined
 previously, we proceed to apply different probabilistic classification and ranking
 algorithms to generate a score function $f^t$ for learning topical classifiers 
-as defined in Sec.~\ref{sec:lss}.  In this paper, we experiment with
+as defined in Sec.~\hyperref[sec:lss]{Learning Topical Social Sensors}.  In this paper, we experiment with
 the following four state-of-the-art supervised classification and ranking methods:
 \begin{enumerate}
 \item {\bf Logistic Regression} using LibLinear~\cite{liblinear}
@@ -161,7 +161,7 @@ the following four state-of-the-art supervised classification and ranking method
 \item {\bf RankSVM}~\cite{largescale_ranksvm}
 \end{enumerate}
 
-As outlined in Sec~\ref{sec:lss}, tuning of hyperparameters on a validation
+As outlined in Sec~\hyperref[sec:lss]{Learning Topical Social Sensors}, tuning of hyperparameters on a validation
 dataset is critical.  In our experiments, we tune the following hyperparameters:
 \begin{itemize}
 \item \textit{Logistic Regression}: $L_2$ regularization constant $C$ is tuned for $C \in \{1E-12, 1E-11, ..., 1E+11, 1E+12\}$.
