@@ -1,0 +1,201 @@
+%!TEX root = main.tex
+
+% This section covers the *formal* framework for learning topical social sensors
+
+% =====================
+% What are we doing?  
+% (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
+% (2) How we label data.
+% (3) How we train (validation set critical for hyperparameters, what metric used for selection?).
+% Note that formal performance evaluation provided in experimental section.
+% =====================
+
+% (1) Formal problem setup and notation definitions.  Corpus of documents, features, labels, classification problem definition (for a generic classifier).
+%TODO: Formal learning framework.
+
+Our objective in this paper is to carry out a longitudinal study of topic classifiers for Twitter.  
+%
+%To this end, we now outline a methdology for training and evaluating such topic classifiers.
+%
+%{\color{red}
+%In this section, we reduce the problem of learning topical content from large space of features and small set of examples provided by the user to the following setting that will match standard supervised learning paradigm.
+%
+%Here, the problem statement is that the user has an information need for high-precision topical content from Twitter. 
+%The first step for the user is that he/she must provide labeled data to represent this information need for use in a targeted supervised learning setting.
+% We assume that for each topic, the user will provide us with a set of hashtags. For example for the topic of \textit{Natural Disaster}, 
+%the user will give us \{\#earthquake,\#flood,\#prayforthephilippines, ...\}. The goal is, given this topic and related hashtags, return a ranked
+% list of tweets to the user that are highly relevant to the topic and match users information needs; meaning instead of returning a set of tweets
+% that only match "disaster" or "natural", we realize the actual information need behind the searched topic and present all tweets matching this need. 
+%To this end, we need a methodology that learns from the set of hashtags provided by users on how to pick up sensors (i.e., useful terms, mentions, 
+%hashtags, locations, and users) and weight them to ensure picking new, unseen topical hashtags in future tweets. The following discussion intends
+% to answer how to develop such methodology. 
+%
+%To this end, we assume a birth-time for each hashtag as the first time it has been used in our dataset. Assuming a birth-time, then we consider temporal split of our chosen set of hashtags and learn on one set and test on the other more recent set to evaluate the methods generalizability. The limitation of this method is since we use hashtags as topical proxies, we mislabel the tweets without hashtags. Therefore, we miss part of topical content that we could learn from for the price of automatic labeling of all tweets with minimal user effort. Now, we move on to mathematically formalize this problem.}
+% }
+% 
+For each Twitter topic, we want to build a binary classifier that can label
+a previously unseen tweet as topical (or not).  To achieve this, we 
+train and evaluate the classifier on a set of topically labeled historical tweets as described below.
+
+More formally to define notation we will use later, 
+given an arbitrary tweet $d$ (a document in text classification parlance) 
+and a set of topics $T = \{
+t_1,\ldots,t_K\}$, we wish to train a scoring function $f^t: D \rightarrow \mathbb{R}$
+for topic $t \in T$ over a subset of labeled training tweets from $D = \{
+d_1,\ldots,d_N \}$.  Each $d_i \in D$ has a boolean feature vector 
+$(d_i^1,\ldots,d_i^M) \in \{0,1\}^M$.  A boolean function $t : D \rightarrow \{
+0,1 \}$ indicates whether the tweet $d_i$ is topical (1) or not
+(0).  As is standard for training classifiers, we wish to learn $ f^t(d_i)$ so that it can be used to predict $t(d_i)$ with high accuracy.
+%In an ideal scenario, we could train for topic $t$ 
+%so that $\forall d_i \; f^t(d_i) = t(d_i)$ --- our scoring
+%function (or more generally some threshold on it yielding a $\{0,1\}$ prediction) agrees perfectly with the topic
+%labels of all tweets.  
+
+%There are two catches that make our training setting somewhat
+%non-standard and which underlie key difficulties when training topical
+%classifiers for Twitter:  (1) Manually labeling documents is time-consuming so
+%we need a way to manually label a large number of tweets with minimal
+%user curation effort; \emph{We achieve this by leveraging the insight of
+%of~\cite{lin2011smoothing} and use a set of predefined hashtags as topical proxies.}
+%(2) We need to train our social sensor on
+%known topical content, but tune it on novel topical validation content 
+%that ensures the tuning achieves optimal generalization; \emph{We achieve this by 
+%excising training content from our validation data so that our scoring
+%function hyperparameter tuning ensures generalization.}
+%We elaborate on these details next.
+
+%\begin{equation}
+%(\gamma, M) : D \to T 
+%\end{equation}
+%\part{title}
+%\begin{equation}
+%t^{*} = argMin_{w} L(t,\hat{t})
+%\end{equation}
+%
+%Where ${L : T \times T \to \Re_{+} }$ is the loss function indicating the penalty for an incorrect prediction and ${L(t,\hat{t})}$ is the loss for prediction of ${\hat{t}}$ instead of actual topic $t$.
+
+%SCORING TWEETS AT TEST TIME
+%Each document ${d_{i}} \in D$ is scored for a given topic ${t \in \{ T \}}$ by the measure of it's similarity to the topic defined as
+%
+%\begin{equation}
+%Sim({d_{i}}, t) = \sum_{j} F_{d_{i}}^{j}) \times {w_{j}}
+%\end{equation}
+%
+%where $F_{d_{i}}^{j}$ represents the $j$th value in $F_{d_{i}}$.
+
+% (2) How we label data.
+
+A critical bottleneck for learning targeted topical social classifiers 
+is to achieve sufficient supervised content labeling.  With data
+requirements often in the thousands of labels to ensure effective
+learning and generalization over a large candidate feature space (as
+found in social media), manual labeling is simply too time-consuming
+for many users, while crowdsourced labels are both costly and prone to
+misinterpretation of users' information needs.  Fortuitously, hashtags
+have emerged in recent years as a pervasive topical proxy on social
+media sites --- hashtags originated on IRC chat, were adopted later
+(and perhaps most famously) on Twitter, and now appear on other social
+media platforms such as Instagram, Tumblr, and Facebook.  Following
+the approach of~\cite{lin2011smoothing}, for each topic $t \in T$, we leverage a (small) set of
+user-curated topical hashtags $H^t$ to efficiently provide a large number of
+supervised topic labels for social media content.  
+
+Next we provide
+a procedure for labeling data with $H^t$ for training and validation.
+% (3) How we train (validation set critical for hyperparameters, what metric used for selection?).
+Following this, we proceed to train
+supervised classification and ranking methods to learn topical content
+from a large feature space (e.g., this feature space
+includes terms, hashtags, mentions, authors and their locations). The
+training process involves two steps:
+%TODO: An simple enumeration of the training steps?
+\begin{enumerate}
+\item {\bf Temporally split train and validation using $H^t$:}
+As standard for machine learning methods, we divide our training data into
+train and validation sets --- the latter for hyperparameter tuning to control
+overfitting and ensure generalization to unseen data.  
+As a critical insight for topical generalization where we view correct classification 
+of tweets with \emph{previously unseen topical hashtags} as a proxy for topical generalization, 
+we do not simply
+split our data temporally into train and test sets and label both with \emph{all} 
+hashtags in $H^t$.  Rather,
+we split $H^t$ into two disjoint sets $H^t_\mathrm{train}$ and $H^t_\mathrm{val}$ 
+according to a time stamp $t_\mathrm{split}$ for topic $t$ and the first usage time stamp 
+$h_\mathrm{time*}$ of each hashtag $h \in H^t$.  In short, all hashtags $h \in H^t$ first used
+before $t_\mathrm{split}$ are used to generate positive labels in the training data and
+the remaining validation hashtags are used to generate positive labels in the test data.
+
+To achieve this effect formally, we define the following:
+\begin{align*}
+H^t_\mathrm{train} & = \{ h | h \in H^t \land h_\mathrm{time*} <    t_\mathrm{split} \} ,  \\
+H^t_\mathrm{val}   & = \{ h | h \in H^t \land h_\mathrm{time*} \geq t_\mathrm{split} \} .
+\end{align*}
+Once we have split our hashtags into training and validation sets
+according to $t_\mathrm{split}$, we next proceed to temporally split
+our training documents $D$ into a training set $D^t_\mathrm{train}$ and a validation set
+$D^t_\mathrm{val}$ for topic $t$ based on the posting
+time stamp $d_{i,\mathrm{time*}}$ of each tweet $d_i$ as follows: 
+%ormally, given $H^t$, we
+%can label each document $d_i$ (containing positive features $D_i^+$) as follows:
+\begin{align*}
+D^t_\mathrm{train} & = \{ d_i | d_i \in D \land d_{i,\mathrm{time*}} <    t_\mathrm{split} \} ,  \\
+D^t_\mathrm{val}   & = \{ d_i | d_i \in D \land d_{i,\mathrm{time*}} \geq t_\mathrm{split} \} .
+\end{align*}
+Next we define the set of positively occurring features for a document
+$d_i$ formally as $D_i^+ = \{ j | d_i^j=1 \}_{j=1\ldots M}$ and note that
+$D_i^+$ may include feature IDs for the content of $d_i$ (e.g., terms and, importantly, 
+hashtags) as well as its meta-data (e.g., author, location).
+Then to label both the train and validation data sets $D^t_\mathrm{train}$ and $D^t_\mathrm{val}$, 
+we use the respective
+hashtag sets $H^t_\mathrm{train}$ and $H^t_\mathrm{val}$ for generating
+the topic label for a particular tweet $t(d_{i}) \in \{0,1\}$ as follows:
+\begin{align*}
+t(d_{i}) & =
+  \begin{cases}
+    1: d_{i} \in D^t_\mathrm{train} \land \exists \; h \in H^t_\mathrm{train} \land h \in D_i^+ \\
+    1: d_{i} \in D^t_\mathrm{val} \land \exists \; h \in H^t_\mathrm{val} \land h \in D_i^+ \\
+    0: \mathrm{otherwise}
+  \end{cases} .
+\end{align*}
+%To recap the methodology, we specify a set of hashtags as a proxy for a topic.  We split
+%those hashtags into train and validation sets according to a time of first usage and fixed time point.
+%We split the tweet data into train and validation sets according to the same fixed time point.
+%Finally, we label a tweet in the train (validation) data set as positive if it contains
+%a hashtag in the train (validation) hashtag set.  
+
+The critical insight here is that we not only divide the train and validation
+temporally, but we also divide the hashtag labels temporally and label the validation
+data with an entirely disjoint set of topical labels from the training data.
+%Selection of a set of documents and temporally splitting them into
+%train and validation documents. The split is based on a split-time
+%defined on hashtag set $H^{t}$ to preserve enough number of hashtags
+%in train and validation sets.
+The purpose behind this training and validation data split
+and labeling is to ensure that learning hyperparameters are tuned so as
+to prevent overfitting and maximize generalization to unseen topical
+content (i.e., new hashtags).
+We remark that \emph{a classifier that simply
+memorizes training hashtags will fail to correctly classify the validation data} except in 
+cases where a tweet contains both a training and validation hashtag.  
+\item {\bf Training and hyper-parameter tuning:}
+Once $D^t_\mathrm{train}$ and $D^t_\mathrm{val}$ have been constructed,
+we proceed to train our scoring function $f^t$ on $D^t_\mathrm{train}$ and
+select hyperparameters to optimize Average Precision (AP)~\cite{manning_ir} (a ranking
+metric) on
+$D^t_\mathrm{val}$.  Once the optimal $f^t$ is found for $D^t_\mathrm{val}$,
+we return it as our final learned topical scoring function $f^t$ for topic $t$.
+Because $f^t(d_i) \in \mathbb{R}$ is a scoring function, it can be used to rank.
+%\item {\bf Learning: The weight vector $W$ is learned with classification method $M$ on the selected set of documents using tuned hyper parameters
+\end{enumerate}
+% Note that formal performance evaluation provided in experimental section.
+
+Analogously to train and validation data, test data is generated the same way.
+%, but we omit formal notation (identical to the above) in order to reduce clutter.
+Test data has its own time stamp ($> t_\mathrm{split}$), its own set of
+temporally disjoint data, and its own set of hashtags 
+temporally disjoint from the training and validation data; this is done in order to evaluate
+generalization performance of the learned classifier on future data with topical hashtags
+not seen during training.    
+With train, validation, and testing data defined along with the training methodology,
+it remains now to empirically evaluate and analyze classifier performance, 
+described next.

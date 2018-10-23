@@ -1,0 +1,243 @@
+%!TEX root = main.tex
+% Scott's outline
+%
+% EU Social Sensor project: what to say?  Many works integrated
+%   into following text, but none specifically learning topical sensors
+%   from supervised labels.
+%
+% Trending topics: learning but not supervised
+%
+% RT recommendation: RTs are personalized but not topical
+%
+% Specific events: predicting earthquakes.
+%
+% Friend sensor: friendship paradox, focusing of friends-only, no supervised
+%                training for a topic, just trying to pick informative users
+%                however: our work suggests users are least important features
+%                (Figure 2)
+
+%%%%% TRACKING GENERAL TOPICS
+% TODO for Scott: Need to rewrite in a more retrospective manner.
+%                 Should this go as the first point in related work?
+\vspace{2mm}
+\subsection*{Twitter Topic Classification} 
+
+Topic classification for social media aims to detect and track general topics such as "Baseball" or "Fashion".  In previous work, researchers have collected labeled data either by using a single hashtag for each topic~\citep{lin2011smoothing}, a user-defined query for each topic~\citep{magdy}, or co-training based on the URLs and text of the tweet \citep{yang2014large}.
+% \cite{lin2011smoothing} leverages language models to train models using unigrams and bigrams, \cite{magdy} applies SVM classifier on extracted hashtags, unigrams, users and mentions as features, and \cite{yang2014large} defines the problem as topic modeling of tweets. 
+We expand on \citep{lin2011smoothing}'s work and use a set of hashtags instead of a single hashtag.  Similarly, we extract features consisting of hashtags, mentions, unigram terms, and authors as done in this prior work, but also add location as another feature, which has shown to be the second most important feature for topic classification after unigram terms.
+Furthermore, we provided a novel learning and evaluation paradigm based on splitting both the data and hashtags along temporal boundaries to generate train, validation and test datasets in order to evaluate long-term generalization of trained topic classifiers.  In contrast, we remark that \citep{lin2011smoothing} only evaluated over 1 week, \citep{magdy} over 4 days,
+and \citep{yang2014large} did not explicitly mention the data duration or that their study was intended to assess long-term performance.  Hence these previous studies do not permit one to assess the long-term topic classification performance of topic classifiers for Twitter as intended by the 2 year longitudinal study performed in this article.
+
+% there are many fine-grain but important differences between previous works and this work with the most important ones being:
+% \begin{enumerate}
+% \item We analyzed long-term sensor performance on detecting topical content over two years of Twitter data and across a variety of topics.
+% \item We provide a novel and clear framework for splitting hashtags to train, validation and test in a way ensuring generalization to long term unseen future content.
+% \item We present ranking in addition to correct classification while none of the other works provide ranking.
+% \item We deliver a comprehensive longitudinal study on features and their attributes over two years of tweets that supports our insights for learning and relevance of features to topicality while these works had little or none analysis over their features.
+% \item We extract \textit{Location} as one of the features which none of these works do and as we show in our feature analysis, \textit{Location} is the second most important feature beating even hashtags in terms of correlation with topicality.
+
+\subsection*{Related Applications of Classifiers for Social Media} 
+
+Aside from highly related work on supervised topic classifiers for Twitter~\cite{lin2011smoothing,yang2014large,magdy} that motivated this study as discussed previously, there are many other uses of classifiers for social media.  While we
+argue no prior work has performed a longitudinal analysis of supervised Twitter topical 
+classifiers as done in this article, these alternative applications of classifiers for social media may broadly benefit from the insights gained by our present study.  We cover these related uses below along with important differences with the present work, divided into the following four subareas: (1) trending topic detection, (2) tweet recommendation, (3) friend
+sensors, and (4) specific event detection such as earthquake or
+influenza sensors.   
+%In the following, we explain why each of these four areas is different from
+%the social sensor learning work proposed here.
+
+\vspace{2mm}
+\noindent {\bf Trending Topic Detection} represents one of the most popular
+types of topical tweet detector and can be subdivided into many categories.  The
+first general category of methods define trends as topically coherent
+content and focus on clustering across lexical, linguistic, temporal
+and/or spatial
+dimensions~\cite{petrovic,ishikawa,murata,becker,tweetmotif,wangLee}.
+%\cite{wei} proposed a
+%graphical model to discover latent events clustered in the spatial,
+%temporal and lexical dimensions, while \cite{yamamoto} focused on the
+%task of multi-label classification of tweets into living aspects such
+%as eating.
+The second general category of methods define trends as temporally
+coherent patterns of terms or keywords and focus largely on detecting
+bursts of terms or
+phrases~\cite{mathioudakis,cuiZhang,zhaoSports,nichols,aiello}.
+% I don't know that this means... aren't all of the above methods user-defined
+% criteria as well? -SPS
+%
+%The third category, query-based methods, focuses on the hypothesis that trending
+%topics can be detected by measuring user defined
+%criteria \cite{albakour,sakakiDrive}.
+The third category of methods extends the previous categories by
+additionally exploiting network structure properties~\cite{budak}.
+Despite this important and very active area of work that can be
+considered a type of topical tweet detector, trending topic detection is
+intrinsically unsupervised and not intended to detect targeted topics.
+In contrast, the work in this article is based on supervised learning of
+a specific topical tweet detector trained on the topical set of
+hashtags provided by the user.
+
+% From EU Social Sensor Project...
+%
+% NOTE: Whoa... this is everything yet nothing... not worth discussing. -SPS
+%The final category, hybrid method
+%of \cite{diplaris} introduced concept of Dynamic Social Containers in
+%this work to take advantage of aggregation of mining both the
+%structure, content, and multimedia data to index and provide
+%personalized, context-aware search. In this work, the authors defined
+%social sensor as analyzing the dynamic and massive amount of
+%information provided by user with the purpose of extracting unbiased
+%trending topics and events in addition to using social connections for
+%recommendation.
+
+% From EU Social Sensor Project...
+%
+% This is just a TF-IDF term-based method, not worth a separate discussion
+%With the purpose of comparison of methods, \cite{aiello} evaluated six
+%trending topic detection methods on three Twitter datasets differing
+%in time scale and topic churn rate. The authors conclude that natural
+%language processing techniques perform well on focused
+%topics. However, techniques mining temporal distribution of concepts
+%are needed to handle more heterogeneous streams.
+
+% Zahra: trending topics are unsupervised... we're supervised. -SPS
+% 
+%However, trending topics detection methods are not targeted. Our
+%method differs from trending topic detection methods in that we are
+%focusing on a set of topics that cannot necessarily be detected using
+%bursts.Thus, trending topics detection methods are of limited
+%relevance to the work presented hereinafter.
+
+\vspace{2mm}
+\noindent {\bf Tweet Recommendation} represents an alternate use of
+tweet classification and falls into two broad categories: personalized or
+content-oriented recommendation and retweet recommendation.  For the
+first category, the objective of personalized recommendation is to
+observe a user's interests and behavior from their user profile,
+sharing or retweet preferences, and social relations to generate
+tweets the user may like~\cite{Yan,chen}.  The objective of
+content-oriented recommendation is to use source content (e.g., a news
+article) to identify and recommend relevant tweets (e.g., to allow
+someone to track discussion of a news article)~\cite{Krestel}.  For
+the second category, there has been a variety of work on retweet
+prediction that leverages retweet history in combination with
+tweet-based, author-based, and social network features to predict
+whether a user will retweet a given
+tweet~\cite{can,xu,petrovicOsborne}.  Despite the fact that all of
+these methods recommend tweets, they --- and recommendation methods in
+general --- are not focused on a specific topic but rather on
+predicting tweets that correlate with the preferences of a specific
+user or that are directly related to specific content.  Rather the
+focus with learning topical classifiers is to learn to predict for
+a broad theme (independent of a user's profile) in a way that
+generalizes beyond existing labeled topical content to novel future
+topical content.
+
+%Another set of studies have moved towards creating more generalizable
+%methods. Using a dataset of 55,000 news articles and 121,000
+%tweets, \cite{Krestel} compared four different methods of language
+%model, topic model, logistic regression, and boosting, to evaluate
+%recommended tweets for a given news article.. \cite{Yan,chen} also
+%focused on tweet recommendation. Their methods considered the user’s
+%twitter profile, including tweet and retweet history, and social
+%relations as features. Coupled with tweet popularity, the methods are
+%able to generate tweet recommendations. With the purpose of photo
+%recommendation on social media websites, \cite{chiarandini} analyzed
+%the user logs of pageviews, navigation patterns between
+%photostreams. The authors used collaborative filtering method and
+%built a stream transition graph to analyze common stream topic
+%transitions to this end.
+
+%On retweet prediction, \cite{can,xu,petrovicOsborne} used
+%classification-based approaches using tweet-based and author-based
+%features. However, \cite{can} took advantage of visual cues from
+%images linked in the tweets, and \cite{xu} employed social-based
+%features in addition to tweet author-based features. Different from
+%the other two works, \cite{xu} performed the analysis from the
+%perspective of individual users. \cite{petrovicOsborne} worked on
+%retweet prediction of real-time tweeting with online learning
+%algorithms and claimed that performance is dominated by social
+%features, but that tweet features add a substantial boost. These
+%studies showed that temporal features have a stronger effect on
+%messages with low and medium volume of retweets compared to highly
+%popular messages, and user activity features can further improve the
+%performance marginally.
+
+%%%%% TARGETED SPECIFIC TOPIC DETECTION
+\vspace{2mm}
+\noindent {\bf Specific Event Detection} builds topical tweet detectors 
+as we do in this work but focuses on highly specific events 
+such as disasters or epidemics.  For the use case of earthquake
+detection, an SVM can be trained to detect earthquake events
+and coupled with a Kalman filter for localization~\cite{sakakiEq2}.
+%
+%% Decriptive studies irrelevant to building social sensors. -SPS
+%
+%Whereas the above works addressed exploiting the detection of crisis
+%events, the following works focused on descriptive studies on
+%disaster. The studies discuss the behavior of Twitter users during a
+%crisis \cite{vieweg,cheong,starbird} and do not address exploiting
+%detection of crisis events. The studies investigated the use of social
+%media during a crisis in order to identify information propagation
+%properties, the social behavior of users (their retweeting behavior),
+%information contributing to situational awareness, and the active
+%players in communicating information. The behavioral information
+%gleaned from these studies is exploited in this work to aid in the
+%development of social sensors for detection of topics.
+%
+In another example use case to detect health epidemics such as
+influenza, researchers build purpose-specific classifiers targeted to
+this specific epidemic~\cite{culotta,aramaki}, e.g, by exploiting
+knowledge of users' proximity and friendship along with the contageous
+nature of influenza~\cite{sadilek}.  While these targeted event
+detectors have the potential of providing high precision event
+detection, they are highly specific to the target event and do not
+easily generalize to learn arbitrary topic-based classifiers
+for Twitter as analyzed in this work.
+
+\vspace{2mm}
+\noindent {\bf Friend Sensors} 
+are a fourth and final class of social sensors intended for early
+event detection~\cite{sandy,garcia} by leveraging the concept of the
+``friendship paradox''~\cite{feld}, %~\footnote{On average, most people have
+%fewer friends than their friends have.}),
+to build user-centric social sensors.  We note that our topical classifiers 
+represent a \emph{superset} of friend sensors since our work
+includes author features that the predictor may learn to use if this
+proves effective for prediction.  However, as shown in our feature
+analysis, user-based features are among the least informative feature
+types for our topical classifier suggesting that general topical 
+classifiers can benefit from a wide variety of features well beyond those of
+author features alone.
+
+
+
+
+
+%In this regard, \citeauthor{garcia} provided a method for
+%choosing sensor groups from friends of random sets of users to find
+%more central individuals in order to enforce early detection. The
+%central assumption made in this work is that a sensor group represents
+%more central individuals, and individuals at the center of a network
+%are more likely to become infected than randomly-chosen members of the
+%population. As a result, \citep{garcia} argued that this selection
+%process of sensor groups helps in the early detection of outbreaks.
+
+%%%%%%% SOCIAL SENSOR PROJECT
+%% NOTE: the citations below have been integrated into the text above... separate back out?
+%
+%Social sensor project \footcite{http://www.socialsensor.eu/} 
+%\citep{aiello} compared six trending topic detection methods on three Twitter datasets differing in time scale and topic churn rate. The authors conclude that natural language processing techniques perform well on focused topics. However, techniques mining temporal distribution of concepts are needed to handle more heterogeneous streams.
+%\citep{diplaris} defines social sensor as analyzing the dynamic and massive amount of information provided by user with the purpose of extracting unbiased trending topics and events in addition to using social connections for recommendation. The authors introduce concept of Dynamic Social Containers in this work to take advantage of aggregation of mining both the structure, content, and multimedia data to index and provide personalized, context-aware search.
+%With the purpose of photo recommendation on social media websites, \citep{chiarandini} analyzed the user logs of pageviews, navigation patterns between photostreams. The authors used collaborative filtering method and built a stream transition graph to analyze common stream topic transitions to this end.
+
+%%%%%%%%%%%%%%% TWITTER CURRENT SEARCH METHOD %%%%%%%%%%%%%%%%%
+%% UNUSED
+%\iffalse
+%
+%Twitter model: reverse indexes was built in MySQL, leveraging its concurrent transactions and B-tree data structures to support indexing and searching partitioned across multiple databases. Earlybird, a real-time reverse index based on Lucene, gave much better performance and memory efficiency than MySQL for real-time search. 
+%"There is a lot of information on Twitter — on average, more than 2,200 new Tweets every second! During large events, for example the \#tsunami in Japan, this rate can increase by 3 to 4x. Often, users are interested in only the most memorable Tweets or those that other users engage with. In our new search experience, we show search results that are most relevant to a particular user. So search results are personalized, and we filter out the Tweets that do not resonate with other users."
+%
+%Supporting personalized search, they needed three types of signal: Static signals at indexing time, Resonance signals updated over time, Information about the searcher at search time. At indexing time, tweets are annotated with static information about the user and the language of the tweet's text. Dynamic updates, such as users' interactions with tweets are made over time. At query time, user's social graph is passed along the user's query. A specialized ranking function is used to combine relevance signals and the social graph for computing personalized relevance score for each tweet. The results consists of highest-ranking, most-recent tweets. The ranking function accesses the social graph and uses knowledge about the relationship between the searcher and the author of a tweet during ranking.
+%\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
