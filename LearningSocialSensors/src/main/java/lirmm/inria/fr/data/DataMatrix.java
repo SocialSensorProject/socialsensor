@@ -10,15 +10,18 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lirmm.inria.fr.math.BigSparseRealMatrix;
-import lirmm.inria.fr.math.OpenLongToDoubleHashMap;
+import lirmm.inria.fr.math.linear.BigSparseRealMatrix;
+import lirmm.inria.fr.math.linear.OpenLongToDoubleHashMap;
+import lirmm.inria.fr.math.linear.OpenMapRealVector;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
 
@@ -188,4 +191,33 @@ public final class DataMatrix extends BigSparseRealMatrix {
         }
     }
 
+    /**
+     * This method returns a list of columns.
+     *
+     * @return
+     */
+    public List<OpenMapRealVector> getColumnVectorsAsList() {
+        List<OpenMapRealVector> out = new ArrayList<>();
+        for (int j = 0; j < getColumnDimension(); j++) {
+            OpenMapRealVector column = new OpenMapRealVector(getRowDimension());
+            out.add(column);
+        }
+        for (OpenLongToDoubleHashMap.Iterator iterator = getEntries().iterator(); iterator.hasNext();) {
+            iterator.advance();
+            final double value = iterator.value();
+            final long key = iterator.key();
+            final int i;
+            final int j;
+            if (isTransposed()) {
+                i = (int) (key % getRowDimension());
+                j = (int) (key / getRowDimension());
+            } else {
+                i = (int) (key / getColumnDimension());
+                j = (int) (key % getColumnDimension());
+            }
+            OpenMapRealVector column = out.get(j);
+            column.setEntry(i, value);
+        }
+        return out;
+    }
 }
