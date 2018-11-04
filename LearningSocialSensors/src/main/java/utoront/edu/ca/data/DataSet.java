@@ -7,13 +7,19 @@ package utoront.edu.ca.data;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lirmm.inria.fr.math.linear.BigSparseRealMatrix;
@@ -46,14 +52,48 @@ public final class DataSet extends BigSparseRealMatrix {
     private final OpenMapRealVector labels;
 
     /**
+     * Number of features in each category. The order here is important.
+     */
+    private final int term_features;
+    private final int hashtag_features;
+    private final int mention_features;
+    private final int user_features;
+    private final int loc_feature;
+    /**
      * Rank of features.
      */
     public List<ImmutablePair<Integer, Double>> feature_ranking;
 
-    public DataSet(String file, int rowDimension, int columnDimension) throws NotStrictlyPositiveException, NumberIsTooLargeException {
-//        super(5573, 100);
+    /**
+     * File Storing data.
+     */
+    private final File file;
+
+    public static DataSet readDataset(String file) throws FileNotFoundException, IOException {
+        BufferedReader brTest = new BufferedReader(new FileReader(file));
+        String head = brTest.readLine();
+        StringTokenizer st = new StringTokenizer(head, ",");
+        int rows = Integer.parseInt(st.nextToken().split("=")[1]);
+        int columns = Integer.parseInt(st.nextToken().split("=")[1]);
+        int term_features = Integer.parseInt(st.nextToken().split("=")[1]);
+        int hashtag_features = Integer.parseInt(st.nextToken().split("=")[1]);
+        int mention_features = Integer.parseInt(st.nextToken().split("=")[1]);
+        int user_features = Integer.parseInt(st.nextToken().split("=")[1]);
+        int loc_feature = Integer.parseInt(st.nextToken().split("=")[1]);
+        DataSet data = new DataSet(file, rows, columns, term_features, hashtag_features, mention_features, user_features, loc_feature);
+        return data;
+    }
+
+    private DataSet(String file, int rowDimension, int columnDimension,
+            int term_features, int hashtag_features, int mention_features, int user_features, int loc_feature) throws NotStrictlyPositiveException, NumberIsTooLargeException {
         super(rowDimension, columnDimension);
         labels = new OpenMapRealVector(rowDimension);
+        this.term_features = term_features;
+        this.hashtag_features = hashtag_features;
+        this.mention_features = mention_features;
+        this.user_features = user_features;
+        this.loc_feature = loc_feature;
+        this.file = new File(file);
         loadMatrix(file, rowDimension, columnDimension);
         normalize();
         rankFeatures();
@@ -310,6 +350,42 @@ public final class DataSet extends BigSparseRealMatrix {
                 return -1;
             }
         });
+    }
+
+    /**
+     * Print top features in different files for each category.
+     *
+     * @throws FileNotFoundException
+     * @throws Exception
+     */
+    public void printTopFeaturesByCategory() throws FileNotFoundException, Exception {
+        String filename = file.getName().split("\\.")[0];
+        PrintWriter outWriterTerm_features = new PrintWriter(new FileOutputStream(new File(filename + "term_features.csv"), true));
+        PrintWriter outWriterhashtag_features = new PrintWriter(new FileOutputStream(new File(filename + "hashtag_features.csv"), true));
+        PrintWriter outWritermention_features = new PrintWriter(new FileOutputStream(new File(filename + "mention_features.csv"), true));
+        PrintWriter outWriteruser_features = new PrintWriter(new FileOutputStream(new File(filename + "user_features.csv"), true));
+        PrintWriter outWriterloc_feature = new PrintWriter(new FileOutputStream(new File(filename + "loc_feature.csv"), true));
+
+        for (ImmutablePair<Integer, Double> pair : feature_ranking) {
+            if (pair.getLeft() >= 0 && pair.getLeft() < term_features) {
+                outWriterTerm_features.println(pair.right);
+            } else if (pair.getLeft() >= term_features && pair.getLeft() < term_features + hashtag_features) {
+                outWriterhashtag_features.println(pair.right);
+            } else if (pair.getLeft() >= term_features + hashtag_features && pair.getLeft() < term_features + hashtag_features + mention_features) {
+                outWritermention_features.println(pair.right);
+            } else if (pair.getLeft() >= term_features + hashtag_features + mention_features && pair.getLeft() < term_features + hashtag_features + mention_features + user_features) {
+                outWriteruser_features.println(pair.right);
+            } else if (pair.getLeft() >= term_features + hashtag_features + mention_features + user_features && pair.getLeft() < term_features + hashtag_features + mention_features + user_features + loc_feature) {
+                outWriterloc_feature.println(pair.right);
+            } else {
+                throw new Exception("Error in index.");
+            }
+        }
+        outWriterTerm_features.close();
+        outWriterhashtag_features.close();
+        outWritermention_features.close();
+        outWriteruser_features.close();
+        outWriterloc_feature.close();
     }
 
 }
