@@ -210,7 +210,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      *
      * @return the entries of this instance.
      */
-    private OpenLongToDoubleHashMap getEntries() {
+    public OpenLongToDoubleHashMap getEntries() {
         return entries;
     }
 
