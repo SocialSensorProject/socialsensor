@@ -360,11 +360,11 @@ public final class DataSet extends BigSparseRealMatrix {
      */
     public void printTopFeaturesByCategory() throws FileNotFoundException, Exception {
         String filename = file.getName().split("\\.")[0];
-        PrintWriter outWriterTerm_features = new PrintWriter(new FileOutputStream(new File(filename + "term_features.csv"), true));
-        PrintWriter outWriterhashtag_features = new PrintWriter(new FileOutputStream(new File(filename + "hashtag_features.csv"), true));
-        PrintWriter outWritermention_features = new PrintWriter(new FileOutputStream(new File(filename + "mention_features.csv"), true));
-        PrintWriter outWriteruser_features = new PrintWriter(new FileOutputStream(new File(filename + "user_features.csv"), true));
-        PrintWriter outWriterloc_feature = new PrintWriter(new FileOutputStream(new File(filename + "loc_feature.csv"), true));
+        PrintWriter outWriterTerm_features = new PrintWriter(new FileOutputStream(new File(filename + "_term_features.txt"), true));
+        PrintWriter outWriterhashtag_features = new PrintWriter(new FileOutputStream(new File(filename + "_hashtag_features.txt"), true));
+        PrintWriter outWritermention_features = new PrintWriter(new FileOutputStream(new File(filename + "_mention_features.txt"), true));
+        PrintWriter outWriteruser_features = new PrintWriter(new FileOutputStream(new File(filename + "_user_features.txt"), true));
+        PrintWriter outWriterloc_feature = new PrintWriter(new FileOutputStream(new File(filename + "_loc_feature.txt"), true));
 
         for (ImmutablePair<Integer, Double> pair : feature_ranking) {
             if (pair.getLeft() >= 0 && pair.getLeft() < term_features) {
