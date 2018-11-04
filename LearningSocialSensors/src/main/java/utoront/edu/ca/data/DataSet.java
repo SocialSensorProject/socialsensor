@@ -345,7 +345,7 @@ public final class DataSet extends BigSparseRealMatrix {
         }
         feature_ranking.sort((ImmutablePair<Integer, Double> pair1, ImmutablePair<Integer, Double> pair2) -> {
             try {
-                return Double.compare(pair1.right, pair2.right);
+                return Double.compare(pair2.right, pair1.right);
             } catch (Exception ex) {
                 return -1;
             }
