@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lirmm.inria.fr.data;
+package utoront.edu.ca.data;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -28,7 +28,7 @@ import org.apache.commons.math3.exception.NumberIsTooLargeException;
  *
  * @author rbouadjenek
  */
-public final class DataMatrix extends BigSparseRealMatrix {
+public final class DataSet extends BigSparseRealMatrix {
 
     /**
      * Number of non zero entries in rows of the matrix.
@@ -50,7 +50,7 @@ public final class DataMatrix extends BigSparseRealMatrix {
      */
     public List<ImmutablePair<Integer, Double>> feature_ranking;
 
-    public DataMatrix(String file, int rowDimension, int columnDimension) throws NotStrictlyPositiveException, NumberIsTooLargeException {
+    public DataSet(String file, int rowDimension, int columnDimension) throws NotStrictlyPositiveException, NumberIsTooLargeException {
 //        super(5573, 100);
         super(rowDimension, columnDimension);
         labels = new OpenMapRealVector(rowDimension);
