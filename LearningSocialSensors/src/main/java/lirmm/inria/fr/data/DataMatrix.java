@@ -65,7 +65,6 @@ public final class DataMatrix extends BigSparseRealMatrix {
             fstream = new FileInputStream(file);
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
-
             Set<Integer> cI = new HashSet();
             for (int i = 0; i < rowDimension; i++) {
                 cI.add(i);
@@ -74,31 +73,35 @@ public final class DataMatrix extends BigSparseRealMatrix {
             for (int j = 0; j < columnDimension; j++) {
                 cJ.add(j);
             }
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
-                String str;
-                int i = 0;
-                while ((str = br.readLine()) != null) {
-                    str = str.trim();
-                    if (str.startsWith("#")) {
-                        continue;
+            try (ProgressBar pb = new ProgressBar("Reading data from file", getRowDimension())) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
+                    String str;
+                    int i = 0;
+                    while ((str = br.readLine()) != null) {
+                        str = str.trim();
+                        if (str.startsWith("#")) {
+                            continue;
+                        }
+                        if (str.trim().length() == 0) {
+                            continue;
+                        }
+                        pb.step(); // step by 1
+                        pb.setExtraMessage("Reading..."); // Set extra message to display at the end of the bar
+                        Matcher m = Pattern.compile("\\s*(\\[[^\\]]*\\])|\\),[^\\]]*").matcher(str);
+                        m.find();
+                        String[] indices = m.group().replaceAll("\\[|\\]", "").split(",");
+                        m.find();
+                        String[] values = m.group().replaceAll("\\[|\\]", "").split(",");
+                        m.find();
+                        String label = m.group().replaceAll(",|\\)", "");
+                        labels.setEntry(i, Double.parseDouble(label));
+                        for (int k = 0; k < indices.length; k++) {
+                            int j = Integer.parseInt(indices[k]);
+                            double val = Double.parseDouble(values[k]);
+                            setEntry(i, j, val);
+                        }
+                        i++;
                     }
-                    if (str.trim().length() == 0) {
-                        continue;
-                    }
-                    Matcher m = Pattern.compile("\\s*(\\[[^\\]]*\\])|\\),[^\\]]*").matcher(str);
-                    m.find();
-                    String[] indices = m.group().replaceAll("\\[|\\]", "").split(",");
-                    m.find();
-                    String[] values = m.group().replaceAll("\\[|\\]", "").split(",");
-                    m.find();
-                    String label = m.group().replaceAll(",|\\)", "");
-                    labels.setEntry(i, Double.parseDouble(label));
-                    for (int k = 0; k < indices.length; k++) {
-                        int j = Integer.parseInt(indices[k]);
-                        double val = Double.parseDouble(values[k]);
-                        setEntry(i, j, val);
-                    }
-                    i++;
                 }
             }
             for (OpenLongToDoubleHashMap.Iterator iterator = getEntries().iterator(); iterator.hasNext();) {
@@ -129,7 +132,7 @@ public final class DataMatrix extends BigSparseRealMatrix {
     private void normalize() {
         double[] center = new double[getColumnDimension()];
         double[] scale = new double[getColumnDimension()];
-        try (ProgressBar pb = new ProgressBar("normalization", getEntries().size()*3)) {
+        try (ProgressBar pb = new ProgressBar("Normalization", getEntries().size() * 3)) {
             /**
              * Computing the mean of each column.
              */
@@ -251,7 +254,7 @@ public final class DataMatrix extends BigSparseRealMatrix {
         double posClass = labels.getSparsity();
         double negClass = 1 - posClass;
         int j = 0;
-        try (ProgressBar pb = new ProgressBar("RankingFeatures", getColumnDimension())) {
+        try (ProgressBar pb = new ProgressBar("Ranking Features", getColumnDimension())) {
             for (OpenMapRealVector c : columns) {
                 //Compute correlation between c and labels.
                 pb.step(); // step by 1
