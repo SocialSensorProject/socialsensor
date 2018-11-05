@@ -379,15 +379,15 @@ public final class DataSet extends BigSparseRealMatrix {
 
         for (ImmutablePair<Integer, Double> pair : feature_ranking) {
             if (pair.getLeft() >= 0 && pair.getLeft() < term_features) {
-                outWriterTerm_features.println(pair.right);
+                outWriterTerm_features.println(pair.left + "\t" + pair.right);
             } else if (pair.getLeft() >= term_features && pair.getLeft() < term_features + hashtag_features) {
-                outWriterhashtag_features.println(pair.right);
+                outWriterhashtag_features.println(pair.left + "\t" + pair.right);
             } else if (pair.getLeft() >= term_features + hashtag_features && pair.getLeft() < term_features + hashtag_features + mention_features) {
-                outWritermention_features.println(pair.right);
+                outWritermention_features.println(pair.left + "\t" + pair.left + "\t" + pair.right);
             } else if (pair.getLeft() >= term_features + hashtag_features + mention_features && pair.getLeft() < term_features + hashtag_features + mention_features + user_features) {
-                outWriteruser_features.println(pair.right);
+                outWriteruser_features.println(pair.left + "\t" + pair.right);
             } else if (pair.getLeft() >= term_features + hashtag_features + mention_features + user_features && pair.getLeft() < term_features + hashtag_features + mention_features + user_features + loc_feature) {
-                outWriterloc_feature.println(pair.right);
+                outWriterloc_feature.println(pair.left + "\t" + pair.right);
             } else {
                 throw new Exception("Error in index.");
             }
