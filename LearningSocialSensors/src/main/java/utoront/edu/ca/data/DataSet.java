@@ -29,6 +29,7 @@ import me.tongfei.progressbar.ProgressBar;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  *
@@ -335,16 +336,16 @@ public final class DataSet extends BigSparseRealMatrix {
                 double mi = 0;
 
                 if (posFeature_posClass != 0) {
-                    mi += posFeature_posClass * Math.log10(posFeature_posClass / (posFeature * posClass));
+                    mi += posFeature_posClass * FastMath.log(2, posFeature_posClass / (posFeature * posClass));
                 }
                 if (posFeature_negClass != 0) {
-                    mi += posFeature_negClass * Math.log10(posFeature_negClass / (posFeature * negClass));
+                    mi += posFeature_negClass * FastMath.log(2, posFeature_negClass / (posFeature * negClass));
                 }
                 if (negFeature_posClass != 0) {
-                    mi += negFeature_posClass * Math.log10(negFeature_posClass / (negFeature * posClass));
+                    mi += negFeature_posClass * FastMath.log(2, negFeature_posClass / (negFeature * posClass));
                 }
                 if (negFeature_negClass != 0) {
-                    mi += negFeature_negClass * Math.log10(negFeature_negClass / (negFeature * negClass));
+                    mi += negFeature_negClass * FastMath.log(2, negFeature_negClass / (negFeature * negClass));
                 }
                 if (!Double.isNaN(mi)) {
                     ImmutablePair<Integer, Double> pair = new ImmutablePair<>(j, mi);
