@@ -332,10 +332,20 @@ public final class DataSet extends BigSparseRealMatrix {
                 negFeature_posClass = negFeature_posClass / c.getDimension();
                 negFeature_negClass = negFeature_negClass / c.getDimension();
 
-                double mi = posFeature_posClass * Math.log10(posFeature_posClass / (posFeature * posClass))
-                        + posFeature_negClass * Math.log10(posFeature_negClass / (posFeature * negClass))
-                        + negFeature_posClass * Math.log10(negFeature_posClass / (negFeature * posClass))
-                        + negFeature_negClass * Math.log10(negFeature_negClass / (negFeature * negClass));
+                double mi = 0;
+
+                if (posFeature_posClass != 0) {
+                    mi += posFeature_posClass * Math.log10(posFeature_posClass / (posFeature * posClass));
+                }
+                if (posFeature_negClass != 0) {
+                    mi += posFeature_negClass * Math.log10(posFeature_negClass / (posFeature * negClass));
+                }
+                if (negFeature_posClass != 0) {
+                    mi += negFeature_posClass * Math.log10(negFeature_posClass / (negFeature * posClass));
+                }
+                if (negFeature_negClass != 0) {
+                    mi += negFeature_negClass * Math.log10(negFeature_negClass / (negFeature * negClass));
+                }
                 if (!Double.isNaN(mi)) {
                     ImmutablePair<Integer, Double> pair = new ImmutablePair<>(j, mi);
                     feature_ranking.add(pair);
