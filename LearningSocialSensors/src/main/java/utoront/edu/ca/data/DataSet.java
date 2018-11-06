@@ -375,7 +375,7 @@ public final class DataSet extends BigSparseRealMatrix {
         PrintWriter outWriterhashtag_features = new PrintWriter(new FileOutputStream(new File(filename + "_hashtag_features.txt"), true));
         PrintWriter outWritermention_features = new PrintWriter(new FileOutputStream(new File(filename + "_mention_features.txt"), true));
         PrintWriter outWriteruser_features = new PrintWriter(new FileOutputStream(new File(filename + "_user_features.txt"), true));
-        PrintWriter outWriterloc_feature = new PrintWriter(new FileOutputStream(new File(filename + "_loc_feature.txt"), true));
+        PrintWriter outWriterloc_feature = new PrintWriter(new FileOutputStream(new File(filename + "_loc_features.txt"), true));
 
         for (ImmutablePair<Integer, Double> pair : feature_ranking) {
             if (pair.getLeft() >= 0 && pair.getLeft() < term_features) {
