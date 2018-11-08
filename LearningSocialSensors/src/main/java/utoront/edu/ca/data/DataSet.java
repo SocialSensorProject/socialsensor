@@ -292,8 +292,8 @@ public final class DataSet extends BigSparseRealMatrix {
     public void rankFeatures() {
         feature_ranking = new ArrayList<>();
         List<OpenMapRealVector> columns = getColumnVectorsAsList();
-        double posClass = labels.getSparsity();
-        double negClass = 1 - posClass;
+        double size_posClass = labels.getEntries().size();
+        double size_negClass = labels.getDimension() - size_posClass;
         int j = 0;
         try (ProgressBar pb = new ProgressBar("Ranking Features", getColumnDimension())) {
             for (OpenMapRealVector c : columns) {
@@ -306,8 +306,6 @@ public final class DataSet extends BigSparseRealMatrix {
 
                 double posFeature_posClass = 0;
                 double posFeature_negClass = 0;
-                double negFeature_posClass = 0;
-                double negFeature_negClass = 0;
 
                 for (OpenLongToDoubleHashMap.Iterator iterator = c.getEntries().iterator(); iterator.hasNext();) {
                     iterator.advance();
@@ -319,15 +317,14 @@ public final class DataSet extends BigSparseRealMatrix {
                     }
                 }
 
-                for (OpenLongToDoubleHashMap.Iterator iterator = labels.getEntries().iterator(); iterator.hasNext();) {
-                    iterator.advance();
-                    final int key = (int) iterator.key();
-                    if (c.getEntry(key) == 0) {
-                        negFeature_posClass++;
-                    }
-                }
-                negFeature_negClass = c.getDimension() - posFeature_posClass - posFeature_negClass - negFeature_posClass;
+                double negFeature_posClass = size_posClass - posFeature_posClass;
+                double negFeature_negClass = c.getDimension() - posFeature_posClass - posFeature_negClass - negFeature_posClass;
 
+                /**
+                 * Transforming to probabilities.
+                 */
+                double posClass = size_posClass / c.getDimension();
+                double negClass = size_negClass / c.getDimension();
                 posFeature_posClass = posFeature_posClass / c.getDimension();
                 posFeature_negClass = posFeature_negClass / c.getDimension();
                 negFeature_posClass = negFeature_posClass / c.getDimension();
