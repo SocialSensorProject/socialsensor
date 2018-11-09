@@ -71,8 +71,12 @@ public final class DataSet extends BigSparseRealMatrix {
     private final File file;
 
     public static DataSet readDataset(String file) throws FileNotFoundException, IOException {
-        BufferedReader brTest = new BufferedReader(new FileReader(file));
-        String head = brTest.readLine();
+        FileInputStream fstream;
+        fstream = new FileInputStream(file);
+        // Get the object of DataInputStream
+        DataInputStream in = new DataInputStream(fstream);
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        String head = br.readLine();
         StringTokenizer st = new StringTokenizer(head, ",");
         int rows = Integer.parseInt(st.nextToken().split("=")[1]);
         int columns = Integer.parseInt(st.nextToken().split("=")[1]);
@@ -106,14 +110,6 @@ public final class DataSet extends BigSparseRealMatrix {
             fstream = new FileInputStream(file);
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
-            Set<Integer> cI = new HashSet();
-            for (int i = 0; i < rowDimension; i++) {
-                cI.add(i);
-            }
-            Set<Integer> cJ = new HashSet();
-            for (int j = 0; j < columnDimension; j++) {
-                cJ.add(j);
-            }
             try (ProgressBar pb = new ProgressBar("Reading data from file", getRowDimension())) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
                     String str;
