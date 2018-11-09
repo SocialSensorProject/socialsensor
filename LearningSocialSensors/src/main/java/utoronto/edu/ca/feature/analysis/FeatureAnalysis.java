@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package utoront.edu.ca.feature.analysis;
+package utoronto.edu.ca.feature.analysis;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import utoront.edu.ca.data.DataSet;
+import utoronto.edu.ca.data.DataSet;
 import utoronto.edu.ca.util.Functions;
 
 /**

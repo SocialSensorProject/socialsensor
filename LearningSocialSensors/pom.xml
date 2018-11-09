@@ -16,7 +16,7 @@
                         <manifest> 
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>utoront.edu.ca.feature.analysis.FeatureAnalysis</mainClass>
+                            <mainClass>utoronto.edu.ca.NewMain2</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
