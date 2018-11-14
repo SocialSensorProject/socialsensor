@@ -456,6 +456,12 @@ public class OpenLongToDoubleHashMap implements Serializable {
         values[index] = value;
         if (newMapping) {
             ++size;
+//            if (size == 536870944) {
+//                System.out.println(shouldGrowTable());
+//            }
+//            if (size == 536870945) {
+//                System.out.println(shouldGrowTable());
+//            }
             if (shouldGrowTable()) {
                 growTable();
             }

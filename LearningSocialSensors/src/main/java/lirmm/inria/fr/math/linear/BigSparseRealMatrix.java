@@ -19,7 +19,6 @@ import org.apache.commons.math3.linear.AbstractRealMatrix;
 import org.apache.commons.math3.linear.MatrixDimensionMismatchException;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.SparseRealMatrix;
 import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.MathUtils;
 
@@ -37,7 +36,7 @@ import org.apache.commons.math3.util.MathUtils;
  * @since 2.0
  */
 public class BigSparseRealMatrix extends AbstractRealMatrix
-        implements SparseRealMatrix, Serializable {
+        implements Serializable {
 
     /**
      * Serializable version identifier.
@@ -612,5 +611,4 @@ public class BigSparseRealMatrix extends AbstractRealMatrix
 //        }
 //        return out;
 //    }
-
 }
