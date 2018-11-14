@@ -426,7 +426,6 @@ public final class DataSet {
                     feature_ranking.add(pair);
                 }
                 j++;
-                System.out.println("mi = " + mi);
             }
         }
         feature_ranking.sort((ImmutablePair<Integer, Double> pair1, ImmutablePair<Integer, Double> pair2) -> {
