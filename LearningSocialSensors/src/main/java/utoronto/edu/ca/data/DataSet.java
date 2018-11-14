@@ -19,20 +19,21 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lirmm.inria.fr.math.linear.BigSparseRealMatrix;
 import lirmm.inria.fr.math.linear.OpenLongToDoubleHashMap;
 import lirmm.inria.fr.math.linear.OpenMapRealVector;
 import me.tongfei.progressbar.ProgressBar;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
+import org.apache.commons.math3.exception.OutOfRangeException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
 import org.apache.commons.math3.util.FastMath;
 
 /**
  *
  * @author rbouadjenek
  */
-public final class DataSet extends BigSparseRealMatrix {
+public final class DataSet {
 
     /**
      * Number of non zero entries in rows of the matrix.
@@ -57,6 +58,18 @@ public final class DataSet extends BigSparseRealMatrix {
     private final int mention_features;
     private final int user_features;
     private final int loc_feature;
+    /**
+     * Number of rows of the matrix.
+     */
+//    private final int rows;
+    /**
+     * Number of columns of the matrix.
+     */
+    private final int columns;
+    /**
+     * Storage for (sparse) matrix elements.
+     */
+    private final List<OpenMapRealVector> entries;
     /**
      * Rank of features.
      */
@@ -88,7 +101,17 @@ public final class DataSet extends BigSparseRealMatrix {
 
     private DataSet(String file, int rowDimension, int columnDimension,
             int term_features, int hashtag_features, int mention_features, int user_features, int loc_feature) throws NotStrictlyPositiveException, NumberIsTooLargeException {
-        super(rowDimension, columnDimension);
+        long lRow = rowDimension;
+        long lCol = columnDimension;
+        if (lRow * lCol >= Long.MAX_VALUE) {
+            throw new NumberIsTooLargeException(lRow * lCol, Long.MAX_VALUE, false);
+        }
+        this.entries = new ArrayList<>();
+        this.columns = columnDimension;
+        for (int i = 0; i < rowDimension; i++) {
+            OpenMapRealVector row = new OpenMapRealVector(getColumnDimension());
+            this.entries.add(row);
+        }
         labels = new OpenMapRealVector(rowDimension);
         this.term_features = term_features;
         this.hashtag_features = hashtag_features;
@@ -138,21 +161,17 @@ public final class DataSet extends BigSparseRealMatrix {
                     }
                 }
             }
-            for (OpenLongToDoubleHashMap.Iterator iterator = getEntries().iterator(); iterator.hasNext();) {
-                iterator.advance();
-                final long key = iterator.key();
-                final int i, j;
-                if (isTransposed()) {
-                    j = (int) (key / getRowDimension());
-                    i = (int) (key % getRowDimension());
-                } else {
-                    i = (int) (key / getColumnDimension());
-                    j = (int) (key % getColumnDimension());
+
+            for (int i = 0; i < getRowDimension(); i++) {
+                OpenMapRealVector row = getRowVector(i);
+                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+                    iterator.advance();
+                    final long j = iterator.key();
+                    double v = rowNonZeroEntries.get(i);
+                    rowNonZeroEntries.put(i, v + 1);
+                    v = columnNonZeroEntries.get(j);
+                    columnNonZeroEntries.put(j, v + 1);
                 }
-                double v = rowNonZeroEntries.get(i);
-                rowNonZeroEntries.put(i, v + 1);
-                v = columnNonZeroEntries.get(j);
-                columnNonZeroEntries.put(j, v + 1);
             }
 
         } catch (IOException e) {
@@ -161,48 +180,56 @@ public final class DataSet extends BigSparseRealMatrix {
     }
 
     /**
+     * Returns the entries in row number {@code row} as a vector. Row indices
+     * start at 0.
+     *
+     * @param row Row to be fetched.
+     * @return a row vector.
+     * @throws OutOfRangeException if the specified row index is invalid.
+     */
+    public OpenMapRealVector getRowVector(final int row) throws OutOfRangeException {
+        checkRowIndex(row);
+        return entries.get(row);
+    }
+
+    /**
      * This normalization divides only by stdev.
      */
     private void normalize() {
         double[] center = new double[getColumnDimension()];
         double[] scale = new double[getColumnDimension()];
-        try (ProgressBar pb = new ProgressBar("Normalization", getEntries().size() * 3)) {
+        try (ProgressBar pb = new ProgressBar("Normalization", getRows().size() * 3)) {
             /**
              * Computing the mean of each column.
              */
-            for (OpenLongToDoubleHashMap.Iterator iterator = getEntries().iterator(); iterator.hasNext();) {
-                pb.step(); // step by 1
-                pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
-                iterator.advance();
-                final long key = iterator.key();
-                final double value = iterator.value();
-                final int j;
-                if (isTransposed()) {
-                    j = (int) (key / getRowDimension());
-                } else {
-                    j = (int) (key % getColumnDimension());
+            for (int i = 0; i < getRowDimension(); i++) {
+                OpenMapRealVector row = getRowVector(i);
+                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+                    pb.step(); // step by 1
+                    pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
+                    iterator.advance();
+                    final int j = (int) iterator.key();
+                    final double value = iterator.value();
+                    center[j] += value;
                 }
-                center[j] += value;
             }
+
             for (int j = 0; j < center.length; j++) {
                 center[j] = center[j] / getRowDimension();
             }
             /**
              * Computing stdev for each column.
              */
-            for (OpenLongToDoubleHashMap.Iterator iterator = getEntries().iterator(); iterator.hasNext();) {
-                pb.step(); // step by 1
-                pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
-                iterator.advance();
-                final double value = iterator.value();
-                final long key = iterator.key();
-                final int j;
-                if (isTransposed()) {
-                    j = (int) (key / getRowDimension());
-                } else {
-                    j = (int) (key % getColumnDimension());
+            for (int i = 0; i < getRowDimension(); i++) {
+                OpenMapRealVector row = getRowVector(i);
+                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+                    pb.step(); // step by 1
+                    pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
+                    iterator.advance();
+                    final double value = iterator.value();
+                    final int j = (int) iterator.key();
+                    scale[j] += Math.pow(value - center[j], 2);
                 }
-                scale[j] += Math.pow(value - center[j], 2);
             }
 
             for (int j = 0; j < scale.length; j++) {
@@ -213,40 +240,28 @@ public final class DataSet extends BigSparseRealMatrix {
             /**
              * Dividing by stdev.
              */
-            for (OpenLongToDoubleHashMap.Iterator iterator = getEntries().iterator(); iterator.hasNext();) {
-                pb.step(); // step by 1
-                pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
-                iterator.advance();
-                final double value = iterator.value();
-                final long key = iterator.key();
-                final int i;
-                final int j;
-                if (isTransposed()) {
-                    i = (int) (key % getRowDimension());
-                    j = (int) (key / getRowDimension());
-                } else {
-                    i = (int) (key / getColumnDimension());
-                    j = (int) (key % getColumnDimension());
+            for (int i = 0; i < getRowDimension(); i++) {
+                OpenMapRealVector row = getRowVector(i);
+                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+                    pb.step(); // step by 1
+                    pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
+                    iterator.advance();
+                    final double value = iterator.value();
+                    final int j = (int) iterator.key();
+                    setEntry(i, j, value / scale[j]);
                 }
-                setEntry(i, j, value / scale[j]);
             }
         }
     }
 
     public int getRowNonZeroEntry(int i) {
-        if (isTransposed()) {
-            return (int) columnNonZeroEntries.get(i);
-        } else {
-            return (int) rowNonZeroEntries.get(i);
-        }
+        return (int) rowNonZeroEntries.get(i);
+
     }
 
     public int getColumnNonZeroEntry(int j) {
-        if (isTransposed()) {
-            return (int) rowNonZeroEntries.get(j);
-        } else {
-            return (int) columnNonZeroEntries.get(j);
-        }
+        return (int) columnNonZeroEntries.get(j);
+
     }
 
     /**
@@ -260,23 +275,92 @@ public final class DataSet extends BigSparseRealMatrix {
             OpenMapRealVector column = new OpenMapRealVector(getRowDimension());
             out.add(column);
         }
-        for (OpenLongToDoubleHashMap.Iterator iterator = getEntries().iterator(); iterator.hasNext();) {
-            iterator.advance();
-            final double value = iterator.value();
-            final long key = iterator.key();
-            final int i;
-            final int j;
-            if (isTransposed()) {
-                i = (int) (key % getRowDimension());
-                j = (int) (key / getRowDimension());
-            } else {
-                i = (int) (key / getColumnDimension());
-                j = (int) (key % getColumnDimension());
+
+        for (int i = 0; i < getRowDimension(); i++) {
+            OpenMapRealVector row = getRowVector(i);
+            for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+                iterator.advance();
+                final double value = iterator.value();
+                final int j = (int) iterator.key();
+                OpenMapRealVector column = out.get(j);
+                column.setEntry(i, value);
             }
-            OpenMapRealVector column = out.get(j);
-            column.setEntry(i, value);
         }
         return out;
+    }
+
+    /**
+     * Returns the number of rows of this matrix.
+     *
+     * @return the number of rows.
+     */
+    public int getRowDimension() {
+        return entries.size();
+
+    }
+
+    /**
+     * Returns the number of columns of this matrix.
+     *
+     * @return the number of columns.
+     */
+    public int getColumnDimension() {
+        return columns;
+
+    }
+
+    /**
+     * Set the entry in the specified row and column. Row and column indices
+     * start at 0.
+     *
+     * @param row Row index of entry to be set.
+     * @param column Column index of entry to be set.
+     * @param value the new value of the entry.
+     * @throws OutOfRangeException if the row or column index is not valid
+     * @since 2.0
+     */
+    public void setEntry(int row, int column, double value)
+            throws OutOfRangeException {
+        checkColumnIndex(column);
+        entries.get(row).setEntry(column, value);
+    }
+
+    /**
+     * Check if a column index is valid.
+     *
+     * @param column Column index to check.
+     * @throws OutOfRangeException if {@code column} is not a valid index.
+     */
+    public void checkColumnIndex(final int column)
+            throws OutOfRangeException {
+        if (column < 0 || column >= getColumnDimension()) {
+            throw new OutOfRangeException(LocalizedFormats.COLUMN_INDEX,
+                    column, 0, getColumnDimension() - 1);
+        }
+    }
+
+    /**
+     * Check if a row index is valid.
+     *
+     * @param row Row index to check.
+     * @throws OutOfRangeException if {@code row} is not a valid index.
+     */
+    public void checkRowIndex(final int row)
+            throws OutOfRangeException {
+        if (row < 0
+                || row >= getRowDimension()) {
+            throw new OutOfRangeException(LocalizedFormats.ROW_INDEX,
+                    row, 0, getRowDimension() - 1);
+        }
+    }
+
+    /**
+     * Return the entries of the Matrix
+     *
+     * @return Entries of the matrix.
+     */
+    public List<OpenMapRealVector> getRows() {
+        return entries;
     }
 
     /**
@@ -284,12 +368,12 @@ public final class DataSet extends BigSparseRealMatrix {
      */
     public void rankFeatures() {
         feature_ranking = new ArrayList<>();
-        List<OpenMapRealVector> columns = getColumnVectorsAsList();
+        List<OpenMapRealVector> cols = getColumnVectorsAsList();
         double size_posClass = labels.getEntries().size();
         double size_negClass = labels.getDimension() - size_posClass;
         int j = 0;
         try (ProgressBar pb = new ProgressBar("Ranking Features", getColumnDimension())) {
-            for (OpenMapRealVector c : columns) {
+            for (OpenMapRealVector c : cols) {
                 //Compute correlation between c and labels.
                 pb.step(); // step by 1
                 pb.setExtraMessage("Computing Mutual Information..."); // Set extra message to display at the end of the bar
@@ -342,6 +426,7 @@ public final class DataSet extends BigSparseRealMatrix {
                     feature_ranking.add(pair);
                 }
                 j++;
+                System.out.println("mi = " + mi);
             }
         }
         feature_ranking.sort((ImmutablePair<Integer, Double> pair1, ImmutablePair<Integer, Double> pair2) -> {
