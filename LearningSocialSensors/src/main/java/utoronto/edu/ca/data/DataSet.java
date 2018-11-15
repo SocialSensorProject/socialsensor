@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import lirmm.inria.fr.math.linear.OpenLongToDoubleHashMap;
 import lirmm.inria.fr.math.linear.OpenMapRealVector;
 import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.math3.exception.NotStrictlyPositiveException;
 import org.apache.commons.math3.exception.NumberIsTooLargeException;
@@ -129,7 +130,7 @@ public final class DataSet {
             fstream = new FileInputStream(file);
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
-            try (ProgressBar pb = new ProgressBar("Reading data from file", getRowDimension())) {
+            try (ProgressBar pb = new ProgressBar("Reading data from file", getRowDimension(), ProgressBarStyle.ASCII)) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
                     String str;
                     int i = 0;
@@ -197,7 +198,7 @@ public final class DataSet {
     private void normalize() {
         double[] center = new double[getColumnDimension()];
         double[] scale = new double[getColumnDimension()];
-        try (ProgressBar pb = new ProgressBar("Normalization", getColumnDimension() * 3)) {
+        try (ProgressBar pb = new ProgressBar("Normalization", getColumnDimension() * 3, ProgressBarStyle.ASCII)) {
             /**
              * Computing the mean of each column.
              */
@@ -356,7 +357,7 @@ public final class DataSet {
         double size_posClass = labels.getEntries().size();
         double size_negClass = labels.getDimension() - size_posClass;
         int j = 0;
-        try (ProgressBar pb = new ProgressBar("Ranking Features", getColumnDimension())) {
+        try (ProgressBar pb = new ProgressBar("Ranking Features", getColumnDimension(), ProgressBarStyle.ASCII)) {
             for (OpenMapRealVector c : entries) {
                 //Compute correlation between c and labels.
                 pb.step(); // step by 1

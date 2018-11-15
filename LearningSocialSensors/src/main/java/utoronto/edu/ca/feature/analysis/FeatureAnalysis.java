@@ -20,6 +20,7 @@ public class FeatureAnalysis {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
         // TODO code application logic here
