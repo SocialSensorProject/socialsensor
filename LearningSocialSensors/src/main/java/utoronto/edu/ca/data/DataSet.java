@@ -63,9 +63,9 @@ public final class DataSet {
      */
 //    private final int rows;
     /**
-     * Number of columns of the matrix.
+     * Number of rows of the matrix.
      */
-    private final int columns;
+    private final int rows;
     /**
      * Storage for (sparse) matrix elements.
      */
@@ -107,16 +107,12 @@ public final class DataSet {
             throw new NumberIsTooLargeException(lRow * lCol, Long.MAX_VALUE, false);
         }
         this.entries = new ArrayList<>();
-        this.columns = columnDimension;
-        try (ProgressBar pb = new ProgressBar("Creating matrix", rowDimension)) {
-            for (int i = 0; i < rowDimension; i++) {
-                pb.step(); // step by 1
-                pb.setExtraMessage(" in progress..."); // Set extra message to display at the end of the bar
-                OpenMapRealVector row = new OpenMapRealVector(getColumnDimension());
-                this.entries.add(row);
-            }
+        this.rows = rowDimension;
+        for (int i = 0; i < columnDimension; i++) {
+            OpenMapRealVector row = new OpenMapRealVector(rowDimension);
+            this.entries.add(row);
         }
-        System.out.println("reda1");
+
         labels = new OpenMapRealVector(rowDimension);
         this.term_features = term_features;
         this.hashtag_features = hashtag_features;
@@ -131,10 +127,8 @@ public final class DataSet {
 
     protected void loadMatrix(String file, int rowDimension, int columnDimension) {
         FileInputStream fstream;
-        System.out.println("reda2");
         try {
             fstream = new FileInputStream(file);
-            System.out.println("reda3");
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
             try (ProgressBar pb = new ProgressBar("Reading data from file", getRowDimension())) {
@@ -169,11 +163,11 @@ public final class DataSet {
                 }
             }
 
-            for (int i = 0; i < getRowDimension(); i++) {
-                OpenMapRealVector row = getRowVector(i);
-                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+            for (int j = 0; j < getColumnDimension(); j++) {
+                OpenMapRealVector column = getColumnVector(j);
+                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     iterator.advance();
-                    final long j = iterator.key();
+                    final long i = iterator.key();
                     double v = rowNonZeroEntries.get(i);
                     rowNonZeroEntries.put(i, v + 1);
                     v = columnNonZeroEntries.get(j);
@@ -187,15 +181,15 @@ public final class DataSet {
     }
 
     /**
-     * Returns the entries in row number {@code row} as a vector. Row indices
+     * Returns the entries in clomun number {@code row} as a vector. Row indices
      * start at 0.
      *
      * @param row Row to be fetched.
      * @return a row vector.
      * @throws OutOfRangeException if the specified row index is invalid.
      */
-    public OpenMapRealVector getRowVector(final int row) throws OutOfRangeException {
-        checkRowIndex(row);
+    public OpenMapRealVector getColumnVector(final int row) throws OutOfRangeException {
+        checkColumnIndex(row);
         return entries.get(row);
     }
 
@@ -205,17 +199,16 @@ public final class DataSet {
     private void normalize() {
         double[] center = new double[getColumnDimension()];
         double[] scale = new double[getColumnDimension()];
-        try (ProgressBar pb = new ProgressBar("Normalization", getRows().size() * 3)) {
+        try (ProgressBar pb = new ProgressBar("Normalization", getColumnDimension() * 3)) {
             /**
              * Computing the mean of each column.
              */
-            for (int i = 0; i < getRowDimension(); i++) {
-                OpenMapRealVector row = getRowVector(i);
-                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+            for (int j = 0; j < getColumnDimension(); j++) {
+                OpenMapRealVector column = getColumnVector(j);
+                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
                     iterator.advance();
-                    final int j = (int) iterator.key();
                     final double value = iterator.value();
                     center[j] += value;
                 }
@@ -227,14 +220,13 @@ public final class DataSet {
             /**
              * Computing stdev for each column.
              */
-            for (int i = 0; i < getRowDimension(); i++) {
-                OpenMapRealVector row = getRowVector(i);
-                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+            for (int j = 0; j < getColumnDimension(); j++) {
+                OpenMapRealVector column = getColumnVector(j);
+                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
                     iterator.advance();
                     final double value = iterator.value();
-                    final int j = (int) iterator.key();
                     scale[j] += Math.pow(value - center[j], 2);
                 }
             }
@@ -247,14 +239,14 @@ public final class DataSet {
             /**
              * Dividing by stdev.
              */
-            for (int i = 0; i < getRowDimension(); i++) {
-                OpenMapRealVector row = getRowVector(i);
-                for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
+            for (int j = 0; j < getColumnDimension(); j++) {
+                OpenMapRealVector column = getColumnVector(j);
+                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
                     iterator.advance();
                     final double value = iterator.value();
-                    final int j = (int) iterator.key();
+                    final int i = (int) iterator.key();
                     setEntry(i, j, value / scale[j]);
                 }
             }
@@ -272,37 +264,12 @@ public final class DataSet {
     }
 
     /**
-     * This method returns a list of columns.
-     *
-     * @return
-     */
-    public List<OpenMapRealVector> getColumnVectorsAsList() {
-        List<OpenMapRealVector> out = new ArrayList<>();
-        for (int j = 0; j < getColumnDimension(); j++) {
-            OpenMapRealVector column = new OpenMapRealVector(getRowDimension());
-            out.add(column);
-        }
-
-        for (int i = 0; i < getRowDimension(); i++) {
-            OpenMapRealVector row = getRowVector(i);
-            for (OpenLongToDoubleHashMap.Iterator iterator = row.getEntries().iterator(); iterator.hasNext();) {
-                iterator.advance();
-                final double value = iterator.value();
-                final int j = (int) iterator.key();
-                OpenMapRealVector column = out.get(j);
-                column.setEntry(i, value);
-            }
-        }
-        return out;
-    }
-
-    /**
      * Returns the number of rows of this matrix.
      *
      * @return the number of rows.
      */
     public int getRowDimension() {
-        return entries.size();
+        return rows;
 
     }
 
@@ -312,7 +279,7 @@ public final class DataSet {
      * @return the number of columns.
      */
     public int getColumnDimension() {
-        return columns;
+        return entries.size();
 
     }
 
@@ -329,7 +296,8 @@ public final class DataSet {
     public void setEntry(int row, int column, double value)
             throws OutOfRangeException {
         checkColumnIndex(column);
-        entries.get(row).setEntry(column, value);
+        checkRowIndex(row);
+        entries.get(column).setEntry(row, value);
     }
 
     /**
@@ -366,7 +334,7 @@ public final class DataSet {
      *
      * @return Entries of the matrix.
      */
-    public List<OpenMapRealVector> getRows() {
+    public List<OpenMapRealVector> getColumns() {
         return entries;
     }
 
@@ -375,12 +343,11 @@ public final class DataSet {
      */
     public void rankFeatures() {
         feature_ranking = new ArrayList<>();
-        List<OpenMapRealVector> cols = getColumnVectorsAsList();
         double size_posClass = labels.getEntries().size();
         double size_negClass = labels.getDimension() - size_posClass;
         int j = 0;
         try (ProgressBar pb = new ProgressBar("Ranking Features", getColumnDimension())) {
-            for (OpenMapRealVector c : cols) {
+            for (OpenMapRealVector c : entries) {
                 //Compute correlation between c and labels.
                 pb.step(); // step by 1
                 pb.setExtraMessage("Computing Mutual Information..."); // Set extra message to display at the end of the bar
