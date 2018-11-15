@@ -108,10 +108,15 @@ public final class DataSet {
         }
         this.entries = new ArrayList<>();
         this.columns = columnDimension;
-        for (int i = 0; i < rowDimension; i++) {
-            OpenMapRealVector row = new OpenMapRealVector(getColumnDimension());
-            this.entries.add(row);
+        try (ProgressBar pb = new ProgressBar("Creating matrix", rowDimension)) {
+            for (int i = 0; i < rowDimension; i++) {
+                pb.step(); // step by 1
+                pb.setExtraMessage(" in progress..."); // Set extra message to display at the end of the bar
+                OpenMapRealVector row = new OpenMapRealVector(getColumnDimension());
+                this.entries.add(row);
+            }
         }
+        System.out.println("reda1");
         labels = new OpenMapRealVector(rowDimension);
         this.term_features = term_features;
         this.hashtag_features = hashtag_features;
@@ -126,8 +131,10 @@ public final class DataSet {
 
     protected void loadMatrix(String file, int rowDimension, int columnDimension) {
         FileInputStream fstream;
+        System.out.println("reda2");
         try {
             fstream = new FileInputStream(file);
+            System.out.println("reda3");
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
             try (ProgressBar pb = new ProgressBar("Reading data from file", getRowDimension())) {
