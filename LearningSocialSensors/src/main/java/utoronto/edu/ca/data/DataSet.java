@@ -1,7 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (c) 2018 Reda Bouadjenek
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package utoronto.edu.ca.data;
 
@@ -31,6 +41,9 @@ import org.apache.commons.math3.exception.util.LocalizedFormats;
 import org.apache.commons.math3.util.FastMath;
 
 /**
+ * This class represents a dataset. It applies normalization to the dataset by
+ * dividing by the standard deviation. I also allows to compute mutual
+ * information and ranking features consequently.
  *
  * @author rbouadjenek
  */
@@ -47,7 +60,7 @@ public final class DataSet {
     private final OpenLongToDoubleHashMap columnNonZeroEntries = new OpenLongToDoubleHashMap(0.0);
 
     /**
-     * Labels.
+     * Labels of each instance (0,1).
      */
     private final OpenMapRealVector labels;
 
@@ -62,13 +75,10 @@ public final class DataSet {
     /**
      * Number of rows of the matrix.
      */
-//    private final int rows;
-    /**
-     * Number of rows of the matrix.
-     */
     private final int rows;
     /**
-     * Storage for (sparse) matrix elements by column.
+     * Storage for (sparse) matrix elements by column -- each element in the
+     * array is a column.
      */
     private final OpenMapRealVector[] entries;
     /**
@@ -77,10 +87,18 @@ public final class DataSet {
     public List<ImmutablePair<Integer, Double>> feature_ranking;
 
     /**
-     * File Storing data.
+     * File Storing the data.
      */
     private final File file;
 
+    /**
+     * Method to read a specific file and create a DataSet object.
+     *
+     * @param file
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public static DataSet readDataset(String file) throws FileNotFoundException, IOException {
         FileInputStream fstream;
         fstream = new FileInputStream(file);
@@ -100,6 +118,20 @@ public final class DataSet {
         return data;
     }
 
+    /**
+     * Private constructor to create a DataSet object.
+     *
+     * @param file
+     * @param rowDimension
+     * @param columnDimension
+     * @param term_features
+     * @param hashtag_features
+     * @param mention_features
+     * @param user_features
+     * @param loc_feature
+     * @throws NotStrictlyPositiveException
+     * @throws NumberIsTooLargeException
+     */
     private DataSet(String file, int rowDimension, int columnDimension,
             int term_features, int hashtag_features, int mention_features, int user_features, int loc_feature) throws NotStrictlyPositiveException, NumberIsTooLargeException {
         long lRow = rowDimension;
@@ -119,12 +151,17 @@ public final class DataSet {
         this.user_features = user_features;
         this.loc_feature = loc_feature;
         this.file = new File(file);
-        loadMatrix(file, rowDimension, columnDimension);
+        loadMatrix();
         normalize();
         rankFeatures();
     }
 
-    protected void loadMatrix(String file, int rowDimension, int columnDimension) {
+    /**
+     * Method that reads a file.
+     *
+     * @param file
+     */
+    private void loadMatrix() {
         FileInputStream fstream;
         try {
             fstream = new FileInputStream(file);
@@ -180,8 +217,8 @@ public final class DataSet {
     }
 
     /**
-     * Returns the entries in clomun number {@code row} as a vector. Row indices
-     * start at 0.
+     * Returns the entries in column number {@code column} as a vector. Row
+     * indices start at 0.
      *
      * @param column column to be fetched.
      * @return a column vector.
@@ -206,7 +243,7 @@ public final class DataSet {
                 OpenMapRealVector column = getColumnVector(j);
                 for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     pb.step(); // step by 1
-                    pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
+                    pb.setExtraMessage("Computing the mean of each column....");
                     iterator.advance();
                     final double value = iterator.value();
                     center[j] += value;
@@ -223,7 +260,7 @@ public final class DataSet {
                 OpenMapRealVector column = getColumnVector(j);
                 for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     pb.step(); // step by 1
-                    pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
+                    pb.setExtraMessage("Compute stdev for each column...");
                     iterator.advance();
                     final double value = iterator.value();
                     scale[j] += Math.pow(value - center[j], 2);
@@ -241,8 +278,8 @@ public final class DataSet {
             for (int j = 0; j < getColumnDimension(); j++) {
                 OpenMapRealVector column = getColumnVector(j);
                 for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
-                    pb.step(); // step by 1
-                    pb.setExtraMessage("Normalization in progress..."); // Set extra message to display at the end of the bar
+                    pb.step();
+                    pb.setExtraMessage("Dividing by stdev...");
                     iterator.advance();
                     final double value = iterator.value();
                     final int i = (int) iterator.key();
@@ -341,16 +378,7 @@ public final class DataSet {
     }
 
     /**
-     * Return the entries of the Matrix
-     *
-     * @return Entries of the matrix.
-     */
-    public OpenMapRealVector[] getColumns() {
-        return entries;
-    }
-
-    /**
-     * Rank features using mutual information.
+     * Rank features using Mutual Information.
      */
     public void rankFeatures() {
         feature_ranking = new ArrayList<>();
@@ -359,9 +387,8 @@ public final class DataSet {
         int j = 0;
         try (ProgressBar pb = new ProgressBar("Ranking Features", getColumnDimension(), ProgressBarStyle.ASCII)) {
             for (OpenMapRealVector c : entries) {
-                //Compute correlation between c and labels.
-                pb.step(); // step by 1
-                pb.setExtraMessage("Computing Mutual Information..."); // Set extra message to display at the end of the bar
+                pb.step();
+                pb.setExtraMessage("Computing Mutual Information...");
 
                 double posFeature = c.getSparsity();
                 double negFeature = 1 - posFeature;
