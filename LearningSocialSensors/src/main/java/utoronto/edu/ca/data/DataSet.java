@@ -67,9 +67,9 @@ public final class DataSet {
      */
     private final int rows;
     /**
-     * Storage for (sparse) matrix elements.
+     * Storage for (sparse) matrix elements by column.
      */
-    private final List<OpenMapRealVector> entries;
+    private final OpenMapRealVector[] entries;
     /**
      * Rank of features.
      */
@@ -106,13 +106,11 @@ public final class DataSet {
         if (lRow * lCol >= Long.MAX_VALUE) {
             throw new NumberIsTooLargeException(lRow * lCol, Long.MAX_VALUE, false);
         }
-        this.entries = new ArrayList<>();
+        this.entries = new OpenMapRealVector[columnDimension];
         this.rows = rowDimension;
-        for (int i = 0; i < columnDimension; i++) {
-            OpenMapRealVector row = new OpenMapRealVector(rowDimension);
-            this.entries.add(row);
+        for (int j = 0; j < columnDimension; j++) {
+            this.entries[j] = new OpenMapRealVector(rowDimension);
         }
-
         labels = new OpenMapRealVector(rowDimension);
         this.term_features = term_features;
         this.hashtag_features = hashtag_features;
@@ -184,13 +182,13 @@ public final class DataSet {
      * Returns the entries in clomun number {@code row} as a vector. Row indices
      * start at 0.
      *
-     * @param row Row to be fetched.
-     * @return a row vector.
-     * @throws OutOfRangeException if the specified row index is invalid.
+     * @param column column to be fetched.
+     * @return a column vector.
+     * @throws OutOfRangeException if the specified column index is invalid.
      */
-    public OpenMapRealVector getColumnVector(final int row) throws OutOfRangeException {
-        checkColumnIndex(row);
-        return entries.get(row);
+    public OpenMapRealVector getColumnVector(final int column) throws OutOfRangeException {
+        checkColumnIndex(column);
+        return entries[column];
     }
 
     /**
@@ -253,11 +251,23 @@ public final class DataSet {
         }
     }
 
+    /**
+     * Return the number of non zero entries in a given row.
+     *
+     * @param i
+     * @return
+     */
     public int getRowNonZeroEntry(int i) {
         return (int) rowNonZeroEntries.get(i);
 
     }
 
+    /**
+     * Return the number of non zero entries in a given column.
+     *
+     * @param j
+     * @return
+     */
     public int getColumnNonZeroEntry(int j) {
         return (int) columnNonZeroEntries.get(j);
 
@@ -279,7 +289,7 @@ public final class DataSet {
      * @return the number of columns.
      */
     public int getColumnDimension() {
-        return entries.size();
+        return entries.length;
 
     }
 
@@ -297,7 +307,7 @@ public final class DataSet {
             throws OutOfRangeException {
         checkColumnIndex(column);
         checkRowIndex(row);
-        entries.get(column).setEntry(row, value);
+        entries[column].setEntry(row, value);
     }
 
     /**
@@ -334,7 +344,7 @@ public final class DataSet {
      *
      * @return Entries of the matrix.
      */
-    public List<OpenMapRealVector> getColumns() {
+    public OpenMapRealVector[] getColumns() {
         return entries;
     }
 
