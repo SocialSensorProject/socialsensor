@@ -249,10 +249,10 @@ public final class DataSet {
              * Computing stdev for each column.
              */
             for (int j = 0; j < getColumnDimension(); j++) {
+                pb.step(); // step by 1
+                pb.setExtraMessage("Compute stdev for each column...");
                 OpenMapRealVector column = getColumnVector(j);
                 for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
-                    pb.step(); // step by 1
-                    pb.setExtraMessage("Compute stdev for each column...");
                     iterator.advance();
                     final double value = iterator.value();
                     scale[j] += Math.pow(value - center[j], 2);
@@ -268,10 +268,10 @@ public final class DataSet {
              * Dividing by stdev.
              */
             for (int j = 0; j < getColumnDimension(); j++) {
+                pb.step();
+                pb.setExtraMessage("Dividing by stdev...");
                 OpenMapRealVector column = getColumnVector(j);
                 for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
-                    pb.step();
-                    pb.setExtraMessage("Dividing by stdev...");
                     iterator.advance();
                     final double value = iterator.value();
                     final int i = (int) iterator.key();
