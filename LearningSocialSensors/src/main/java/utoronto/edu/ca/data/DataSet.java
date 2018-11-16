@@ -24,12 +24,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lirmm.inria.fr.math.linear.OpenLongToDoubleHashMap;
+import lirmm.inria.fr.math.linear.OpenIntToFloatHashMap;
 import lirmm.inria.fr.math.linear.OpenMapRealVector;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
@@ -52,12 +53,12 @@ public final class DataSet {
     /**
      * Number of non zero entries in rows of the matrix.
      */
-    private final OpenLongToDoubleHashMap rowNonZeroEntries = new OpenLongToDoubleHashMap(0.0);
+    private final OpenIntToFloatHashMap rowNonZeroEntries = new OpenIntToFloatHashMap(0f);
 
     /**
      * Number of non zero entries in rows of the matrix.
      */
-    private final OpenLongToDoubleHashMap columnNonZeroEntries = new OpenLongToDoubleHashMap(0.0);
+    private final OpenIntToFloatHashMap columnNonZeroEntries = new OpenIntToFloatHashMap(0f);
 
     /**
      * Labels of each instance (0,1).
@@ -199,7 +200,7 @@ public final class DataSet {
                             /**
                              * Counting number of non zeros in rows and columns.
                              */
-                            double v = rowNonZeroEntries.get(i);
+                            float v = rowNonZeroEntries.get(i);
                             rowNonZeroEntries.put(i, v + 1);
                             v = columnNonZeroEntries.get(j);
                             columnNonZeroEntries.put(j, v + 1);
@@ -249,7 +250,7 @@ public final class DataSet {
              */
             for (int j = 0; j < getColumnDimension(); j++) {
                 OpenMapRealVector column = getColumnVector(j);
-                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
+                for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Compute stdev for each column...");
                     iterator.advance();
@@ -268,7 +269,7 @@ public final class DataSet {
              */
             for (int j = 0; j < getColumnDimension(); j++) {
                 OpenMapRealVector column = getColumnVector(j);
-                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
+                for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     pb.step();
                     pb.setExtraMessage("Dividing by stdev...");
                     iterator.advance();
@@ -387,7 +388,7 @@ public final class DataSet {
                 double posFeature_posClass = 0;
                 double posFeature_negClass = 0;
 
-                for (OpenLongToDoubleHashMap.Iterator iterator = c.getEntries().iterator(); iterator.hasNext();) {
+                for (OpenIntToFloatHashMap.Iterator iterator = c.getEntries().iterator(); iterator.hasNext();) {
                     iterator.advance();
                     final int key = (int) iterator.key();
                     if (labels.getEntry(key) != 0) {

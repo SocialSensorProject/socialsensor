@@ -6,8 +6,7 @@
 package lirmm.inria.fr.math.linear;
 
 import java.io.Serializable;
-import lirmm.inria.fr.math.linear.OpenLongToDoubleHashMap.Iterator;
-
+import lirmm.inria.fr.math.linear.OpenIntToFloatHashMap.Iterator;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.exception.NotPositiveException;
@@ -19,7 +18,7 @@ import org.apache.commons.math3.util.FastMath;
 
 /**
  * This class implements the {@link RealVector} interface with a
- * {@link OpenIntToDoubleHashMap} backing store.
+ * {@link OpenIntToFloatHashMap} backing store.
  * <p>
  * Caveat: This implementation assumes that, for any {@code x}, the equality
  * {@code x * 0d == 0d} holds. But it is is not true for {@code NaN}. Moreover,
@@ -43,7 +42,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
     /**
      * Entries of the vector.
      */
-    private final OpenLongToDoubleHashMap entries;
+    private final OpenIntToFloatHashMap entries;
     /**
      * Dimension of the vector.
      */
@@ -82,7 +81,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      */
     public OpenMapRealVector(int dimension, double epsilon) {
         virtualSize = dimension;
-        entries = new OpenLongToDoubleHashMap(0.0);
+        entries = new OpenIntToFloatHashMap(0f);
         this.epsilon = epsilon;
     }
 
@@ -94,7 +93,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      */
     protected OpenMapRealVector(OpenMapRealVector v, int resize) {
         virtualSize = v.getDimension() + resize;
-        entries = new OpenLongToDoubleHashMap(v.entries);
+        entries = new OpenIntToFloatHashMap(v.entries);
         epsilon = v.epsilon;
     }
 
@@ -118,7 +117,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      */
     public OpenMapRealVector(int dimension, int expectedSize, double epsilon) {
         virtualSize = dimension;
-        entries = new OpenLongToDoubleHashMap(expectedSize, 0.0);
+        entries = new OpenIntToFloatHashMap(expectedSize, 0f);
         this.epsilon = epsilon;
     }
 
@@ -127,7 +126,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      *
      * @param values Set of values to create from.
      */
-    public OpenMapRealVector(double[] values) {
+    public OpenMapRealVector(float[] values) {
         this(values, DEFAULT_ZERO_TOLERANCE);
     }
 
@@ -138,12 +137,12 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      * @param values Set of values to create from.
      * @param epsilon Tolerance below which a value is considered zero.
      */
-    public OpenMapRealVector(double[] values, double epsilon) {
+    public OpenMapRealVector(float[] values, double epsilon) {
         virtualSize = values.length;
-        entries = new OpenLongToDoubleHashMap(0.0);
+        entries = new OpenIntToFloatHashMap(0f);
         this.epsilon = epsilon;
         for (int key = 0; key < values.length; key++) {
-            double value = values[key];
+            float value = values[key];
             if (!isDefaultValue(value)) {
                 entries.put(key, value);
             }
@@ -155,7 +154,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      *
      * @param values The set of values to create from
      */
-    public OpenMapRealVector(Double[] values) {
+    public OpenMapRealVector(Float[] values) {
         this(values, DEFAULT_ZERO_TOLERANCE);
     }
 
@@ -165,12 +164,12 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      * @param values Set of values to create from.
      * @param epsilon Tolerance below which a value is considered zero.
      */
-    public OpenMapRealVector(Double[] values, double epsilon) {
+    public OpenMapRealVector(Float[] values, double epsilon) {
         virtualSize = values.length;
-        entries = new OpenLongToDoubleHashMap(0.0);
+        entries = new OpenIntToFloatHashMap(0f);
         this.epsilon = epsilon;
         for (int key = 0; key < values.length; key++) {
-            double value = values[key];
+            float value = values[key];
             if (!isDefaultValue(value)) {
                 entries.put(key, value);
             }
@@ -184,7 +183,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      */
     public OpenMapRealVector(OpenMapRealVector v) {
         virtualSize = v.getDimension();
-        entries = new OpenLongToDoubleHashMap(v.getEntries());
+        entries = new OpenIntToFloatHashMap(v.getEntries());
         epsilon = v.epsilon;
     }
 
@@ -195,10 +194,10 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      */
     public OpenMapRealVector(RealVector v) {
         virtualSize = v.getDimension();
-        entries = new OpenLongToDoubleHashMap(0.0);
+        entries = new OpenIntToFloatHashMap(0f);
         epsilon = DEFAULT_ZERO_TOLERANCE;
         for (int key = 0; key < virtualSize; key++) {
-            double value = v.getEntry(key);
+            float value = (float) v.getEntry(key);
             if (!isDefaultValue(value)) {
                 entries.put(key, value);
             }
@@ -210,7 +209,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      *
      * @return the entries of this instance.
      */
-    public OpenLongToDoubleHashMap getEntries() {
+    public OpenIntToFloatHashMap getEntries() {
         return entries;
     }
 
@@ -222,7 +221,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      * {@code false} otherwise.
      * @since 2.1
      */
-    protected boolean isDefaultValue(double value) {
+    protected boolean isDefaultValue(float value) {
         return FastMath.abs(value) < epsilon;
     }
 
@@ -254,7 +253,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
         boolean copyThis = entries.size() > v.entries.size();
         OpenMapRealVector res = copyThis ? this.copy() : v.copy();
         Iterator iter = copyThis ? v.entries.iterator() : entries.iterator();
-        OpenLongToDoubleHashMap randomAccess = copyThis ? entries : v.entries;
+        OpenIntToFloatHashMap randomAccess = copyThis ? entries : v.entries;
         while (iter.hasNext()) {
             iter.advance();
             int key = (int) iter.key();
@@ -590,8 +589,8 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
     public void setEntry(int index, double value)
             throws OutOfRangeException {
         checkIndex(index);
-        if (!isDefaultValue(value)) {
-            entries.put(index, value);
+        if (!isDefaultValue((float) value)) {
+            entries.put(index, (float) value);
         } else if (entries.containsKey(index)) {
             entries.remove(index);
         }
@@ -673,7 +672,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
      */
     @Override
     public void unitize() throws MathArithmeticException {
-        double norm = getNorm();
+        float norm = (float) getNorm();
         if (isDefaultValue(norm)) {
             throw new MathArithmeticException(LocalizedFormats.ZERO_NORM);
         }
@@ -811,7 +810,7 @@ public class OpenMapRealVector extends SparseRealVector implements Serializable 
          */
         @Override
         public void setValue(double value) {
-            entries.put(iter.key(), value);
+            entries.put(iter.key(), (float) value);
         }
 
         /**
