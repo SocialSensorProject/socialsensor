@@ -90,6 +90,10 @@ public final class DataSet {
      * File Storing the data.
      */
     private final File file;
+    /**
+     * Mean of columns.
+     */
+    double[] center;
 
     /**
      * Method to read a specific file and create a DataSet object.
@@ -134,10 +138,8 @@ public final class DataSet {
      */
     private DataSet(String file, int rowDimension, int columnDimension,
             int term_features, int hashtag_features, int mention_features, int user_features, int loc_feature) throws NotStrictlyPositiveException, NumberIsTooLargeException {
-        long lRow = rowDimension;
-        long lCol = columnDimension;
-        if (lRow * lCol >= Long.MAX_VALUE) {
-            throw new NumberIsTooLargeException(lRow * lCol, Long.MAX_VALUE, false);
+        if (rowDimension * columnDimension >= Long.MAX_VALUE) {
+            throw new NumberIsTooLargeException(rowDimension * columnDimension, Long.MAX_VALUE, false);
         }
         this.entries = new OpenMapRealVector[columnDimension];
         this.rows = rowDimension;
@@ -151,6 +153,7 @@ public final class DataSet {
         this.user_features = user_features;
         this.loc_feature = loc_feature;
         this.file = new File(file);
+        center = new double[columnDimension];
         loadMatrix();
         normalize();
         rankFeatures();
@@ -179,8 +182,8 @@ public final class DataSet {
                         if (str.trim().length() == 0) {
                             continue;
                         }
-                        pb.step(); // step by 1
-                        pb.setExtraMessage("Reading..."); // Set extra message to display at the end of the bar
+                        pb.step();
+                        pb.setExtraMessage("Reading...");
                         Matcher m = Pattern.compile("\\s*(\\[[^\\]]*\\])|\\),[^\\]]*").matcher(str);
                         m.find();
                         String[] indices = m.group().replaceAll("\\[|\\]", "").split(",");
@@ -193,21 +196,26 @@ public final class DataSet {
                             int j = Integer.parseInt(indices[k]);
                             double val = Double.parseDouble(values[k]);
                             setEntry(i, j, val);
+                            /**
+                             * Counting number of non zeros in rows and columns.
+                             */
+                            double v = rowNonZeroEntries.get(i);
+                            rowNonZeroEntries.put(i, v + 1);
+                            v = columnNonZeroEntries.get(j);
+                            columnNonZeroEntries.put(j, v + 1);
+                            /**
+                             * Counting mean of columns.
+                             */
+                            center[j] += val;
                         }
                         i++;
                     }
-                }
-            }
-
-            for (int j = 0; j < getColumnDimension(); j++) {
-                OpenMapRealVector column = getColumnVector(j);
-                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
-                    iterator.advance();
-                    final long i = iterator.key();
-                    double v = rowNonZeroEntries.get(i);
-                    rowNonZeroEntries.put(i, v + 1);
-                    v = columnNonZeroEntries.get(j);
-                    columnNonZeroEntries.put(j, v + 1);
+                    /**
+                     * Computing the mean of each column.
+                     */
+                    for (int j = 0; j < center.length; j++) {
+                        center[j] = center[j] / getRowDimension();
+                    }
                 }
             }
 
@@ -233,26 +241,9 @@ public final class DataSet {
      * This normalization divides only by stdev.
      */
     private void normalize() {
-        double[] center = new double[getColumnDimension()];
-        double[] scale = new double[getColumnDimension()];
-        try (ProgressBar pb = new ProgressBar("Normalization", getColumnDimension() * 3, ProgressBarStyle.ASCII)) {
-            /**
-             * Computing the mean of each column.
-             */
-            for (int j = 0; j < getColumnDimension(); j++) {
-                OpenMapRealVector column = getColumnVector(j);
-                for (OpenLongToDoubleHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
-                    pb.step(); // step by 1
-                    pb.setExtraMessage("Computing the mean of each column....");
-                    iterator.advance();
-                    final double value = iterator.value();
-                    center[j] += value;
-                }
-            }
 
-            for (int j = 0; j < center.length; j++) {
-                center[j] = center[j] / getRowDimension();
-            }
+        double[] scale = new double[getColumnDimension()];
+        try (ProgressBar pb = new ProgressBar("Normalization", getColumnDimension() * 2, ProgressBarStyle.ASCII)) {
             /**
              * Computing stdev for each column.
              */
