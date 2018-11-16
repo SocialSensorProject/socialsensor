@@ -461,7 +461,7 @@ public final class DataSet {
             } else if (pair.getLeft() >= term_features && pair.getLeft() < term_features + hashtag_features) {
                 outWriterhashtag_features.println(pair.left + "\t" + pair.right);
             } else if (pair.getLeft() >= term_features + hashtag_features && pair.getLeft() < term_features + hashtag_features + mention_features) {
-                outWritermention_features.println(pair.left + "\t" + pair.left + "\t" + pair.right);
+                outWritermention_features.println(pair.left + "\t" + pair.right);
             } else if (pair.getLeft() >= term_features + hashtag_features + mention_features && pair.getLeft() < term_features + hashtag_features + mention_features + user_features) {
                 outWriteruser_features.println(pair.left + "\t" + pair.right);
             } else if (pair.getLeft() >= term_features + hashtag_features + mention_features + user_features && pair.getLeft() < term_features + hashtag_features + mention_features + user_features + loc_feature) {
