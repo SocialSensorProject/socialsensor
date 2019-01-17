@@ -1,0 +1,10 @@
+loc_south_africa
+loc_pandaquotescom
+loc_johannesburg_south_africa
+loc_johannesburg
+loc_cape_town
+loc_cape_town_south_africa
+loc_pretoria_south_africa
+loc_pretoria
+loc_midrand
+loc_us

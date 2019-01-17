@@ -1,0 +1,10 @@
+loc_france
+loc_tehran_iran
+loc_inside_of_iran
+loc_iran
+loc_washington_dc
+loc_tehran
+loc_tirana__albania
+loc_us_a
+loc_us_northern_california
+loc_london

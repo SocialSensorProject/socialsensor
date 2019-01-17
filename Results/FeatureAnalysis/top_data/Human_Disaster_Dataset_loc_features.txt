@@ -1,0 +1,10 @@
+loc_syria
+loc_palestine
+loc_syrian_arab_republic
+loc_israel
+loc_washington_dc
+loc_malaysia
+loc_london
+loc_sri_lanka
+loc_jerusalem_israel
+loc_worldwide

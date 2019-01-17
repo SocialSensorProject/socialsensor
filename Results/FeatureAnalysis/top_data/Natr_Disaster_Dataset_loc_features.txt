@@ -1,0 +1,10 @@
+loc_with_everyone
+loc_earth
+loc_philippines
+loc_do_not_follow_me_am_i_a_bot
+loc_global_planet_earth
+loc_globalnolocation
+loc_on_planet_earth
+loc_global
+loc_san_juan_pr
+loc_manila_philippines

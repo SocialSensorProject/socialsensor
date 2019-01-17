@@ -1,0 +1,10 @@
+loc_liverpool
+loc_manchester
+loc_london
+loc_anfield
+loc_bangil_east_java_indonesia
+loc_football_stadiums
+loc_sports_roadhouse
+loc_uk
+loc_tampa_bay
+loc_on_æâºî°r_tl

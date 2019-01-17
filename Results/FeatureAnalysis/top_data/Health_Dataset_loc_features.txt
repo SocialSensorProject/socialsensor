@@ -1,0 +1,10 @@
+loc_usa
+loc_francophone
+loc_united_states
+loc_gainesville_fl_usa
+loc_boulder_colorado
+loc_washington_dc
+loc_phenix
+loc_boulder_co_usa
+loc_with_everyone
+loc_new_york_ny
