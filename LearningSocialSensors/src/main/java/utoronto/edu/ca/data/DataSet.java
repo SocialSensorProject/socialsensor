@@ -15,6 +15,7 @@
  */
 package utoronto.edu.ca.data;
 
+import de.bwaldvogel.liblinear.FeatureNode;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -24,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -40,6 +40,7 @@ import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.exception.util.LocalizedFormats;
 import org.apache.commons.math3.util.FastMath;
+import utoronto.edu.ca.util.Misc;
 
 /**
  * This class represents a dataset. It applies normalization to the dataset by
@@ -97,16 +98,25 @@ public final class DataSet {
     double[] center;
 
     /**
+     * Stdev of colums.
+     */
+    double[] column_stdev;
+
+    /**
      * Method to read a specific file and create a DataSet object.
      *
      * @param file
+     * @param normalize
+     * @param rankfeatures
      * @return
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static DataSet readDataset(String file) throws FileNotFoundException, IOException {
-        FileInputStream fstream;
-        fstream = new FileInputStream(file);
+    public static DataSet readDataset(String file, boolean normalize, boolean rankfeatures) throws FileNotFoundException, IOException {
+        FileInputStream fstream = new FileInputStream(file);
+        System.err.println("***********************");
+        System.err.println("Processing: " + file);
+        System.err.println("***********************");
         // Get the object of DataInputStream
         DataInputStream in = new DataInputStream(fstream);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -119,7 +129,7 @@ public final class DataSet {
         int mention_features = Integer.parseInt(st.nextToken().split("=")[1]);
         int user_features = Integer.parseInt(st.nextToken().split("=")[1]);
         int loc_feature = Integer.parseInt(st.nextToken().split("=")[1]);
-        DataSet data = new DataSet(file, rows, columns, term_features, hashtag_features, mention_features, user_features, loc_feature);
+        DataSet data = new DataSet(file, rows, columns, term_features, hashtag_features, mention_features, user_features, loc_feature, normalize, rankfeatures);
         return data;
     }
 
@@ -138,7 +148,7 @@ public final class DataSet {
      * @throws NumberIsTooLargeException
      */
     private DataSet(String file, int rowDimension, int columnDimension,
-            int term_features, int hashtag_features, int mention_features, int user_features, int loc_feature) throws NotStrictlyPositiveException, NumberIsTooLargeException {
+            int term_features, int hashtag_features, int mention_features, int user_features, int loc_feature, boolean normalize, boolean rankfeatures) throws NotStrictlyPositiveException, NumberIsTooLargeException {
         if (rowDimension * columnDimension >= Long.MAX_VALUE) {
             throw new NumberIsTooLargeException(rowDimension * columnDimension, Long.MAX_VALUE, false);
         }
@@ -156,8 +166,12 @@ public final class DataSet {
         this.file = new File(file);
         center = new double[columnDimension];
         loadMatrix();
-        normalize();
-        rankFeatures();
+        if (normalize) {
+            normalize();
+        }
+        if (rankfeatures) {
+            rankFeatures();
+        }
     }
 
     /**
@@ -242,8 +256,7 @@ public final class DataSet {
      * This normalization divides only by stdev.
      */
     private void normalize() {
-
-        double[] scale = new double[getColumnDimension()];
+        column_stdev = new double[getColumnDimension()];
         try (ProgressBar pb = new ProgressBar("Normalization", getColumnDimension() * 2, ProgressBarStyle.ASCII)) {
             /**
              * Computing stdev for each column.
@@ -255,14 +268,14 @@ public final class DataSet {
                 for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                     iterator.advance();
                     final double value = iterator.value();
-                    scale[j] += Math.pow(value - center[j], 2);
+                    column_stdev[j] += Math.pow(value - center[j], 2);
                 }
             }
 
-            for (int j = 0; j < scale.length; j++) {
+            for (int j = 0; j < column_stdev.length; j++) {
                 int columnZero = getRowDimension() - getColumnNonZeroEntry(j); // number of entries in column j with zeros.
-                scale[j] += (columnZero * Math.pow(center[j], 2));
-                scale[j] = Math.sqrt(scale[j] / (getRowDimension() - 1));
+                column_stdev[j] += (columnZero * Math.pow(center[j], 2));
+                column_stdev[j] = Math.sqrt(column_stdev[j] / (getRowDimension() - 1));
             }
             /**
              * Dividing by stdev.
@@ -275,7 +288,31 @@ public final class DataSet {
                     iterator.advance();
                     final double value = iterator.value();
                     final int i = (int) iterator.key();
-                    setEntry(i, j, value / scale[j]);
+                    setEntry(i, j, value / column_stdev[j]);
+                }
+            }
+        }
+    }
+
+    /**
+     * This normalization divides only by stdev.
+     *
+     * @param column_stdev
+     */
+    public void normalize(double[] column_stdev) {
+        /**
+         * Dividing by stdev.
+         */
+        try (ProgressBar pb = new ProgressBar("Normalization", getColumnDimension(), ProgressBarStyle.ASCII)) {
+            for (int j = 0; j < getColumnDimension(); j++) {
+                pb.step();
+                pb.setExtraMessage("Dividing by stdev...");
+                OpenMapRealVector column = getColumnVector(j);
+                for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
+                    iterator.advance();
+                    final double value = iterator.value();
+                    final int i = (int) iterator.key();
+                    setEntry(i, j, value / column_stdev[j]);
                 }
             }
         }
@@ -475,6 +512,77 @@ public final class DataSet {
         outWritermention_features.close();
         outWriteruser_features.close();
         outWriterloc_feature.close();
+    }
+
+    /**
+     * This method returns the indexes of top features.
+     *
+     * @return
+     */
+    public int[] getIndexFeaturesRankingByMI() {
+        int[] out = new int[feature_ranking.size()];
+        for (int i = 0; i < out.length; i++) {
+            ImmutablePair<Integer, Double> pair = feature_ranking.get(i);
+            out[i] = pair.getLeft();
+        }
+        return out;
+    }
+
+    /**
+     * This method returns a dataset using a FeatureNode array structure, with
+     * k-features selected from indexes given using featureIndexes.
+     *
+     * @param featureIndexes
+     * @param k
+     * @return
+     */
+    public FeatureNode[][] getDatasetFeatureNode(int[] featureIndexes, int k) {
+        List<FeatureNode>[] data = new ArrayList[getRowDimension()];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new ArrayList<>();
+        }
+        for (int j = 0; j < k; j++) {
+            OpenMapRealVector column = getColumnVector(featureIndexes[j]);
+            for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
+                iterator.advance();
+                final int i = (int) iterator.key();
+                final double value = iterator.value();
+                FeatureNode fn = new FeatureNode((j + 1), value);
+                data[i].add(fn);
+            }
+        }
+        FeatureNode[][] out = new FeatureNode[getRowDimension()][];
+        for (int i = 0; i < out.length; i++) {
+            List<FeatureNode> list = data[i];
+            out[i] = list.toArray(new FeatureNode[list.size()]);
+        }
+        return out;
+    }
+
+    /**
+     * This method returns an array containing labels (-1 or 1).
+     *
+     * @return
+     */
+    public double[] getLables() {
+        double[] out = new double[getRowDimension()];
+        for (int i = 0; i < out.length; i++) {
+            if (labels.getEntry(i) != 0) {
+                out[i] = 1;
+            } else {
+                out[i] = -1;
+            }
+        }
+        return out;
+    }
+
+    /**
+     * This methods returns an array containing the stdev of each column.
+     *
+     * @return
+     */
+    public double[] getColumn_stdev() {
+        return column_stdev;
     }
 
 }

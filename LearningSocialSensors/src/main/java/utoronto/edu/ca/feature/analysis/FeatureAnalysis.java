@@ -25,7 +25,7 @@ public class FeatureAnalysis {
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
         // TODO code application logic here
         long start = System.currentTimeMillis();
-        DataSet dm = DataSet.readDataset(args[0]);
+        DataSet dm = DataSet.readDataset(args[0], true, true);
         dm.printTopFeaturesByCategory();
         long end = System.currentTimeMillis();
         File f = new File(args[0]);
