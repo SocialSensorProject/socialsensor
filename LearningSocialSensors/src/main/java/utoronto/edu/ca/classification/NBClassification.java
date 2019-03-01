@@ -42,12 +42,13 @@ public class NBClassification {
     public NBClassification(String train, String val, String test) throws IOException {
         this.train = DataSet.readDataset(train, true, true);
         this.val = DataSet.readDataset(val, false, false);
-        this.val.normalize(this.train.getColumn_stdev());
+//        this.val.normalize(this.train.getColumn_stdev());
         this.test = DataSet.readDataset(test, false, false);
         this.test.normalize(this.train.getColumn_stdev());
-        
-        ComplementNaiveBayes nb=new ComplementNaiveBayes();
-        
+
+//        ComplementNaiveBayes nb=new ComplementNaiveBayes();
+        int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
+        System.out.println(this.val.getDatasetInstances(feature_ranking, 10).toString());
 
     }
 

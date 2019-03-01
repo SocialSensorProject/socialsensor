@@ -41,6 +41,10 @@ import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.exception.util.LocalizedFormats;
 import org.apache.commons.math3.util.FastMath;
 import utoronto.edu.ca.util.Misc;
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  * This class represents a dataset. It applies normalization to the dataset by
@@ -543,6 +547,7 @@ public final class DataSet {
         }
         for (int j = 0; j < k; j++) {
             OpenMapRealVector column = getColumnVector(featureIndexes[j]);
+            int z=column.getEntries().size();
             for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                 iterator.advance();
                 final int i = (int) iterator.key();
@@ -557,6 +562,34 @@ public final class DataSet {
             out[i] = list.toArray(new FeatureNode[list.size()]);
         }
         return out;
+    }
+
+    public Instances getDatasetInstances(int[] featureIndexes, int k) {
+        /**
+         * Create attributes info.
+         */
+        FastVector attributes = new FastVector();
+        for (int j = 0; j < k; j++) {
+            attributes.addElement(new Attribute(String.valueOf(featureIndexes[j])));
+        }
+        Instances dataRaw = new Instances("TestInstances", attributes, k + 1);
+        attributes.addElement(new Attribute("y"));
+        dataRaw.setClassIndex(k);
+        /**
+         * Adding data.
+         */
+        double[] lables = getLables();
+        FeatureNode[][] dataFN = getDatasetFeatureNode(featureIndexes, k);
+        for (int i = 0; i < dataFN.length; i++) {
+            FeatureNode[] instanceFN = dataFN[i];
+            Instance instance = new Instance(k + 1);
+            for (int j = 0; j < instanceFN.length; j++) {
+                instance.setValue(instanceFN[j].index, instanceFN[j].value);
+            }
+            instance.setValue(k, lables[i]);
+            dataRaw.add(instance);
+        }
+        return dataRaw;
     }
 
     /**
