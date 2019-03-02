@@ -5,27 +5,30 @@
  */
 package utoronto.edu.ca;
 
-import java.io.IOException;
-import java.util.Random;
+import java.text.ParseException;
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  *
  * @author rbouadjenek
  */
-public class NewMain2 {
+public class NewMain2 { 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws ParseException {
         // try-with-resource block
-        Random rand = new Random();
-//        
-//        BigSparseRealMatrix m = new BigSparseRealMatrix(432734400, 1146514);
-//        for (int k = 0; k < Integer.MAX_VALUE; k++) {
-//            int i = rand.nextInt(432734400);
-//            int j = rand.nextInt(1146514);
-//            double v = rand.nextDouble();
-//            m.setEntry(i, j, v);
-//        }
-       
+        FastVector attributes = new FastVector();
+        FastVector tempBooleanValues = new FastVector();
+        tempBooleanValues.addElement(1);
+        tempBooleanValues.addElement(2);
+        attributes.addElement(new Attribute("attribute_1", tempBooleanValues));
+        Instances dataRaw = new Instances("TestInstances", attributes,0);
+        Instance instance = new Instance( 1);
+        instance.setValue(0, 1);
+        dataRaw.add(instance);
+        System.out.println(dataRaw);
 
     }
 

@@ -40,7 +40,6 @@ import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.exception.OutOfRangeException;
 import org.apache.commons.math3.exception.util.LocalizedFormats;
 import org.apache.commons.math3.util.FastMath;
-import utoronto.edu.ca.util.Misc;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -382,6 +381,23 @@ public final class DataSet {
     }
 
     /**
+     * Return the entry in the specified row and column. Row and column indices
+     * start at 0.
+     *
+     * @param row Row index of entry to be set.
+     * @param column Column index of entry to be set.
+     * @return
+     * @throws OutOfRangeException if the row or column index is not valid
+     * @since 2.0
+     */
+    public double getEntry(int row, int column)
+            throws OutOfRangeException {
+        checkColumnIndex(column);
+        checkRowIndex(row);
+        return entries[column].getEntry(row);
+    }
+
+    /**
      * Check if a column index is valid.
      *
      * @param column Column index to check.
@@ -547,7 +563,6 @@ public final class DataSet {
         }
         for (int j = 0; j < k; j++) {
             OpenMapRealVector column = getColumnVector(featureIndexes[j]);
-            int z=column.getEntries().size();
             for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
                 iterator.advance();
                 final int i = (int) iterator.key();
@@ -570,25 +585,29 @@ public final class DataSet {
          */
         FastVector attributes = new FastVector();
         for (int j = 0; j < k; j++) {
-            attributes.addElement(new Attribute(String.valueOf(featureIndexes[j])));
+            attributes.addElement(new Attribute(String.valueOf(featureIndexes[j]), j));
         }
         Instances dataRaw = new Instances("TestInstances", attributes, k + 1);
-        attributes.addElement(new Attribute("y"));
+
+        FastVector attributes_class = new FastVector(2);
+        attributes_class.addElement(-1);
+        attributes_class.addElement(1);
+        attributes.insertElementAt(new Attribute("y",attributes_class),attributes.size());
         dataRaw.setClassIndex(k);
         /**
          * Adding data.
          */
-        double[] lables = getLables();
-        FeatureNode[][] dataFN = getDatasetFeatureNode(featureIndexes, k);
-        for (int i = 0; i < dataFN.length; i++) {
-            FeatureNode[] instanceFN = dataFN[i];
-            Instance instance = new Instance(k + 1);
-            for (int j = 0; j < instanceFN.length; j++) {
-                instance.setValue(instanceFN[j].index, instanceFN[j].value);
-            }
-            instance.setValue(k, lables[i]);
-            dataRaw.add(instance);
-        }
+//        double[] lables = getLables();
+//        FeatureNode[][] dataFN = getDatasetFeatureNode(featureIndexes, k);
+//        for (int i = 0; i < dataFN.length; i++) {
+//            FeatureNode[] instanceFN = dataFN[i];
+//            Instance instance = new Instance(k + 1);
+//            for (int j = 0; j < instanceFN.length; j++) {
+//                instance.setValue(instanceFN[j].index, instanceFN[j].value);
+//            }
+//            instance.setValue(k, String.valueOf(lables[i]));
+//            dataRaw.add(instance);
+//        }
         return dataRaw;
     }
 

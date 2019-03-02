@@ -24,9 +24,9 @@ import utoronto.edu.ca.data.DataSet;
 import utoronto.edu.ca.util.Misc;
 import utoronto.edu.ca.validation.Metrics;
 import utoronto.edu.ca.validation.HyperParameters;
-import static utoronto.edu.ca.validation.HyperParameters.C_params;
 import static utoronto.edu.ca.validation.HyperParameters.NUM_FEATURES;
 import static utoronto.edu.ca.validation.HyperParameters.nbr_features;
+import static utoronto.edu.ca.validation.HyperParameters.C_values;
 
 /**
  *
@@ -54,15 +54,15 @@ public class LRClassification {
      */
     public HyperParameters tuneParameters() {
         System.err.println("***********************************************************");
-        System.err.println("Number of parameters to fit: " + (C_params.length * nbr_features.length));
+        System.err.println("Number of parameters to fit: " + (C_values.length * nbr_features.length));
         System.err.println("***********************************************************");
         List<ImmutablePair<Double, Map<String, Double>>> gridsearch = new ArrayList<>();
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
-        try (ProgressBar pb = new ProgressBar("Grid search", (C_params.length * nbr_features.length), ProgressBarStyle.ASCII)) {
+        try (ProgressBar pb = new ProgressBar("Grid search", (C_values.length * nbr_features.length), ProgressBarStyle.ASCII)) {
             for (int nbr_feat : nbr_features) {
                 FeatureNode[][] valx = this.val.getDatasetFeatureNode(feature_ranking, nbr_feat);
                 double[] valy = this.val.getLables();
-                for (double C : C_params) {
+                for (double C : C_values) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Fitting parameters...");
                     Model model = getLRModel(feature_ranking, nbr_feat, C);
