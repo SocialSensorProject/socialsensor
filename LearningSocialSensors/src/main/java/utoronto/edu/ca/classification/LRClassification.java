@@ -97,7 +97,7 @@ public class LRClassification {
         System.err.println("***********************************************************");
         System.err.println("[Best 10 parameters:");
         for (int i = 0; i < Math.min(10, gridsearch.size()); i++) {
-            System.err.println((i + 1) + "- [Lambda = " + gridsearch.get(i).right.get(HyperParameters.C) + ", Num features = "
+            System.err.println((i + 1) + "- [C = " + gridsearch.get(i).right.get(HyperParameters.C) + ", Num features = "
                     + gridsearch.get(i).right.get(NUM_FEATURES) + "], AveP =  " + gridsearch.get(i).left);
         }
         System.err.println("***********************************************************");

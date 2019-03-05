@@ -27,6 +27,7 @@ import static utoronto.edu.ca.validation.HyperParameters.NUM_FEATURES;
 import static utoronto.edu.ca.validation.HyperParameters.nbr_features;
 import static utoronto.edu.ca.validation.HyperParameters.C_values;
 import static utoronto.edu.ca.validation.HyperParameters.GAMMA;
+import static utoronto.edu.ca.validation.HyperParameters.gamma_values;
 
 /**
  *
@@ -54,16 +55,16 @@ public class SVMClassification {
      */
     public HyperParameters tuneParameters() {
         System.err.println("***********************************************************");
-        System.err.println("Number of parameters to fit: " + (C_values.length * nbr_features.length));
+        System.err.println("Number of parameters to fit: " + (C_values.length * nbr_features.length * gamma_values.length));
         System.err.println("***********************************************************");
         List<ImmutablePair<Double, Map<String, Double>>> gridsearch = new ArrayList<>();
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
-        try (ProgressBar pb = new ProgressBar("Grid search", (C_values.length * nbr_features.length), ProgressBarStyle.ASCII)) {
+        try (ProgressBar pb = new ProgressBar("Grid search", (C_values.length * nbr_features.length * gamma_values.length), ProgressBarStyle.ASCII)) {
             for (int nbr_feat : nbr_features) {
                 svm_node[][] valx = this.val.getDatasetSVM_Node(feature_ranking, nbr_feat);
                 double[] valy = this.val.getLables();
                 for (double C : C_values) {
-                    for (double gamma : HyperParameters.gamma_values) {
+                    for (double gamma : gamma_values) {
                         pb.step(); // step by 1
                         pb.setExtraMessage("Fitting parameters...");
                         svm_model model = getSVMModel(feature_ranking, nbr_feat, C, gamma);
@@ -105,7 +106,7 @@ public class SVMClassification {
         System.err.println("[Best 10 parameters:");
         for (int i = 0; i < Math.min(10, gridsearch.size()); i++) {
             System.err.println((i + 1) + "- [Lambda = " + gridsearch.get(i).right.get(HyperParameters.C)
-                    + ", Gamma = " + gridsearch.get(i).right.get(GAMMA)
+                    + ", C = " + gridsearch.get(i).right.get(GAMMA)
                     + ", Num features = " + gridsearch.get(i).right.get(NUM_FEATURES)
                     + "], AveP =  " + gridsearch.get(i).left);
         }
