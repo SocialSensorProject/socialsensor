@@ -10,6 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import libsvm.svm;
+import libsvm.svm_model;
+import libsvm.svm_node;
+import libsvm.svm_parameter;
+import libsvm.svm_print_interface;
+import libsvm.svm_problem;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -19,69 +25,69 @@ import utoronto.edu.ca.validation.Metrics;
 import utoronto.edu.ca.validation.HyperParameters;
 import static utoronto.edu.ca.validation.HyperParameters.NUM_FEATURES;
 import static utoronto.edu.ca.validation.HyperParameters.nbr_features;
-import static utoronto.edu.ca.validation.HyperParameters.nbr_trees;
-import weka.classifiers.trees.RandomForest;
-import weka.core.Instance;
-import weka.core.Instances;
+import static utoronto.edu.ca.validation.HyperParameters.C_values;
+import static utoronto.edu.ca.validation.HyperParameters.GAMMA;
 
 /**
  *
  * @author reda
  */
-public class RFClassification {
+public class SVMClassification {
 
     DataSet train;
     DataSet val;
     DataSet test;
 
-    public RFClassification(String train, String val, String test) throws IOException {
+    public SVMClassification(String train, String val, String test) throws IOException {
         this.train = DataSet.readDataset(train, true, true);
         this.val = DataSet.readDataset(val, false, false);
         this.val.normalize(this.train.getColumn_stdev());
         this.test = DataSet.readDataset(test, false, false);
         this.test.normalize(this.train.getColumn_stdev());
+
     }
 
     /**
      * This method tunes hyperparameters.
      *
      * @return
-     * @throws java.lang.Exception
      */
-    public HyperParameters tuneParameters() throws Exception {
+    public HyperParameters tuneParameters() {
         System.err.println("***********************************************************");
-        System.err.println("Number of parameters to fit: " + (nbr_trees.length * nbr_features.length));
+        System.err.println("Number of parameters to fit: " + (C_values.length * nbr_features.length));
         System.err.println("***********************************************************");
         List<ImmutablePair<Double, Map<String, Double>>> gridsearch = new ArrayList<>();
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
-        try (ProgressBar pb = new ProgressBar("Grid search", (nbr_trees.length * nbr_features.length), ProgressBarStyle.ASCII)) {
+        try (ProgressBar pb = new ProgressBar("Grid search", (C_values.length * nbr_features.length), ProgressBarStyle.ASCII)) {
             for (int nbr_feat : nbr_features) {
-                Instances train_instances = this.train.getDatasetInstances(feature_ranking, nbr_feat);
-                Instances val_instances = this.val.getDatasetInstances(feature_ranking, nbr_feat);
-                for (int nbr_tree : nbr_trees) {
-                    pb.step(); // step by 1
-                    pb.setExtraMessage("Fitting parameters...");
-                    RandomForest rf = new RandomForest();
-                    rf.setNumTrees(nbr_tree);
-                    rf.setMaxDepth(10);
-                    rf.buildClassifier(train_instances);
+                svm_node[][] valx = this.val.getDatasetSVM_Node(feature_ranking, nbr_feat);
+                double[] valy = this.val.getLables();
+                for (double C : C_values) {
+                    for (double gamma : HyperParameters.gamma_values) {
+                        pb.step(); // step by 1
+                        pb.setExtraMessage("Fitting parameters...");
+                        svm_model model = getSVMModel(feature_ranking, nbr_feat, C, gamma);
 
-                    int positive_class_label = 1;
-                    double[] valy = new double[val_instances.numInstances()];
-                    double[] y_probability_positive_class = new double[val_instances.numInstances()];
-                    for (int i = 0; i < val_instances.numInstances(); i++) {
-                        Instance instance = val_instances.instance(i);
-                        valy[i] = instance.classValue();
-                        double[] v = rf.distributionForInstance(instance);
-                        y_probability_positive_class[i] = v[1];
+                        double[] y_probability_positive_class = new double[valy.length];
+                        int positive_class_label = model.label[0];
+                        for (int i = 0; i < valx.length; i++) {
+                            svm_node[] instance = valx[i];
+                            double[] prob_estimates = new double[model.nr_class];
+                            int totalClasses = 2;
+                            int[] labels = new int[totalClasses];
+                            svm.svm_get_labels(model, labels);
+                            svm.svm_predict_probability(model, instance, prob_estimates);
+                            y_probability_positive_class[i] = prob_estimates[0];
+                        }
+                        Metrics metric = new Metrics();
+                        double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(valy), y_probability_positive_class, positive_class_label, 1000);
+                        Map<String, Double> map = new HashMap<>();
+                        map.put(HyperParameters.C, C);
+                        map.put(NUM_FEATURES, (double) nbr_feat);
+                        map.put(GAMMA, gamma);
+                        ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
+                        gridsearch.add(pair);
                     }
-                    Metrics metric = new Metrics();
-                    double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(valy), y_probability_positive_class, positive_class_label, 1000);
-                    Map<String, Double> map = new HashMap<>();
-                    map.put(HyperParameters.NUM_TREES, (double) nbr_tree);
-                    map.put(NUM_FEATURES, (double) nbr_feat);
-                    ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
-                    gridsearch.add(pair);
                 }
             }
         }
@@ -98,17 +104,21 @@ public class RFClassification {
         System.err.println("***********************************************************");
         System.err.println("[Best 10 parameters:");
         for (int i = 0; i < Math.min(10, gridsearch.size()); i++) {
-            System.err.println((i + 1) + "- [Num Trees = " + gridsearch.get(i).right.get(HyperParameters.NUM_TREES) + ", Num features = "
-                    + gridsearch.get(i).right.get(NUM_FEATURES) + "], AveP =  " + gridsearch.get(i).left);
+            System.err.println((i + 1) + "- [Lambda = " + gridsearch.get(i).right.get(HyperParameters.C)
+                    + ", Gamma = " + gridsearch.get(i).right.get(GAMMA)
+                    + ", Num features = " + gridsearch.get(i).right.get(NUM_FEATURES)
+                    + "], AveP =  " + gridsearch.get(i).left);
         }
         System.err.println("***********************************************************");
-        int nbr_tree = gridsearch.get(0).right.get(HyperParameters.NUM_TREES).intValue();
+        double C = gridsearch.get(0).right.get(HyperParameters.C);
+        double gamma = gridsearch.get(0).right.get(HyperParameters.GAMMA);
         int num_features = (int) ((double) gridsearch.get(0).right.get(NUM_FEATURES));
         /**
          * Return best hyperparameters.
          */
         HyperParameters hyperparameters = new HyperParameters();
-        hyperparameters.setNum_trees(nbr_tree);
+        hyperparameters.setValue_C(C);
+        hyperparameters.setValue_gamma(gamma);
         hyperparameters.setNum_features(num_features);
         hyperparameters.setFeature_ranking(feature_ranking);
         return hyperparameters;
@@ -118,32 +128,27 @@ public class RFClassification {
      * This method test the model.
      *
      * @param hyperparameters
-     * @throws java.lang.Exception
      */
-    public void testModel(HyperParameters hyperparameters) throws Exception {
+    public void testModel(HyperParameters hyperparameters) {
         /**
          * Train best model based on best hyperparameters.
          */
-        Instances train_instances = this.train.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
-        RandomForest rf = new RandomForest();
-        rf.setNumTrees(hyperparameters.getNum_trees());
-        rf.buildClassifier(train_instances);
+        svm_model model = getSVMModel(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features(), hyperparameters.getC(), hyperparameters.getValue_gamma());
         /**
          * Testing the model.
          */
-        Instances test_instances = this.test.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
-        int positive_class_label = 1;
-        double[] testy = new double[test_instances.numInstances()];
-        double[] y_probability_positive_class = new double[test_instances.numInstances()];
-        try (ProgressBar pb = new ProgressBar("Grid search", (test_instances.numInstances()), ProgressBarStyle.ASCII)) {
-            for (int i = 0; i < test_instances.numInstances(); i++) {
-                pb.step(); // step by 1
-                pb.setExtraMessage("Testing...");
-                Instance instance = test_instances.instance(i);
-                testy[i] = instance.classValue();
-                double[] v = rf.distributionForInstance(instance);
-                y_probability_positive_class[i] = v[1];
-            }
+        svm_node[][] testx = this.test.getDatasetSVM_Node(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+        double[] testy = this.test.getLables();
+        double[] y_probability_positive_class = new double[testy.length];
+        int positive_class_label = model.label[0];
+        for (int i = 0; i < testx.length; i++) {
+            svm_node[] instance = testx[i];
+            double[] prob_estimates = new double[model.nr_class];
+            int totalClasses = 2;
+            int[] labels = new int[totalClasses];
+            svm.svm_get_labels(model, labels);
+            svm.svm_predict_probability(model, instance, prob_estimates);
+            y_probability_positive_class[i] = prob_estimates[0];
         }
         Metrics metric = new Metrics();
         double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
@@ -157,9 +162,54 @@ public class RFClassification {
     }
 
     /**
+     * This methods train a model.
+     *
+     * @param feature_ranking
+     * @param nbr_features
+     * @param C
+     * @return
+     */
+    private svm_model getSVMModel(int[] feature_ranking, int nbr_features, double C, double gamma) {
+        svm_node[][] trainx = this.train.getDatasetSVM_Node(feature_ranking, nbr_features);
+        double[] trainy = this.train.getLables();
+        svm_problem problem = new svm_problem();
+        problem.l = trainx.length;
+        problem.x = trainx;
+        problem.y = trainy;
+        svm_parameter param = new svm_parameter();
+        param.svm_type = svm_parameter.C_SVC;
+        param.kernel_type = svm_parameter.RBF;
+        param.degree = 3;
+        param.coef0 = 0;
+        param.nu = 0.5;
+        param.cache_size = 100;
+        param.C = 1;
+        param.eps = 1e-3;
+        param.p = 0.1;
+        param.shrinking = 0;
+        param.probability = 1;
+        param.nr_weight = 0;
+        param.weight_label = new int[0];
+        param.weight = new double[0];
+        /**
+         * set quiet mode.
+         */
+        svm_print_interface print_func = (String s) -> {
+        };
+        svm.svm_set_print_string_function(print_func);
+        /**
+         * Parameters to be modified.
+         */
+        param.gamma = gamma;
+        param.C = C;
+        svm_model model = svm.svm_train(problem, param);
+        return model;
+    }
+
+    /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException, Exception {
+    public static void main(String[] args) throws IOException {
         // TODO code application logic here
 //        Classification c = new Classification("../datasets/Tennis/Tennis_Train.csv", "../datasets/Tennis/Tennis_Validation.csv", "../datasets/Tennis/Tennis_Test.csv");
 //        Classification c = new Classification("../datasets/Space/Space_Train.csv", "../datasets/Space/Space_Validation.csv", "../datasets/Space/Space_Test.csv");
@@ -170,7 +220,7 @@ public class RFClassification {
 //        Classification c = new Classification("../datasets/Social_issue/Social_issue_Train.csv", "../datasets/Social_issue/Social_issue_Validation.csv", "../datasets/Social_issue/Social_issue_Test.csv");
 //        Classification c = new Classification("../datasets/Natr_Disaster/Natr_Disaster_Train.csv", "../datasets/Natr_Disaster/Natr_Disaster_Validation.csv", "../datasets/Natr_Disaster/Natr_Disaster_Test.csv");
 //        Classification c = new Classification("../datasets/Health/Health_Train.csv", "../datasets/Health/Health_Validation.csv", "../datasets/Health/Health_Test.csv");
-        RFClassification c = new RFClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
+        SVMClassification c = new SVMClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
         HyperParameters hyperparameters = c.tuneParameters();
         c.testModel(hyperparameters);
     }

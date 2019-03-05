@@ -16,7 +16,7 @@
                         <manifest> 
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>utoronto.edu.ca.classification.StockClassification</mainClass>
+                            <mainClass>utoronto.edu.ca.classification.SVMClassification</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -80,6 +80,11 @@
             <artifactId>weka-stable</artifactId>
             <version>3.6.14</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>LibSVM</artifactId>
+            <version>1.0.10</version>
         </dependency>
     </dependencies>
     <properties>

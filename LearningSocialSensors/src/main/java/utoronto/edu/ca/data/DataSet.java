@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import libsvm.svm_node;
 import lirmm.inria.fr.math.linear.OpenIntToFloatHashMap;
 import lirmm.inria.fr.math.linear.OpenMapRealVector;
 import me.tongfei.progressbar.ProgressBar;
@@ -580,6 +581,47 @@ public final class DataSet {
         return out;
     }
 
+    /**
+     * This method returns a dataset using a svm_node array structure, with
+     * k-features selected from indexes given using featureIndexes.
+     *
+     * @param featureIndexes
+     * @param k
+     * @return
+     */
+    public svm_node[][] getDatasetSVM_Node(int[] featureIndexes, int k) {
+        List<svm_node>[] data = new ArrayList[getRowDimension()];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new ArrayList<>();
+        }
+        for (int j = 0; j < k; j++) {
+            OpenMapRealVector column = getColumnVector(featureIndexes[j]);
+            for (OpenIntToFloatHashMap.Iterator iterator = column.getEntries().iterator(); iterator.hasNext();) {
+                iterator.advance();
+                final int i = (int) iterator.key();
+                final double value = iterator.value();
+                svm_node node = new svm_node();
+                node.index = j + 1;
+                node.value = value;
+                data[i].add(node);
+            }
+        }
+        svm_node[][] out = new svm_node[getRowDimension()][];
+        for (int i = 0; i < out.length; i++) {
+            List<svm_node> list = data[i];
+            out[i] = list.toArray(new svm_node[list.size()]);
+        }
+        return out;
+    }
+
+    /**
+     * This method returns a dataset using a Instances weka class, with
+     * k-features selected from indexes given using featureIndexes.
+     *
+     * @param featureIndexes
+     * @param k
+     * @return
+     */
     public Instances getDatasetInstances(int[] featureIndexes, int k) {
         /**
          * Create attributes info.
