@@ -44,6 +44,7 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.SparseInstance;
 
 /**
  * This class represents a dataset. It applies normalization to the dataset by
@@ -587,27 +588,34 @@ public final class DataSet {
         for (int j = 0; j < k; j++) {
             attributes.addElement(new Attribute(String.valueOf(featureIndexes[j]), j));
         }
-        Instances dataRaw = new Instances("TestInstances", attributes, k + 1);
-
-        FastVector attributes_class = new FastVector(2);
-        attributes_class.addElement(-1);
-        attributes_class.addElement(1);
-        attributes.insertElementAt(new Attribute("y",attributes_class),attributes.size());
+        FastVector attributes_class = new FastVector();
+        attributes_class.addElement("c0");
+        attributes_class.addElement("c1");
+        attributes.addElement(new Attribute("y", attributes_class, attributes.size()));
+        Instances dataRaw = new Instances("Instances", attributes, 0);
         dataRaw.setClassIndex(k);
         /**
          * Adding data.
          */
-//        double[] lables = getLables();
-//        FeatureNode[][] dataFN = getDatasetFeatureNode(featureIndexes, k);
-//        for (int i = 0; i < dataFN.length; i++) {
-//            FeatureNode[] instanceFN = dataFN[i];
-//            Instance instance = new Instance(k + 1);
-//            for (int j = 0; j < instanceFN.length; j++) {
-//                instance.setValue(instanceFN[j].index, instanceFN[j].value);
-//            }
-//            instance.setValue(k, String.valueOf(lables[i]));
-//            dataRaw.add(instance);
-//        }
+        double[] lables = getLables();
+        FeatureNode[][] dataFN = getDatasetFeatureNode(featureIndexes, k);
+        for (int i = 0; i < dataFN.length; i++) {
+            FeatureNode[] instanceFN = dataFN[i];
+            int[] tempIndices = new int[instanceFN.length];
+            double[] tempValues = new double[instanceFN.length];
+            for (int j = 0; j < instanceFN.length; j++) {
+                tempIndices[j] = instanceFN[j].index - 1;
+                tempValues[j] = instanceFN[j].value;
+            }
+            Instance instance = new SparseInstance(1, tempValues, tempIndices, dataRaw.numAttributes());
+            instance.setDataset(dataRaw);
+            if (lables[i] == -1) {
+                instance.setValue(k, "c0");
+            } else {
+                instance.setValue(k, "c1");
+            }
+            dataRaw.add(instance);
+        }
         return dataRaw;
     }
 

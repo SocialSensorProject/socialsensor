@@ -13,14 +13,16 @@ import java.util.Map;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import utoronto.edu.ca.bayes.MyComplementNaiveBayes;
+import utoronto.edu.ca.bayes.NaiveBayes;
 import utoronto.edu.ca.data.DataSet;
 import utoronto.edu.ca.util.Misc;
 import utoronto.edu.ca.validation.Metrics;
 import utoronto.edu.ca.validation.HyperParameters;
 import static utoronto.edu.ca.validation.HyperParameters.NUM_FEATURES;
 import static utoronto.edu.ca.validation.HyperParameters.nbr_features;
-import weka.classifiers.bayes.ComplementNaiveBayes;
 import static utoronto.edu.ca.validation.HyperParameters.alpha_values;
+import weka.core.Instance;
 import weka.core.Instances;
 
 /**
@@ -34,14 +36,9 @@ public class NBClassification {
     DataSet test;
 
     public NBClassification(String train, String val, String test) throws IOException {
-        this.train = DataSet.readDataset(train, true, true);
+        this.train = DataSet.readDataset(train, false, true);
         this.val = DataSet.readDataset(val, false, false);
-        this.val.normalize(this.train.getColumn_stdev());
         this.test = DataSet.readDataset(test, false, false);
-        this.test.normalize(this.train.getColumn_stdev());
-        
-        int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
-        System.out.println(this.val.getDatasetInstances(feature_ranking, 100));
     }
 
     /**
@@ -57,33 +54,40 @@ public class NBClassification {
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
         try (ProgressBar pb = new ProgressBar("Grid search", (alpha_values.length * nbr_features.length), ProgressBarStyle.ASCII)) {
             for (int nbr_feat : nbr_features) {
-                Instances train_instances = this.val.getDatasetInstances(feature_ranking, nbr_feat);
-                System.out.println(train_instances);
+                Instances train_instances = this.train.getDatasetInstances(feature_ranking, nbr_feat);
                 Instances val_instances = this.val.getDatasetInstances(feature_ranking, nbr_feat);
-                double[] valy = this.val.getLables();
                 for (double alpha : alpha_values) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Fitting parameters...");
-
-                    ComplementNaiveBayes nb = new ComplementNaiveBayes();
+                    MyComplementNaiveBayes nb = new MyComplementNaiveBayes();
                     nb.setSmoothingParameter(alpha);
                     nb.buildClassifier(train_instances);
 
-//                    double[] y_probability_positive_class = new double[valy.length];
-//                    int positive_class_label = model.getLabels()[0];
-//                    for (int j = 0; j < valx.length; j++) {
-//                        Feature[] instance = valx[j];
-//                        double[] prob_estimates = new double[model.getNrClass()];
-//                        Linear.predictProbability(model, instance, prob_estimates);
-//                        y_probability_positive_class[j] = prob_estimates[0];
-//                    }
-//                    Metrics metric = new Metrics();
-//                    double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(valy), y_probability_positive_class, positive_class_label, 1000);
-//                    Map<String, Double> map = new HashMap<>();
-//                    map.put(HyperParameters.C, C);
-//                    map.put(NUM_FEATURES, (double) nbr_feat);
-//                    ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
-//                    gridsearch.add(pair);
+                    NaiveBayes nb2 = new NaiveBayes();
+                    nb2.buildClassifier(val_instances);
+                    int positive_class_label = 1;
+                    double[] valy = new double[val_instances.numInstances()];
+                    double[] y_probability_positive_class = new double[val_instances.numInstances()];
+                    for (int i = 0; i < val_instances.numInstances(); i++) {
+                        Instance instance = val_instances.instance(i);
+                        valy[i] = instance.classValue();
+                        double[] v1 = nb2.distributionForInstance(instance);
+                        double[] v2 = nb.distributionForInstance(instance);
+                        System.out.println(nb.classifyInstance(instance));
+                        System.out.println(nb2.classifyInstance(instance));
+                        System.out.println("v1[0] = " + v1[0] + ", v2[0] = " + v2[0]);
+                        System.out.println("v1[1] = " + v1[1] + ", v2[1] = " + v2[1]);
+                        System.out.println("**********************************");
+
+                        y_probability_positive_class[i] = v1[1];
+                    }
+                    Metrics metric = new Metrics();
+                    double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(valy), y_probability_positive_class, positive_class_label, 1000);
+                    Map<String, Double> map = new HashMap<>();
+                    map.put(HyperParameters.ALPHA, alpha);
+                    map.put(NUM_FEATURES, (double) nbr_feat);
+                    ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
+                    gridsearch.add(pair);
                 }
             }
         }
@@ -104,47 +108,54 @@ public class NBClassification {
                     + gridsearch.get(i).right.get(NUM_FEATURES) + "], AveP =  " + gridsearch.get(i).left);
         }
         System.err.println("***********************************************************");
-        double C = gridsearch.get(0).right.get(HyperParameters.C);
+        double alpha = gridsearch.get(0).right.get(HyperParameters.ALPHA);
         int num_features = (int) ((double) gridsearch.get(0).right.get(NUM_FEATURES));
         /**
          * Return best hyperparameters.
          */
-        return new HyperParameters(C, num_features, feature_ranking);
+        HyperParameters hp = new HyperParameters();
+        hp.setValue_alpha(alpha);
+        hp.setNum_features(num_features);
+        hp.setFeature_ranking(feature_ranking);
+        return hp;
     }
 
-//    /**
-//     * This method test the model.
-//     *
-//     * @param hyperparameters
-//     */
-//    public void testModel(HyperParameters hyperparameters) {
-//        /**
-//         * Train best model based on best hyperparameters.
-//         */
-//        Model model = getLRModel(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features(), hyperparameters.getC());
-//        /**
-//         * Testing the model.
-//         */
-//        FeatureNode[][] testx = this.test.getDatasetFeatureNode(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
-//        double[] testy = this.test.getLables();
-//        double[] y_probability_positive_class = new double[testy.length];
-//        int positive_class_label = model.getLabels()[0];
-//        for (int j = 0; j < testx.length; j++) {
-//            Feature[] instance = testx[j];
-//            double[] prob_estimates = new double[model.getNrClass()];
-//            Linear.predictProbability(model, instance, prob_estimates);
-//            y_probability_positive_class[j] = prob_estimates[0];
-//        }
-//        Metrics metric = new Metrics();
-//        double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
-//        double p10 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 10);
-//        double p100 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 100);
-//        double p1000 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
-//        System.out.println("AP = " + ap);
-//        System.out.println("P@10 = " + p10);
-//        System.out.println("P@100 = " + p100);
-//        System.out.println("P@1000 = " + p1000);
-//    }
+    /**
+     * This method test the model.
+     *
+     * @param hyperparameters
+     */
+    public void testModel(HyperParameters hyperparameters) throws Exception {
+        /**
+         * Train best model based on best hyperparameters.
+         */
+        Instances train_instances = this.train.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+        NaiveBayes nb = new NaiveBayes();
+        nb.buildClassifier(train_instances);
+        /**
+         * Testing the model.
+         */
+        Instances test_instances = this.test.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+        int positive_class_label = 1;
+        double[] testy = new double[test_instances.numInstances()];
+        double[] y_probability_positive_class = new double[test_instances.numInstances()];
+        for (int i = 0; i < test_instances.numInstances(); i++) {
+            Instance instance = test_instances.instance(i);
+            testy[i] = instance.classValue();
+            double[] v = nb.distributionForInstance(instance);
+            y_probability_positive_class[i] = v[1];
+        }
+        Metrics metric = new Metrics();
+        double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
+        double p10 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 10);
+        double p100 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 100);
+        double p1000 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
+        System.out.println("AP = " + ap);
+        System.out.println("P@10 = " + p10);
+        System.out.println("P@100 = " + p100);
+        System.out.println("P@1000 = " + p1000);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -160,8 +171,8 @@ public class NBClassification {
 //        Classification c = new Classification("../datasets/Natr_Disaster/Natr_Disaster_Train.csv", "../datasets/Natr_Disaster/Natr_Disaster_Validation.csv", "../datasets/Natr_Disaster/Natr_Disaster_Test.csv");
 //        Classification c = new Classification("../datasets/Health/Health_Train.csv", "../datasets/Health/Health_Validation.csv", "../datasets/Health/Health_Test.csv");
         NBClassification c = new NBClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
-//        HyperParameters hyperparameters = c.tuneParameters();
-//        c.testModel(hyperparameters);
+        HyperParameters hyperparameters = c.tuneParameters();
+        c.testModel(hyperparameters);
     }
 
 }

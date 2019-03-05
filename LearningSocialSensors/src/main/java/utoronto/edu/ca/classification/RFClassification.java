@@ -5,13 +5,6 @@
  */
 package utoronto.edu.ca.classification;
 
-import de.bwaldvogel.liblinear.Feature;
-import de.bwaldvogel.liblinear.FeatureNode;
-import de.bwaldvogel.liblinear.Linear;
-import de.bwaldvogel.liblinear.Model;
-import de.bwaldvogel.liblinear.Parameter;
-import de.bwaldvogel.liblinear.Problem;
-import de.bwaldvogel.liblinear.SolverType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,58 +19,65 @@ import utoronto.edu.ca.validation.Metrics;
 import utoronto.edu.ca.validation.HyperParameters;
 import static utoronto.edu.ca.validation.HyperParameters.NUM_FEATURES;
 import static utoronto.edu.ca.validation.HyperParameters.nbr_features;
-import static utoronto.edu.ca.validation.HyperParameters.C_values;
+import static utoronto.edu.ca.validation.HyperParameters.nbr_trees;
+import weka.classifiers.trees.RandomForest;
+import weka.core.Instance;
+import weka.core.Instances;
 
 /**
  *
  * @author reda
  */
-public class LRClassification {
+public class RFClassification {
 
     DataSet train;
     DataSet val;
     DataSet test;
 
-    public LRClassification(String train, String val, String test) throws IOException {
+    public RFClassification(String train, String val, String test) throws IOException {
         this.train = DataSet.readDataset(train, true, true);
         this.val = DataSet.readDataset(val, false, false);
         this.val.normalize(this.train.getColumn_stdev());
         this.test = DataSet.readDataset(test, false, false);
         this.test.normalize(this.train.getColumn_stdev());
-
     }
 
     /**
      * This method tunes hyperparameters.
      *
      * @return
+     * @throws java.lang.Exception
      */
-    public HyperParameters tuneParameters() {
+    public HyperParameters tuneParameters() throws Exception {
         System.err.println("***********************************************************");
-        System.err.println("Number of parameters to fit: " + (C_values.length * nbr_features.length));
+        System.err.println("Number of parameters to fit: " + (nbr_trees.length * nbr_features.length));
         System.err.println("***********************************************************");
         List<ImmutablePair<Double, Map<String, Double>>> gridsearch = new ArrayList<>();
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
-        try (ProgressBar pb = new ProgressBar("Grid search", (C_values.length * nbr_features.length), ProgressBarStyle.ASCII)) {
+        try (ProgressBar pb = new ProgressBar("Grid search", (nbr_trees.length * nbr_features.length), ProgressBarStyle.ASCII)) {
             for (int nbr_feat : nbr_features) {
-                FeatureNode[][] valx = this.val.getDatasetFeatureNode(feature_ranking, nbr_feat);
-                double[] valy = this.val.getLables();
-                for (double C : C_values) {
+                Instances train_instances = this.train.getDatasetInstances(feature_ranking, nbr_feat);
+                Instances val_instances = this.val.getDatasetInstances(feature_ranking, nbr_feat);
+                for (int nbr_tree : nbr_trees) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Fitting parameters...");
-                    Model model = getLRModel(feature_ranking, nbr_feat, C);
-                    double[] y_probability_positive_class = new double[valy.length];
-                    int positive_class_label = model.getLabels()[0];
-                    for (int i = 0; i < valx.length; i++) {
-                        Feature[] instance = valx[i];
-                        double[] prob_estimates = new double[model.getNrClass()];
-                        Linear.predictProbability(model, instance, prob_estimates);
-                        y_probability_positive_class[i] = prob_estimates[0];
+                    RandomForest rf = new RandomForest();
+                    rf.setNumTrees(nbr_tree);
+                    rf.buildClassifier(train_instances);
+
+                    int positive_class_label = 1;
+                    double[] valy = new double[val_instances.numInstances()];
+                    double[] y_probability_positive_class = new double[val_instances.numInstances()];
+                    for (int i = 0; i < val_instances.numInstances(); i++) {
+                        Instance instance = val_instances.instance(i);
+                        valy[i] = instance.classValue();
+                        double[] v = rf.distributionForInstance(instance);
+                        y_probability_positive_class[i] = v[1];
                     }
                     Metrics metric = new Metrics();
                     double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(valy), y_probability_positive_class, positive_class_label, 1000);
                     Map<String, Double> map = new HashMap<>();
-                    map.put(HyperParameters.C, C);
+                    map.put(HyperParameters.NUM_TREES, (double) nbr_tree);
                     map.put(NUM_FEATURES, (double) nbr_feat);
                     ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
                     gridsearch.add(pair);
@@ -97,17 +97,17 @@ public class LRClassification {
         System.err.println("***********************************************************");
         System.err.println("[Best 10 parameters:");
         for (int i = 0; i < Math.min(10, gridsearch.size()); i++) {
-            System.err.println((i + 1) + "- [Lambda = " + gridsearch.get(i).right.get(HyperParameters.C) + ", Num features = "
+            System.err.println((i + 1) + "- [Num Trees = " + gridsearch.get(i).right.get(HyperParameters.NUM_TREES) + ", Num features = "
                     + gridsearch.get(i).right.get(NUM_FEATURES) + "], AveP =  " + gridsearch.get(i).left);
         }
         System.err.println("***********************************************************");
-        double C = gridsearch.get(0).right.get(HyperParameters.C);
+        int nbr_tree = gridsearch.get(0).right.get(HyperParameters.NUM_TREES).intValue();
         int num_features = (int) ((double) gridsearch.get(0).right.get(NUM_FEATURES));
         /**
          * Return best hyperparameters.
          */
         HyperParameters hp = new HyperParameters();
-        hp.setValue_C(C);
+        hp.setNum_trees(nbr_tree);
         hp.setNum_features(num_features);
         hp.setFeature_ranking(feature_ranking);
         return hp;
@@ -117,24 +117,28 @@ public class LRClassification {
      * This method test the model.
      *
      * @param hyperparameters
+     * @throws java.lang.Exception
      */
-    public void testModel(HyperParameters hyperparameters) {
+    public void testModel(HyperParameters hyperparameters) throws Exception {
         /**
          * Train best model based on best hyperparameters.
          */
-        Model model = getLRModel(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features(), hyperparameters.getC());
+        Instances train_instances = this.train.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+        RandomForest rf = new RandomForest();
+        rf.setNumTrees(hyperparameters.getNum_trees());
+        rf.buildClassifier(train_instances);
         /**
          * Testing the model.
          */
-        FeatureNode[][] testx = this.test.getDatasetFeatureNode(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
-        double[] testy = this.test.getLables();
-        double[] y_probability_positive_class = new double[testy.length];
-        int positive_class_label = model.getLabels()[0];
-        for (int i = 0; i < testx.length; i++) {
-            Feature[] instance = testx[i];
-            double[] prob_estimates = new double[model.getNrClass()];
-            Linear.predictProbability(model, instance, prob_estimates);
-            y_probability_positive_class[i] = prob_estimates[0];
+        Instances test_instances = this.test.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+        int positive_class_label = 1;
+        double[] testy = new double[test_instances.numInstances()];
+        double[] y_probability_positive_class = new double[test_instances.numInstances()];
+        for (int i = 0; i < test_instances.numInstances(); i++) {
+            Instance instance = test_instances.instance(i);
+            testy[i] = instance.classValue();
+            double[] v = rf.distributionForInstance(instance);
+            y_probability_positive_class[i] = v[1];
         }
         Metrics metric = new Metrics();
         double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
@@ -148,37 +152,9 @@ public class LRClassification {
     }
 
     /**
-     * This methods train a model.
-     *
-     * @param feature_ranking
-     * @param nbr_features
-     * @param C
-     * @return
-     */
-    private Model getLRModel(int[] feature_ranking, int nbr_features, double C) {
-        FeatureNode[][] trainx = this.train.getDatasetFeatureNode(feature_ranking, nbr_features);
-        double[] trainy = this.train.getLables();
-        Problem problem = new Problem();
-        // number of training examples
-        problem.l = trainx.length;
-        // number of features
-        problem.bias = 1;
-        problem.n = nbr_features + 1;
-        // problem.x = ... // feature nodes
-        problem.x = trainx;
-        // problem.y = ... // target values
-        problem.y = trainy;
-        Linear.disableDebugOutput();
-        SolverType solver = SolverType.L2R_LR; // -s 0
-        double eps = 0.01; // stopping criteria
-        Parameter parameter = new Parameter(solver, C, eps);
-        return Linear.train(problem, parameter);
-    }
-
-    /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, Exception {
         // TODO code application logic here
 //        Classification c = new Classification("../datasets/Tennis/Tennis_Train.csv", "../datasets/Tennis/Tennis_Validation.csv", "../datasets/Tennis/Tennis_Test.csv");
 //        Classification c = new Classification("../datasets/Space/Space_Train.csv", "../datasets/Space/Space_Validation.csv", "../datasets/Space/Space_Test.csv");
@@ -189,7 +165,7 @@ public class LRClassification {
 //        Classification c = new Classification("../datasets/Social_issue/Social_issue_Train.csv", "../datasets/Social_issue/Social_issue_Validation.csv", "../datasets/Social_issue/Social_issue_Test.csv");
 //        Classification c = new Classification("../datasets/Natr_Disaster/Natr_Disaster_Train.csv", "../datasets/Natr_Disaster/Natr_Disaster_Validation.csv", "../datasets/Natr_Disaster/Natr_Disaster_Test.csv");
 //        Classification c = new Classification("../datasets/Health/Health_Train.csv", "../datasets/Health/Health_Validation.csv", "../datasets/Health/Health_Test.csv");
-        LRClassification c = new LRClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
+        RFClassification c = new RFClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
         HyperParameters hyperparameters = c.tuneParameters();
         c.testModel(hyperparameters);
     }
