@@ -35,6 +35,9 @@ public class RFClassification {
     DataSet test;
 
     public RFClassification(String train, String val, String test) throws IOException {
+        System.err.println("***********************************************************");
+        System.err.println("Random forest. ");
+        System.err.println("***********************************************************");
         this.train = DataSet.readDataset(train, true, true);
         this.val = DataSet.readDataset(val, false, false);
         this.val.normalize(this.train.getColumn_stdev());
@@ -160,17 +163,7 @@ public class RFClassification {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, Exception {
-        // TODO code application logic here
-//        Classification c = new Classification("../datasets/Tennis/Tennis_Train.csv", "../datasets/Tennis/Tennis_Validation.csv", "../datasets/Tennis/Tennis_Test.csv");
-//        Classification c = new Classification("../datasets/Space/Space_Train.csv", "../datasets/Space/Space_Validation.csv", "../datasets/Space/Space_Test.csv");
-//        Classification c = new Classification("../datasets/Soccer/Soccer_Train.csv", "../datasets/Soccer/Soccer_Validation.csv", "../datasets/Soccer/Soccer_Test.csv");
-//        Classification c = new Classification("../datasets/Iran/Iran_Train.csv", "../datasets/Iran/Iran_Validation.csv", "../datasets/Iran/Iran_Test.csv");
-//        Classification c = new Classification("../datasets/Human_Disaster/Human_Disaster_Train.csv", "../datasets/Human_Disaster/Human_Disaster_Validation.csv", "../datasets/Human_Disaster/Human_Disaster_Test.csv");
-//        Classification c = new Classification("../datasets/Cele_death/Cele_death_Train.csv", "../datasets/Cele_death/Cele_death_Validation.csv", "../datasets/Cele_death/Cele_death_Test.csv");
-//        Classification c = new Classification("../datasets/Social_issue/Social_issue_Train.csv", "../datasets/Social_issue/Social_issue_Validation.csv", "../datasets/Social_issue/Social_issue_Test.csv");
-//        Classification c = new Classification("../datasets/Natr_Disaster/Natr_Disaster_Train.csv", "../datasets/Natr_Disaster/Natr_Disaster_Validation.csv", "../datasets/Natr_Disaster/Natr_Disaster_Test.csv");
-//        Classification c = new Classification("../datasets/Health/Health_Train.csv", "../datasets/Health/Health_Validation.csv", "../datasets/Health/Health_Test.csv");
-        RFClassification c = new RFClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
+        RFClassification c = new RFClassification(args[0], args[1], args[2]);
         HyperParameters hyperparameters = c.tuneParameters();
         c.testModel(hyperparameters);
     }

@@ -36,6 +36,9 @@ public class NBClassification {
     DataSet test;
 
     public NBClassification(String train, String val, String test) throws IOException {
+        System.err.println("***********************************************************");
+        System.err.println("Naive Bayes ");
+        System.err.println("***********************************************************");
         this.train = DataSet.readDataset(train, false, true);
         this.val = DataSet.readDataset(val, false, false);
         this.test = DataSet.readDataset(test, false, false);
@@ -48,7 +51,7 @@ public class NBClassification {
      */
     public HyperParameters tuneParameters() throws Exception {
         System.err.println("***********************************************************");
-        System.err.println("Number of parameters to fit: " + (alpha_values.length * nbr_features.length));
+        System.err.println("Number of parameters to fit: " + (nbr_features.length));
         System.err.println("***********************************************************");
         List<ImmutablePair<Double, Map<String, Double>>> gridsearch = new ArrayList<>();
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
@@ -56,39 +59,39 @@ public class NBClassification {
             for (int nbr_feat : nbr_features) {
                 Instances train_instances = this.train.getDatasetInstances(feature_ranking, nbr_feat);
                 Instances val_instances = this.val.getDatasetInstances(feature_ranking, nbr_feat);
-                for (double alpha : alpha_values) {
-                    pb.step(); // step by 1
-                    pb.setExtraMessage("Fitting parameters...");
-                    MyComplementNaiveBayes nb = new MyComplementNaiveBayes();
-                    nb.setSmoothingParameter(alpha);
-                    nb.buildClassifier(train_instances);
+//                for (double alpha : alpha_values) {
+                pb.step(); // step by 1
+                pb.setExtraMessage("Fitting parameters...");
+//                    MyComplementNaiveBayes nb = new MyComplementNaiveBayes();
+//                    nb.setSmoothingParameter(alpha);
+//                    nb.buildClassifier(train_instances);
 
-                    NaiveBayes nb2 = new NaiveBayes();
-                    nb2.buildClassifier(val_instances);
-                    int positive_class_label = 1;
-                    double[] valy = new double[val_instances.numInstances()];
-                    double[] y_probability_positive_class = new double[val_instances.numInstances()];
-                    for (int i = 0; i < val_instances.numInstances(); i++) {
-                        Instance instance = val_instances.instance(i);
-                        valy[i] = instance.classValue();
-                        double[] v1 = nb2.distributionForInstance(instance);
-                        double[] v2 = nb.distributionForInstance(instance);
-                        System.out.println(nb.classifyInstance(instance));
-                        System.out.println(nb2.classifyInstance(instance));
-                        System.out.println("v1[0] = " + v1[0] + ", v2[0] = " + v2[0]);
-                        System.out.println("v1[1] = " + v1[1] + ", v2[1] = " + v2[1]);
-                        System.out.println("**********************************");
+                NaiveBayes nb2 = new NaiveBayes();
+                nb2.buildClassifier(val_instances);
+                int positive_class_label = 1;
+                double[] valy = new double[val_instances.numInstances()];
+                double[] y_probability_positive_class = new double[val_instances.numInstances()];
+                for (int i = 0; i < val_instances.numInstances(); i++) {
+                    Instance instance = val_instances.instance(i);
+                    valy[i] = instance.classValue();
+                    double[] v1 = nb2.distributionForInstance(instance);
+//                        double[] v2 = nb.distributionForInstance(instance);
+//                        System.out.println(nb.classifyInstance(instance));
+//                        System.out.println(nb2.classifyInstance(instance));
+//                        System.out.println("v1[0] = " + v1[0] + ", v2[0] = " + v2[0]);
+//                        System.out.println("v1[1] = " + v1[1] + ", v2[1] = " + v2[1]);
+//                        System.out.println("**********************************");
 
-                        y_probability_positive_class[i] = v1[1];
-                    }
-                    Metrics metric = new Metrics();
-                    double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(valy), y_probability_positive_class, positive_class_label, 1000);
-                    Map<String, Double> map = new HashMap<>();
-                    map.put(HyperParameters.ALPHA, alpha);
-                    map.put(NUM_FEATURES, (double) nbr_feat);
-                    ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
-                    gridsearch.add(pair);
+                    y_probability_positive_class[i] = v1[1];
                 }
+                Metrics metric = new Metrics();
+                double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(valy), y_probability_positive_class, positive_class_label, 1000);
+                Map<String, Double> map = new HashMap<>();
+                map.put(HyperParameters.ALPHA, 0.0);
+                map.put(NUM_FEATURES, (double) nbr_feat);
+                ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
+                gridsearch.add(pair);
+//                }
             }
         }
         /**
@@ -160,17 +163,7 @@ public class NBClassification {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, Exception {
-        // TODO code application logic here
-//        Classification c = new Classification("../datasets/Tennis/Tennis_Train.csv", "../datasets/Tennis/Tennis_Validation.csv", "../datasets/Tennis/Tennis_Test.csv");
-//        Classification c = new Classification("../datasets/Space/Space_Train.csv", "../datasets/Space/Space_Validation.csv", "../datasets/Space/Space_Test.csv");
-//        Classification c = new Classification("../datasets/Soccer/Soccer_Train.csv", "../datasets/Soccer/Soccer_Validation.csv", "../datasets/Soccer/Soccer_Test.csv");
-//        Classification c = new Classification("../datasets/Iran/Iran_Train.csv", "../datasets/Iran/Iran_Validation.csv", "../datasets/Iran/Iran_Test.csv");
-//        Classification c = new Classification("../datasets/Human_Disaster/Human_Disaster_Train.csv", "../datasets/Human_Disaster/Human_Disaster_Validation.csv", "../datasets/Human_Disaster/Human_Disaster_Test.csv");
-//        Classification c = new Classification("../datasets/Cele_death/Cele_death_Train.csv", "../datasets/Cele_death/Cele_death_Validation.csv", "../datasets/Cele_death/Cele_death_Test.csv");
-//        Classification c = new Classification("../datasets/Social_issue/Social_issue_Train.csv", "../datasets/Social_issue/Social_issue_Validation.csv", "../datasets/Social_issue/Social_issue_Test.csv");
-//        Classification c = new Classification("../datasets/Natr_Disaster/Natr_Disaster_Train.csv", "../datasets/Natr_Disaster/Natr_Disaster_Validation.csv", "../datasets/Natr_Disaster/Natr_Disaster_Test.csv");
-//        Classification c = new Classification("../datasets/Health/Health_Train.csv", "../datasets/Health/Health_Validation.csv", "../datasets/Health/Health_Test.csv");
-        NBClassification c = new NBClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
+        NBClassification c = new NBClassification(args[0], args[1], args[2]);
         HyperParameters hyperparameters = c.tuneParameters();
         c.testModel(hyperparameters);
     }

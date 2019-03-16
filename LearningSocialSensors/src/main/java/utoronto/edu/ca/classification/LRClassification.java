@@ -37,14 +37,26 @@ public class LRClassification {
     DataSet train;
     DataSet val;
     DataSet test;
+    List<DataSet> list_test = new ArrayList<>();
 
     public LRClassification(String train, String val, String test) throws IOException {
+        System.err.println("***********************************************************");
+        System.err.println("Logistic Regression. ");
+        System.err.println("***********************************************************");
         this.train = DataSet.readDataset(train, true, true);
         this.val = DataSet.readDataset(val, false, false);
         this.val.normalize(this.train.getColumn_stdev());
         this.test = DataSet.readDataset(test, false, false);
         this.test.normalize(this.train.getColumn_stdev());
-
+        /**
+         * Reading monthly test set.
+         */
+        for (int i = 1; i <= 10; i++) {
+            String name = test.replaceAll(".csv", "");
+            DataSet d = DataSet.readDataset(name + i + ".csv", false, false);
+            d.normalize(this.train.getColumn_stdev());
+            list_test.add(d);
+        }
     }
 
     /**
@@ -141,10 +153,31 @@ public class LRClassification {
         double p10 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 10);
         double p100 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 100);
         double p1000 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
-        System.out.println("AP = " + ap);
-        System.out.println("P@10 = " + p10);
-        System.out.println("P@100 = " + p100);
-        System.out.println("P@1000 = " + p1000);
+//        System.out.println("AP = " + ap);
+//        System.out.println("P@10 = " + p10);
+//        System.out.println("P@100 = " + p100);
+//        System.out.println("P@1000 = " + p1000);
+        System.out.println("#0\t" + ap + "\t" + p10 + "\t" + p100 + "\t" + p1000);
+        int k = 0;
+        for (DataSet local_test : this.list_test) {
+            k++;
+            testx = local_test.getDatasetFeatureNode(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+            testy = local_test.getLables();
+            y_probability_positive_class = new double[testy.length];
+            positive_class_label = model.getLabels()[0];
+            for (int i = 0; i < testx.length; i++) {
+                Feature[] instance = testx[i];
+                double[] prob_estimates = new double[model.getNrClass()];
+                Linear.predictProbability(model, instance, prob_estimates);
+                y_probability_positive_class[i] = prob_estimates[0];
+            }
+            metric = new Metrics();
+            ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
+            p10 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 10);
+            p100 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 100);
+            p1000 = metric.getPrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);
+            System.out.println(k + "\t" + ap + "\t" + p10 + "\t" + p100 + "\t" + p1000);
+        }
     }
 
     /**
@@ -179,17 +212,7 @@ public class LRClassification {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        // TODO code application logic here
-//        Classification c = new Classification("../datasets/Tennis/Tennis_Train.csv", "../datasets/Tennis/Tennis_Validation.csv", "../datasets/Tennis/Tennis_Test.csv");
-//        Classification c = new Classification("../datasets/Space/Space_Train.csv", "../datasets/Space/Space_Validation.csv", "../datasets/Space/Space_Test.csv");
-//        Classification c = new Classification("../datasets/Soccer/Soccer_Train.csv", "../datasets/Soccer/Soccer_Validation.csv", "../datasets/Soccer/Soccer_Test.csv");
-//        Classification c = new Classification("../datasets/Iran/Iran_Train.csv", "../datasets/Iran/Iran_Validation.csv", "../datasets/Iran/Iran_Test.csv");
-//        Classification c = new Classification("../datasets/Human_Disaster/Human_Disaster_Train.csv", "../datasets/Human_Disaster/Human_Disaster_Validation.csv", "../datasets/Human_Disaster/Human_Disaster_Test.csv");
-//        Classification c = new Classification("../datasets/Cele_death/Cele_death_Train.csv", "../datasets/Cele_death/Cele_death_Validation.csv", "../datasets/Cele_death/Cele_death_Test.csv");
-//        Classification c = new Classification("../datasets/Social_issue/Social_issue_Train.csv", "../datasets/Social_issue/Social_issue_Validation.csv", "../datasets/Social_issue/Social_issue_Test.csv");
-//        Classification c = new Classification("../datasets/Natr_Disaster/Natr_Disaster_Train.csv", "../datasets/Natr_Disaster/Natr_Disaster_Validation.csv", "../datasets/Natr_Disaster/Natr_Disaster_Test.csv");
-//        Classification c = new Classification("../datasets/Health/Health_Train.csv", "../datasets/Health/Health_Validation.csv", "../datasets/Health/Health_Test.csv");
-        LRClassification c = new LRClassification("../datasets/LGBT/LGBT_Train.csv", "../datasets/LGBT/LGBT_Validation.csv", "../datasets/LGBT/LGBT_Test.csv");
+        LRClassification c = new LRClassification(args[0], args[1], args[2]);
         HyperParameters hyperparameters = c.tuneParameters();
         c.testModel(hyperparameters);
     }

@@ -39,8 +39,9 @@ public class Metrics {
             }
         }
         );
-        double p_k = 0;
-        for (int i = 0; i < k; i++) {
+        double p_k = 0;        
+        double max = Math.min(list.size(), k);
+        for (int i = 0; i < max; i++) {
             Bundle b = list.get(i);
             if (b.getTruth() == label) {
                 p_k++;
