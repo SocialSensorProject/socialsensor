@@ -1,0 +1,10 @@
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.97.101:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.96.109:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.97.111:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.96.118:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.96.26:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.96.72:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.97.119:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.96.176:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.96.40:$1 .
+scp -r -o StrictHostKeyChecking=no -i ~/.ssh/imac_nectar_key.pem ubuntu@43.240.96.84:$1 .
