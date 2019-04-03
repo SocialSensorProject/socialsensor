@@ -12,6 +12,7 @@ import de.bwaldvogel.liblinear.Model;
 import de.bwaldvogel.liblinear.Parameter;
 import de.bwaldvogel.liblinear.Problem;
 import de.bwaldvogel.liblinear.SolverType;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,12 +52,16 @@ public class LRClassification {
         /**
          * Reading monthly test set.
          */
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 20; i++) {
             String name = test.replaceAll(".csv", "");
-            DataSet d = DataSet.readDataset(name + i + ".csv", false, false);
-            d.normalize(this.train.getColumn_stdev());
-            list_test.add(d);
+            File tempFile = new File(name + i + ".csv");
+            if (tempFile.exists()) {
+                DataSet d = DataSet.readDataset(name + i + ".csv", false, false);
+                d.normalize(this.train.getColumn_stdev());
+                list_test.add(d);
+            }
         }
+        System.err.println(list_test.size() + " files are in test set.");
     }
 
     /**

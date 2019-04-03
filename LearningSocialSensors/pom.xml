@@ -16,7 +16,7 @@
                         <manifest> 
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>utoronto.edu.ca.classification.KNNClassification</mainClass>
+                            <mainClass>utoronto.edu.ca.classification.SVMClassification</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

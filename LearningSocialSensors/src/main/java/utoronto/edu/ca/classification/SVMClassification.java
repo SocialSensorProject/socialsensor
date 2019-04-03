@@ -26,8 +26,6 @@ import utoronto.edu.ca.validation.HyperParameters;
 import static utoronto.edu.ca.validation.HyperParameters.NUM_FEATURES;
 import static utoronto.edu.ca.validation.HyperParameters.nbr_features;
 import static utoronto.edu.ca.validation.HyperParameters.C_values;
-import static utoronto.edu.ca.validation.HyperParameters.GAMMA;
-import static utoronto.edu.ca.validation.HyperParameters.gamma_values;
 
 /**
  *
@@ -58,11 +56,11 @@ public class SVMClassification {
      */
     public HyperParameters tuneParameters() {
         System.err.println("***********************************************************");
-        System.err.println("Number of parameters to fit: " + (C_values.length * nbr_features.length * gamma_values.length));
+        System.err.println("Number of parameters to fit: " + (C_values.length * nbr_features.length ));
         System.err.println("***********************************************************");
         List<ImmutablePair<Double, Map<String, Double>>> gridsearch = new ArrayList<>();
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
-        try (ProgressBar pb = new ProgressBar("Grid search", (C_values.length * nbr_features.length * gamma_values.length), ProgressBarStyle.ASCII)) {
+        try (ProgressBar pb = new ProgressBar("Grid search", (C_values.length * nbr_features.length ), ProgressBarStyle.ASCII)) {
             for (int nbr_feat : nbr_features) {
                 svm_node[][] valx = this.val.getDatasetSVM_Node(feature_ranking, nbr_feat);
                 double[] valy = this.val.getLables();
@@ -70,7 +68,7 @@ public class SVMClassification {
 //                    for (double gamma : gamma_values) {
                     pb.step(); // step by 1
                     pb.setExtraMessage("Fitting parameters...");
-                    svm_model model = getSVMModel(feature_ranking, nbr_feat, C, 0);
+                    svm_model model = getSVMModel(feature_ranking, nbr_feat, C);
 
                     double[] y_probability_positive_class = new double[valy.length];
                     int positive_class_label = model.label[0];
@@ -88,7 +86,6 @@ public class SVMClassification {
                     Map<String, Double> map = new HashMap<>();
                     map.put(HyperParameters.C, C);
                     map.put(NUM_FEATURES, (double) nbr_feat);
-                    map.put(GAMMA, 0.0);
                     ImmutablePair<Double, Map<String, Double>> pair = new ImmutablePair<>(ap, map);
                     gridsearch.add(pair);
 //                    }
@@ -108,21 +105,18 @@ public class SVMClassification {
         System.err.println("***********************************************************");
         System.err.println("[Best 10 parameters:");
         for (int i = 0; i < Math.min(10, gridsearch.size()); i++) {
-            System.err.println((i + 1) + "- [Lambda = " + gridsearch.get(i).right.get(HyperParameters.C)
-                    + ", C = " + gridsearch.get(i).right.get(GAMMA)
+            System.err.println((i + 1) + "- [C = " + gridsearch.get(i).right.get(HyperParameters.C)
                     + ", Num features = " + gridsearch.get(i).right.get(NUM_FEATURES)
                     + "], AveP =  " + gridsearch.get(i).left);
         }
         System.err.println("***********************************************************");
         double C = gridsearch.get(0).right.get(HyperParameters.C);
-        double gamma = gridsearch.get(0).right.get(HyperParameters.GAMMA);
         int num_features = (int) ((double) gridsearch.get(0).right.get(NUM_FEATURES));
         /**
          * Return best hyperparameters.
          */
         HyperParameters hyperparameters = new HyperParameters();
         hyperparameters.setValue_C(C);
-        hyperparameters.setValue_gamma(gamma);
         hyperparameters.setNum_features(num_features);
         hyperparameters.setFeature_ranking(feature_ranking);
         return hyperparameters;
@@ -137,7 +131,7 @@ public class SVMClassification {
         /**
          * Train best model based on best hyperparameters.
          */
-        svm_model model = getSVMModel(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features(), hyperparameters.getC(), hyperparameters.getValue_gamma());
+        svm_model model = getSVMModel(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features(), hyperparameters.getC());
         /**
          * Testing the model.
          */
@@ -173,7 +167,7 @@ public class SVMClassification {
      * @param C
      * @return
      */
-    private svm_model getSVMModel(int[] feature_ranking, int nbr_features, double C, double gamma) {
+    private svm_model getSVMModel(int[] feature_ranking, int nbr_features, double C) {
         svm_node[][] trainx = this.train.getDatasetSVM_Node(feature_ranking, nbr_features);
         double[] trainy = this.train.getLables();
         svm_problem problem = new svm_problem();
@@ -190,7 +184,7 @@ public class SVMClassification {
         param.C = 1;
         param.eps = 1e-3;
         param.p = 0.1;
-        param.shrinking = 0;
+        param.shrinking = 1;
         param.probability = 1;
         param.nr_weight = 0;
         param.weight_label = new int[0];
@@ -204,7 +198,7 @@ public class SVMClassification {
         /**
          * Parameters to be modified.
          */
-        param.gamma = gamma;
+        param.gamma = 0;
         param.C = C;
         svm_model model = svm.svm_train(problem, param);
         return model;

@@ -127,14 +127,26 @@ public class RFClassification {
         /**
          * Train best model based on best hyperparameters.
          */
+        System.err.println("***********************************************************");
+        System.err.println("[Num Trees = " + hyperparameters.getNum_trees() + ", Num features = "
+                + hyperparameters.getNum_features() + "]  ");
+        System.err.println("***********************************************************");
+        System.err.println("Preparing training.");
         Instances train_instances = this.train.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+        System.err.println("Training prepared.");
+        System.err.println("Creating model.");
         RandomForest rf = new RandomForest();
         rf.setNumTrees(hyperparameters.getNum_trees());
+        rf.setMaxDepth(10);
         rf.buildClassifier(train_instances);
+        System.err.println("Model created.");
+        System.err.println("***********************************************************");
         /**
          * Testing the model.
          */
+        System.err.println("Preparing testset.");
         Instances test_instances = this.test.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
+        System.err.println("Testset prepared.");
         int positive_class_label = 1;
         double[] testy = new double[test_instances.numInstances()];
         double[] y_probability_positive_class = new double[test_instances.numInstances()];
@@ -161,10 +173,18 @@ public class RFClassification {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException, Exception {
         RFClassification c = new RFClassification(args[0], args[1], args[2]);
         HyperParameters hyperparameters = c.tuneParameters();
+//        HyperParameters hyperparameters = new HyperParameters();
+//        hyperparameters.setNum_trees(50);
+//        hyperparameters.setNum_features(1000);
+
+//        int[] feature_ranking = c.train.getIndexFeaturesRankingByMI();
+//
+//        hyperparameters.setFeature_ranking(feature_ranking);
         c.testModel(hyperparameters);
     }
 

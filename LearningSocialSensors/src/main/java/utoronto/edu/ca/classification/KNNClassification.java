@@ -23,6 +23,7 @@ import static utoronto.edu.ca.validation.HyperParameters.nbr_features;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.neighboursearch.KDTree;
 
 /**
  *
@@ -54,23 +55,28 @@ public class KNNClassification {
     public HyperParameters tuneParameters() throws Exception {
         System.err.println("***********************************************************");
         System.err.println("Number of parameters to fit: " + (k_values.length * nbr_features.length));
+        System.err.println("New method.");
         System.err.println("***********************************************************");
         List<ImmutablePair<Double, Map<String, Double>>> gridsearch = new ArrayList<>();
         int[] feature_ranking = this.train.getIndexFeaturesRankingByMI();
-        try (ProgressBar pb = new ProgressBar("Grid search", (k_values.length * nbr_features.length), ProgressBarStyle.ASCII)) {
+        try (ProgressBar pb = new ProgressBar("Grid search", (k_values.length * nbr_features.length * this.val.getRowDimension()), ProgressBarStyle.ASCII)) {
             for (int nbr_feat : nbr_features) {
                 Instances train_instances = this.train.getDatasetInstances(feature_ranking, nbr_feat);
                 Instances val_instances = this.val.getDatasetInstances(feature_ranking, nbr_feat);
-                for (int k : k_values) {
-                    pb.step(); // step by 1
-                    pb.setExtraMessage("Fitting parameters...");
-                    IBk knn = new IBk(k);
+                pb.setExtraMessage("Building classifier...");
 
+                pb.setExtraMessage("Classifier built.");
+                for (int k : k_values) {
+                    IBk knn = new IBk();
+                    knn.setNearestNeighbourSearchAlgorithm(new KDTree());
+                    knn.setKNN(k);
                     knn.buildClassifier(train_instances);
                     int positive_class_label = 1;
                     double[] valy = new double[val_instances.numInstances()];
                     double[] y_probability_positive_class = new double[val_instances.numInstances()];
                     for (int i = 0; i < val_instances.numInstances(); i++) {
+                        pb.step(); // step by 1
+                        pb.setExtraMessage("Fitting parameters...");
                         Instance instance = val_instances.instance(i);
                         valy[i] = instance.classValue();
                         double[] v = knn.distributionForInstance(instance);
@@ -125,9 +131,15 @@ public class KNNClassification {
         /**
          * Train best model based on best hyperparameters.
          */
+        System.err.println("***********************************************************");
+        System.err.println("[K = " + hyperparameters.getK() + ", Num features = "
+                + hyperparameters.getNum_features() + "]  ");
+        System.err.println("***********************************************************");
         Instances train_instances = this.train.getDatasetInstances(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
         IBk knn = new IBk(hyperparameters.getK());
+        knn.setNearestNeighbourSearchAlgorithm(new KDTree());
         knn.buildClassifier(train_instances);
+        System.out.println("Classifier built.");
         /**
          * Testing the model.
          */

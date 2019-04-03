@@ -62,7 +62,7 @@ public final class DataSet {
     private final OpenIntToFloatHashMap rowNonZeroEntries = new OpenIntToFloatHashMap(0f);
 
     /**
-     * Number of non zero entries in rows of the matrix.
+     * Number of non zero entries in columns of the matrix.
      */
     private final OpenIntToFloatHashMap columnNonZeroEntries = new OpenIntToFloatHashMap(0f);
 
