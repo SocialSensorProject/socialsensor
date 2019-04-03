@@ -40,7 +40,7 @@ set grid
 set yrange [10**-12:10**-2] 
 set xrange [0:11] 
 #set logscale y
-set size 0.8,0.8
+set size 0.8,0.6
 #set pointsize 0.5
 set border 4095
 set  logscale y
