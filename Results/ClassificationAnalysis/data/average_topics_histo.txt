@@ -1,0 +1,7 @@
+# IMMIGRATION BY REGION AND SELECTED COUNTRY OF LAST RESIDENCE			
+#			
+Region	"No Training # in Validation set"	"No Training # in Validation set"	"With Training # in Validation set"	"With Training # in Validation set"
+AP	0.67824	0.17249	0.62129	0.176
+"P\\@10"	0.61	0.20126	0.56000	0.23411
+"P\\@100"	0.69600	0.17219	0.62800	0.18490
+"P\\@1000"	0.55860	0.16820	0.49710	0.15265

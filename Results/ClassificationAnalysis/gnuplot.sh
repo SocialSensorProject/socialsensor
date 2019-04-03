@@ -108,7 +108,7 @@ set yrange [0.2:0.7]
 set xrange [1:7] 
 
 
-
+unset key
 set xtics ("50 days" 1, "100 days" 2, "150 days" 3, "200 days" 4, "250 days" 5, "300 days" 6, "350 days" 7, "400 days" 8, "450 days" 9, "500 days" 10 ) rotate by 45 right
 
 f1(x) = a1*x + b1
@@ -123,18 +123,16 @@ set term postscript eps enhanced color "Courier,17"
 #  Average AP
 set ylabel "Average Precision" font "Courier,22"
 
-set output "plots/average_topics_ap.eps" 
 fit f1(x) 'data/average_topics1.txt' u 1:2 via a1, b1
 fit f2(x) 'data/average_topics2.txt' u 1:2 via a2, b2
 
+set output "plots/average_topics_ap.eps" 
 plot  'data/average_topics1.txt' u 1:2  notitle with linespoints lw 3 lc 1 ,\
  "data/average_topics1.txt" using 1:2:3 title 'No training #'  with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
+ f1(x) notitle lt 'dashed' lw 3 lc 1,\
 'data/average_topics2.txt' u 1:2  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:2:3 title 'Keep training #'  with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
-
-set output "plots/average_topics_ap_reg.eps" 
-plot  f1(x) title 'No training #' lw 3 lc 1,\
-f2(x) title 'Keep training #'lw 3 lc 2
+f2(x) notitle lt 'dashed' lw 3 lc 2
 
 
 
@@ -149,56 +147,50 @@ f2(x) title 'Keep training #'lw 3 lc 2
 set yrange [0.1:0.9]
 
 set ylabel "Precision at 10" font "Courier,22"
-set output "plots/average_topics_p10.eps" 
 fit f1(x) 'data/average_topics1.txt' u 1:4 via a1, b1
 fit f2(x) 'data/average_topics2.txt' u 1:4 via a2, b2
 
 
+set output "plots/average_topics_p10.eps" 
 plot  'data/average_topics1.txt' u 1:4  notitle with linespoints lw 3 lc 1 ,\
- "data/average_topics1.txt" using 1:4:5 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
+"data/average_topics1.txt" using 1:4:5 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
+f1(x) notitle lt 'dashed' lw 3 lc 1,\
 'data/average_topics2.txt' u 1:4  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:4:5 title 'Keep training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
+f2(x) notitle lt 'dashed' lw 3 lc 2
 
 
-set output "plots/average_topics_p10_reg.eps" 
-plot  f1(x) title 'No training #' lw 3 lc 1,\
-f2(x) title 'Keep training #'lw 3 lc 2
 
 #  Average P@100
 set ylabel "Precision at 100" font "Courier,22"
-set output "plots/average_topics_p100.eps" 
 fit f1(x) 'data/average_topics1.txt' u 1:6 via a1, b1
 fit f2(x) 'data/average_topics2.txt' u 1:6 via a2, b2
 
-
+set output "plots/average_topics_p100.eps" 
 plot  'data/average_topics1.txt' u 1:6  notitle with linespoints lw 3 lc 1 ,\
- "data/average_topics1.txt" using 1:6:7 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
+"data/average_topics1.txt" using 1:6:7 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
+f1(x) notitle lt 'dashed' lw 3 lc 1,\
 'data/average_topics2.txt' u 1:6  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:6:7 title 'Keep training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
-
-
-set output "plots/average_topics_p100_reg.eps" 
-plot  f1(x) title 'No training #' lw 3 lc 1,\
-f2(x) title 'Keep training #'lw 3 lc 2
+f2(x) notitle lt 'dashed' lw 3 lc 2
 
 
 #  Average P@1000
 set yrange [0.0:0.3]
 
 set ylabel "Precision at 1000" font "Courier,22"
-set output "plots/average_topics_p1000.eps" 
 fit f1(x) 'data/average_topics1.txt' u 1:8 via a1, b1
 fit f2(x) 'data/average_topics2.txt' u 1:8 via a2, b2
 
+set output "plots/average_topics_p1000.eps" 
 plot  'data/average_topics1.txt' u 1:8  notitle with linespoints lw 3 lc 1 ,\
- "data/average_topics1.txt" using 1:8:9 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
+"data/average_topics1.txt" using 1:8:9 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
+f1(x) notitle lt 'dashed' lw 3 lc 1,\
 'data/average_topics2.txt' u 1:8  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:8:9 title 'Keep training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
+f2(x) notitle lt 'dashed' lw 3 lc 2
 
 
-set output "plots/average_topics_p1000_reg.eps" 
-plot  f1(x) title 'No training #' lw 3 lc 1,\
-f2(x) title 'Keep training #'lw 3 lc 2
 
 ######
 ### OVERALL HISTO
@@ -288,23 +280,29 @@ set output "plots/Tennis_average.eps"
 plot 'data/Tennis_average.txt' using 1 lw 2 lc 2 fs pattern 1,\
  '' u 2 lw 2 lc 'red' fs pattern 2
 
+#average histogram
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+clear
+reset
+set yrange [0.3:1]
+set style fill   solid 1  border lt -1
+set style histogram clustered gap 1 title  offset character 0, 0, 0
+set xlabel font "Courier,22"
+set size 0.85,0.5
+set grid
+set style histogram  errorbars linewidth 2
+set key vert
+unset ylabel
+set key center top
+set key horiz
+set xrang [-0.4:3.4]
+set style data histograms
+#set style fill pattern border
+set term postscript eps enhanced color "Courier,19"
+set output "plots/average_topics.eps" 
+plot 'data/average_topics_histo.txt' using 2:3:xticlabels(1) ti col lc 1 fs pattern 1, '' u 4:5 ti col lc 2 fs pattern 2
 
 
 
