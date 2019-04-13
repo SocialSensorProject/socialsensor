@@ -1,0 +1,92 @@
+%!TEX root = main.tex
+
+\label{sec:introduction}
+\textcolor{red}{With the emergence of the social Web in the mid-2000s, the Web has evolved from a static Web, where users were only able to consume information, to a Web where users are also able to interact and produce information. This evolution which is commonly known as Social Web has introduced new freedoms for the user in his relation with the Web by facilitating his interactions with other users who have similar tastes or share similar resources.
+These interactions result in a massive quantity of data that has to be leveraged for developing various Data-driven Decision-making applications.} 
+
+In this context, social media sites such as Twitter present a double-edged sword for
+users.  On one hand these sources contain a vast amount of novel and
+topical content that challenge traditional news media sources in terms
+of their timeliness and diversity.  Yet on the other hand they also
+contain a vast amount of chatter and otherwise low-value content for most
+users' information needs where filtering out irrelevant content is
+extremely time-consuming.  Previous work~\cite{lin2011smoothing,yang2014large,magdy} 
+has noted this need for topic-based filtering and has adopted a range
+of variations on supervised classification techniques to build effective
+topic filters.
+
+While these previous approaches have augmented their respective topical classifiers with extensions ranging from semi-supervised training to multiple stages of classification-based filtering to online tracking of foreground and background language model evolution, 
+% --- all critical for state-of-the-art performance ---
+we seek to analyze the lowest common denominator
+of all of these methods, namely the performance of the underlying (vanilla) supervised 
+classification paradigm.
+Our fundamental research questions in this paper are hence focused on a longitudinal study 
+of the performance of such supervised topic classifiers.  
+%taken a variety
+%of approaches ranging from information retrieval and language models~\cite{lin2011smoothing}  
+%to topic modeling~\cite{yang2014large} to supervised classification~\cite{magdy}.
+For example, over a year or more after training, how well do such classifiers generalize to future novel topical content, and are such results stable across a range of topics?  \textcolor{red}{In addition, how robust is a topic classifier over the time horizon, e.g., can a model trained in 2010 be used for making predictions in 2019? How to allow proper generalization over the  time horizon and avoid overfitting that may occur by learning inappropriate feature weights related to specific events?} Furthermore, what features, feature classes, and feature attributes are most critical for long-term classifier performance?  
+
+To answer these questions, we collected a corpus of over 800 million English Tweets via the Twitter streaming API during 2013 and 2014 and learned topic classifiers for 10 diverse themes ranging from social issues to celebrity deaths to the ``Iran nuclear deal''.  We leverage ideas from~\cite{lin2011smoothing} for curating hashtags to define our 10 training topics and label tweets for supervised training; however, we also curate disjoint hashtag sets for validation and test to tune hyperparameters and test true generalization performance of the topic filters to future novel content. 
+
+The main outcome of this work can be summarized as follows:
+\begin{itemize}
+    \item We empirically show that two simple and efficiently trainable methods ---
+logistic regression and naive Bayes --- generalize well to unseen
+future topical content (including content with no hashtags) in terms
+of their average precision (AP) and Precision@$n$ (for a range of
+$n$) evaluated over long time-spans of typically one year or more.
+\item \textcolor{red}{Also, we demonstrate that the performance of classifiers tends to drop over time -- roughly 35\% drop in average precision after 350 days of training, which is a significant decrease. We impute this to the fact that over long periods of time, features that are predictive during the training period may prove ephemeral and fail to generalize to prediction at future times. }
+\item \textcolor{red}{To address the problem above, we show that one can remove tweets containing training hashtags from the validation set such that to allow a better generalization and avoid overfitting. Indeed, although our approach here is simple, it allows to get roughly 11\% improvement for average precision, thus avoiding overfitting to some extend.}
+    \item Furthermore, we show that terms and locations are among the most
+useful features --- surprisingly more so than hashtags, even though
+hashtags were used to label the data.  And perhaps even more
+surprisingly, the number of unique hashtags and tweets by a user
+correlates more with their informativeness than their follower or
+friend count.  
+\end{itemize}
+  
+
+
+In summary, this work\footnote{This is an extended and revised version of a preliminary conference report that was presented in~\cite{Iman2017}.} provides a longitudinal study of Twitter topic classifiers that further justifies supervised approaches used in existing work while providing detailed insight into feature properties critical for their performance. \textcolor{red}{ The rest of this paper is organized as follows: 
+we first  describe the notation we use in this paper and provide a formal definition of the problem we address. Then, we provide a description of the dataset  we used for the analysis carried out in this paper, followed by a description of the general methodology for learning topic classifiers over time. The next section gives a thorough description of the results obtained and the conclusions drawn. Finally, we review the literature before concluding and describing the future work in the last section.}
+
+
+
+
+
+
+%Twitter hosts lots of information, on average more than $2,200$ new tweets every second. This can get up to $3$ to $4$ times increase during large events such as tsunami. \footnote{\hyperref[]{https://blog.twitter.com/2011/the-engineering-behind-twitter-s-new-search-experience}}
+%\begin{itemize}
+%\item Twitter is a vast sensor of content generated by latent phenonema (e.g., flu, political sentiment, elections, environment).
+%\item Learning topical social sensors (politicians in NY, road conditions in Toronto) -- very broad topics for which its hard to manually specify a useful query.
+%\item But there is interesting topical content and wouldn't it be cool if we could learn a social sensor for a targeted topic?
+%\item Key insight is that hashtags are topical and can be used to bootstrap a supervised learning system that as we will show generalizes well beyond the seed hashtags.
+%\item Conclusion is a new way to build topical real-time feeds that are otherwise difficult to do with existing Twitter tools (???).
+%\end{itemize}
+%section{Learning Topical Social Sensors}
+
+%Start off with the questions that we want to answer in this section:
+%
+%- How to evaluate, labeling (problem of no supervised labels for tweets, indirect via hashtags as topical surrogates, leads to question of hashtag curation)?
+%
+%- Which classification algorithm is best / most robust for learning topical social sensors?
+
+
+
+%!TEX root = document.tex
+
+%start with a clean argument then fill in details.  
+%Motivation is mostly the same, 
+%contributions are different... we combine recent ideas on learning social sensors 
+%	(you need to cite / cover what these ideas are to indicate what you're combining / building on -- perhaps being clear to point out that no single paper did everything you are doing) and then claim that beyond a general performance analysis of the framework over a variety of topics and a long-term dataset (not done previously?) 
+%a key objective of the work is to provide a comprehensive longitudinal feature analysis to investigate XXX
+
+\COMMENT
+{\color{red}
+In this work, we coalesce recent ideas on learning social sensors for general topic detection. We expand these works to learn a generalizable supervised method with minimal user curation for detecting and ranking topical content over a variety of topics and on a long-term dataset. We believe that no earlier work covers all the aspects of the work presented here.
+Earlier works discuss leveraging learning methodologies for detection of topical content from social media for general topics \citep{lin2011smoothing,yang2014large,magdy}. One of the key challenges of using learning methods for general topics and large number of tweets is automatic labeled data aquisition. To this purpose, \cite{lin2011smoothing} discuss automatic labeling of tweets by using one hashtag as topic proxy. \cite{magdy} use a user-defined query to label tweets and \cite{yang2014large} take a co-training approach based on embedded URLs in the tweet and tweet text to label tweets. We build and extend on \citep{lin2011smoothing}'s idea of automatic labeling of tweets, however we choose a \emph{set} of hashtags for each topic instead of a single hashtag which we will show to be imperative for evaluating generalization. To learn social sensors for general topic detection, \citep{lin2011smoothing} use information retrieval method (language models), \cite{yang2014large} take advantage of topic modeling techniques and \cite{magdy} apply SVM classifier. Here, we leverage more than one supervised learning method for the purpose of detection and ranking of topical content. We present a unique method for splitting hashtags and Twitter data that encourages generalization to new unseen future content. 
+%Recently, \citep{lin2011smoothing,yang2014large,magdy} have explored use of social media sensors for detection and/or tracking of general topics from Twitter. One of the key challenges on dealing with general topics and large number of tweets is automatic labeled data aquisition. \cite{lin2011smoothing} discusses automatic labeling of tweets by using one hashtag as topic proxy. \cite{magdy} uses a user-defined query to label tweets and \cite{yang2014large} takes a co-training approach based on embedded URLs in the tweet and tweet text to label tweets. We build and extend on \citep{lin2011smoothing}'s idea of automatic labeling of tweets, however we choose a set of hashtags for each topic instead of a single hashtag which we will show to be imperative for evaluating generalization. To learn social sensors for general topic detection, \citep{lin2011smoothing} uses information retrieval method (language models), \cite{yang2014large} take advantage of topic modeling techniques and \cite{magdy} applies SVM classifier. Here, we leverage various supervised learning methods for the purpose of detection and ranking of topical content. However, we present a unique method for splitting hashtags and Twitter data that encourages generalization to new unseen future content. 
+%The methodologies mentioned in the literature use various sets of feature including hashtags, unigrams, bigrams, mentions, users, byte 4grams. We extract the main features of hashtags, mentions, users, unigrams. In addition, we add location as another set of features which we show later in feature analysis that location is the second most important feature for detection of topical content and some of the topics are quite localized geographically. To address general topic detection from social media, \cite{lin2011smoothing} uses information retrieval method (language models), \cite{yang2014large} take advantage of topic modeling techniques and \cite{magdy} uses SVM classifier. Here, we leverage various supervised learning methods for the purpose of detection and ranking of topical content. However, we present a unique method for splitting hashtags and Twitter data that encourages generalization to new unseen future content. 
+}
+\ENDCOMMENT
