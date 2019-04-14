@@ -117,11 +117,15 @@ f2(x) = a2*x + b2
 set xlabel "Time" font "Courier,22"
 
 
+set style line 2 lc rgb "#FF0055" lt 2 dashtype '.'
+set style line 3 lc rgb "#2C397D" lt 3 dashtype '_.'
+
+
 set term postscript eps enhanced color "Courier,17"
 
 
 #  Average AP
-set ylabel "Average Precision" font "Courier,22"
+set ylabel "MAP" font "Courier,22"
 
 fit f1(x) 'data/average_topics1.txt' u 1:2 via a1, b1
 fit f2(x) 'data/average_topics2.txt' u 1:2 via a2, b2
@@ -129,10 +133,10 @@ fit f2(x) 'data/average_topics2.txt' u 1:2 via a2, b2
 set output "plots/average_topics_ap.eps" 
 plot  'data/average_topics1.txt' u 1:2  notitle with linespoints lw 3 lc 1 ,\
  "data/average_topics1.txt" using 1:2:3 title 'No training #'  with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
- f1(x) notitle lt 'dashed' lw 3 lc 1,\
+ f1(x) notitle ls 2 lw 4 lc 1,\
 'data/average_topics2.txt' u 1:2  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:2:3 title 'Keep training #'  with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
-f2(x) notitle lt 'dashed' lw 3 lc 2
+f2(x) notitle ls 3 lw 4 lc 2
 
 
 
@@ -154,10 +158,10 @@ fit f2(x) 'data/average_topics2.txt' u 1:4 via a2, b2
 set output "plots/average_topics_p10.eps" 
 plot  'data/average_topics1.txt' u 1:4  notitle with linespoints lw 3 lc 1 ,\
 "data/average_topics1.txt" using 1:4:5 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
-f1(x) notitle lt 'dashed' lw 3 lc 1,\
+f1(x) notitle ls 2 lw 4 lc 1,\
 'data/average_topics2.txt' u 1:4  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:4:5 title 'Keep training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
-f2(x) notitle lt 'dashed' lw 3 lc 2
+f2(x) notitle ls 3 lw 4 lc 2
 
 
 
@@ -169,10 +173,10 @@ fit f2(x) 'data/average_topics2.txt' u 1:6 via a2, b2
 set output "plots/average_topics_p100.eps" 
 plot  'data/average_topics1.txt' u 1:6  notitle with linespoints lw 3 lc 1 ,\
 "data/average_topics1.txt" using 1:6:7 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
-f1(x) notitle lt 'dashed' lw 3 lc 1,\
+f1(x) notitle ls 2 lw 4 lc 1,\
 'data/average_topics2.txt' u 1:6  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:6:7 title 'Keep training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
-f2(x) notitle lt 'dashed' lw 3 lc 2
+f2(x) notitle ls 3 lw 4 lc 2
 
 
 #  Average P@1000
@@ -185,10 +189,24 @@ fit f2(x) 'data/average_topics2.txt' u 1:8 via a2, b2
 set output "plots/average_topics_p1000.eps" 
 plot  'data/average_topics1.txt' u 1:8  notitle with linespoints lw 3 lc 1 ,\
 "data/average_topics1.txt" using 1:8:9 title 'No training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 1,\
-f1(x) notitle lt 'dashed' lw 3 lc 1,\
+f1(x) notitle ls 2 lw 4 lc 1,\
 'data/average_topics2.txt' u 1:8  notitle with linespoints lw 3 lc 2 ,\
 "data/average_topics2.txt" using 1:8:9 title 'Keep training #'   with  errorbars pt -1 lw 1 ps 1.95 lc 2,\
-f2(x) notitle lt 'dashed' lw 3 lc 2
+f2(x) notitle ls 3 lw 4 lc 2
+
+# Print the legend
+
+set size 1.1,0.09
+set key center center reverse
+set key samplen 3
+
+set term postscript eps enhanced color "Courier,17"
+set output "plots/legend.eps" 
+unset border 
+unset tics
+
+plot [0:1] [0:1] NaN title "No Training # in Validation set" lc 1 ,\
+ [0:1] NaN title "With Training # in Validation set" lc 2
 
 
 
