@@ -167,7 +167,7 @@ the topic label for a particular tweet $t(d_{i}) \in \{0,1\}$ as follows:
 \begin{align*}
 t(d_{i}) & =
   \begin{cases}
-    1 \textrm{ if }  \exists \; h \in d_i \land  h  \in H^t  \\
+    1 \textrm{ if }  \exists \; h \in d_i:  h  \in H^t  \\
     0  \textrm{ otherwise}
   \end{cases} .
 \end{align*}
@@ -346,7 +346,7 @@ described next.
 %
 %We explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, the hashtag set $H^{t}$ for each topic $t \in T$ is curated with two annotators individually. Inner-annotator agreement is achieved by reviewing and merging these sets with two more individuals.  provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic.
 \textcolor{red}{Because we have a total of $538,365,507$ unique features in our
-Twitter corpus (the summation unique values of features shown in Table.~\ref{table:featureStatistics})}, it is critical to pare this down to a size amenable
+Twitter corpus (the summation unique values of features shown in Table~\ref{table:featureStatistics})}, it is critical to pare this down to a size amenable
 for efficient learning and robust to overfitting.  To this end, we
 thresholded all features according to the frequencies listed in
 Table~\ref{table:learningFeatures}.  

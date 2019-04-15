@@ -36,8 +36,8 @@ logistic regression and naive Bayes --- generalize well to unseen
 future topical content (including content with no hashtags) in terms
 of their average precision (AP) and Precision@$n$ (for a range of
 $n$) evaluated over long time-spans of typically one year or more.
-\item \textcolor{red}{Also, we demonstrate that the performance of classifiers tends to drop over time -- roughly 35\% drop in average precision after 350 days of training, which is a significant decrease. We impute this to the fact that over long periods of time, features that are predictive during the training period may prove ephemeral and fail to generalize to prediction at future times. }
-\item \textcolor{red}{To address the problem above, we show that one can remove tweets containing training hashtags from the validation set such that to allow a better generalization and avoid overfitting. Indeed, although our approach here is simple, it allows to get roughly 11\% improvement for average precision, thus avoiding overfitting to some extend.}
+\item \textcolor{red}{Also, we demonstrate that the performance of classifiers tends to drop over time -- roughly 35\% drop in Mean Average Precision after 350 days of training, which is a significant decrease. We impute this to the fact that over long periods of time, features that are predictive during the training period may prove ephemeral and fail to generalize to prediction at future times. }
+\item \textcolor{red}{To address the problem above, we show that one can remove tweets containing training hashtags from the validation set such that to allow a better generalization and avoid overfitting. Indeed, although our approach here is simple, it allows to get roughly 11\% improvement for Mean Average Precision, thus avoiding overfitting to some extend.}
     \item Furthermore, we show that terms and locations are among the most
 useful features --- surprisingly more so than hashtags, even though
 hashtags were used to label the data.  And perhaps even more
