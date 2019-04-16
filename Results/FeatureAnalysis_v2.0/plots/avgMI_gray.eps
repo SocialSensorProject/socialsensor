@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: plots/avgMI_gray.eps
-%%Creator: gnuplot 5.2 patchlevel 4
-%%CreationDate: Sat Jan  5 06:28:23 2019
+%%Creator: gnuplot 5.2 patchlevel 6
+%%CreationDate: Tue Apr 16 15:42:05 2019
 %%DocumentFonts: (atend)
 %%BoundingBox: 50 50 410 251
 %%EndComments
@@ -478,10 +478,10 @@ systemdict /pdfmark known not {
 SDict begin [
   /Title (plots/avgMI_gray.eps)
   /Subject (gnuplot plot)
-  /Creator (gnuplot 5.2 patchlevel 4)
+  /Creator (gnuplot 5.2 patchlevel 6)
 %  /Producer (gnuplot)
 %  /Keywords ()
-  /CreationDate (Sat Jan  5 06:28:23 2019)
+  /CreationDate (Tue Apr 16 15:42:05 2019)
   /DOCINFO pdfmark
 end
 } ifelse
@@ -588,7 +588,7 @@ LCb setrgbcolor
 -63 0 V
 stroke
 1008 1775 M
-[ [(Courier-Bold) 170.0 0.0 true true 0 (Term)]
+[ [(Courier-Bold) 170.0 0.0 true true 0 (Mean)]
 ] -56.7 MRshow
 /Courier findfont 140 scalefont setfont
 /vshift -46 def
@@ -601,7 +601,7 @@ LCb setrgbcolor
 -63 0 V
 stroke
 1008 2245 M
-[ [(Courier-Bold) 170.0 0.0 true true 0 (Location)]
+[ [(Courier-Bold) 170.0 0.0 true true 0 (Term)]
 ] -56.7 MRshow
 /Courier findfont 140 scalefont setfont
 1.000 UL
@@ -613,7 +613,7 @@ LCb setrgbcolor
 -63 0 V
 stroke
 1008 2716 M
-[ [(Courier-Bold) 170.0 0.0 true true 0 (From)]
+[ [(Courier-Bold) 170.0 0.0 true true 0 (Location)]
 ] -56.7 MRshow
 /Courier findfont 140 scalefont setfont
 1.000 UL
@@ -625,7 +625,7 @@ LCb setrgbcolor
 -63 0 V
 stroke
 1008 3186 M
-[ [(Courier-Bold) 170.0 0.0 true true 0 (Hashtag)]
+[ [(Courier-Bold) 170.0 0.0 true true 0 (From)]
 ] -56.7 MRshow
 /Courier findfont 140 scalefont setfont
 1.000 UL
@@ -637,7 +637,7 @@ LCb setrgbcolor
 -63 0 V
 stroke
 1008 3656 M
-[ [(Courier-Bold) 170.0 0.0 true true 0 (Mention)]
+[ [(Courier-Bold) 170.0 0.0 true true 0 (Hashtag)]
 ] -56.7 MRshow
 /Courier findfont 140 scalefont setfont
 1.000 UL
@@ -791,30 +791,32 @@ LCb setrgbcolor
 % Begin plot #1
 1.000 UL
 LTb
-0.58 0.00 0.83 C LCb setrgbcolor
+0.58 0.00 0.83 C
+LCb setrgbcolor
 6296 3758 M
 ('data/matrix.txt' using  1:2:3 matrix) Rshow
 1.000 UL
 LTb
-0.58 0.00 0.83 C %%%%BeginImage
+0.58 0.00 0.83 C
+%%%%BeginImage
 gsave 1092 3891 N 1092 1540 L 6947 1540 L 6947 3891 L Z clip
 InterpretLevel1 {
   %% Construct a box instead of image
   LTb
-  1092 3891 M
+  1092 4361 M
   5855 0 V
-  0 -2351 V
+  0 -2821 V
   -5855 0 V
-  1092 3891 L
+  1092 4361 L
   40 -110 R
   (PS level 2 image) Lshow
   % Read data but ignore it
-  /imagebuf 71 string def
+  /imagebuf 86 string def
   currentfile imagebuf readstring
 } {
 gsave
-1092 3891 translate
-5855 -2351 scale
+1092 4361 translate
+5855 -2821 scale
 %%%%BeginPalette
 [ /Indexed
   /DeviceRGB 255
@@ -857,9 +859,9 @@ gsave
 <<
   /ImageType 1
   /Width 11
-  /Height 5
+  /Height 6
   /BitsPerComponent 8
-  /ImageMatrix [ 11 0 0 5 0 0 ]
+  /ImageMatrix [ 11 0 0 6 0 0 ]
   /Decode [ 0 255 ]
   /DataSource currentfile /ASCII85Decode filter
   /MultipleDataSources false
@@ -867,7 +869,8 @@ gsave
 >>
 image
 } ifelse
-"V!'c,m>"c%4`)*>Pnl1/4gOe\mYRB%fck8!s&ZC"on`3!!`N,!<`l8%NU3+I2b-U.8Mc~>
+"V!'c,m>"c%4`)*>Pnl1/4gOe\mYRB%fck8!s&ZC"on`3!!`N,!<`l8%NU3+I2b-U.8Mc+**WP8%j)
+'#70!~>
 InterpretLevel1 not {
   grestore
 } if
@@ -881,112 +884,112 @@ LCb setrgbcolor
 1.000 UP
 LCb setrgbcolor
 1358 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (1.51)]
+[ [(Courier) 140.0 0.0 true true 0 (0.848)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1890 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (3.04)]
+[ [(Courier) 140.0 0.0 true true 0 (2.932)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2423 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (13.5)]
+[ [(Courier) 140.0 0.0 true true 0 (9.288)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2955 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (0.58)]
+[ [(Courier) 140.0 0.0 true true 0 (0.41)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 3487 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (12.79)]
+[ [(Courier) 140.0 0.0 true true 0 (7.154)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4020 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (2.78)]
+[ [(Courier) 140.0 0.0 true true 0 (1.594)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4552 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (5.7)]
+[ [(Courier) 140.0 0.0 true true 0 (3.24)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5084 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (1.51)]
+[ [(Courier) 140.0 0.0 true true 0 (0.826)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5616 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (4.21)]
+[ [(Courier) 140.0 0.0 true true 0 (3.434)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6149 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (8.11)]
+[ [(Courier) 140.0 0.0 true true 0 (7.054)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6681 1775 M
-[ [(Courier) 140.0 0.0 true true 0 (5.37)]
+[ [(Courier) 140.0 0.0 true true 0 (nan)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1358 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.1)]
+[ [(Courier) 140.0 0.0 true true 0 (1.51)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1890 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.4)]
+[ [(Courier) 140.0 0.0 true true 0 (3.04)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2423 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (1.01)]
+[ [(Courier) 140.0 0.0 true true 0 (13.5)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2955 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.03)]
+[ [(Courier) 140.0 0.0 true true 0 (0.58)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 3487 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.77)]
+[ [(Courier) 140.0 0.0 true true 0 (12.79)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4020 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.11)]
+[ [(Courier) 140.0 0.0 true true 0 (2.78)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4552 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.38)]
+[ [(Courier) 140.0 0.0 true true 0 (5.7)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5084 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.12)]
+[ [(Courier) 140.0 0.0 true true 0 (1.51)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5616 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.46)]
+[ [(Courier) 140.0 0.0 true true 0 (4.21)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6149 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (1.5)]
+[ [(Courier) 140.0 0.0 true true 0 (8.11)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6681 2245 M
-[ [(Courier) 140.0 0.0 true true 0 (0.49)]
+[ [(Courier) 140.0 0.0 true true 0 (5.37)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
@@ -996,216 +999,310 @@ LCb setrgbcolor
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1890 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (0.55)]
-] -46.7 MCshow
-/Courier findfont 140 scalefont setfont
-LCb setrgbcolor
-2423 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (1.6)]
-] -46.7 MCshow
-/Courier findfont 140 scalefont setfont
-LCb setrgbcolor
-2955 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (0.07)]
-] -46.7 MCshow
-/Courier findfont 140 scalefont setfont
-LCb setrgbcolor
-3487 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (0.91)]
-] -46.7 MCshow
-/Courier findfont 140 scalefont setfont
-LCb setrgbcolor
-4020 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (0.07)]
-] -46.7 MCshow
-/Courier findfont 140 scalefont setfont
-LCb setrgbcolor
-4552 2716 M
 [ [(Courier) 140.0 0.0 true true 0 (0.4)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
-5084 2716 M
+2423 2716 M
+[ [(Courier) 140.0 0.0 true true 0 (1.01)]
+] -46.7 MCshow
+/Courier findfont 140 scalefont setfont
+LCb setrgbcolor
+2955 2716 M
+[ [(Courier) 140.0 0.0 true true 0 (0.03)]
+] -46.7 MCshow
+/Courier findfont 140 scalefont setfont
+LCb setrgbcolor
+3487 2716 M
+[ [(Courier) 140.0 0.0 true true 0 (0.77)]
+] -46.7 MCshow
+/Courier findfont 140 scalefont setfont
+LCb setrgbcolor
+4020 2716 M
 [ [(Courier) 140.0 0.0 true true 0 (0.11)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
+4552 2716 M
+[ [(Courier) 140.0 0.0 true true 0 (0.38)]
+] -46.7 MCshow
+/Courier findfont 140 scalefont setfont
+LCb setrgbcolor
+5084 2716 M
+[ [(Courier) 140.0 0.0 true true 0 (0.12)]
+] -46.7 MCshow
+/Courier findfont 140 scalefont setfont
+LCb setrgbcolor
 5616 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (0.83)]
+[ [(Courier) 140.0 0.0 true true 0 (0.46)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6149 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (2.29)]
+[ [(Courier) 140.0 0.0 true true 0 (1.5)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6681 2716 M
-[ [(Courier) 140.0 0.0 true true 0 (0.69)]
+[ [(Courier) 140.0 0.0 true true 0 (0.49)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1358 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (2)]
+[ [(Courier) 140.0 0.0 true true 0 (0.1)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1890 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (9.34)]
+[ [(Courier) 140.0 0.0 true true 0 (0.55)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2423 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (25.65)]
+[ [(Courier) 140.0 0.0 true true 0 (1.6)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2955 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (1.15)]
+[ [(Courier) 140.0 0.0 true true 0 (0.07)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 3487 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (17.5)]
+[ [(Courier) 140.0 0.0 true true 0 (0.91)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4020 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (4.49)]
+[ [(Courier) 140.0 0.0 true true 0 (0.07)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4552 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (7.51)]
+[ [(Courier) 140.0 0.0 true true 0 (0.4)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5084 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (2.08)]
+[ [(Courier) 140.0 0.0 true true 0 (0.11)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5616 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (10.27)]
+[ [(Courier) 140.0 0.0 true true 0 (0.83)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6149 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (18.98)]
+[ [(Courier) 140.0 0.0 true true 0 (2.29)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6681 3186 M
-[ [(Courier) 140.0 0.0 true true 0 (9.9)]
+[ [(Courier) 140.0 0.0 true true 0 (0.69)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1358 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (0.53)]
+[ [(Courier) 140.0 0.0 true true 0 (2)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 1890 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (1.33)]
+[ [(Courier) 140.0 0.0 true true 0 (9.34)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2423 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (4.68)]
+[ [(Courier) 140.0 0.0 true true 0 (25.65)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 2955 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (0.22)]
+[ [(Courier) 140.0 0.0 true true 0 (1.15)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 3487 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (3.8)]
+[ [(Courier) 140.0 0.0 true true 0 (17.5)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4020 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (0.52)]
+[ [(Courier) 140.0 0.0 true true 0 (4.49)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 4552 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (2.21)]
+[ [(Courier) 140.0 0.0 true true 0 (7.51)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5084 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (0.31)]
+[ [(Courier) 140.0 0.0 true true 0 (2.08)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 5616 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (1.4)]
+[ [(Courier) 140.0 0.0 true true 0 (10.27)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6149 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (4.39)]
+[ [(Courier) 140.0 0.0 true true 0 (18.98)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 LCb setrgbcolor
 6681 3656 M
-[ [(Courier) 140.0 0.0 true true 0 (1.94)]
+[ [(Courier) 140.0 0.0 true true 0 (9.9)]
 ] -46.7 MCshow
 /Courier findfont 140 scalefont setfont
 % End plot #2
 % Begin plot #3
 2.000 UL
 LTb
-0.00 0.00 0.00 C 6415 1540 M
-0 26 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 52 V
-0 52 V
-0 53 V
-0 52 V
-0 26 V
+0.00 0.00 0.00 C
+6415 1540 M
+0 50 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 57 V
+0 21 V
 % End plot #3
+% Begin plot #4
+stroke
+LTb
+0.00 0.00 0.00 C
+1092 2010 M
+56 0 V
+65 0 V
+64 0 V
+65 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+64 0 V
+65 0 V
+65 0 V
+64 0 V
+65 0 V
+56 0 V
+% End plot #4
 stroke
 LTb
 LCb setrgbcolor
@@ -1227,19 +1324,7 @@ stroke
 grestore
 end
 showpage
-%%Page: 2 2
-gnudict begin
-gsave
-doclip
-50 50 translate
-0.050 0.050 scale
-0 setgray
-newpath
-(Courier) findfont 140 scalefont setfont
-BackgroundColor 0 lt 3 1 roll 0 lt exch 0 lt or or not {BackgroundColor C 1.000 0 0 7200.00 5040.00 BoxColFill} if
-stroke
-grestore
-end
-showpage
 %%Trailer
+%%DocumentFonts: Courier-Bold Courier
+                                                                                                                                                                                                                                                                                            %%Trailer
 %%DocumentFonts: Courier-Bold Courier

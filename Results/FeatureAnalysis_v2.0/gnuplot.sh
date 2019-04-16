@@ -11,14 +11,21 @@ set palette defined ( 0 "white", 2 "#7F6BFF" )
 set cbrange [0:26]
 #set cblabel "Score"
 #unset cbtics
+set datafile missing "-"
 set parametric
-set trange [-1:10]
+set trange [-1:11]
 const1=9.5
 set xtics   ("Tennis" 0.0, "Space" 1.0, "Soccer" 2.0, "Iran Deal" 3.0, "Human Disaster" 4.0, "Celebrity Death" 5.0, "Social Issues" 6.0, "Natural Disaster" 7.0, "Epidemics" 8.0, "LGBT" 9.0, "Mean" 10.0) font "Courier-Bold,17"
-set ytics   ("Term" 0, "Location" 1, "From" 2, "Hashtag" 3, "Mention" 4) font "Courier-Bold,17"
+set ytics   ("Mean" 0, "Term" 1, "Location" 2, "From" 3, "Hashtag" 4, "Mention" 5) font "Courier-Bold,17"
 set xrange [-0.5:10.5]
 set yrange [-0.5:4.5]
 set view map
+#f(x)=1
+
+const2=0.5
+
+
+
 #set margin 4,0,7,0
 set bmargin 11
 set lmargin 13
@@ -26,8 +33,11 @@ set term postscript eps enhanced color  font "Courier,14"
 set output "plots/avgMI_gray.eps"
 plot 'data/matrix.txt' using  1:2:3 matrix with image, \
      'data/matrix.txt'  using 1:2:(sprintf("%g",$3)) matrix  with labels  notitle,\
-      const1,t lc 'black' lw 2 lt 2  notitle
-     
+      const1,t lc 'black' lw 2 lt 2  notitle,\
+      t,const2 lc 'black' lw 2 lt 2  notitle
+
+
+
 
 
 reset
