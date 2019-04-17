@@ -1,0 +1,11 @@
+#ap	mi	ap	mi
+Iran	1	10	0.9807	0.41
+Tennis	2	8	0.9590	0.848
+NaturalDisaster	3	9	0.9428	0.826
+CelebrityDeath	4	7	0.9293	1.594
+HumanDisaster	5	2	0.6952	7.154
+Space	6	6	0.6452	2.932
+SocialIssue	7	5	0.5698	3.24
+Soccer	8	1	0.5036	9.288
+Epedimics	9	4	0.4005	3.434
+LGBT	10	3	0.1559	7.054

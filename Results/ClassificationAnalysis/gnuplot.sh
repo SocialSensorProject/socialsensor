@@ -324,3 +324,40 @@ plot 'data/average_topics_histo.txt' using 2:3:xticlabels(1) ti col lc 1 fs patt
 
 
 
+## MI AP correlation
+
+reset
+clear
+set key
+set grid
+
+set size 0.6,0.6
+set border 4095
+
+set yrange [1:10]
+set xrange [1:10] 
+
+set xlabel 'AP Ranking'
+set ylabel 'MI Ranking'
+f(x) = a1*x + b1
+
+
+
+
+
+set term postscript eps enhanced color "Courier,17"
+
+#  Cele_death
+set output "plots/ap_mi_correlation_ranking.eps" 
+fit f(x) 'data/ap_mi_correlation.txt' u 2:3 via a1, b1
+plot 'data/ap_mi_correlation.txt' using 2:3 with points notitle ps 2 pt 7,\
+f(x) notitle lw 3 lc 'red'
+
+unset yrange
+unset xrange
+
+set output "plots/ap_mi_correlation_values.eps" 
+fit f(x) 'data/ap_mi_correlation.txt' u 4:5 via a1, b1
+plot 'data/ap_mi_correlation.txt' using 4:5 with points notitle ps 2 pt 7,\
+f(x) notitle lw 3 lc 'red'
+
