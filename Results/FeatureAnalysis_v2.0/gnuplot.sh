@@ -68,45 +68,134 @@ set term postscript eps enhanced color "Courier,17"
 
 set ylabel "Mutual Information" font "Courier,16"
 set output "plots/term_features.eps" 
-plot "< head -n 100000 data/Tennis_Dataset_term_features.txt" using (1):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Space_Dataset_term_features.txt" using (2):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Soccer_Dataset_term_features.txt" using (3):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_term_features.txt" using (4):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Human_Disaster_Dataset_term_features.txt" using (5):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_term_features.txt" using (6):($2+rand(0)/100000000) every 20  notitle, \
-"< head -n 100000 data/Social_issue_Dataset_term_features.txt" using (7):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_term_features.txt" using (8):($2+rand(0)/100000000) every 20  notitle lc 'orange', \
-"< head -n 100000 data/Health_Dataset_term_features.txt" using (9):($2+rand(0)/100000000) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_term_features.txt" using (10):($2+rand(0)/100000000) every 20  notitle lc 'grey'
+plot "< head -n 100000 data/Tennis_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Space_Dataset_term_features.txt" using (2):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Soccer_Dataset_term_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_term_features.txt" using (4):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Human_Disaster_Dataset_term_features.txt" using (5):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_term_features.txt" using (6):($2+rand(0)*1E-20) every 20  notitle, \
+"< head -n 100000 data/Social_issue_Dataset_term_features.txt" using (7):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_term_features.txt" using (8):($2+rand(0)*1E-20) every 20  notitle lc 'orange', \
+"< head -n 100000 data/Health_Dataset_term_features.txt" using (9):($2+rand(0)*1E-20) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_term_features.txt" using (10):($2+rand(0)*1E-20) every 20  notitle lc 'grey'
 
 
 set ylabel "Mutual Information" font "Courier,16"
 set output "plots/hashtag_features.eps" 
-plot "< head -n 100000 data/Tennis_Dataset_hashtag_features.txt" using (1):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Space_Dataset_hashtag_features.txt" using (2):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Soccer_Dataset_hashtag_features.txt" using (3):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_hashtag_features.txt" using (4):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Human_Disaster_Dataset_hashtag_features.txt" using (5):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_hashtag_features.txt" using (6):($2+rand(0)/100000000) every 20  notitle, \
-"< head -n 100000 data/Social_issue_Dataset_hashtag_features.txt" using (7):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_hashtag_features.txt" using (8):($2+rand(0)/100000000) every 20  notitle lc 'orange', \
-"< head -n 100000 data/Health_Dataset_hashtag_features.txt" using (9):($2+rand(0)/100000000) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_hashtag_features.txt" using (10):($2+rand(0)/100000000) every 20  notitle lc 'grey'
+plot "< head -n 100000 data/Tennis_Dataset_hashtag_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Space_Dataset_hashtag_features.txt" using (2):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Soccer_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_hashtag_features.txt" using (4):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Human_Disaster_Dataset_hashtag_features.txt" using (5):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_hashtag_features.txt" using (6):($2+rand(0)*1E-20) every 20  notitle, \
+"< head -n 100000 data/Social_issue_Dataset_hashtag_features.txt" using (7):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_hashtag_features.txt" using (8):($2+rand(0)*1E-20) every 20  notitle lc 'orange', \
+"< head -n 100000 data/Health_Dataset_hashtag_features.txt" using (9):($2+rand(0)*1E-20) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_hashtag_features.txt" using (10):($2+rand(0)*1E-20) every 20  notitle lc 'grey'
 
 set ylabel "Mutual Information" font "Courier,16"
 set output "plots/loc_features.eps" 
-plot "< head -n 100000 data/Tennis_Dataset_loc_features.txt" using (1):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Space_Dataset_loc_features.txt" using (2):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Soccer_Dataset_loc_features.txt" using (3):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_loc_features.txt" using (4):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Human_Disaster_Dataset_loc_features.txt" using (5):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_loc_features.txt" using (6):($2+rand(0)/100000000) every 20  notitle, \
-"< head -n 100000 data/Social_issue_Dataset_loc_features.txt" using (7):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_loc_features.txt" using (8):($2+rand(0)/100000000) every 20  notitle lc 'orange', \
-"< head -n 100000 data/Health_Dataset_loc_features.txt" using (9):($2+rand(0)/100000000) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_loc_features.txt" using (10):($2+rand(0)/100000000) every 20  notitle lc 'grey'
+plot "< head -n 100000 data/Tennis_Dataset_loc_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Space_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Soccer_Dataset_loc_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_loc_features.txt" using (4):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Human_Disaster_Dataset_loc_features.txt" using (5):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_loc_features.txt" using (6):($2+rand(0)*1E-20) every 20  notitle, \
+"< head -n 100000 data/Social_issue_Dataset_loc_features.txt" using (7):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_loc_features.txt" using (8):($2+rand(0)*1E-20) every 20  notitle lc 'orange', \
+"< head -n 100000 data/Health_Dataset_loc_features.txt" using (9):($2+rand(0)*1E-20) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_loc_features.txt" using (10):($2+rand(0)*1E-20) every 20  notitle lc 'grey'
 
 set ylabel "Mutual Information" font "Courier,16"
 set output "plots/mention_features.eps" 
-plot "< head -n 100000 data/Tennis_Dataset_mention_features.txt" using (1):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Space_Dataset_mention_features.txt" using (2):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Soccer_Dataset_mention_features.txt" using (3):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_mention_features.txt" using (4):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Human_Disaster_Dataset_mention_features.txt" using (5):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_mention_features.txt" using (6):($2+rand(0)/100000000) every 20  notitle, \
-"< head -n 100000 data/Social_issue_Dataset_mention_features.txt" using (7):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_mention_features.txt" using (8):($2+rand(0)/100000000) every 20  notitle lc 'orange', \
-"< head -n 100000 data/Health_Dataset_mention_features.txt" using (9):($2+rand(0)/100000000) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_mention_features.txt" using (10):($2+rand(0)/100000000) every 20  notitle lc 'grey'
+plot "< head -n 100000 data/Tennis_Dataset_mention_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Space_Dataset_mention_features.txt" using (2):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Soccer_Dataset_mention_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Human_Disaster_Dataset_mention_features.txt" using (5):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_mention_features.txt" using (6):($2+rand(0)*1E-20) every 20  notitle, \
+"< head -n 100000 data/Social_issue_Dataset_mention_features.txt" using (7):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_mention_features.txt" using (8):($2+rand(0)*1E-20) every 20  notitle lc 'orange', \
+"< head -n 100000 data/Health_Dataset_mention_features.txt" using (9):($2+rand(0)*1E-20) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_mention_features.txt" using (10):($2+rand(0)*1E-20) every 20  notitle lc 'grey'
 
 set ylabel "Mutual Information" font "Courier,16"
 set output "plots/user_features.eps" 
-plot "< head -n 100000 data/Tennis_Dataset_user_features.txt" using (1):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Space_Dataset_user_features.txt" using (2):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Soccer_Dataset_user_features.txt" using (3):($2+rand(0)/100000000)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_user_features.txt" using (4):($2+rand(0)/100000000) every 20  notitle,\
-"< head -n 100000 data/Human_Disaster_Dataset_user_features.txt" using (5):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_user_features.txt" using (6):($2+rand(0)/100000000) every 20  notitle, \
-"< head -n 100000 data/Social_issue_Dataset_user_features.txt" using (7):($2+rand(0)/100000000) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_user_features.txt" using (8):($2+rand(0)/100000000) every 20  notitle lc 'orange', \
-"< head -n 100000 data/Health_Dataset_user_features.txt" using (9):($2+rand(0)/100000000) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_user_features.txt" using (10):($2+rand(0)/100000000) every 20  notitle lc 'grey'
+plot "< head -n 100000 data/Tennis_Dataset_user_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Space_Dataset_user_features.txt" using (2):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Soccer_Dataset_user_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_user_features.txt" using (4):($2+rand(0)*1E-20) every 20  notitle,\
+"< head -n 100000 data/Human_Disaster_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_user_features.txt" using (6):($2+rand(0)*1E-20) every 20  notitle, \
+"< head -n 100000 data/Social_issue_Dataset_user_features.txt" using (7):($2+rand(0)*1E-20) every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_user_features.txt" using (8):($2+rand(0)*1E-20) every 20  notitle lc 'orange', \
+"< head -n 100000 data/Health_Dataset_user_features.txt" using (9):($2+rand(0)*1E-20) every 20  notitle lc 'cyan', "< head -n 100000 data/LGBT_Dataset_user_features.txt" using (10):($2+rand(0)*1E-20) every 20  notitle lc 'grey'
 
+
+
+
+
+
+
+
+
+
+
+
+reset
+clear
+#set border 2 front linetype -1 linewidth 1.000
+#set boxwidth 0.5 absolute
+set style fill   solid 1 border lt -1
+set key
+set grid
+set yrange [10**-12:10**-2] 
+set xrange [0.5:5.5] 
+#set logscale y
+set size 0.5,0.6
+#set pointsize 0.5
+set border 4095
+set  logscale y
+set datafile missing "NaN"
+set format y "10^{%L}"
+
+
+set style data boxplot 
+set style boxplot 
+
+set xtics ("Term" 1,"Location" 2,"Hashtag" 3,"Mention" 4,"User" 5)  rotate by 45 right
+set term postscript eps enhanced color "Courier,19"
+
+
+set ylabel "Mutual Information" font "Courier,16"
+set output "plots/Tennis_features.eps" 
+plot "< head -n 100000 data/Tennis_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Tennis_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Tennis_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Tennis_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Tennis_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+
+set output "plots/Space_features.eps" 
+plot "< head -n 100000 data/Space_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Space_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Space_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Space_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Space_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+
+set output "plots/Soccer_features.eps" 
+plot "< head -n 100000 data/Soccer_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Soccer_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Soccer_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Soccer_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Soccer_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+set output "plots/Iran_features.eps" 
+plot "< head -n 100000 data/Iran_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Iran_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Iran_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Iran_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+
+set output "plots/Human_Disaster_features.eps" 
+plot "< head -n 100000 data/Human_Disaster_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Human_Disaster_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Human_Disaster_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Human_Disaster_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Human_Disaster_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+set output "plots/Cele_death_features.eps" 
+plot "< head -n 100000 data/Cele_death_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Cele_death_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Cele_death_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Cele_death_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+set output "plots/Social_issue_features.eps" 
+plot "< head -n 100000 data/Social_issue_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Social_issue_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Social_issue_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Social_issue_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Social_issue_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+set output "plots/Natr_Disaster_features.eps" 
+plot "< head -n 100000 data/Natr_Disaster_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Natr_Disaster_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Natr_Disaster_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Natr_Disaster_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+set output "plots/Health_features.eps" 
+plot "< head -n 100000 data/Health_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Health_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Health_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/Health_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/Health_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
+
+set output "plots/LGBT_features.eps" 
+plot "< head -n 100000 data/LGBT_Dataset_term_features.txt" using (1):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/LGBT_Dataset_loc_features.txt" using (2):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/LGBT_Dataset_hashtag_features.txt" using (3):($2+rand(0)*1E-20)  every 20  notitle, "< head -n 100000 data/LGBT_Dataset_mention_features.txt" using (4):($2+rand(0)*1E-20)  every 20  notitle,\
+"< head -n 100000 data/LGBT_Dataset_user_features.txt" using (5):($2+rand(0)*1E-20)  every 20  notitle
 
 
 
