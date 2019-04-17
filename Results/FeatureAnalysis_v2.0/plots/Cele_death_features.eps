@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: plots/Cele_death_features.eps
-%%Creator: gnuplot 5.2 patchlevel 2
-%%CreationDate: Tue Apr 16 18:31:40 2019
+%%Creator: gnuplot 5.2 patchlevel 6
+%%CreationDate: Tue Apr 16 22:51:35 2019
 %%DocumentFonts: (atend)
 %%BoundingBox: 50 50 230 201
 %%EndComments
@@ -48,7 +48,7 @@ gnudict begin
   } if
 } def
 %
-% Gnuplot Prolog Version 5.1 (Oct 2015)
+% Gnuplot Prolog Version 5.2 (Dec 2017)
 %
 %/SuppressPDFMark true def
 %
@@ -305,7 +305,7 @@ gnudict begin
   ColR ColG ColB setrgbcolor} def
 /BoxColFill {gsave Rec PolyFill} def
 /PolyFill {gsave Density fill grestore grestore} def
-/h {rlineto rlineto rlineto gsave closepath fill grestore} bind def
+/h {rlineto rlineto rlineto closepath gsave fill grestore stroke} bind def
 %
 % PostScript Level 1 Pattern Fill routine for rectangles
 % Usage: x y w h s a XX PatternFill
@@ -478,10 +478,10 @@ systemdict /pdfmark known not {
 SDict begin [
   /Title (plots/Cele_death_features.eps)
   /Subject (gnuplot plot)
-  /Creator (gnuplot 5.2 patchlevel 2)
+  /Creator (gnuplot 5.2 patchlevel 6)
 %  /Producer (gnuplot)
 %  /Keywords ()
-  /CreationDate (Tue Apr 16 18:31:40 2019)
+  /CreationDate (Tue Apr 16 22:51:35 2019)
   /DOCINFO pdfmark
 end
 } ifelse
@@ -544,6 +544,8 @@ stroke
 [ [(Courier) 190.0 0.0 true true 0 (10)]
 [(Courier) 152.0 95.0 true true 0 (-12)]
 ] -82.3 MRshow
+/Courier findfont 190 scalefont setfont
+/vshift -63 def
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -598,6 +600,7 @@ stroke
 [ [(Courier) 190.0 0.0 true true 0 (10)]
 [(Courier) 152.0 95.0 true true 0 (-10)]
 ] -82.3 MRshow
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -652,6 +655,7 @@ stroke
 [ [(Courier) 190.0 0.0 true true 0 (10)]
 [(Courier) 152.0 95.0 true true 0 (-8)]
 ] -82.3 MRshow
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -706,6 +710,7 @@ stroke
 [ [(Courier) 190.0 0.0 true true 0 (10)]
 [(Courier) 152.0 95.0 true true 0 (-6)]
 ] -82.3 MRshow
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -760,6 +765,7 @@ stroke
 [ [(Courier) 190.0 0.0 true true 0 (10)]
 [(Courier) 152.0 95.0 true true 0 (-4)]
 ] -82.3 MRshow
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -814,6 +820,7 @@ stroke
 [ [(Courier) 190.0 0.0 true true 0 (10)]
 [(Courier) 152.0 95.0 true true 0 (-2)]
 ] -82.3 MRshow
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -836,6 +843,7 @@ currentpoint gsave translate 45 rotate 0 0 moveto
 [ [(Courier) 190.0 0.0 true true 0 (Term)]
 ] -63.3 MRshow
 grestore
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -858,6 +866,7 @@ currentpoint gsave translate 45 rotate 0 0 moveto
 [ [(Courier) 190.0 0.0 true true 0 (Location)]
 ] -63.3 MRshow
 grestore
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -880,6 +889,7 @@ currentpoint gsave translate 45 rotate 0 0 moveto
 [ [(Courier) 190.0 0.0 true true 0 (Hashtag)]
 ] -63.3 MRshow
 grestore
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -903,6 +913,7 @@ currentpoint gsave translate 45 rotate 0 0 moveto
 [ [(Courier) 190.0 0.0 true true 0 (Mention)]
 ] -63.3 MRshow
 grestore
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -926,6 +937,7 @@ currentpoint gsave translate 45 rotate 0 0 moveto
 [ [(Courier) 190.0 0.0 true true 0 (User)]
 ] -63.3 MRshow
 grestore
+/Courier findfont 190 scalefont setfont
 1.000 UL
 LTb
 LCb setrgbcolor
@@ -948,15 +960,18 @@ currentpoint gsave translate -270 rotate 0 0 moveto
 [ [(Courier) 160.0 0.0 true true 0 (Mutual Information)]
 ] -53.3 MCshow
 grestore
+/Courier findfont 190 scalefont setfont
 LTb
 % Begin plot #1
 1.000 UP
 1.000 UL
 LTb
-0.58 0.00 0.83 C 1.000 UP
+0.58 0.00 0.83 C
+1.000 UP
 1.000 UL
 LTb
-0.58 0.00 0.83 C 1.000 1047 1384 234 145 BoxColFill
+0.58 0.00 0.83 C
+1.000 1047 1384 234 145 BoxColFill
 LCb setrgbcolor
 1047 1384 N
 234 0 V
@@ -977,13 +992,10 @@ Z stroke
 1164 1599 CircleF
 1164 1599 CircleF
 1164 1599 CircleF
-1164 1599 CircleF
 1164 1600 CircleF
 1164 1600 CircleF
 1164 1600 CircleF
 1164 1600 CircleF
-1164 1600 CircleF
-1164 1601 CircleF
 1164 1601 CircleF
 1164 1601 CircleF
 1164 1601 CircleF
@@ -993,8 +1005,6 @@ Z stroke
 1164 1602 CircleF
 1164 1602 CircleF
 1164 1602 CircleF
-1164 1602 CircleF
-1164 1603 CircleF
 1164 1603 CircleF
 1164 1603 CircleF
 1164 1603 CircleF
@@ -1004,14 +1014,10 @@ Z stroke
 1164 1604 CircleF
 1164 1604 CircleF
 1164 1604 CircleF
-1164 1604 CircleF
 1164 1605 CircleF
 1164 1605 CircleF
 1164 1605 CircleF
 1164 1605 CircleF
-1164 1605 CircleF
-1164 1605 CircleF
-1164 1606 CircleF
 1164 1606 CircleF
 1164 1606 CircleF
 1164 1606 CircleF
@@ -1026,9 +1032,6 @@ Z stroke
 1164 1608 CircleF
 1164 1608 CircleF
 1164 1608 CircleF
-1164 1608 CircleF
-1164 1609 CircleF
-1164 1609 CircleF
 1164 1609 CircleF
 1164 1609 CircleF
 1164 1609 CircleF
@@ -1038,15 +1041,11 @@ Z stroke
 1164 1610 CircleF
 1164 1610 CircleF
 1164 1610 CircleF
-1164 1610 CircleF
 1164 1611 CircleF
 1164 1611 CircleF
 1164 1611 CircleF
 1164 1611 CircleF
 1164 1611 CircleF
-1164 1611 CircleF
-1164 1612 CircleF
-1164 1612 CircleF
 1164 1612 CircleF
 1164 1612 CircleF
 1164 1612 CircleF
@@ -1058,8 +1057,6 @@ Z stroke
 1164 1614 CircleF
 1164 1614 CircleF
 1164 1614 CircleF
-1164 1614 CircleF
-1164 1615 CircleF
 1164 1615 CircleF
 1164 1615 CircleF
 1164 1615 CircleF
@@ -1069,9 +1066,6 @@ Z stroke
 1164 1616 CircleF
 1164 1616 CircleF
 1164 1616 CircleF
-1164 1616 CircleF
-1164 1617 CircleF
-1164 1617 CircleF
 1164 1617 CircleF
 1164 1617 CircleF
 1164 1617 CircleF
@@ -1081,8 +1075,6 @@ Z stroke
 1164 1618 CircleF
 1164 1618 CircleF
 1164 1618 CircleF
-1164 1619 CircleF
-1164 1619 CircleF
 1164 1619 CircleF
 1164 1619 CircleF
 1164 1619 CircleF
@@ -1095,9 +1087,6 @@ Z stroke
 1164 1621 CircleF
 1164 1621 CircleF
 1164 1621 CircleF
-1164 1621 CircleF
-1164 1621 CircleF
-1164 1622 CircleF
 1164 1622 CircleF
 1164 1622 CircleF
 1164 1622 CircleF
@@ -1111,9 +1100,6 @@ Z stroke
 1164 1624 CircleF
 1164 1624 CircleF
 1164 1624 CircleF
-1164 1624 CircleF
-1164 1624 CircleF
-1164 1625 CircleF
 1164 1625 CircleF
 1164 1625 CircleF
 1164 1625 CircleF
@@ -1125,14 +1111,10 @@ Z stroke
 1164 1627 CircleF
 1164 1627 CircleF
 1164 1627 CircleF
-1164 1627 CircleF
-1164 1627 CircleF
 1164 1628 CircleF
 1164 1628 CircleF
 1164 1628 CircleF
 1164 1628 CircleF
-1164 1629 CircleF
-1164 1629 CircleF
 1164 1629 CircleF
 1164 1629 CircleF
 1164 1629 CircleF
@@ -1143,16 +1125,12 @@ Z stroke
 1164 1631 CircleF
 1164 1631 CircleF
 1164 1631 CircleF
-1164 1631 CircleF
-1164 1632 CircleF
 1164 1632 CircleF
 1164 1632 CircleF
 1164 1632 CircleF
 1164 1633 CircleF
 1164 1633 CircleF
 1164 1633 CircleF
-1164 1633 CircleF
-1164 1634 CircleF
 1164 1634 CircleF
 1164 1634 CircleF
 1164 1634 CircleF
@@ -1164,13 +1142,9 @@ Z stroke
 1164 1636 CircleF
 1164 1636 CircleF
 1164 1636 CircleF
-1164 1636 CircleF
 1164 1637 CircleF
 1164 1637 CircleF
 1164 1637 CircleF
-1164 1637 CircleF
-1164 1637 CircleF
-1164 1638 CircleF
 1164 1638 CircleF
 1164 1638 CircleF
 1164 1638 CircleF
@@ -1185,8 +1159,6 @@ Z stroke
 1164 1641 CircleF
 1164 1641 CircleF
 1164 1641 CircleF
-1164 1641 CircleF
-1164 1641 CircleF
 1164 1642 CircleF
 1164 1642 CircleF
 1164 1642 CircleF
@@ -1194,9 +1166,6 @@ Z stroke
 1164 1643 CircleF
 1164 1643 CircleF
 1164 1643 CircleF
-1164 1643 CircleF
-1164 1643 CircleF
-1164 1644 CircleF
 1164 1644 CircleF
 1164 1644 CircleF
 1164 1644 CircleF
@@ -1207,20 +1176,15 @@ Z stroke
 1164 1646 CircleF
 1164 1646 CircleF
 1164 1646 CircleF
-1164 1646 CircleF
 1164 1647 CircleF
 1164 1647 CircleF
 1164 1647 CircleF
 1164 1647 CircleF
 1164 1648 CircleF
 1164 1648 CircleF
-1164 1648 CircleF
-1164 1648 CircleF
 1164 1649 CircleF
 1164 1649 CircleF
 1164 1649 CircleF
-1164 1649 CircleF
-1164 1650 CircleF
 1164 1650 CircleF
 1164 1650 CircleF
 1164 1650 CircleF
@@ -1234,16 +1198,12 @@ Z stroke
 1164 1653 CircleF
 1164 1653 CircleF
 1164 1653 CircleF
-1164 1653 CircleF
-1164 1653 CircleF
 1164 1654 CircleF
 1164 1654 CircleF
 1164 1654 CircleF
 1164 1655 CircleF
 1164 1655 CircleF
 1164 1655 CircleF
-1164 1655 CircleF
-1164 1656 CircleF
 1164 1656 CircleF
 1164 1656 CircleF
 1164 1656 CircleF
@@ -1252,12 +1212,9 @@ Z stroke
 1164 1657 CircleF
 1164 1658 CircleF
 1164 1658 CircleF
-1164 1658 CircleF
 1164 1659 CircleF
 1164 1659 CircleF
 1164 1659 CircleF
-1164 1659 CircleF
-1164 1660 CircleF
 1164 1660 CircleF
 1164 1660 CircleF
 1164 1660 CircleF
@@ -1267,16 +1224,12 @@ Z stroke
 1164 1662 CircleF
 1164 1662 CircleF
 1164 1662 CircleF
-1164 1662 CircleF
-1164 1663 CircleF
 1164 1663 CircleF
 1164 1663 CircleF
 1164 1663 CircleF
 1164 1664 CircleF
 1164 1664 CircleF
 1164 1664 CircleF
-1164 1664 CircleF
-1164 1665 CircleF
 1164 1665 CircleF
 1164 1665 CircleF
 1164 1665 CircleF
@@ -1286,15 +1239,12 @@ Z stroke
 1164 1667 CircleF
 1164 1667 CircleF
 1164 1667 CircleF
-1164 1667 CircleF
 1164 1668 CircleF
 1164 1668 CircleF
 1164 1668 CircleF
 1164 1669 CircleF
 1164 1669 CircleF
 1164 1669 CircleF
-1164 1669 CircleF
-1164 1670 CircleF
 1164 1670 CircleF
 1164 1670 CircleF
 1164 1671 CircleF
@@ -1303,18 +1253,14 @@ Z stroke
 1164 1672 CircleF
 1164 1672 CircleF
 1164 1672 CircleF
-1164 1672 CircleF
 1164 1673 CircleF
 1164 1673 CircleF
-1164 1673 CircleF
-1164 1674 CircleF
 1164 1674 CircleF
 1164 1674 CircleF
 1164 1674 CircleF
 1164 1675 CircleF
 1164 1675 CircleF
 1164 1675 CircleF
-1164 1676 CircleF
 1164 1676 CircleF
 1164 1676 CircleF
 1164 1676 CircleF
@@ -1322,8 +1268,6 @@ Z stroke
 1164 1677 CircleF
 1164 1678 CircleF
 1164 1678 CircleF
-1164 1678 CircleF
-1164 1679 CircleF
 1164 1679 CircleF
 1164 1679 CircleF
 1164 1679 CircleF
@@ -1332,18 +1276,14 @@ Z stroke
 1164 1680 CircleF
 1164 1681 CircleF
 1164 1681 CircleF
-1164 1681 CircleF
 1164 1682 CircleF
 1164 1682 CircleF
 1164 1682 CircleF
 1164 1683 CircleF
 1164 1683 CircleF
-1164 1683 CircleF
-1164 1683 CircleF
 1164 1684 CircleF
 1164 1684 CircleF
 1164 1684 CircleF
-1164 1685 CircleF
 1164 1685 CircleF
 1164 1685 CircleF
 1164 1686 CircleF
@@ -1352,14 +1292,11 @@ Z stroke
 1164 1687 CircleF
 1164 1687 CircleF
 1164 1688 CircleF
-1164 1688 CircleF
 1164 1689 CircleF
 1164 1689 CircleF
 1164 1689 CircleF
 1164 1690 CircleF
 1164 1690 CircleF
-1164 1690 CircleF
-1164 1691 CircleF
 1164 1691 CircleF
 1164 1691 CircleF
 1164 1692 CircleF
@@ -1369,8 +1306,6 @@ Z stroke
 1164 1693 CircleF
 1164 1694 CircleF
 1164 1694 CircleF
-1164 1694 CircleF
-1164 1694 CircleF
 1164 1695 CircleF
 1164 1695 CircleF
 1164 1695 CircleF
@@ -1378,8 +1313,6 @@ Z stroke
 1164 1696 CircleF
 1164 1697 CircleF
 1164 1697 CircleF
-1164 1697 CircleF
-1164 1698 CircleF
 1164 1698 CircleF
 1164 1698 CircleF
 1164 1698 CircleF
@@ -1387,24 +1320,19 @@ Z stroke
 1164 1699 CircleF
 1164 1700 CircleF
 1164 1700 CircleF
-1164 1700 CircleF
 1164 1701 CircleF
 1164 1701 CircleF
 1164 1702 CircleF
 1164 1702 CircleF
-1164 1702 CircleF
 1164 1703 CircleF
 1164 1703 CircleF
 1164 1703 CircleF
-1164 1704 CircleF
 1164 1704 CircleF
 1164 1704 CircleF
 1164 1705 CircleF
 1164 1705 CircleF
 1164 1706 CircleF
 1164 1706 CircleF
-1164 1706 CircleF
-1164 1707 CircleF
 1164 1707 CircleF
 1164 1708 CircleF
 1164 1708 CircleF
@@ -1412,13 +1340,10 @@ Z stroke
 1164 1709 CircleF
 1164 1709 CircleF
 1164 1710 CircleF
-1164 1710 CircleF
 1164 1711 CircleF
 1164 1711 CircleF
 1164 1712 CircleF
 1164 1712 CircleF
-1164 1712 CircleF
-1164 1713 CircleF
 1164 1713 CircleF
 1164 1713 CircleF
 1164 1714 CircleF
@@ -1427,19 +1352,15 @@ Z stroke
 1164 1715 CircleF
 1164 1716 CircleF
 1164 1716 CircleF
-1164 1716 CircleF
 1164 1717 CircleF
 1164 1717 CircleF
-1164 1718 CircleF
 1164 1718 CircleF
 1164 1719 CircleF
 1164 1719 CircleF
 1164 1719 CircleF
 1164 1720 CircleF
-1164 1720 CircleF
 1164 1721 CircleF
 1164 1721 CircleF
-1164 1722 CircleF
 1164 1722 CircleF
 1164 1722 CircleF
 1164 1723 CircleF
@@ -1447,34 +1368,27 @@ Z stroke
 1164 1724 CircleF
 1164 1724 CircleF
 1164 1725 CircleF
-1164 1725 CircleF
 1164 1726 CircleF
 1164 1726 CircleF
-1164 1727 CircleF
 1164 1727 CircleF
 1164 1727 CircleF
 1164 1728 CircleF
 1164 1729 CircleF
 1164 1729 CircleF
 1164 1730 CircleF
-1164 1730 CircleF
 1164 1731 CircleF
 1164 1731 CircleF
 1164 1732 CircleF
 1164 1732 CircleF
 1164 1733 CircleF
-1164 1733 CircleF
-1164 1734 CircleF
 1164 1734 CircleF
 1164 1735 CircleF
 1164 1735 CircleF
 1164 1736 CircleF
 1164 1736 CircleF
 1164 1737 CircleF
-1164 1737 CircleF
 1164 1738 CircleF
 1164 1738 CircleF
-1164 1739 CircleF
 1164 1739 CircleF
 1164 1739 CircleF
 1164 1740 CircleF
@@ -1482,18 +1396,14 @@ Z stroke
 1164 1741 CircleF
 1164 1742 CircleF
 1164 1742 CircleF
-1164 1742 CircleF
 1164 1743 CircleF
 1164 1744 CircleF
 1164 1744 CircleF
 1164 1745 CircleF
 1164 1745 CircleF
-1164 1745 CircleF
 1164 1746 CircleF
 1164 1747 CircleF
-1164 1747 CircleF
 1164 1748 CircleF
-1164 1749 CircleF
 1164 1749 CircleF
 1164 1750 CircleF
 1164 1750 CircleF
@@ -1501,36 +1411,29 @@ Z stroke
 1164 1751 CircleF
 1164 1752 CircleF
 1164 1753 CircleF
-1164 1753 CircleF
 1164 1754 CircleF
 1164 1754 CircleF
 1164 1755 CircleF
-1164 1755 CircleF
 1164 1756 CircleF
 1164 1756 CircleF
-1164 1757 CircleF
 1164 1757 CircleF
 1164 1758 CircleF
-1164 1759 CircleF
+1164 1758 CircleF
 1164 1759 CircleF
 1164 1760 CircleF
 1164 1761 CircleF
-1164 1761 CircleF
+1164 1762 CircleF
 1164 1762 CircleF
 1164 1763 CircleF
-1164 1763 CircleF
 1164 1764 CircleF
-1164 1765 CircleF
 1164 1765 CircleF
 1164 1766 CircleF
 1164 1767 CircleF
 1164 1767 CircleF
-1164 1768 CircleF
 1164 1769 CircleF
 1164 1769 CircleF
 1164 1770 CircleF
 1164 1771 CircleF
-1164 1772 CircleF
 1164 1772 CircleF
 1164 1773 CircleF
 1164 1773 CircleF
@@ -1538,13 +1441,10 @@ Z stroke
 1164 1775 CircleF
 1164 1776 CircleF
 1164 1777 CircleF
-1164 1777 CircleF
 1164 1778 CircleF
 1164 1779 CircleF
 1164 1780 CircleF
-1164 1780 CircleF
 1164 1781 CircleF
-1164 1782 CircleF
 1164 1782 CircleF
 1164 1783 CircleF
 1164 1784 CircleF
@@ -1552,162 +1452,134 @@ Z stroke
 1164 1785 CircleF
 1164 1786 CircleF
 1164 1787 CircleF
-1164 1788 CircleF
-1164 1789 CircleF
 1164 1789 CircleF
 1164 1790 CircleF
+1164 1790 CircleF
 1164 1791 CircleF
-1164 1792 CircleF
-1164 1793 CircleF
 1164 1793 CircleF
 1164 1794 CircleF
+1164 1794 CircleF
 1164 1795 CircleF
-1164 1796 CircleF
 1164 1797 CircleF
 1164 1797 CircleF
-1164 1798 CircleF
 1164 1799 CircleF
 1164 1800 CircleF
 1164 1801 CircleF
 1164 1802 CircleF
 1164 1803 CircleF
-1164 1803 CircleF
+1164 1804 CircleF
 1164 1805 CircleF
-1164 1805 CircleF
-1164 1806 CircleF
 1164 1807 CircleF
 1164 1808 CircleF
-1164 1809 CircleF
+1164 1808 CircleF
 1164 1810 CircleF
 1164 1811 CircleF
 1164 1812 CircleF
 1164 1813 CircleF
 1164 1814 CircleF
-1164 1814 CircleF
-1164 1815 CircleF
 1164 1816 CircleF
-1164 1818 CircleF
+1164 1817 CircleF
 1164 1819 CircleF
 1164 1820 CircleF
 1164 1821 CircleF
-1164 1822 CircleF
 1164 1823 CircleF
 1164 1824 CircleF
 1164 1825 CircleF
 1164 1826 CircleF
 1164 1827 CircleF
-1164 1828 CircleF
 1164 1829 CircleF
 1164 1830 CircleF
-1164 1831 CircleF
 1164 1832 CircleF
 1164 1833 CircleF
-1164 1835 CircleF
+1164 1834 CircleF
 1164 1836 CircleF
 1164 1837 CircleF
-1164 1838 CircleF
 1164 1839 CircleF
 1164 1840 CircleF
 1164 1841 CircleF
-1164 1842 CircleF
-1164 1844 CircleF
+1164 1843 CircleF
 1164 1845 CircleF
 1164 1846 CircleF
 1164 1847 CircleF
 1164 1849 CircleF
-1164 1850 CircleF
 1164 1851 CircleF
-1164 1853 CircleF
+1164 1852 CircleF
 1164 1854 CircleF
 1164 1855 CircleF
-1164 1856 CircleF
 1164 1857 CircleF
 1164 1859 CircleF
 1164 1860 CircleF
 1164 1862 CircleF
 1164 1864 CircleF
-1164 1865 CircleF
 1164 1866 CircleF
 1164 1867 CircleF
 1164 1869 CircleF
-1164 1871 CircleF
-1164 1873 CircleF
-1164 1875 CircleF
+1164 1872 CircleF
+1164 1874 CircleF
 1164 1877 CircleF
 1164 1879 CircleF
-1164 1880 CircleF
-1164 1882 CircleF
-1164 1884 CircleF
+1164 1881 CircleF
+1164 1883 CircleF
 1164 1886 CircleF
-1164 1888 CircleF
-1164 1890 CircleF
+1164 1889 CircleF
 1164 1892 CircleF
-1164 1895 CircleF
+1164 1894 CircleF
 1164 1898 CircleF
-1164 1900 CircleF
-1164 1902 CircleF
-1164 1905 CircleF
+1164 1901 CircleF
+1164 1903 CircleF
 1164 1907 CircleF
 1164 1910 CircleF
-1164 1913 CircleF
-1164 1915 CircleF
-1164 1918 CircleF
-1164 1920 CircleF
+1164 1914 CircleF
+1164 1917 CircleF
+1164 1919 CircleF
 1164 1921 CircleF
-1164 1922 CircleF
-1164 1925 CircleF
-1164 1927 CircleF
+1164 1923 CircleF
+1164 1926 CircleF
 1164 1930 CircleF
 1164 1934 CircleF
 1164 1937 CircleF
-1164 1940 CircleF
-1164 1943 CircleF
+1164 1941 CircleF
 1164 1946 CircleF
 1164 1948 CircleF
-1164 1951 CircleF
-1164 1954 CircleF
-1164 1956 CircleF
-1164 1959 CircleF
+1164 1952 CircleF
+1164 1955 CircleF
+1164 1958 CircleF
 1164 1962 CircleF
-1164 1965 CircleF
-1164 1970 CircleF
-1164 1974 CircleF
-1164 1978 CircleF
+1164 1966 CircleF
+1164 1972 CircleF
+1164 1977 CircleF
 1164 1983 CircleF
-1164 1987 CircleF
-1164 1992 CircleF
-1164 1998 CircleF
-1164 2005 CircleF
+1164 1988 CircleF
+1164 1995 CircleF
+1164 2003 CircleF
 1164 2011 CircleF
-1164 2017 CircleF
-1164 2022 CircleF
-1164 2029 CircleF
-1164 2035 CircleF
+1164 2018 CircleF
+1164 2024 CircleF
+1164 2034 CircleF
 1164 2043 CircleF
-1164 2048 CircleF
-1164 2056 CircleF
-1164 2066 CircleF
-1164 2072 CircleF
+1164 2050 CircleF
+1164 2061 CircleF
+1164 2071 CircleF
 1164 2081 CircleF
-1164 2095 CircleF
-1164 2110 CircleF
-1164 2123 CircleF
-1164 2137 CircleF
+1164 2098 CircleF
+1164 2116 CircleF
+1164 2134 CircleF
 1164 2147 CircleF
-1164 2169 CircleF
-1164 2196 CircleF
-1164 2228 CircleF
-1164 2305 CircleF
+1164 2179 CircleF
+1164 2212 CircleF
+1164 2290 CircleF
 1164 2411 CircleF
 % End plot #1
 % Begin plot #2
 1.000 UP
 1.000 UL
 LTb
-0.00 0.62 0.45 C 1.000 UP
+0.00 0.62 0.45 C
+1.000 UP
 1.000 UL
 LTb
-0.00 0.62 0.45 C 1.000 1513 1309 232 125 BoxColFill
+0.00 0.62 0.45 C
+1.000 1513 1309 232 125 BoxColFill
 LCb setrgbcolor
 1513 1309 N
 232 0 V
@@ -1729,8 +1601,6 @@ Z stroke
 1629 1500 CircleF
 1629 1500 CircleF
 1629 1500 CircleF
-1629 1500 CircleF
-1629 1501 CircleF
 1629 1501 CircleF
 1629 1501 CircleF
 1629 1501 CircleF
@@ -1744,9 +1614,6 @@ Z stroke
 1629 1502 CircleF
 1629 1502 CircleF
 1629 1502 CircleF
-1629 1502 CircleF
-1629 1502 CircleF
-1629 1502 CircleF
 1629 1503 CircleF
 1629 1503 CircleF
 1629 1503 CircleF
@@ -1754,7 +1621,6 @@ Z stroke
 1629 1503 CircleF
 1629 1503 CircleF
 1629 1503 CircleF
-1629 1503 CircleF
 1629 1504 CircleF
 1629 1504 CircleF
 1629 1504 CircleF
@@ -1762,10 +1628,6 @@ Z stroke
 1629 1504 CircleF
 1629 1504 CircleF
 1629 1504 CircleF
-1629 1504 CircleF
-1629 1504 CircleF
-1629 1505 CircleF
-1629 1505 CircleF
 1629 1505 CircleF
 1629 1505 CircleF
 1629 1505 CircleF
@@ -1781,7 +1643,6 @@ Z stroke
 1629 1506 CircleF
 1629 1506 CircleF
 1629 1506 CircleF
-1629 1506 CircleF
 1629 1507 CircleF
 1629 1507 CircleF
 1629 1507 CircleF
@@ -1789,10 +1650,6 @@ Z stroke
 1629 1507 CircleF
 1629 1507 CircleF
 1629 1507 CircleF
-1629 1507 CircleF
-1629 1507 CircleF
-1629 1508 CircleF
-1629 1508 CircleF
 1629 1508 CircleF
 1629 1508 CircleF
 1629 1508 CircleF
@@ -1808,8 +1665,6 @@ Z stroke
 1629 1509 CircleF
 1629 1509 CircleF
 1629 1509 CircleF
-1629 1509 CircleF
-1629 1509 CircleF
 1629 1510 CircleF
 1629 1510 CircleF
 1629 1510 CircleF
@@ -1818,10 +1673,6 @@ Z stroke
 1629 1510 CircleF
 1629 1510 CircleF
 1629 1510 CircleF
-1629 1510 CircleF
-1629 1510 CircleF
-1629 1511 CircleF
-1629 1511 CircleF
 1629 1511 CircleF
 1629 1511 CircleF
 1629 1511 CircleF
@@ -1837,10 +1688,6 @@ Z stroke
 1629 1512 CircleF
 1629 1512 CircleF
 1629 1512 CircleF
-1629 1512 CircleF
-1629 1512 CircleF
-1629 1513 CircleF
-1629 1513 CircleF
 1629 1513 CircleF
 1629 1513 CircleF
 1629 1513 CircleF
@@ -1857,10 +1704,6 @@ Z stroke
 1629 1514 CircleF
 1629 1514 CircleF
 1629 1514 CircleF
-1629 1514 CircleF
-1629 1514 CircleF
-1629 1515 CircleF
-1629 1515 CircleF
 1629 1515 CircleF
 1629 1515 CircleF
 1629 1515 CircleF
@@ -1877,7 +1720,6 @@ Z stroke
 1629 1516 CircleF
 1629 1516 CircleF
 1629 1516 CircleF
-1629 1516 CircleF
 1629 1517 CircleF
 1629 1517 CircleF
 1629 1517 CircleF
@@ -1885,10 +1727,6 @@ Z stroke
 1629 1517 CircleF
 1629 1517 CircleF
 1629 1517 CircleF
-1629 1517 CircleF
-1629 1517 CircleF
-1629 1518 CircleF
-1629 1518 CircleF
 1629 1518 CircleF
 1629 1518 CircleF
 1629 1518 CircleF
@@ -1906,8 +1744,6 @@ Z stroke
 1629 1519 CircleF
 1629 1519 CircleF
 1629 1519 CircleF
-1629 1519 CircleF
-1629 1519 CircleF
 1629 1520 CircleF
 1629 1520 CircleF
 1629 1520 CircleF
@@ -1915,11 +1751,6 @@ Z stroke
 1629 1520 CircleF
 1629 1520 CircleF
 1629 1520 CircleF
-1629 1520 CircleF
-1629 1520 CircleF
-1629 1520 CircleF
-1629 1521 CircleF
-1629 1521 CircleF
 1629 1521 CircleF
 1629 1521 CircleF
 1629 1521 CircleF
@@ -1938,7 +1769,6 @@ Z stroke
 1629 1522 CircleF
 1629 1522 CircleF
 1629 1522 CircleF
-1629 1522 CircleF
 1629 1523 CircleF
 1629 1523 CircleF
 1629 1523 CircleF
@@ -1947,11 +1777,6 @@ Z stroke
 1629 1523 CircleF
 1629 1523 CircleF
 1629 1523 CircleF
-1629 1523 CircleF
-1629 1523 CircleF
-1629 1523 CircleF
-1629 1524 CircleF
-1629 1524 CircleF
 1629 1524 CircleF
 1629 1524 CircleF
 1629 1524 CircleF
@@ -1968,7 +1793,6 @@ Z stroke
 1629 1525 CircleF
 1629 1525 CircleF
 1629 1525 CircleF
-1629 1525 CircleF
 1629 1526 CircleF
 1629 1526 CircleF
 1629 1526 CircleF
@@ -1978,12 +1802,6 @@ Z stroke
 1629 1526 CircleF
 1629 1526 CircleF
 1629 1526 CircleF
-1629 1526 CircleF
-1629 1526 CircleF
-1629 1526 CircleF
-1629 1527 CircleF
-1629 1527 CircleF
-1629 1527 CircleF
 1629 1527 CircleF
 1629 1527 CircleF
 1629 1527 CircleF
@@ -2001,10 +1819,6 @@ Z stroke
 1629 1528 CircleF
 1629 1528 CircleF
 1629 1528 CircleF
-1629 1528 CircleF
-1629 1528 CircleF
-1629 1529 CircleF
-1629 1529 CircleF
 1629 1529 CircleF
 1629 1529 CircleF
 1629 1529 CircleF
@@ -2023,7 +1837,6 @@ Z stroke
 1629 1530 CircleF
 1629 1530 CircleF
 1629 1530 CircleF
-1629 1530 CircleF
 1629 1531 CircleF
 1629 1531 CircleF
 1629 1531 CircleF
@@ -2033,11 +1846,6 @@ Z stroke
 1629 1531 CircleF
 1629 1531 CircleF
 1629 1531 CircleF
-1629 1531 CircleF
-1629 1531 CircleF
-1629 1531 CircleF
-1629 1532 CircleF
-1629 1532 CircleF
 1629 1532 CircleF
 1629 1532 CircleF
 1629 1532 CircleF
@@ -2056,11 +1864,6 @@ Z stroke
 1629 1533 CircleF
 1629 1533 CircleF
 1629 1533 CircleF
-1629 1533 CircleF
-1629 1533 CircleF
-1629 1533 CircleF
-1629 1534 CircleF
-1629 1534 CircleF
 1629 1534 CircleF
 1629 1534 CircleF
 1629 1534 CircleF
@@ -2079,11 +1882,6 @@ Z stroke
 1629 1535 CircleF
 1629 1535 CircleF
 1629 1535 CircleF
-1629 1535 CircleF
-1629 1535 CircleF
-1629 1536 CircleF
-1629 1536 CircleF
-1629 1536 CircleF
 1629 1536 CircleF
 1629 1536 CircleF
 1629 1536 CircleF
@@ -2102,11 +1900,6 @@ Z stroke
 1629 1537 CircleF
 1629 1537 CircleF
 1629 1537 CircleF
-1629 1537 CircleF
-1629 1537 CircleF
-1629 1538 CircleF
-1629 1538 CircleF
-1629 1538 CircleF
 1629 1538 CircleF
 1629 1538 CircleF
 1629 1538 CircleF
@@ -2128,7 +1921,6 @@ Z stroke
 1629 1539 CircleF
 1629 1539 CircleF
 1629 1539 CircleF
-1629 1539 CircleF
 1629 1540 CircleF
 1629 1540 CircleF
 1629 1540 CircleF
@@ -2138,12 +1930,6 @@ Z stroke
 1629 1540 CircleF
 1629 1540 CircleF
 1629 1540 CircleF
-1629 1540 CircleF
-1629 1540 CircleF
-1629 1540 CircleF
-1629 1541 CircleF
-1629 1541 CircleF
-1629 1541 CircleF
 1629 1541 CircleF
 1629 1541 CircleF
 1629 1541 CircleF
@@ -2166,11 +1952,6 @@ Z stroke
 1629 1542 CircleF
 1629 1542 CircleF
 1629 1542 CircleF
-1629 1542 CircleF
-1629 1542 CircleF
-1629 1542 CircleF
-1629 1543 CircleF
-1629 1543 CircleF
 1629 1543 CircleF
 1629 1543 CircleF
 1629 1543 CircleF
@@ -2192,9 +1973,6 @@ Z stroke
 1629 1544 CircleF
 1629 1544 CircleF
 1629 1544 CircleF
-1629 1544 CircleF
-1629 1544 CircleF
-1629 1544 CircleF
 1629 1545 CircleF
 1629 1545 CircleF
 1629 1545 CircleF
@@ -2206,11 +1984,6 @@ Z stroke
 1629 1545 CircleF
 1629 1545 CircleF
 1629 1545 CircleF
-1629 1545 CircleF
-1629 1545 CircleF
-1629 1545 CircleF
-1629 1546 CircleF
-1629 1546 CircleF
 1629 1546 CircleF
 1629 1546 CircleF
 1629 1546 CircleF
@@ -2224,8 +1997,6 @@ Z stroke
 1629 1547 CircleF
 1629 1547 CircleF
 1629 1548 CircleF
-1629 1548 CircleF
-1629 1549 CircleF
 1629 1549 CircleF
 1629 1549 CircleF
 1629 1550 CircleF
@@ -2234,167 +2005,138 @@ Z stroke
 1629 1551 CircleF
 1629 1551 CircleF
 1629 1552 CircleF
-1629 1552 CircleF
 1629 1553 CircleF
 1629 1553 CircleF
-1629 1554 CircleF
 1629 1554 CircleF
 1629 1555 CircleF
 1629 1556 CircleF
 1629 1556 CircleF
-1629 1557 CircleF
 1629 1557 CircleF
 1629 1558 CircleF
 1629 1558 CircleF
 1629 1559 CircleF
 1629 1560 CircleF
 1629 1561 CircleF
-1629 1561 CircleF
 1629 1562 CircleF
 1629 1563 CircleF
 1629 1563 CircleF
 1629 1564 CircleF
 1629 1564 CircleF
-1629 1564 CircleF
 1629 1565 CircleF
-1629 1566 CircleF
 1629 1566 CircleF
 1629 1567 CircleF
 1629 1567 CircleF
 1629 1568 CircleF
 1629 1569 CircleF
 1629 1569 CircleF
-1629 1569 CircleF
-1629 1570 CircleF
 1629 1570 CircleF
 1629 1571 CircleF
-1629 1572 CircleF
+1629 1571 CircleF
 1629 1572 CircleF
 1629 1573 CircleF
-1629 1573 CircleF
+1629 1574 CircleF
 1629 1574 CircleF
 1629 1575 CircleF
 1629 1575 CircleF
-1629 1575 CircleF
 1629 1576 CircleF
-1629 1577 CircleF
 1629 1577 CircleF
 1629 1578 CircleF
 1629 1578 CircleF
 1629 1579 CircleF
 1629 1580 CircleF
-1629 1580 CircleF
 1629 1581 CircleF
 1629 1581 CircleF
-1629 1582 CircleF
 1629 1582 CircleF
 1629 1583 CircleF
 1629 1584 CircleF
 1629 1584 CircleF
 1629 1585 CircleF
 1629 1586 CircleF
-1629 1586 CircleF
 1629 1587 CircleF
 1629 1587 CircleF
-1629 1588 CircleF
 1629 1588 CircleF
 1629 1589 CircleF
 1629 1590 CircleF
 1629 1590 CircleF
-1629 1591 CircleF
 1629 1592 CircleF
-1629 1593 CircleF
+1629 1592 CircleF
 1629 1593 CircleF
 1629 1594 CircleF
 1629 1595 CircleF
-1629 1595 CircleF
 1629 1596 CircleF
 1629 1596 CircleF
 1629 1597 CircleF
 1629 1597 CircleF
-1629 1598 CircleF
 1629 1598 CircleF
 1629 1599 CircleF
 1629 1600 CircleF
 1629 1601 CircleF
 1629 1602 CircleF
 1629 1602 CircleF
-1629 1602 CircleF
 1629 1603 CircleF
 1629 1604 CircleF
 1629 1605 CircleF
-1629 1605 CircleF
 1629 1606 CircleF
 1629 1607 CircleF
-1629 1607 CircleF
+1629 1608 CircleF
 1629 1608 CircleF
 1629 1609 CircleF
-1629 1609 CircleF
 1629 1610 CircleF
-1629 1611 CircleF
 1629 1611 CircleF
 1629 1612 CircleF
 1629 1613 CircleF
 1629 1614 CircleF
 1629 1615 CircleF
-1629 1615 CircleF
 1629 1616 CircleF
 1629 1617 CircleF
 1629 1617 CircleF
-1629 1618 CircleF
 1629 1618 CircleF
 1629 1619 CircleF
 1629 1620 CircleF
 1629 1621 CircleF
 1629 1622 CircleF
 1629 1623 CircleF
-1629 1623 CircleF
 1629 1624 CircleF
 1629 1625 CircleF
 1629 1626 CircleF
 1629 1627 CircleF
 1629 1628 CircleF
-1629 1628 CircleF
 1629 1629 CircleF
 1629 1630 CircleF
-1629 1630 CircleF
-1629 1632 CircleF
-1629 1635 CircleF
+1629 1631 CircleF
+1629 1634 CircleF
 1629 1636 CircleF
-1629 1639 CircleF
-1629 1641 CircleF
-1629 1644 CircleF
-1629 1647 CircleF
+1629 1640 CircleF
+1629 1642 CircleF
+1629 1646 CircleF
 1629 1649 CircleF
 1629 1652 CircleF
-1629 1654 CircleF
-1629 1657 CircleF
-1629 1660 CircleF
+1629 1656 CircleF
+1629 1659 CircleF
 1629 1663 CircleF
-1629 1665 CircleF
-1629 1668 CircleF
-1629 1673 CircleF
-1629 1677 CircleF
+1629 1666 CircleF
+1629 1671 CircleF
+1629 1676 CircleF
 1629 1683 CircleF
-1629 1690 CircleF
-1629 1697 CircleF
-1629 1709 CircleF
-1629 1719 CircleF
+1629 1691 CircleF
+1629 1704 CircleF
+1629 1715 CircleF
 1629 1733 CircleF
-1629 1747 CircleF
-1629 1766 CircleF
-1629 1796 CircleF
-1629 1845 CircleF
+1629 1751 CircleF
+1629 1779 CircleF
+1629 1831 CircleF
 1629 2102 CircleF
 % End plot #2
 % Begin plot #3
 1.000 UP
 1.000 UL
 LTb
-0.34 0.71 0.91 C 1.000 UP
+0.34 0.71 0.91 C
+1.000 UP
 1.000 UL
 LTb
-0.34 0.71 0.91 C 1.000 1978 1258 232 138 BoxColFill
+0.34 0.71 0.91 C
+1.000 1978 1258 232 138 BoxColFill
 LCb setrgbcolor
 1978 1258 N
 232 0 V
@@ -2414,20 +2156,15 @@ Z stroke
 126 0 V
 2094 1464 CircleF
 2094 1464 CircleF
-2094 1464 CircleF
 2094 1465 CircleF
 2094 1465 CircleF
 2094 1465 CircleF
 2094 1465 CircleF
-2094 1465 CircleF
 2094 1466 CircleF
 2094 1466 CircleF
 2094 1466 CircleF
 2094 1466 CircleF
 2094 1466 CircleF
-2094 1466 CircleF
-2094 1466 CircleF
-2094 1467 CircleF
 2094 1467 CircleF
 2094 1467 CircleF
 2094 1467 CircleF
@@ -2436,8 +2173,6 @@ Z stroke
 2094 1468 CircleF
 2094 1468 CircleF
 2094 1468 CircleF
-2094 1468 CircleF
-2094 1469 CircleF
 2094 1469 CircleF
 2094 1469 CircleF
 2094 1469 CircleF
@@ -2447,8 +2182,6 @@ Z stroke
 2094 1470 CircleF
 2094 1470 CircleF
 2094 1470 CircleF
-2094 1470 CircleF
-2094 1471 CircleF
 2094 1471 CircleF
 2094 1471 CircleF
 2094 1471 CircleF
@@ -2457,8 +2190,6 @@ Z stroke
 2094 1472 CircleF
 2094 1472 CircleF
 2094 1472 CircleF
-2094 1472 CircleF
-2094 1473 CircleF
 2094 1473 CircleF
 2094 1473 CircleF
 2094 1473 CircleF
@@ -2466,8 +2197,6 @@ Z stroke
 2094 1474 CircleF
 2094 1474 CircleF
 2094 1474 CircleF
-2094 1474 CircleF
-2094 1475 CircleF
 2094 1475 CircleF
 2094 1475 CircleF
 2094 1475 CircleF
@@ -2476,8 +2205,6 @@ Z stroke
 2094 1476 CircleF
 2094 1476 CircleF
 2094 1476 CircleF
-2094 1476 CircleF
-2094 1477 CircleF
 2094 1477 CircleF
 2094 1477 CircleF
 2094 1477 CircleF
@@ -2486,8 +2213,6 @@ Z stroke
 2094 1478 CircleF
 2094 1478 CircleF
 2094 1478 CircleF
-2094 1478 CircleF
-2094 1479 CircleF
 2094 1479 CircleF
 2094 1479 CircleF
 2094 1479 CircleF
@@ -2496,13 +2221,10 @@ Z stroke
 2094 1480 CircleF
 2094 1480 CircleF
 2094 1480 CircleF
-2094 1480 CircleF
 2094 1481 CircleF
 2094 1481 CircleF
 2094 1481 CircleF
 2094 1481 CircleF
-2094 1481 CircleF
-2094 1482 CircleF
 2094 1482 CircleF
 2094 1482 CircleF
 2094 1482 CircleF
@@ -2510,8 +2232,6 @@ Z stroke
 2094 1483 CircleF
 2094 1483 CircleF
 2094 1483 CircleF
-2094 1483 CircleF
-2094 1484 CircleF
 2094 1484 CircleF
 2094 1484 CircleF
 2094 1484 CircleF
@@ -2524,13 +2244,9 @@ Z stroke
 2094 1486 CircleF
 2094 1486 CircleF
 2094 1486 CircleF
-2094 1486 CircleF
 2094 1487 CircleF
 2094 1487 CircleF
 2094 1487 CircleF
-2094 1487 CircleF
-2094 1487 CircleF
-2094 1488 CircleF
 2094 1488 CircleF
 2094 1488 CircleF
 2094 1488 CircleF
@@ -2543,8 +2259,6 @@ Z stroke
 2094 1490 CircleF
 2094 1490 CircleF
 2094 1490 CircleF
-2094 1490 CircleF
-2094 1491 CircleF
 2094 1491 CircleF
 2094 1491 CircleF
 2094 1491 CircleF
@@ -2552,8 +2266,6 @@ Z stroke
 2094 1492 CircleF
 2094 1492 CircleF
 2094 1492 CircleF
-2094 1492 CircleF
-2094 1493 CircleF
 2094 1493 CircleF
 2094 1493 CircleF
 2094 1493 CircleF
@@ -2565,13 +2277,9 @@ Z stroke
 2094 1495 CircleF
 2094 1495 CircleF
 2094 1495 CircleF
-2094 1495 CircleF
-2094 1495 CircleF
 2094 1496 CircleF
 2094 1496 CircleF
 2094 1496 CircleF
-2094 1496 CircleF
-2094 1497 CircleF
 2094 1497 CircleF
 2094 1497 CircleF
 2094 1497 CircleF
@@ -2583,8 +2291,6 @@ Z stroke
 2094 1499 CircleF
 2094 1499 CircleF
 2094 1499 CircleF
-2094 1499 CircleF
-2094 1500 CircleF
 2094 1500 CircleF
 2094 1500 CircleF
 2094 1500 CircleF
@@ -2592,8 +2298,6 @@ Z stroke
 2094 1501 CircleF
 2094 1501 CircleF
 2094 1501 CircleF
-2094 1501 CircleF
-2094 1502 CircleF
 2094 1502 CircleF
 2094 1502 CircleF
 2094 1502 CircleF
@@ -2604,15 +2308,11 @@ Z stroke
 2094 1504 CircleF
 2094 1504 CircleF
 2094 1504 CircleF
-2094 1504 CircleF
-2094 1504 CircleF
 2094 1505 CircleF
 2094 1505 CircleF
 2094 1505 CircleF
 2094 1505 CircleF
 2094 1505 CircleF
-2094 1506 CircleF
-2094 1506 CircleF
 2094 1506 CircleF
 2094 1506 CircleF
 2094 1506 CircleF
@@ -2623,13 +2323,10 @@ Z stroke
 2094 1508 CircleF
 2094 1508 CircleF
 2094 1508 CircleF
-2094 1508 CircleF
 2094 1509 CircleF
 2094 1509 CircleF
 2094 1509 CircleF
 2094 1509 CircleF
-2094 1509 CircleF
-2094 1510 CircleF
 2094 1510 CircleF
 2094 1510 CircleF
 2094 1510 CircleF
@@ -2637,8 +2334,6 @@ Z stroke
 2094 1511 CircleF
 2094 1511 CircleF
 2094 1511 CircleF
-2094 1511 CircleF
-2094 1512 CircleF
 2094 1512 CircleF
 2094 1512 CircleF
 2094 1512 CircleF
@@ -2647,8 +2342,6 @@ Z stroke
 2094 1513 CircleF
 2094 1513 CircleF
 2094 1513 CircleF
-2094 1513 CircleF
-2094 1514 CircleF
 2094 1514 CircleF
 2094 1514 CircleF
 2094 1514 CircleF
@@ -2661,13 +2354,9 @@ Z stroke
 2094 1516 CircleF
 2094 1516 CircleF
 2094 1516 CircleF
-2094 1516 CircleF
-2094 1516 CircleF
 2094 1517 CircleF
 2094 1517 CircleF
 2094 1517 CircleF
-2094 1517 CircleF
-2094 1518 CircleF
 2094 1518 CircleF
 2094 1518 CircleF
 2094 1518 CircleF
@@ -2675,8 +2364,6 @@ Z stroke
 2094 1519 CircleF
 2094 1519 CircleF
 2094 1519 CircleF
-2094 1519 CircleF
-2094 1520 CircleF
 2094 1520 CircleF
 2094 1520 CircleF
 2094 1520 CircleF
@@ -2688,12 +2375,9 @@ Z stroke
 2094 1522 CircleF
 2094 1522 CircleF
 2094 1522 CircleF
-2094 1522 CircleF
 2094 1523 CircleF
 2094 1523 CircleF
 2094 1523 CircleF
-2094 1523 CircleF
-2094 1524 CircleF
 2094 1524 CircleF
 2094 1524 CircleF
 2094 1524 CircleF
@@ -2705,21 +2389,16 @@ Z stroke
 2094 1526 CircleF
 2094 1526 CircleF
 2094 1526 CircleF
-2094 1526 CircleF
-2094 1527 CircleF
 2094 1527 CircleF
 2094 1527 CircleF
 2094 1527 CircleF
 2094 1528 CircleF
 2094 1528 CircleF
 2094 1528 CircleF
-2094 1528 CircleF
 2094 1529 CircleF
 2094 1529 CircleF
 2094 1529 CircleF
 2094 1529 CircleF
-2094 1529 CircleF
-2094 1530 CircleF
 2094 1530 CircleF
 2094 1530 CircleF
 2094 1530 CircleF
@@ -2731,13 +2410,9 @@ Z stroke
 2094 1532 CircleF
 2094 1532 CircleF
 2094 1532 CircleF
-2094 1532 CircleF
-2094 1532 CircleF
 2094 1533 CircleF
 2094 1533 CircleF
 2094 1533 CircleF
-2094 1533 CircleF
-2094 1534 CircleF
 2094 1534 CircleF
 2094 1534 CircleF
 2094 1534 CircleF
@@ -2749,12 +2424,9 @@ Z stroke
 2094 1536 CircleF
 2094 1536 CircleF
 2094 1536 CircleF
-2094 1536 CircleF
 2094 1537 CircleF
 2094 1537 CircleF
 2094 1537 CircleF
-2094 1537 CircleF
-2094 1538 CircleF
 2094 1538 CircleF
 2094 1538 CircleF
 2094 1538 CircleF
@@ -2762,13 +2434,10 @@ Z stroke
 2094 1539 CircleF
 2094 1539 CircleF
 2094 1539 CircleF
-2094 1539 CircleF
 2094 1540 CircleF
 2094 1540 CircleF
 2094 1540 CircleF
 2094 1540 CircleF
-2094 1540 CircleF
-2094 1541 CircleF
 2094 1541 CircleF
 2094 1541 CircleF
 2094 1541 CircleF
@@ -2781,13 +2450,9 @@ Z stroke
 2094 1543 CircleF
 2094 1543 CircleF
 2094 1543 CircleF
-2094 1543 CircleF
-2094 1543 CircleF
 2094 1544 CircleF
 2094 1544 CircleF
 2094 1544 CircleF
-2094 1544 CircleF
-2094 1545 CircleF
 2094 1545 CircleF
 2094 1545 CircleF
 2094 1545 CircleF
@@ -2796,8 +2461,6 @@ Z stroke
 2094 1546 CircleF
 2094 1546 CircleF
 2094 1546 CircleF
-2094 1546 CircleF
-2094 1547 CircleF
 2094 1547 CircleF
 2094 1547 CircleF
 2094 1547 CircleF
@@ -2810,13 +2473,10 @@ Z stroke
 2094 1549 CircleF
 2094 1549 CircleF
 2094 1549 CircleF
-2094 1549 CircleF
 2094 1550 CircleF
 2094 1550 CircleF
 2094 1550 CircleF
 2094 1550 CircleF
-2094 1550 CircleF
-2094 1551 CircleF
 2094 1551 CircleF
 2094 1551 CircleF
 2094 1551 CircleF
@@ -2825,9 +2485,6 @@ Z stroke
 2094 1552 CircleF
 2094 1552 CircleF
 2094 1552 CircleF
-2094 1552 CircleF
-2094 1552 CircleF
-2094 1553 CircleF
 2094 1553 CircleF
 2094 1553 CircleF
 2094 1553 CircleF
@@ -2841,14 +2498,10 @@ Z stroke
 2094 1555 CircleF
 2094 1555 CircleF
 2094 1555 CircleF
-2094 1555 CircleF
-2094 1555 CircleF
 2094 1556 CircleF
 2094 1556 CircleF
 2094 1556 CircleF
 2094 1556 CircleF
-2094 1556 CircleF
-2094 1557 CircleF
 2094 1557 CircleF
 2094 1557 CircleF
 2094 1557 CircleF
@@ -2858,8 +2511,6 @@ Z stroke
 2094 1558 CircleF
 2094 1558 CircleF
 2094 1558 CircleF
-2094 1558 CircleF
-2094 1559 CircleF
 2094 1559 CircleF
 2094 1559 CircleF
 2094 1559 CircleF
@@ -2868,13 +2519,10 @@ Z stroke
 2094 1560 CircleF
 2094 1560 CircleF
 2094 1560 CircleF
-2094 1560 CircleF
 2094 1561 CircleF
 2094 1561 CircleF
 2094 1561 CircleF
 2094 1561 CircleF
-2094 1561 CircleF
-2094 1562 CircleF
 2094 1562 CircleF
 2094 1562 CircleF
 2094 1562 CircleF
@@ -2883,19 +2531,15 @@ Z stroke
 2094 1563 CircleF
 2094 1563 CircleF
 2094 1563 CircleF
-2094 1563 CircleF
 2094 1564 CircleF
 2094 1564 CircleF
 2094 1564 CircleF
 2094 1564 CircleF
-2094 1564 CircleF
 2094 1565 CircleF
 2094 1565 CircleF
 2094 1565 CircleF
 2094 1565 CircleF
 2094 1565 CircleF
-2094 1565 CircleF
-2094 1566 CircleF
 2094 1566 CircleF
 2094 1566 CircleF
 2094 1566 CircleF
@@ -2903,14 +2547,10 @@ Z stroke
 2094 1567 CircleF
 2094 1567 CircleF
 2094 1567 CircleF
-2094 1567 CircleF
 2094 1568 CircleF
 2094 1568 CircleF
 2094 1568 CircleF
 2094 1568 CircleF
-2094 1568 CircleF
-2094 1568 CircleF
-2094 1569 CircleF
 2094 1569 CircleF
 2094 1569 CircleF
 2094 1569 CircleF
@@ -2924,14 +2564,10 @@ Z stroke
 2094 1571 CircleF
 2094 1571 CircleF
 2094 1571 CircleF
-2094 1571 CircleF
-2094 1571 CircleF
 2094 1572 CircleF
 2094 1572 CircleF
 2094 1572 CircleF
 2094 1572 CircleF
-2094 1572 CircleF
-2094 1573 CircleF
 2094 1573 CircleF
 2094 1573 CircleF
 2094 1573 CircleF
@@ -2945,14 +2581,10 @@ Z stroke
 2094 1575 CircleF
 2094 1575 CircleF
 2094 1575 CircleF
-2094 1575 CircleF
-2094 1575 CircleF
 2094 1576 CircleF
 2094 1576 CircleF
 2094 1576 CircleF
 2094 1576 CircleF
-2094 1577 CircleF
-2094 1577 CircleF
 2094 1577 CircleF
 2094 1577 CircleF
 2094 1577 CircleF
@@ -2962,93 +2594,74 @@ Z stroke
 2094 1580 CircleF
 2094 1581 CircleF
 2094 1582 CircleF
-2094 1582 CircleF
 2094 1583 CircleF
 2094 1584 CircleF
 2094 1584 CircleF
-2094 1585 CircleF
 2094 1585 CircleF
 2094 1586 CircleF
 2094 1586 CircleF
 2094 1587 CircleF
 2094 1588 CircleF
-2094 1588 CircleF
-2094 1589 CircleF
 2094 1589 CircleF
 2094 1590 CircleF
 2094 1591 CircleF
 2094 1592 CircleF
 2094 1593 CircleF
 2094 1593 CircleF
-2094 1594 CircleF
 2094 1595 CircleF
 2094 1595 CircleF
 2094 1596 CircleF
-2094 1597 CircleF
 2094 1597 CircleF
 2094 1598 CircleF
 2094 1599 CircleF
 2094 1599 CircleF
 2094 1600 CircleF
 2094 1601 CircleF
-2094 1601 CircleF
 2094 1602 CircleF
 2094 1602 CircleF
 2094 1603 CircleF
 2094 1604 CircleF
-2094 1604 CircleF
 2094 1605 CircleF
 2094 1606 CircleF
-2094 1607 CircleF
 2094 1607 CircleF
 2094 1608 CircleF
 2094 1608 CircleF
 2094 1609 CircleF
 2094 1610 CircleF
 2094 1611 CircleF
-2094 1611 CircleF
 2094 1612 CircleF
 2094 1613 CircleF
 2094 1613 CircleF
-2094 1614 CircleF
 2094 1615 CircleF
 2094 1616 CircleF
 2094 1616 CircleF
 2094 1617 CircleF
 2094 1618 CircleF
 2094 1619 CircleF
-2094 1619 CircleF
-2094 1620 CircleF
 2094 1620 CircleF
 2094 1621 CircleF
 2094 1622 CircleF
 2094 1623 CircleF
 2094 1624 CircleF
-2094 1624 CircleF
 2094 1625 CircleF
 2094 1626 CircleF
 2094 1627 CircleF
 2094 1628 CircleF
-2094 1628 CircleF
-2094 1630 CircleF
+2094 1629 CircleF
 2094 1630 CircleF
 2094 1631 CircleF
 2094 1631 CircleF
 2094 1632 CircleF
 2094 1633 CircleF
-2094 1633 CircleF
 2094 1634 CircleF
 2094 1635 CircleF
-2094 1636 CircleF
 2094 1636 CircleF
 2094 1637 CircleF
 2094 1638 CircleF
 2094 1639 CircleF
-2094 1639 CircleF
 2094 1640 CircleF
 2094 1641 CircleF
 2094 1642 CircleF
-2094 1643 CircleF
 2094 1643 CircleF
 2094 1644 CircleF
 2094 1645 CircleF
@@ -3057,157 +2670,130 @@ Z stroke
 2094 1647 CircleF
 2094 1648 CircleF
 2094 1649 CircleF
-2094 1649 CircleF
 2094 1650 CircleF
-2094 1651 CircleF
 2094 1651 CircleF
 2094 1652 CircleF
 2094 1653 CircleF
 2094 1653 CircleF
 2094 1654 CircleF
 2094 1655 CircleF
-2094 1655 CircleF
 2094 1656 CircleF
 2094 1656 CircleF
-2094 1657 CircleF
-2094 1659 CircleF
+2094 1658 CircleF
 2094 1660 CircleF
 2094 1661 CircleF
 2094 1662 CircleF
 2094 1664 CircleF
-2094 1665 CircleF
 2094 1666 CircleF
 2094 1667 CircleF
 2094 1668 CircleF
-2094 1669 CircleF
 2094 1670 CircleF
 2094 1671 CircleF
 2094 1673 CircleF
 2094 1675 CircleF
 2094 1676 CircleF
 2094 1677 CircleF
-2094 1677 CircleF
-2094 1679 CircleF
+2094 1678 CircleF
 2094 1680 CircleF
 2094 1681 CircleF
-2094 1682 CircleF
-2094 1684 CircleF
+2094 1683 CircleF
 2094 1685 CircleF
 2094 1686 CircleF
 2094 1688 CircleF
 2094 1689 CircleF
-2094 1690 CircleF
-2094 1692 CircleF
+2094 1691 CircleF
 2094 1693 CircleF
 2094 1694 CircleF
-2094 1695 CircleF
 2094 1696 CircleF
-2094 1698 CircleF
+2094 1697 CircleF
 2094 1699 CircleF
 2094 1700 CircleF
-2094 1701 CircleF
-2094 1703 CircleF
-2094 1705 CircleF
+2094 1702 CircleF
+2094 1704 CircleF
 2094 1707 CircleF
-2094 1709 CircleF
 2094 1710 CircleF
-2094 1713 CircleF
-2094 1715 CircleF
+2094 1711 CircleF
+2094 1714 CircleF
 2094 1716 CircleF
-2094 1717 CircleF
-2094 1719 CircleF
+2094 1718 CircleF
 2094 1720 CircleF
 2094 1722 CircleF
 2094 1723 CircleF
 2094 1725 CircleF
-2094 1726 CircleF
-2094 1728 CircleF
-2094 1730 CircleF
+2094 1727 CircleF
+2094 1729 CircleF
 2094 1731 CircleF
 2094 1733 CircleF
-2094 1735 CircleF
-2094 1737 CircleF
+2094 1736 CircleF
 2094 1739 CircleF
 2094 1741 CircleF
 2094 1743 CircleF
-2094 1744 CircleF
-2094 1746 CircleF
+2094 1745 CircleF
 2094 1748 CircleF
 2094 1750 CircleF
-2094 1751 CircleF
-2094 1753 CircleF
-2094 1755 CircleF
-2094 1758 CircleF
+2094 1752 CircleF
+2094 1754 CircleF
+2094 1757 CircleF
 2094 1760 CircleF
-2094 1763 CircleF
-2094 1766 CircleF
+2094 1764 CircleF
 2094 1768 CircleF
-2094 1771 CircleF
+2094 1770 CircleF
 2094 1773 CircleF
-2094 1774 CircleF
-2094 1776 CircleF
-2094 1780 CircleF
-2094 1783 CircleF
+2094 1775 CircleF
+2094 1778 CircleF
+2094 1782 CircleF
 2094 1785 CircleF
 2094 1788 CircleF
-2094 1790 CircleF
-2094 1794 CircleF
-2094 1797 CircleF
+2094 1793 CircleF
+2094 1796 CircleF
 2094 1799 CircleF
-2094 1802 CircleF
-2094 1804 CircleF
-2094 1807 CircleF
-2094 1810 CircleF
+2094 1803 CircleF
+2094 1805 CircleF
+2094 1809 CircleF
 2094 1813 CircleF
-2094 1816 CircleF
-2094 1819 CircleF
-2094 1822 CircleF
-2094 1826 CircleF
+2094 1817 CircleF
+2094 1821 CircleF
+2094 1825 CircleF
 2094 1828 CircleF
-2094 1831 CircleF
-2094 1835 CircleF
-2094 1837 CircleF
-2094 1843 CircleF
+2094 1832 CircleF
+2094 1836 CircleF
+2094 1842 CircleF
 2094 1846 CircleF
-2094 1849 CircleF
-2094 1855 CircleF
-2094 1858 CircleF
-2094 1863 CircleF
+2094 1851 CircleF
+2094 1857 CircleF
+2094 1861 CircleF
 2094 1867 CircleF
 2094 1872 CircleF
-2094 1877 CircleF
-2094 1881 CircleF
-2094 1889 CircleF
+2094 1879 CircleF
+2094 1887 CircleF
 2094 1892 CircleF
-2094 1899 CircleF
-2094 1903 CircleF
-2094 1911 CircleF
+2094 1900 CircleF
+2094 1906 CircleF
 2094 1917 CircleF
 2094 1928 CircleF
-2094 1932 CircleF
-2094 1939 CircleF
-2094 1946 CircleF
-2094 1954 CircleF
+2094 1933 CircleF
+2094 1941 CircleF
+2094 1952 CircleF
 2094 1968 CircleF
-2094 1982 CircleF
-2094 1995 CircleF
-2094 2005 CircleF
-2094 2018 CircleF
+2094 1985 CircleF
+2094 2000 CircleF
+2094 2014 CircleF
 2094 2047 CircleF
-2094 2067 CircleF
-2094 2108 CircleF
-2094 2186 CircleF
-2094 2308 CircleF
+2094 2077 CircleF
+2094 2148 CircleF
+2094 2268 CircleF
 2094 2656 CircleF
 % End plot #3
 % Begin plot #4
 1.000 UP
 1.000 UL
 LTb
-0.90 0.62 0.00 C 1.000 UP
+0.90 0.62 0.00 C
+1.000 UP
 1.000 UL
 LTb
-0.90 0.62 0.00 C 1.000 2443 1333 234 114 BoxColFill
+0.90 0.62 0.00 C
+1.000 2443 1333 234 114 BoxColFill
 LCb setrgbcolor
 2443 1333 N
 234 0 V
@@ -3225,7 +2811,6 @@ Z stroke
 126 0 V
 2497 1309 M
 126 0 V
-2559 1511 CircleF
 2559 1512 CircleF
 2559 1512 CircleF
 2559 1512 CircleF
@@ -3233,7 +2818,6 @@ Z stroke
 2559 1512 CircleF
 2559 1512 CircleF
 2559 1512 CircleF
-2559 1512 CircleF
 2559 1513 CircleF
 2559 1513 CircleF
 2559 1513 CircleF
@@ -3241,10 +2825,6 @@ Z stroke
 2559 1513 CircleF
 2559 1513 CircleF
 2559 1513 CircleF
-2559 1513 CircleF
-2559 1513 CircleF
-2559 1514 CircleF
-2559 1514 CircleF
 2559 1514 CircleF
 2559 1514 CircleF
 2559 1514 CircleF
@@ -3260,10 +2840,6 @@ Z stroke
 2559 1515 CircleF
 2559 1515 CircleF
 2559 1515 CircleF
-2559 1515 CircleF
-2559 1515 CircleF
-2559 1516 CircleF
-2559 1516 CircleF
 2559 1516 CircleF
 2559 1516 CircleF
 2559 1516 CircleF
@@ -3278,9 +2854,6 @@ Z stroke
 2559 1517 CircleF
 2559 1517 CircleF
 2559 1517 CircleF
-2559 1517 CircleF
-2559 1518 CircleF
-2559 1518 CircleF
 2559 1518 CircleF
 2559 1518 CircleF
 2559 1518 CircleF
@@ -3294,8 +2867,6 @@ Z stroke
 2559 1519 CircleF
 2559 1519 CircleF
 2559 1519 CircleF
-2559 1519 CircleF
-2559 1519 CircleF
 2559 1520 CircleF
 2559 1520 CircleF
 2559 1520 CircleF
@@ -3303,7 +2874,6 @@ Z stroke
 2559 1520 CircleF
 2559 1520 CircleF
 2559 1520 CircleF
-2559 1520 CircleF
 2559 1521 CircleF
 2559 1521 CircleF
 2559 1521 CircleF
@@ -3312,10 +2882,6 @@ Z stroke
 2559 1521 CircleF
 2559 1521 CircleF
 2559 1521 CircleF
-2559 1521 CircleF
-2559 1521 CircleF
-2559 1522 CircleF
-2559 1522 CircleF
 2559 1522 CircleF
 2559 1522 CircleF
 2559 1522 CircleF
@@ -3331,9 +2897,6 @@ Z stroke
 2559 1523 CircleF
 2559 1523 CircleF
 2559 1523 CircleF
-2559 1523 CircleF
-2559 1523 CircleF
-2559 1524 CircleF
 2559 1524 CircleF
 2559 1524 CircleF
 2559 1524 CircleF
@@ -3349,10 +2912,6 @@ Z stroke
 2559 1525 CircleF
 2559 1525 CircleF
 2559 1525 CircleF
-2559 1525 CircleF
-2559 1525 CircleF
-2559 1526 CircleF
-2559 1526 CircleF
 2559 1526 CircleF
 2559 1526 CircleF
 2559 1526 CircleF
@@ -3368,11 +2927,6 @@ Z stroke
 2559 1527 CircleF
 2559 1527 CircleF
 2559 1527 CircleF
-2559 1527 CircleF
-2559 1527 CircleF
-2559 1527 CircleF
-2559 1528 CircleF
-2559 1528 CircleF
 2559 1528 CircleF
 2559 1528 CircleF
 2559 1528 CircleF
@@ -3389,9 +2943,6 @@ Z stroke
 2559 1529 CircleF
 2559 1529 CircleF
 2559 1529 CircleF
-2559 1529 CircleF
-2559 1529 CircleF
-2559 1530 CircleF
 2559 1530 CircleF
 2559 1530 CircleF
 2559 1530 CircleF
@@ -3402,8 +2953,6 @@ Z stroke
 2559 1530 CircleF
 2559 1531 CircleF
 2559 1531 CircleF
-2559 1531 CircleF
-2559 1532 CircleF
 2559 1532 CircleF
 2559 1532 CircleF
 2559 1533 CircleF
@@ -3411,28 +2960,23 @@ Z stroke
 2559 1533 CircleF
 2559 1534 CircleF
 2559 1534 CircleF
-2559 1534 CircleF
-2559 1535 CircleF
 2559 1535 CircleF
 2559 1535 CircleF
 2559 1535 CircleF
 2559 1536 CircleF
 2559 1536 CircleF
 2559 1536 CircleF
-2559 1537 CircleF
 2559 1537 CircleF
 2559 1537 CircleF
 2559 1538 CircleF
 2559 1538 CircleF
 2559 1538 CircleF
 2559 1539 CircleF
-2559 1539 CircleF
 2559 1540 CircleF
 2559 1540 CircleF
 2559 1540 CircleF
 2559 1541 CircleF
 2559 1541 CircleF
-2559 1541 CircleF
 2559 1542 CircleF
 2559 1542 CircleF
 2559 1542 CircleF
@@ -3440,9 +2984,6 @@ Z stroke
 2559 1543 CircleF
 2559 1543 CircleF
 2559 1543 CircleF
-2559 1543 CircleF
-2559 1544 CircleF
-2559 1544 CircleF
 2559 1544 CircleF
 2559 1544 CircleF
 2559 1545 CircleF
@@ -3453,12 +2994,9 @@ Z stroke
 2559 1546 CircleF
 2559 1547 CircleF
 2559 1547 CircleF
-2559 1547 CircleF
-2559 1547 CircleF
 2559 1548 CircleF
 2559 1548 CircleF
 2559 1548 CircleF
-2559 1549 CircleF
 2559 1549 CircleF
 2559 1549 CircleF
 2559 1550 CircleF
@@ -3468,8 +3006,6 @@ Z stroke
 2559 1551 CircleF
 2559 1552 CircleF
 2559 1552 CircleF
-2559 1552 CircleF
-2559 1553 CircleF
 2559 1553 CircleF
 2559 1553 CircleF
 2559 1553 CircleF
@@ -3477,18 +3013,14 @@ Z stroke
 2559 1554 CircleF
 2559 1555 CircleF
 2559 1555 CircleF
-2559 1555 CircleF
 2559 1556 CircleF
 2559 1556 CircleF
 2559 1556 CircleF
 2559 1556 CircleF
 2559 1557 CircleF
 2559 1557 CircleF
-2559 1557 CircleF
 2559 1558 CircleF
 2559 1558 CircleF
-2559 1558 CircleF
-2559 1559 CircleF
 2559 1559 CircleF
 2559 1559 CircleF
 2559 1559 CircleF
@@ -3496,18 +3028,14 @@ Z stroke
 2559 1560 CircleF
 2559 1561 CircleF
 2559 1561 CircleF
-2559 1561 CircleF
 2559 1562 CircleF
 2559 1562 CircleF
-2559 1563 CircleF
 2559 1563 CircleF
 2559 1563 CircleF
 2559 1564 CircleF
 2559 1564 CircleF
 2559 1565 CircleF
 2559 1565 CircleF
-2559 1565 CircleF
-2559 1566 CircleF
 2559 1566 CircleF
 2559 1566 CircleF
 2559 1567 CircleF
@@ -3515,25 +3043,20 @@ Z stroke
 2559 1567 CircleF
 2559 1568 CircleF
 2559 1568 CircleF
-2559 1568 CircleF
 2559 1569 CircleF
 2559 1569 CircleF
 2559 1569 CircleF
-2559 1570 CircleF
 2559 1570 CircleF
 2559 1570 CircleF
 2559 1571 CircleF
 2559 1571 CircleF
 2559 1572 CircleF
 2559 1572 CircleF
-2559 1572 CircleF
 2559 1573 CircleF
 2559 1573 CircleF
 2559 1573 CircleF
 2559 1574 CircleF
 2559 1574 CircleF
-2559 1574 CircleF
-2559 1575 CircleF
 2559 1575 CircleF
 2559 1575 CircleF
 2559 1576 CircleF
@@ -3543,11 +3066,8 @@ Z stroke
 2559 1577 CircleF
 2559 1578 CircleF
 2559 1578 CircleF
-2559 1578 CircleF
 2559 1579 CircleF
 2559 1579 CircleF
-2559 1579 CircleF
-2559 1580 CircleF
 2559 1580 CircleF
 2559 1580 CircleF
 2559 1581 CircleF
@@ -3557,8 +3077,6 @@ Z stroke
 2559 1582 CircleF
 2559 1583 CircleF
 2559 1583 CircleF
-2559 1583 CircleF
-2559 1584 CircleF
 2559 1584 CircleF
 2559 1584 CircleF
 2559 1585 CircleF
@@ -3566,11 +3084,9 @@ Z stroke
 2559 1586 CircleF
 2559 1586 CircleF
 2559 1586 CircleF
-2559 1586 CircleF
 2559 1587 CircleF
 2559 1587 CircleF
 2559 1587 CircleF
-2559 1588 CircleF
 2559 1588 CircleF
 2559 1588 CircleF
 2559 1589 CircleF
@@ -3579,12 +3095,9 @@ Z stroke
 2559 1590 CircleF
 2559 1591 CircleF
 2559 1591 CircleF
-2559 1591 CircleF
 2559 1592 CircleF
 2559 1592 CircleF
 2559 1592 CircleF
-2559 1592 CircleF
-2559 1593 CircleF
 2559 1593 CircleF
 2559 1594 CircleF
 2559 1594 CircleF
@@ -3594,16 +3107,12 @@ Z stroke
 2559 1595 CircleF
 2559 1596 CircleF
 2559 1596 CircleF
-2559 1596 CircleF
-2559 1597 CircleF
 2559 1597 CircleF
 2559 1597 CircleF
 2559 1598 CircleF
 2559 1598 CircleF
 2559 1599 CircleF
 2559 1599 CircleF
-2559 1599 CircleF
-2559 1600 CircleF
 2559 1600 CircleF
 2559 1600 CircleF
 2559 1600 CircleF
@@ -3613,8 +3122,6 @@ Z stroke
 2559 1602 CircleF
 2559 1602 CircleF
 2559 1602 CircleF
-2559 1602 CircleF
-2559 1603 CircleF
 2559 1603 CircleF
 2559 1603 CircleF
 2559 1604 CircleF
@@ -3622,8 +3129,6 @@ Z stroke
 2559 1604 CircleF
 2559 1605 CircleF
 2559 1605 CircleF
-2559 1605 CircleF
-2559 1606 CircleF
 2559 1606 CircleF
 2559 1606 CircleF
 2559 1606 CircleF
@@ -3632,18 +3137,14 @@ Z stroke
 2559 1607 CircleF
 2559 1608 CircleF
 2559 1608 CircleF
-2559 1608 CircleF
 2559 1609 CircleF
 2559 1609 CircleF
 2559 1609 CircleF
 2559 1610 CircleF
 2559 1610 CircleF
-2559 1610 CircleF
 2559 1611 CircleF
 2559 1611 CircleF
 2559 1611 CircleF
-2559 1612 CircleF
-2559 1612 CircleF
 2559 1612 CircleF
 2559 1612 CircleF
 2559 1613 CircleF
@@ -3652,12 +3153,9 @@ Z stroke
 2559 1614 CircleF
 2559 1614 CircleF
 2559 1614 CircleF
-2559 1614 CircleF
 2559 1615 CircleF
 2559 1615 CircleF
 2559 1615 CircleF
-2559 1615 CircleF
-2559 1616 CircleF
 2559 1616 CircleF
 2559 1616 CircleF
 2559 1617 CircleF
@@ -3665,11 +3163,9 @@ Z stroke
 2559 1618 CircleF
 2559 1618 CircleF
 2559 1618 CircleF
-2559 1619 CircleF
 2559 1619 CircleF
 2559 1619 CircleF
 2559 1620 CircleF
-2559 1621 CircleF
 2559 1621 CircleF
 2559 1622 CircleF
 2559 1622 CircleF
@@ -3678,12 +3174,9 @@ Z stroke
 2559 1624 CircleF
 2559 1625 CircleF
 2559 1626 CircleF
-2559 1626 CircleF
 2559 1627 CircleF
 2559 1628 CircleF
-2559 1628 CircleF
 2559 1629 CircleF
-2559 1630 CircleF
 2559 1630 CircleF
 2559 1631 CircleF
 2559 1632 CircleF
@@ -3691,15 +3184,12 @@ Z stroke
 2559 1633 CircleF
 2559 1633 CircleF
 2559 1634 CircleF
-2559 1634 CircleF
 2559 1635 CircleF
 2559 1635 CircleF
 2559 1636 CircleF
 2559 1637 CircleF
 2559 1637 CircleF
-2559 1637 CircleF
 2559 1638 CircleF
-2559 1639 CircleF
 2559 1639 CircleF
 2559 1640 CircleF
 2559 1640 CircleF
@@ -3707,54 +3197,43 @@ Z stroke
 2559 1641 CircleF
 2559 1642 CircleF
 2559 1643 CircleF
-2559 1643 CircleF
 2559 1644 CircleF
 2559 1645 CircleF
-2559 1645 CircleF
 2559 1646 CircleF
 2559 1646 CircleF
-2559 1647 CircleF
 2559 1647 CircleF
 2559 1648 CircleF
-2559 1649 CircleF
+2559 1648 CircleF
 2559 1649 CircleF
 2559 1650 CircleF
 2559 1650 CircleF
-2559 1651 CircleF
 2559 1651 CircleF
 2559 1652 CircleF
 2559 1653 CircleF
 2559 1653 CircleF
 2559 1654 CircleF
-2559 1654 CircleF
 2559 1655 CircleF
 2559 1655 CircleF
 2559 1656 CircleF
 2559 1656 CircleF
 2559 1657 CircleF
-2559 1657 CircleF
 2559 1658 CircleF
 2559 1658 CircleF
-2559 1659 CircleF
 2559 1659 CircleF
 2559 1660 CircleF
 2559 1661 CircleF
 2559 1661 CircleF
-2559 1661 CircleF
 2559 1662 CircleF
 2559 1662 CircleF
 2559 1663 CircleF
 2559 1663 CircleF
 2559 1664 CircleF
-2559 1664 CircleF
 2559 1665 CircleF
 2559 1665 CircleF
-2559 1666 CircleF
 2559 1666 CircleF
 2559 1667 CircleF
 2559 1667 CircleF
 2559 1668 CircleF
-2559 1669 CircleF
 2559 1669 CircleF
 2559 1670 CircleF
 2559 1670 CircleF
@@ -3762,55 +3241,44 @@ Z stroke
 2559 1672 CircleF
 2559 1673 CircleF
 2559 1674 CircleF
-2559 1674 CircleF
 2559 1675 CircleF
 2559 1676 CircleF
-2559 1677 CircleF
 2559 1677 CircleF
 2559 1678 CircleF
 2559 1679 CircleF
 2559 1680 CircleF
 2559 1681 CircleF
 2559 1682 CircleF
-2559 1682 CircleF
 2559 1683 CircleF
 2559 1684 CircleF
 2559 1685 CircleF
 2559 1686 CircleF
-2559 1686 CircleF
 2559 1687 CircleF
 2559 1688 CircleF
-2559 1689 CircleF
 2559 1689 CircleF
 2559 1690 CircleF
 2559 1691 CircleF
 2559 1692 CircleF
-2559 1692 CircleF
 2559 1693 CircleF
-2559 1694 CircleF
+2559 1693 CircleF
 2559 1694 CircleF
 2559 1695 CircleF
 2559 1696 CircleF
-2559 1696 CircleF
 2559 1697 CircleF
 2559 1698 CircleF
-2559 1698 CircleF
 2559 1699 CircleF
-2559 1700 CircleF
+2559 1699 CircleF
 2559 1701 CircleF
 2559 1702 CircleF
 2559 1703 CircleF
-2559 1704 CircleF
 2559 1705 CircleF
 2559 1706 CircleF
 2559 1707 CircleF
 2559 1708 CircleF
-2559 1709 CircleF
 2559 1710 CircleF
 2559 1711 CircleF
 2559 1712 CircleF
 2559 1713 CircleF
-2559 1715 CircleF
 2559 1715 CircleF
 2559 1716 CircleF
 2559 1717 CircleF
@@ -3818,121 +3286,101 @@ Z stroke
 2559 1719 CircleF
 2559 1720 CircleF
 2559 1721 CircleF
-2559 1721 CircleF
 2559 1722 CircleF
 2559 1723 CircleF
 2559 1724 CircleF
-2559 1725 CircleF
 2559 1726 CircleF
 2559 1727 CircleF
-2559 1728 CircleF
 2559 1729 CircleF
-2559 1731 CircleF
+2559 1730 CircleF
 2559 1732 CircleF
 2559 1733 CircleF
-2559 1734 CircleF
 2559 1735 CircleF
 2559 1737 CircleF
 2559 1738 CircleF
-2559 1739 CircleF
 2559 1740 CircleF
 2559 1741 CircleF
-2559 1743 CircleF
+2559 1742 CircleF
 2559 1744 CircleF
 2559 1745 CircleF
 2559 1746 CircleF
-2559 1747 CircleF
 2559 1748 CircleF
 2559 1750 CircleF
 2559 1752 CircleF
 2559 1753 CircleF
-2559 1754 CircleF
 2559 1755 CircleF
 2559 1757 CircleF
 2559 1758 CircleF
-2559 1759 CircleF
-2559 1761 CircleF
+2559 1760 CircleF
 2559 1762 CircleF
 2559 1763 CircleF
-2559 1764 CircleF
-2559 1766 CircleF
-2559 1768 CircleF
+2559 1765 CircleF
+2559 1767 CircleF
 2559 1769 CircleF
 2559 1771 CircleF
 2559 1772 CircleF
 2559 1774 CircleF
-2559 1775 CircleF
 2559 1776 CircleF
 2559 1777 CircleF
 2559 1779 CircleF
-2559 1781 CircleF
-2559 1783 CircleF
+2559 1782 CircleF
 2559 1784 CircleF
 2559 1786 CircleF
 2559 1789 CircleF
-2559 1790 CircleF
-2559 1792 CircleF
+2559 1791 CircleF
 2559 1793 CircleF
 2559 1796 CircleF
-2559 1797 CircleF
-2559 1800 CircleF
-2559 1802 CircleF
+2559 1798 CircleF
+2559 1801 CircleF
 2559 1803 CircleF
 2559 1805 CircleF
-2559 1808 CircleF
-2559 1811 CircleF
-2559 1813 CircleF
+2559 1809 CircleF
+2559 1812 CircleF
 2559 1815 CircleF
 2559 1818 CircleF
 2559 1820 CircleF
 2559 1822 CircleF
-2559 1824 CircleF
-2559 1827 CircleF
+2559 1826 CircleF
 2559 1830 CircleF
 2559 1834 CircleF
-2559 1836 CircleF
-2559 1839 CircleF
+2559 1838 CircleF
 2559 1841 CircleF
 2559 1844 CircleF
-2559 1846 CircleF
-2559 1848 CircleF
-2559 1852 CircleF
-2559 1855 CircleF
+2559 1847 CircleF
+2559 1849 CircleF
+2559 1854 CircleF
 2559 1858 CircleF
 2559 1861 CircleF
-2559 1865 CircleF
-2559 1870 CircleF
-2559 1874 CircleF
+2559 1868 CircleF
+2559 1873 CircleF
 2559 1878 CircleF
-2559 1882 CircleF
-2559 1885 CircleF
-2559 1889 CircleF
-2559 1895 CircleF
+2559 1883 CircleF
+2559 1888 CircleF
+2559 1894 CircleF
 2559 1901 CircleF
-2559 1905 CircleF
-2559 1913 CircleF
-2559 1919 CircleF
-2559 1923 CircleF
+2559 1908 CircleF
+2559 1917 CircleF
+2559 1922 CircleF
 2559 1928 CircleF
-2559 1940 CircleF
-2559 1953 CircleF
-2559 1964 CircleF
-2559 1972 CircleF
+2559 1942 CircleF
+2559 1959 CircleF
+2559 1970 CircleF
 2559 1986 CircleF
-2559 2000 CircleF
-2559 2017 CircleF
-2559 2054 CircleF
-2559 2101 CircleF
+2559 2003 CircleF
+2559 2035 CircleF
+2559 2092 CircleF
 2559 2313 CircleF
 % End plot #4
 % Begin plot #5
 1.000 UP
 1.000 UL
 LTb
-0.94 0.89 0.26 C 1.000 UP
+0.94 0.89 0.26 C
+1.000 UP
 1.000 UL
 LTb
-0.94 0.89 0.26 C 1.000 2908 1301 234 55 BoxColFill
+0.94 0.89 0.26 C
+1.000 2908 1301 234 55 BoxColFill
 LCb setrgbcolor
 2908 1301 N
 234 0 V
@@ -3953,8 +3401,6 @@ Z stroke
 3024 1402 CircleF
 3024 1402 CircleF
 3024 1402 CircleF
-3024 1402 CircleF
-3024 1403 CircleF
 3024 1403 CircleF
 3024 1403 CircleF
 3024 1403 CircleF
@@ -3963,9 +3409,6 @@ Z stroke
 3024 1404 CircleF
 3024 1404 CircleF
 3024 1404 CircleF
-3024 1404 CircleF
-3024 1405 CircleF
-3024 1405 CircleF
 3024 1405 CircleF
 3024 1405 CircleF
 3024 1405 CircleF
@@ -3978,9 +3421,6 @@ Z stroke
 3024 1407 CircleF
 3024 1407 CircleF
 3024 1407 CircleF
-3024 1407 CircleF
-3024 1408 CircleF
-3024 1408 CircleF
 3024 1408 CircleF
 3024 1408 CircleF
 3024 1408 CircleF
@@ -3992,16 +3432,12 @@ Z stroke
 3024 1410 CircleF
 3024 1410 CircleF
 3024 1410 CircleF
-3024 1410 CircleF
-3024 1411 CircleF
 3024 1411 CircleF
 3024 1411 CircleF
 3024 1411 CircleF
 3024 1412 CircleF
 3024 1412 CircleF
 3024 1412 CircleF
-3024 1412 CircleF
-3024 1413 CircleF
 3024 1413 CircleF
 3024 1413 CircleF
 3024 1413 CircleF
@@ -4012,16 +3448,12 @@ Z stroke
 3024 1414 CircleF
 3024 1415 CircleF
 3024 1415 CircleF
-3024 1415 CircleF
-3024 1416 CircleF
 3024 1416 CircleF
 3024 1416 CircleF
 3024 1416 CircleF
 3024 1416 CircleF
 3024 1417 CircleF
 3024 1417 CircleF
-3024 1417 CircleF
-3024 1418 CircleF
 3024 1418 CircleF
 3024 1418 CircleF
 3024 1418 CircleF
@@ -4030,18 +3462,14 @@ Z stroke
 3024 1419 CircleF
 3024 1420 CircleF
 3024 1420 CircleF
-3024 1420 CircleF
 3024 1421 CircleF
 3024 1421 CircleF
 3024 1421 CircleF
 3024 1422 CircleF
 3024 1422 CircleF
-3024 1422 CircleF
 3024 1423 CircleF
 3024 1423 CircleF
 3024 1423 CircleF
-3024 1423 CircleF
-3024 1424 CircleF
 3024 1424 CircleF
 3024 1424 CircleF
 3024 1424 CircleF
@@ -4050,14 +3478,11 @@ Z stroke
 3024 1425 CircleF
 3024 1426 CircleF
 3024 1426 CircleF
-3024 1426 CircleF
 3024 1427 CircleF
 3024 1427 CircleF
 3024 1427 CircleF
 3024 1428 CircleF
 3024 1428 CircleF
-3024 1428 CircleF
-3024 1429 CircleF
 3024 1429 CircleF
 3024 1429 CircleF
 3024 1429 CircleF
@@ -4068,11 +3493,8 @@ Z stroke
 3024 1431 CircleF
 3024 1432 CircleF
 3024 1432 CircleF
-3024 1432 CircleF
 3024 1433 CircleF
 3024 1433 CircleF
-3024 1433 CircleF
-3024 1434 CircleF
 3024 1434 CircleF
 3024 1434 CircleF
 3024 1434 CircleF
@@ -4083,21 +3505,16 @@ Z stroke
 3024 1436 CircleF
 3024 1437 CircleF
 3024 1437 CircleF
-3024 1437 CircleF
 3024 1438 CircleF
 3024 1438 CircleF
-3024 1438 CircleF
-3024 1439 CircleF
 3024 1439 CircleF
 3024 1439 CircleF
 3024 1440 CircleF
 3024 1440 CircleF
 3024 1441 CircleF
-3024 1441 CircleF
 3024 1442 CircleF
 3024 1442 CircleF
 3024 1442 CircleF
-3024 1443 CircleF
 3024 1443 CircleF
 3024 1443 CircleF
 3024 1444 CircleF
@@ -4108,11 +3525,8 @@ Z stroke
 3024 1446 CircleF
 3024 1446 CircleF
 3024 1446 CircleF
-3024 1446 CircleF
 3024 1447 CircleF
 3024 1447 CircleF
-3024 1447 CircleF
-3024 1448 CircleF
 3024 1448 CircleF
 3024 1448 CircleF
 3024 1449 CircleF
@@ -4120,13 +3534,10 @@ Z stroke
 3024 1449 CircleF
 3024 1450 CircleF
 3024 1450 CircleF
-3024 1450 CircleF
-3024 1451 CircleF
 3024 1451 CircleF
 3024 1451 CircleF
 3024 1452 CircleF
 3024 1452 CircleF
-3024 1453 CircleF
 3024 1453 CircleF
 3024 1453 CircleF
 3024 1454 CircleF
@@ -4136,13 +3547,10 @@ Z stroke
 3024 1455 CircleF
 3024 1456 CircleF
 3024 1456 CircleF
-3024 1456 CircleF
-3024 1457 CircleF
 3024 1457 CircleF
 3024 1457 CircleF
 3024 1458 CircleF
 3024 1458 CircleF
-3024 1459 CircleF
 3024 1459 CircleF
 3024 1459 CircleF
 3024 1460 CircleF
@@ -4150,19 +3558,15 @@ Z stroke
 3024 1461 CircleF
 3024 1461 CircleF
 3024 1462 CircleF
-3024 1462 CircleF
 3024 1463 CircleF
 3024 1463 CircleF
 3024 1463 CircleF
-3024 1464 CircleF
 3024 1464 CircleF
 3024 1464 CircleF
 3024 1465 CircleF
 3024 1465 CircleF
 3024 1466 CircleF
 3024 1466 CircleF
-3024 1466 CircleF
-3024 1467 CircleF
 3024 1467 CircleF
 3024 1467 CircleF
 3024 1468 CircleF
@@ -4172,13 +3576,10 @@ Z stroke
 3024 1469 CircleF
 3024 1470 CircleF
 3024 1470 CircleF
-3024 1470 CircleF
 3024 1471 CircleF
 3024 1471 CircleF
 3024 1472 CircleF
 3024 1472 CircleF
-3024 1472 CircleF
-3024 1473 CircleF
 3024 1473 CircleF
 3024 1473 CircleF
 3024 1474 CircleF
@@ -4187,15 +3588,11 @@ Z stroke
 3024 1475 CircleF
 3024 1475 CircleF
 3024 1475 CircleF
-3024 1475 CircleF
-3024 1476 CircleF
 3024 1476 CircleF
 3024 1476 CircleF
 3024 1476 CircleF
 3024 1477 CircleF
 3024 1477 CircleF
-3024 1477 CircleF
-3024 1478 CircleF
 3024 1478 CircleF
 3024 1478 CircleF
 3024 1478 CircleF
@@ -4207,8 +3604,6 @@ Z stroke
 3024 1480 CircleF
 3024 1481 CircleF
 3024 1481 CircleF
-3024 1481 CircleF
-3024 1481 CircleF
 3024 1482 CircleF
 3024 1482 CircleF
 3024 1482 CircleF
@@ -4218,8 +3613,6 @@ Z stroke
 3024 1483 CircleF
 3024 1484 CircleF
 3024 1484 CircleF
-3024 1484 CircleF
-3024 1484 CircleF
 3024 1485 CircleF
 3024 1485 CircleF
 3024 1485 CircleF
@@ -4227,12 +3620,9 @@ Z stroke
 3024 1486 CircleF
 3024 1486 CircleF
 3024 1486 CircleF
-3024 1486 CircleF
 3024 1487 CircleF
 3024 1487 CircleF
 3024 1487 CircleF
-3024 1487 CircleF
-3024 1488 CircleF
 3024 1488 CircleF
 3024 1488 CircleF
 3024 1488 CircleF
@@ -4241,8 +3631,6 @@ Z stroke
 3024 1489 CircleF
 3024 1489 CircleF
 3024 1489 CircleF
-3024 1489 CircleF
-3024 1490 CircleF
 3024 1490 CircleF
 3024 1490 CircleF
 3024 1490 CircleF
@@ -4253,9 +3641,6 @@ Z stroke
 3024 1492 CircleF
 3024 1492 CircleF
 3024 1492 CircleF
-3024 1492 CircleF
-3024 1492 CircleF
-3024 1493 CircleF
 3024 1493 CircleF
 3024 1493 CircleF
 3024 1493 CircleF
@@ -4270,14 +3655,10 @@ Z stroke
 3024 1495 CircleF
 3024 1495 CircleF
 3024 1495 CircleF
-3024 1495 CircleF
 3024 1496 CircleF
 3024 1496 CircleF
 3024 1496 CircleF
 3024 1496 CircleF
-3024 1496 CircleF
-3024 1496 CircleF
-3024 1497 CircleF
 3024 1497 CircleF
 3024 1497 CircleF
 3024 1497 CircleF
@@ -4288,15 +3669,11 @@ Z stroke
 3024 1498 CircleF
 3024 1498 CircleF
 3024 1498 CircleF
-3024 1498 CircleF
 3024 1499 CircleF
 3024 1499 CircleF
 3024 1499 CircleF
 3024 1499 CircleF
 3024 1499 CircleF
-3024 1499 CircleF
-3024 1500 CircleF
-3024 1500 CircleF
 3024 1500 CircleF
 3024 1500 CircleF
 3024 1500 CircleF
@@ -4308,9 +3685,6 @@ Z stroke
 3024 1501 CircleF
 3024 1501 CircleF
 3024 1501 CircleF
-3024 1501 CircleF
-3024 1502 CircleF
-3024 1502 CircleF
 3024 1502 CircleF
 3024 1502 CircleF
 3024 1502 CircleF
@@ -4322,8 +3696,6 @@ Z stroke
 3024 1503 CircleF
 3024 1503 CircleF
 3024 1503 CircleF
-3024 1503 CircleF
-3024 1504 CircleF
 3024 1504 CircleF
 3024 1504 CircleF
 3024 1504 CircleF
@@ -4335,9 +3707,6 @@ Z stroke
 3024 1505 CircleF
 3024 1505 CircleF
 3024 1505 CircleF
-3024 1505 CircleF
-3024 1505 CircleF
-3024 1506 CircleF
 3024 1506 CircleF
 3024 1506 CircleF
 3024 1506 CircleF
@@ -4350,8 +3719,6 @@ Z stroke
 3024 1507 CircleF
 3024 1507 CircleF
 3024 1507 CircleF
-3024 1507 CircleF
-3024 1507 CircleF
 3024 1508 CircleF
 3024 1508 CircleF
 3024 1508 CircleF
@@ -4359,10 +3726,6 @@ Z stroke
 3024 1508 CircleF
 3024 1508 CircleF
 3024 1508 CircleF
-3024 1508 CircleF
-3024 1508 CircleF
-3024 1509 CircleF
-3024 1509 CircleF
 3024 1509 CircleF
 3024 1509 CircleF
 3024 1509 CircleF
@@ -4377,9 +3740,6 @@ Z stroke
 3024 1510 CircleF
 3024 1510 CircleF
 3024 1510 CircleF
-3024 1510 CircleF
-3024 1511 CircleF
-3024 1511 CircleF
 3024 1511 CircleF
 3024 1511 CircleF
 3024 1511 CircleF
@@ -4394,8 +3754,6 @@ Z stroke
 3024 1512 CircleF
 3024 1512 CircleF
 3024 1512 CircleF
-3024 1512 CircleF
-3024 1512 CircleF
 3024 1513 CircleF
 3024 1513 CircleF
 3024 1513 CircleF
@@ -4405,10 +3763,6 @@ Z stroke
 3024 1513 CircleF
 3024 1513 CircleF
 3024 1513 CircleF
-3024 1513 CircleF
-3024 1514 CircleF
-3024 1514 CircleF
-3024 1514 CircleF
 3024 1514 CircleF
 3024 1514 CircleF
 3024 1514 CircleF
@@ -4426,8 +3780,6 @@ Z stroke
 3024 1515 CircleF
 3024 1515 CircleF
 3024 1515 CircleF
-3024 1515 CircleF
-3024 1515 CircleF
 3024 1516 CircleF
 3024 1516 CircleF
 3024 1516 CircleF
@@ -4437,10 +3789,6 @@ Z stroke
 3024 1516 CircleF
 3024 1516 CircleF
 3024 1516 CircleF
-3024 1516 CircleF
-3024 1516 CircleF
-3024 1516 CircleF
-3024 1517 CircleF
 3024 1517 CircleF
 3024 1517 CircleF
 3024 1517 CircleF
@@ -4460,9 +3808,6 @@ Z stroke
 3024 1518 CircleF
 3024 1518 CircleF
 3024 1518 CircleF
-3024 1518 CircleF
-3024 1518 CircleF
-3024 1518 CircleF
 3024 1519 CircleF
 3024 1519 CircleF
 3024 1519 CircleF
@@ -4472,9 +3817,6 @@ Z stroke
 3024 1519 CircleF
 3024 1519 CircleF
 3024 1519 CircleF
-3024 1519 CircleF
-3024 1519 CircleF
-3024 1519 CircleF
 3024 1520 CircleF
 3024 1520 CircleF
 3024 1520 CircleF
@@ -4486,11 +3828,6 @@ Z stroke
 3024 1520 CircleF
 3024 1520 CircleF
 3024 1520 CircleF
-3024 1520 CircleF
-3024 1520 CircleF
-3024 1521 CircleF
-3024 1521 CircleF
-3024 1521 CircleF
 3024 1521 CircleF
 3024 1521 CircleF
 3024 1521 CircleF
@@ -4514,12 +3851,6 @@ Z stroke
 3024 1522 CircleF
 3024 1522 CircleF
 3024 1522 CircleF
-3024 1522 CircleF
-3024 1522 CircleF
-3024 1523 CircleF
-3024 1523 CircleF
-3024 1523 CircleF
-3024 1523 CircleF
 3024 1523 CircleF
 3024 1523 CircleF
 3024 1523 CircleF
@@ -4542,8 +3873,6 @@ Z stroke
 3024 1524 CircleF
 3024 1524 CircleF
 3024 1524 CircleF
-3024 1524 CircleF
-3024 1524 CircleF
 3024 1525 CircleF
 3024 1525 CircleF
 3024 1525 CircleF
@@ -4556,10 +3885,6 @@ Z stroke
 3024 1525 CircleF
 3024 1525 CircleF
 3024 1525 CircleF
-3024 1525 CircleF
-3024 1525 CircleF
-3024 1525 CircleF
-3024 1525 CircleF
 3024 1526 CircleF
 3024 1526 CircleF
 3024 1526 CircleF
@@ -4575,13 +3900,6 @@ Z stroke
 3024 1526 CircleF
 3024 1526 CircleF
 3024 1526 CircleF
-3024 1526 CircleF
-3024 1526 CircleF
-3024 1526 CircleF
-3024 1527 CircleF
-3024 1527 CircleF
-3024 1527 CircleF
-3024 1527 CircleF
 3024 1527 CircleF
 3024 1527 CircleF
 3024 1527 CircleF
@@ -4610,12 +3928,6 @@ Z stroke
 3024 1528 CircleF
 3024 1528 CircleF
 3024 1528 CircleF
-3024 1528 CircleF
-3024 1528 CircleF
-3024 1528 CircleF
-3024 1529 CircleF
-3024 1529 CircleF
-3024 1529 CircleF
 3024 1529 CircleF
 3024 1529 CircleF
 3024 1529 CircleF
@@ -4628,37 +3940,30 @@ Z stroke
 3024 1529 CircleF
 3024 1529 CircleF
 3024 1534 CircleF
-3024 1538 CircleF
-3024 1541 CircleF
-3024 1545 CircleF
-3024 1549 CircleF
+3024 1539 CircleF
+3024 1543 CircleF
+3024 1548 CircleF
 3024 1553 CircleF
-3024 1558 CircleF
-3024 1562 CircleF
-3024 1566 CircleF
-3024 1568 CircleF
+3024 1560 CircleF
+3024 1563 CircleF
+3024 1567 CircleF
 3024 1569 CircleF
-3024 1572 CircleF
-3024 1574 CircleF
-3024 1576 CircleF
-3024 1579 CircleF
+3024 1573 CircleF
+3024 1575 CircleF
+3024 1578 CircleF
 3024 1581 CircleF
-3024 1582 CircleF
-3024 1584 CircleF
+3024 1583 CircleF
 3024 1585 CircleF
-3024 1587 CircleF
+3024 1586 CircleF
 3024 1588 CircleF
-3024 1589 CircleF
-3024 1591 CircleF
+3024 1590 CircleF
 3024 1592 CircleF
-3024 1594 CircleF
+3024 1593 CircleF
 3024 1595 CircleF
 3024 1596 CircleF
 3024 1597 CircleF
-3024 1597 CircleF
 3024 1598 CircleF
 3024 1599 CircleF
-3024 1600 CircleF
 3024 1601 CircleF
 3024 1602 CircleF
 3024 1603 CircleF
@@ -4666,42 +3971,34 @@ Z stroke
 3024 1605 CircleF
 3024 1606 CircleF
 3024 1607 CircleF
-3024 1608 CircleF
 3024 1609 CircleF
 3024 1609 CircleF
 3024 1610 CircleF
 3024 1611 CircleF
-3024 1611 CircleF
-3024 1612 CircleF
 3024 1612 CircleF
 3024 1613 CircleF
-3024 1614 CircleF
+3024 1613 CircleF
 3024 1614 CircleF
 3024 1615 CircleF
 3024 1615 CircleF
-3024 1616 CircleF
 3024 1616 CircleF
 3024 1617 CircleF
 3024 1617 CircleF
 3024 1618 CircleF
-3024 1624 CircleF
-3024 1630 CircleF
-3024 1637 CircleF
+3024 1626 CircleF
+3024 1635 CircleF
 3024 1642 CircleF
-3024 1645 CircleF
-3024 1650 CircleF
+3024 1647 CircleF
 3024 1652 CircleF
 3024 1655 CircleF
 3024 1659 CircleF
-3024 1662 CircleF
-3024 1665 CircleF
-3024 1669 CircleF
-3024 1684 CircleF
+3024 1663 CircleF
+3024 1666 CircleF
+3024 1680 CircleF
 3024 1694 CircleF
-3024 1708 CircleF
-3024 1719 CircleF
-3024 1749 CircleF
-3024 1786 CircleF
+3024 1709 CircleF
+3024 1733 CircleF
+3024 1777 CircleF
 3024 2005 CircleF
 % End plot #5
 2.000 UL
