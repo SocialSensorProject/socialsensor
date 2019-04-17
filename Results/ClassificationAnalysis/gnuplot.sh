@@ -347,7 +347,6 @@ f(x) = a1*x + b1
 
 set term postscript eps enhanced color "Courier,17"
 
-#  Cele_death
 set output "plots/ap_mi_correlation_ranking.eps" 
 fit f(x) 'data/ap_mi_correlation.txt' u 2:3 via a1, b1
 plot 'data/ap_mi_correlation.txt' using 2:3 with points notitle ps 2 pt 7,\
@@ -355,6 +354,10 @@ f(x) notitle lw 3 lc 'red'
 
 unset yrange
 unset xrange
+
+
+set xlabel 'Average Precision'
+set ylabel 'Mutual Information'
 
 set output "plots/ap_mi_correlation_values.eps" 
 fit f(x) 'data/ap_mi_correlation.txt' u 4:5 via a1, b1
