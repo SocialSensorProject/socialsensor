@@ -1,16 +1,15 @@
 %!TEX root = main.tex
 
 \label{sec:introduction}
-\textcolor{red}{With the emergence of the social Web in the mid-2000s, the Web has evolved from a static Web, where users were only able to consume information, to a Web where users are also able to interact and produce information. This evolution which is commonly known as Social Web has introduced new freedoms for the user in his relation with the Web by facilitating his interactions with other users who have similar tastes or share similar resources.
-These interactions result in a massive quantity of data that has to be leveraged for developing various Data-driven Decision-making applications.} 
+\textcolor{red}{With the emergence of the social Web in the mid-2000s, the Web has evolved from a static Web, where users were only able to consume information, to a Web where users are also able to interact and produce information (\cite{Bouadjenek2016}). This evolution which is commonly known as Social Web has introduced new freedoms for the user in his relation with the Web by facilitating his interactions with other users who have similar tastes or share similar resources.
+Specifically, social media platforms such as Twitter are commonly used as means to communicate with other users and to post messages to express opinions and topic of interests. In 2012, it was estimated that more than 100 million users posted 340 million tweets a day, and the service handled an average of 1.6 billion search queries per day.\footnote{\url{https://blog.twitter.com/official/en_us/a/2012/twitter-turns-six.html}}} 
 
-In this context, social media sites such as Twitter present a double-edged sword for
-users.  On one hand these sources contain a vast amount of novel and
+\textcolor{red}{Consequently, Twitter represents a double-edged sword for users.  On one hand it contains a vast amount of novel and
 topical content that challenge traditional news media sources in terms
-of their timeliness and diversity.  Yet on the other hand they also
-contain a vast amount of chatter and otherwise low-value content for most
+of their timeliness and diversity.  Yet on the other hand Twitter also
+contains a vast amount of chatter and otherwise low-value content for most
 users' information needs where filtering out irrelevant content is
-extremely time-consuming.  Previous work~\cite{lin2011smoothing,yang2014large,magdy} 
+extremely time-consuming.}  Previous work~\cite{lin2011smoothing,yang2014large,magdy} 
 has noted this need for topic-based filtering and has adopted a range
 of variations on supervised classification techniques to build effective
 topic filters.
@@ -31,25 +30,16 @@ To answer these questions, we collected a corpus of over 800 million English Twe
 
 The main outcome of this work can be summarized as follows:
 \begin{itemize}
-    \item We empirically show that two simple and efficiently trainable methods ---
-logistic regression and naive Bayes --- generalize well to unseen
-future topical content (including content with no hashtags) in terms
-of their average precision (AP) and Precision@$n$ (for a range of
-$n$) evaluated over long time-spans of typically one year or more.
-\item \textcolor{red}{Also, we demonstrate that the performance of classifiers tends to drop over time -- roughly 35\% drop in Mean Average Precision after 350 days of training, which is a significant decrease. We impute this to the fact that over long periods of time, features that are predictive during the training period may prove ephemeral and fail to generalize to prediction at future times. }
-\item \textcolor{red}{To address the problem above, we show that one can remove tweets containing training hashtags from the validation set such that to allow a better generalization and avoid overfitting. Indeed, although our approach here is simple, it allows to get roughly 11\% improvement for Mean Average Precision, thus avoiding overfitting to some extend.}
-    \item Furthermore, we show that terms and locations are among the most
-useful features --- surprisingly more so than hashtags, even though
-hashtags were used to label the data.  And perhaps even more
-surprisingly, the number of unique hashtags and tweets by a user
-correlates more with their informativeness than their follower or
-friend count.  
+    \item We empirically show that two simple and efficiently trainable methods --- logistic regression and naive Bayes --- generalize well to unseen future topical content (including content with no hashtags) in terms of their average precision (AP) and Precision@$n$ (for a range of $n$) evaluated over long time-spans of typically one year or more.
+    \item \textcolor{red}{We demonstrate that the performance of classifiers tends to drop over time -- roughly 35\% drop in Mean Average Precision after 350 days of training, which is a significant decrease. We impute this to the fact that over long periods of time, features that are predictive during the training period may prove ephemeral and fail to generalize to prediction at future times. }
+    \item \textcolor{red}{To address the problem above, we show that one can remove tweets containing training hashtags from the validation set such that to allow a better generalization and avoid overfitting. Indeed, although our approach here is simple, it allows to get roughly 11\% improvement for Mean Average Precision, thus avoiding overfitting to some extend.}
+    \item \textcolor{red}{Furthermore, we show that hashtags and simple terms are among the most useful features.  We also show that the number of unique hashtags and tweets by a user correlates more with their informativeness than their follower or friend count. } 
 \end{itemize}
   
 
 
 In summary, this work\footnote{This is an extended and revised version of a preliminary conference report that was presented in~\cite{Iman2017}.} provides a longitudinal study of Twitter topic classifiers that further justifies supervised approaches used in existing work while providing detailed insight into feature properties critical for their performance. \textcolor{red}{ The rest of this paper is organized as follows: 
-we first  describe the notation we use in this paper and provide a formal definition of the problem we address. Then, we provide a description of the dataset  we used for the analysis carried out in this paper, followed by a description of the general methodology for learning topic classifiers over time. The next section gives a thorough description of the results obtained and the conclusions drawn. Finally, we review the literature before concluding and describing the future work in the last section.}
+we first review the literature and then describe the notation we use in this paper as well as a formal definition of the problem we address. Next, we provide a description of the dataset we used for the analysis carried out in this paper, followed by a description of the general methodology we use for learning topic classifiers over time. Finally, we give a thorough description of the main outcome drawn before concluding and describing the future work in the last section.}
 
 
 

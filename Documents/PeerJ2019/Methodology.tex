@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-\textcolor{red}{In this section, we describe the formal framework we use for our longitudinal study of topical classifiers. Hence, we first describe how we propose to label the data using a set of hand-curated user hashtags. Then, we proceed to describe the way we propose to split the dataset into train, validation and test sets, which is critical for such a longitudinal study of topical classifiers. 
+\textcolor{red}{In this section, we describe the formal framework we use for our longitudinal study of topic classification. Hence, we first describe how we propose to label the data using a set of hand-curated user hashtags. Then, we proceed to describe the way we propose to split the dataset into train, validation and test sets, which is critical for such a longitudinal study of topical classifiers. 
 Finally, we provide a brief description of several classification algorithms we use in our analysis.
 }
 
@@ -93,89 +93,11 @@ user hand-curated topical hashtags $H^t$ to efficiently label a large number of
 supervised topic labels for social media content.  
 
 Specifically, we manually curated a broad thematic range of 10 topics shown in the top row of
-Table~\ref{table:sampleHashtags} by annotating hashtag sets $H^t$ for each topic $t \in T$.  We used 4
-independent annotators to query the Twitter search API to identify
-candidate hashtags for each topic, requiring an inner-annotator
-agreement of 3 annotators to permit a hashtag to be assigned to a
-topic set. 
+Table~\ref{table:sampleHashtags} by annotating hashtag sets $H^t$ for each topic $t \in T$.  
+We used 4 independent annotators to query the Twitter search API to identify candidate hashtags for each topic, requiring an inner-annotator agreement of 3 annotators to permit a hashtag to be assigned to a topic set. 
+\textcolor{red}{Samples of hashtags for each topic are given in the bottom row of Table~\ref{table:sampleHashtags}.}
 
 
-
-
-
-\subsection*{Dataset splitting}
-
-
-We now provide a procedure for labeling data with $H^t$ for training, validation and test.
-Following this, we proceed to train supervised classification and ranking methods to learn topical content from a large feature space -- this feature space includes terms, hashtags, mentions, authors and their locations. \textcolor{red}{ In the following, we describe three key points related to the temporal splitting of the dataset, sampling negative examples, and hyper-parameter tuning.}
-
-
-%TODO: An simple enumeration of the training steps?
- \subfour{Temporally split for train, validation and test using $H^t$:}
-As standard for machine learning methods, we divide our training data into
-train, validation, and test sets --- the validation set is used for hyperparameter tuning to control
-overfitting and ensure generalization to unseen data.  
-As a critical insight for topical generalization where we view correct classification 
-of tweets with \emph{previously unseen topical hashtags} as a proxy for topical generalization, 
-we do not simply
-split our data temporally into train and test sets and label both with \emph{all} 
-hashtags in $H^t$. \textcolor{red}{ Rather,
-we split each $H^t$ into three disjoint sets $H^t_\mathrm{train}$, $H^t_\mathrm{val}$, and $H^t_\mathrm{test}$
-according to two time stamps $t^\mathrm{train}_\mathrm{split}$ and $t^\mathrm{val}_\mathrm{split}$ for topic $t$ and the first usage time stamp 
-$h_\mathrm{time*}$ of each hashtag $h \in H^t$.  In short, all hashtags $h \in H^t$ first used
-before $t^\mathrm{train}_\mathrm{split}$ are used to generate positive labels in the training data, all hashtags $h \in H^t$ first used
-after $t^\mathrm{train}_\mathrm{split}$ and before $t^\mathrm{val}_\mathrm{split}$ 
-are used to generate positive labels in the validation data,  and
-the remaining hashtags are used to generate positive labels in the test data.}
-
-\noindent To achieve this effect formally, we define the following:
-\begin{align*}
-H^t_\mathrm{train} & = \{ h | h \in H^t \land h_\mathrm{time*} <    t^\mathrm{train}_\mathrm{split} \} ,  \\
-H^t_\mathrm{val}   & = \{ h | h \in H^t \land h_\mathrm{time*} \geq t^\mathrm{train}_\mathrm{split}  \land h_\mathrm{time*} < t^\mathrm{val}_\mathrm{split} 	 \},  \\
-H^t_\mathrm{test}   & = \{ h | h \in H^t \land h_\mathrm{time*} \geq t^\mathrm{val}_\mathrm{split} \} .
-\end{align*}
-
-
-Once we have split our hashtags into training and validation sets
-according to $t^\mathrm{train}_\mathrm{split}$ and $t^\mathrm{val}_\mathrm{split}$, we next proceed to temporally split
-our training documents $D$ into a training set $D^t_\mathrm{train}$, a validation set
-$D^t_\mathrm{val}$, and a test set $D^t_\mathrm{test}$ for topic $t$ based on the posting
-time stamp $d_{i,\mathrm{time*}}$ of each tweet $d_i$ as follows: 
-%ormally, given $H^t$, we
-%can label each document $d_i$ (containing positive features $D_i^+$) as follows:
-\begin{align*}
-D^t_\mathrm{train} & = \{ d_i | d_i \in D \land d_{i,\mathrm{time*}} <    t^\mathrm{train}_\mathrm{split} \} ,  \\
-D^t_\mathrm{val}   & = \{ d_i | d_i \in D \land d_{i,\mathrm{time*}} \geq t^\mathrm{train}_\mathrm{split} \land  d_{i,\mathrm{time*}} <    t^\mathrm{val}_\mathrm{split} \land (\forall h \in d_i: h \notin H^t_\mathrm{train}) \} ,  \\
-D^t_\mathrm{test}   & = \{ d_i | d_i \in D \land d_{i,\mathrm{time*}} \geq t^\mathrm{train}_\mathrm{val} \land (\forall h \in d_i: h \notin H^t_\mathrm{train}) \} .
-\end{align*}
-
-
-The critical insight here is that we do not only divide the train, validation, and test
-temporally, but we also divide the hashtag labels temporally and label the validation and test
-data with an entirely disjoint set of topical labels from the training data. \textcolor{red}{Moreover, in order to avoid overfitting and allow a better generalization, we argue that removing tweets containing training hashtags is essential to avoid training a classifier that simply memorizes training hashtags.}
- 
-
-
-
-%\textcolor{red}{Next we define the set of positive tweet examples formally as} $D_i^+$ and note that
-%$D_i^+$ may include feature IDs for the content of $d_i$ (e.g., terms and, importantly, 
-%hashtags) as well as its meta-data (e.g., author, location).
-Finally, to label the train, validation, and test data sets $D^t_\mathrm{train}$, $D^t_\mathrm{val}$ and $D^t_\mathrm{test}$, 
-we use the respective
-hashtag sets $H^t_\mathrm{train}$, $H^t_\mathrm{val}$, $H^t_\mathrm{test}$ for generating
-the topic label for a particular tweet $t(d_{i}) \in \{0,1\}$ as follows:
-\begin{align*}
-t(d_{i}) & =
-  \begin{cases}
-    1 \textrm{ if }  \exists \; h \in d_i:  h  \in H^t  \\
-    0  \textrm{ otherwise}
-  \end{cases} .
-\end{align*}
-%To recap the methodology, we specify a set of hashtags as a proxy for a topic.  We split
-%those hashtags into train and validation sets according to a time of first usage and fixed time point.
-%We split the tweet data into train and validation sets according to the same fixed time point.
-%Finally, we label a tweet in the train (validation) data set as positive if it contains
-%a hashtag in the train (validation) hashtag set.  
 
 \begin{table*}[t!]
 \centering
@@ -189,8 +111,8 @@ t(d_{i}) & =
 
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
 \hline 
-\multirow{2}{*}{} & \multirow{2}{*}{\textbf{Tennis}} & \multirow{2}{*}{\textbf{Space}} & \multirow{2}{*}{\textbf{Soccer}} & \multirow{2}{*}{\textbf{Iran Deal}} & \textbf{Human} & \textbf{Celebrity} & \textbf{Social} & \textbf{Natural} & \multirow{2}{*}{\textbf{Epidemics}} & \multirow{2}{*}{\textbf{LGBT}}\tabularnewline
- &  &  &  &  & \textbf{Disaster} & \textbf{Death} & \textbf{Issues} & \textbf{Disaster} &  & \tabularnewline
+\multirow{2}{*}{} & \multirow{2}{*}{\textbf{Tennis}} & \multirow{2}{*}{\textbf{Space}} & \multirow{2}{*}{\textbf{Soccer}} & \textbf{Iran Nuclear} & \textbf{Human} & \textbf{Celebrity} & \textbf{Social} & \textbf{Natural} & \multirow{2}{*}{\textbf{Epidemics}} & \multirow{2}{*}{\textbf{LGBT}}\tabularnewline
+ &  &  &  & \textbf{Deal} & \textbf{Disaster} & \textbf{Death} & \textbf{Issues} & \textbf{Disaster} &  & \tabularnewline
 \hline 
 \hline 
 \textbf{\#TrainHashtags} & 62 & 112 & 144 & 12 & 57 & 33 & 37 & 61 & 55 & 30\tabularnewline
@@ -233,6 +155,93 @@ t(d_{i}) & =
 \end{table*}
 
 
+\subsection*{Dataset splitting}
+
+
+We now provide a procedure for labeling data with $H^t$ for training, validation and test.
+Following this, we proceed to train supervised classification and ranking methods to learn topical content from a large feature space -- this feature space includes terms, hashtags, mentions, authors and their locations. \textcolor{red}{ In the following, we describe three key points related to the temporal splitting of the dataset, sampling negative examples, and hyper-parameter tuning.}
+
+
+%TODO: An simple enumeration of the training steps?
+ \subfour{Temporally split for train, validation and test using $H^t$:}
+As standard for machine learning methods, we divide our training data into
+train, validation, and test sets --- the validation set is used for hyperparameter tuning to control
+overfitting and ensure generalization to unseen data.  
+As a critical insight for topical generalization where we view correct classification 
+of tweets with \emph{previously unseen topical hashtags} as a proxy for topical generalization, 
+we do not simply
+split our data temporally into train and test sets and label both with \emph{all} 
+hashtags in $H^t$. \textcolor{red}{ Rather,
+we split each $H^t$ into three disjoint sets $H^t_\mathrm{train}$, $H^t_\mathrm{val}$, and $H^t_\mathrm{test}$
+according to two time stamps $t^\mathrm{train}_\mathrm{split}$ and $t^\mathrm{val}_\mathrm{split}$ for topic $t$ and the first usage time stamp 
+$h_\mathrm{time*}$ of each hashtag $h \in H^t$.  In short, all hashtags $h \in H^t$ first used
+before $t^\mathrm{train}_\mathrm{split}$ are used to generate positive labels in the training data, all hashtags $h \in H^t$ first used
+after $t^\mathrm{train}_\mathrm{split}$ and before $t^\mathrm{val}_\mathrm{split}$ 
+are used to generate positive labels in the validation data,  and
+the remaining hashtags are used to generate positive labels in the test data.}
+
+\noindent To achieve this effect formally, we define the following:
+
+\[
+\begin{array}{l}
+H_{\mathrm{train}}^{t}=\{h|h\in H^{t}\land h_{\mathrm{time*}}<t_{\mathrm{split}}^{\mathrm{train}}\}\\
+H_{\mathrm{val}}^{t}=\{h|h\in H^{t}\land h_{\mathrm{time*}}\geq t_{\mathrm{split}}^{\mathrm{train}}\land h_{\mathrm{time*}}<t_{\mathrm{split}}^{\mathrm{val}}\}\\
+H_{\mathrm{test}}^{t}=\{h|h\in H^{t}\land h_{\mathrm{time*}}\geq t_{\mathrm{split}}^{\mathrm{val}}\}
+\end{array}
+\]
+
+
+Once we have split our hashtags into training and validation sets
+according to $t^\mathrm{train}_\mathrm{split}$ and $t^\mathrm{val}_\mathrm{split}$, we next proceed to temporally split
+our training documents $D$ into a training set $D^t_\mathrm{train}$, a validation set
+$D^t_\mathrm{val}$, and a test set $D^t_\mathrm{test}$ for topic $t$ based on the posting
+time stamp $d_{i,\mathrm{time*}}$ of each tweet $d_i$ as follows: 
+%ormally, given $H^t$, we
+%can label each document $d_i$ (containing positive features $D_i^+$) as follows:
+
+% Preview source code for paragraph 0
+
+\[
+\begin{array}{l}
+D_{\mathrm{train}}^{t}=\{d_{i}|d_{i}\in D\land d_{i,\mathrm{time*}}<t_{\mathrm{split}}^{\mathrm{train}}\}\\
+D_{\mathrm{val}}^{t}=\{d_{i}|d_{i}\in D\land d_{i,\mathrm{time*}}\geq t_{\mathrm{split}}^{\mathrm{train}}\land d_{i,\mathrm{time*}}<t_{\mathrm{split}}^{\mathrm{val}}\land(\forall h\in d_{i}:h\notin H_{\mathrm{train}}^{t})\}\\
+D_{\mathrm{test}}^{t}=\{d_{i}|d_{i}\in D\land d_{i,\mathrm{time*}}\geq t_{\mathrm{val}}^{\mathrm{train}}\land(\forall h\in d_{i}:h\notin H_{\mathrm{train}}^{t})\}
+\end{array}
+\]
+
+
+
+
+The critical insight here is that we do not only divide the train, validation, and test
+temporally, but we also divide the hashtag labels temporally and label the validation and test
+data with an entirely disjoint set of topical labels from the training data. \textcolor{red}{Moreover, in order to avoid overfitting and allow a better generalization, we argue that removing tweets containing training hashtags is essential to avoid training a classifier that simply memorizes training hashtags. This latter proposal is experimentally evaluated later against a baseline where we simply keep all tweets containing training hashtags in the validation set.}
+ 
+
+
+
+%\textcolor{red}{Next we define the set of positive tweet examples formally as} $D_i^+$ and note that
+%$D_i^+$ may include feature IDs for the content of $d_i$ (e.g., terms and, importantly, 
+%hashtags) as well as its meta-data (e.g., author, location).
+Finally, to label the train, validation, and test data sets $D^t_\mathrm{train}$, $D^t_\mathrm{val}$ and $D^t_\mathrm{test}$, 
+we use the respective
+hashtag sets $H^t_\mathrm{train}$, $H^t_\mathrm{val}$, $H^t_\mathrm{test}$ for generating
+the topic label for a particular tweet $t(d_{i}) \in \{0,1\}$ as follows:
+\begin{align*}
+t(d_{i}) & =
+  \begin{cases}
+    1 \textrm{ if }  \exists \; h \in d_i:  h  \in H^t  \\
+    0  \textrm{ otherwise}
+  \end{cases} .
+\end{align*}
+%To recap the methodology, we specify a set of hashtags as a proxy for a topic.  We split
+%those hashtags into train and validation sets according to a time of first usage and fixed time point.
+%We split the tweet data into train and validation sets according to the same fixed time point.
+%Finally, we label a tweet in the train (validation) data set as positive if it contains
+%a hashtag in the train (validation) hashtag set.  
+
+
+
+
 The purpose behind this training, validation and test data split
 and labeling is to ensure that learning hyper-parameters are tuned so as
 to prevent overfitting and maximize generalization to unseen topical
@@ -250,12 +259,12 @@ proportion.  We show a variety of statistics and five sample hashtags
 per topic in Table~\ref{table:sampleHashtags}.  Here we can see that
 different topics had varying prevalence in the data
 with \textit{Soccer} being the most tweeted topic
-and \textit{IranDeal} being the least tweeted according to our curated
+and \textit{Iran Nuclear Deal} being the least tweeted according to our curated
 hashtags.
 
 
-\subfour{Sampling negative examples:} \textcolor{red}{ Topic classification is very often an unbalanced classification task, since usually, there are much more negative examples than positive examples. Indeed, the large number of users on twitter, their diversity, their wide range interests, and the short lifetime of topics discussed on a daily basis make that  diverse topics are discussed on a short time period, thus having only a small set of positive examples for each topic. For example, the open directory project (ODP also known as DMOZ), which provides a hierarchically classification structure of roughly 5M Web ressources over 1M topics\footnote{http://www.geniac.net/odp/}. Therefore, given the huge amount of negative examples in a real classification scenario (e.g., roughly 800 million negative examples against 500k positive examples for the human disaster topic), to efficiently tune each classifier, we have chosen to sample negative examples such that positive examples represent 10\% of the dataset and the negative examples represent 90\% of the dataset. This rule is valid for the training, validation and test sets of each topic.
-}
+\subfour{Sampling negative examples:} \textcolor{red}{ Topic classification is very often considered as an unbalanced classification task since usually, there are much more negative examples than positive examples. Indeed, the large number of users on Twitter, their diversity, their wide range interests, and the short lifetime of topics discussed on a daily basis make that each topic has only a small set of positive examples.  For example, the Open Directory Project (ODP also known as DMOZ) provides a hierarchical classification structure of roughly 5M Web resources over 1M topics\footnote{http://www.geniac.net/odp/} -- each topic contains roughly 5 documents. Therefore, given the huge amount of negative examples in a real classification scenario (e.g., roughly 800 million negative examples against 500k positive examples for the human disaster topic), to efficiently tune each classifier, we have chosen to sample negative examples such that positive examples represent 10\% of the dataset and the negative examples represent 90\% of the dataset. This rule is valid for the training, validation and test sets of each topic.
+ Details are provided in Table~\ref{table:sampleHashtags}.}
 
 
 
@@ -263,8 +272,8 @@ hashtags.
 \subfour {Training and hyper-parameter tuning:}
 Once $D^t_\mathrm{train}$ and $D^t_\mathrm{val}$ have been constructed,
 we proceed to train our scoring function $f^t$ on $D^t_\mathrm{train}$ and
-select hyperparameters to optimize Average Precision (AP)~\cite{manning_ir} (a ranking
-metric) on
+select hyperparameters to optimize Average Precision (AP) (a ranking
+metric~\cite{manning_ir}) on
 $D^t_\mathrm{val}$.  Once the optimal $f^t$ is found for $D^t_\mathrm{val}$,
 we return it as our final learned topical scoring function $f^t$ for topic $t$.
 Because $f^t(d_i) \in \mathbb{R}$ is a scoring function, it can be used to rank.
@@ -285,15 +294,34 @@ described next.
 
 
 
-%!TEX root = main.tex
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%How we curated hashtags: need a good story here.  Inner-annotator agreement of 3/4.
+% With the formal definition of learning topical classifiers provided
+% in Sec.~\hyperref[sec:lss]{Learning Topical Social Sensors} and the overview of our data in
+% Sec.~\hyperref[sec:datasetStatistics]{Data Description}, we proceed to outline our
+% experimental methodology on our Twitter corpus.  
+ 
+%As noted in Sec.~\hyperref[sec:datasetStatistics]{Data Description},
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{Topic classification features}
 
+\textcolor{red}{The set of features that we consider for each tweet $d_i$ are: (i) \textit{User} (author of the tweet), (ii) \textit{Mention}, (iii) \textit{Location}, (iv) \textit{Term}, and (v) \textit{Hashtag} features.}
+%The summation of number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features. As noted earlier, we are working on a $829,026,458$ tweet corpus. Thus with great number of features and tweets, there is a need for techniques to annotate the data and select a subset of features for learning. 
+%
+%We explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, the hashtag set $H^{t}$ for each topic $t \in T$ is curated with two annotators individually. Inner-annotator agreement is achieved by reviewing and merging these sets with two more individuals.  provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic.
+\textcolor{red}{Because we have a total of $538,365,507$ unique features in our
+Twitter corpus (the summation unique values of features shown in Table~\ref{table:featureStatistics})}, it is critical to pare this down to a size amenable
+for efficient learning and robust to overfitting.  To this end, we
+thresholded all features according to the frequencies listed in
+Table~\ref{table:learningFeatures}.  
+\textcolor{red}{The rationale in our thresholding was initially that all features should have the same frequency cutoff and that we should keep roughly the same number of features for each category in order to achieve about 1 million features (roughly 250k features for each category).}  However, in  initial experimentation, we found that a high threshold pruned a large number of informative hashtag and locations.  \textcolor{red}{To this end, we lowered the threshold for hashtags and locations in order to get a reasonable number of features.}  We also removed common English stopwords which further reduced the unique term count.  Overall, we end up with $1,017,935$ candidate features (\textit{CF}) for learning topical classifiers.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{table}[t!]
 \vspace{-0.5mm}
 \centering
@@ -317,40 +345,7 @@ described next.
 \label{table:learningFeatures}
 \vspace{-1.5mm}
 \end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%How we curated hashtags: need a good story here.  Inner-annotator agreement of 3/4.
-% With the formal definition of learning topical classifiers provided
-% in Sec.~\hyperref[sec:lss]{Learning Topical Social Sensors} and the overview of our data in
-% Sec.~\hyperref[sec:datasetStatistics]{Data Description}, we proceed to outline our
-% experimental methodology on our Twitter corpus.  
- 
-%As noted in Sec.~\hyperref[sec:datasetStatistics]{Data Description},
-
-\subsection*{Topic classification features}
-
-\textcolor{red}{The set of features that we may consider for each tweet $d_i$ are: (i) \textit{User}, (ii) \textit{Mention}, (iii) \textit{Location}, (iv) \textit{Term}, and (v) \textit{Hashtag} features.}
-%The summation of number of unique values of features shown in Table.~\ref{table:featureStatistics} results in a total number of $538,365,507$ features. As noted earlier, we are working on a $829,026,458$ tweet corpus. Thus with great number of features and tweets, there is a need for techniques to annotate the data and select a subset of features for learning. 
-%
-%We explained manual hashtag curation for each topic as a proxy for labeling the tweets. More specifically, the hashtag set $H^{t}$ for each topic $t \in T$ is curated with two annotators individually. Inner-annotator agreement is achieved by reviewing and merging these sets with two more individuals.  provides samples of hashtags, number of train hashtags, test hashtags, and topical tweets for each topic.
-\textcolor{red}{Because we have a total of $538,365,507$ unique features in our
-Twitter corpus (the summation unique values of features shown in Table~\ref{table:featureStatistics})}, it is critical to pare this down to a size amenable
-for efficient learning and robust to overfitting.  To this end, we
-thresholded all features according to the frequencies listed in
-Table~\ref{table:learningFeatures}.  
-\textcolor{red}{The rationale in our thresholding was initially that all features should have the same frequency cutoff and that we should keep roughly the same number of features for each category in order to achieve about 1 million features (roughly 250k features for each category).}  However, in  initial experimentation, we found that a high threshold pruned a large number of informative hashtag and locations.  \textcolor{red}{To this end, we lowered the threshold for hashtags and locations in order to get a reasonable number of features.}  We also removed common English stopwords which further reduced the unique term count.  Overall, we end up with $1,017,935$ candidate features (\textit{CF}) for learning topical classifiers.
 
 %Regarding feature selection, it is impossible to learn a model on total number of $538,365,507$ features. To learn such a model would require a very large set of training samples, and, feature vectors would be extremely sparse considering $140$ characters limitation of Twitter. Therefore, we performed a primary feature selection based on frequency of each feature by:
 %\begin{itemize}

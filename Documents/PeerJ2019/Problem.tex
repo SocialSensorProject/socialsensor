@@ -35,11 +35,10 @@
 
 Our objective in this paper is to carry out a longitudinal study of topic classifiers for Twitter.
 For each Twitter topic, we seek to build a binary classifier that can label
-a previously unseen tweet as topical (or not).  To achieve this, we 
-train and evaluate the classifier on a set of topically labeled historical tweets as described below.
+a previously unseen tweet as topical (or not). 
+To achieve this, we  train and evaluate the classifier on a set of topically labeled historical tweets as described later in this article.
 
-Formally, %to define the notation we will use later, 
-given an arbitrary tweet $d$ (a document in text classification parlance) 
+Formally, given an arbitrary tweet $d$ (a document in text classification parlance) 
 and a set of topics $T = \{
 t_1,\ldots,t_K\}$, we wish to train a scoring function $f^t: D \rightarrow \mathbb{R}$
 for each topic $t \in T$ over a subset of labeled training tweets from $D = \{

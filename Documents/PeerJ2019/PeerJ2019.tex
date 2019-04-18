@@ -41,11 +41,11 @@
 
 \title{A Longitudinal Study of Topic Classification on Twitter}
 
-\author[2]{Zahra Iman}
-\author[1]{Scott Sanner}
 \author[1]{Mohamed Reda Bouadjenek}
+\author[1]{Scott Sanner}
+\author[2]{Zahra Iman}
 \author[3]{Lexing Xie}
-\author[1]{Daniel Xiaoliang Shi}
+\author[1]{Xiaoliang Shi}
 \affil[1]{The University of Toronto, Toronto, ON, Canada}
 \affil[2]{Oregon State University, Corvallis, OR, USA}
 \affil[3]{Australian National University and Data61, Canberra, ACT, Australia}
@@ -58,7 +58,8 @@
 
 
 \begin{abstract}
-\input{Abstract}
+Twitter represents a massively distributed information source over topics ranging from social and political events to entertainment and sports news.  While recent work has suggested this content can be narrowed down to the personalized interests of individual users by training standard classifiers as topical filters, there remain many open questions about the efficacy of such classification-based filtering approaches.  For example, over a year or more after training, how well do such classifiers generalize to future novel topical content, and are such results stable across a range of topics? \textcolor{red}{In addition, how robust is a topic classifier over the time horizon, e.g., can a model trained in 2010 be used for making predictions in 2019? How to allow proper generalization over the  time horizon and avoid overfitting that may occur by learning inappropriate feature weights related to specific events?} Furthermore, what features, feature classes, and feature attributes are most critical for long-term classifier performance?  To answer these questions, we collected a corpus of over 800 million English Tweets via the Twitter streaming API during 2013 and 2014 and learned topic classifiers for 10 diverse themes ranging from social issues to celebrity deaths to the ``Iran nuclear deal''.  The results of this long-term study of topic classifier performance provide a number of important insights, among them that: (i) such classifiers can indeed generalize to novel topical content with high precision over a year or more after training, (ii) \textcolor{red}{hashtags} and simple terms are the most informative feature classes, \textcolor{red}{(iii) removing tweets containing training hashtags from the validation set allows a better generalization, (iv) the performance of classifiers drops overtime, and (v)} the number of unique hashtags and tweets by a user correlates more with their informativeness than their follower or friend count.  In summary, this work provides a long-term study of topic classifiers on Twitter that further justifies classification-based topical filtering approaches while providing detailed insight into the feature properties most critical for topic classifier performance.
+
 \end{abstract}
 
 \begin{document}
@@ -70,6 +71,9 @@
 
 \section*{Introduction}
 \input{Introduction}
+
+\section*{Related Work}
+\input{RelatedWork}
 
 \section*{Notation and problem definition}
 \input{Problem}
@@ -86,13 +90,8 @@
 \label{sec:results}
 \input{Results}
 
-\section*{Related Work}
-\input{RelatedWork}
-
 \section*{Conclusions}
 \input{Conclusion}
-
-%\section*{Acknowledgments}
 
 \bibliography{biblio}
 

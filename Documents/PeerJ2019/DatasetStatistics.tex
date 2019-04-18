@@ -1,75 +1,11 @@
-%!TEX root = main.tex
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}[t]
-\centering
-\begin{tabular}{ccc}
-\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-humancauseddisaster_location.pdf}}
-\subfloat[Fig:][Iran Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.pdf}}
-\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.pdf}} \\
-%\vspace{-10mm}
-\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.pdf}}
-\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.pdf}}
-\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location.pdf}} \\
-\end{tabular}
-%\vspace{-2mm}
-\caption {Per capita tweet frequency across different international and U.S. locations for different topics. The legend provides the number of tweets per 1 Million capita.}
-\label{fig:choropleths}
-\end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}[t!]
-\centering
-\caption{\label{table:featureStatistics}Feature Statistics of our $829,026,458$ tweet corpus.} % in our Twitter dataset}
-{\renewcommand{\arraystretch}{1.2}
-\resizebox{0.48\textwidth}{!}{%
-\begin{tabular}{|c|c|c|c|c|}
-%\hline
-\multicolumn{5}{c}{\textbf{\#Unique Features}} \\ \hline
-\textbf{User} & \textbf{Hashtag} & \textbf{Mention} & \textbf{Location} & \textbf{Term} \\ \hline
-95,547,198 & 11,183,410 & 411,341,569 & 58,601 & 20,234,728 \\ \hline %14,197,509
-%\end{tabular}
-%}}
-%\vspace{.5mm}
-%\caption{Number of unique features for each type.}%values for each feature of $829,026,458$ tweets in our Twitter dataset}
-%\label{table:featureUnique}
-%\end{table}
-%
-%\begin{table}[t!]
-%\centering
-%{\renewcommand{\arraystretch}{1.2}
-%\resizebox{0.48\textwidth}{!}{%
-%\begin{tabular}{|l|c|c|c|c|}
-%\hline
-\multicolumn{5}{c}{} \\
-\multicolumn{5}{c}{\textbf{Feature Usage in \#Tweets}} \\ \hline
-\textbf{Feature} & \textbf{Max} & \textbf{Avg} & \textbf{Median} & \textbf{Most frequent} \\ \hline
-\textbf{User} & 10,196 & 8.67 & 2 & running\_status \\ \hline
-\textbf{Hashtag} & 1,653,159 & 13.91 & 1 & \#retweet \\ \hline
-\textbf{Mention} & 6,291 & 1.26 & 1 & tweet\_all\_time \\ \hline %$\rightarrow$null \\ \hline
-\textbf{Location} & 10,848,224 & 9,562.34 & 130 & london \\ \hline
-\textbf{Term} & 241,896,559 & 492.37 & 1 & rt \\ \hline 
-\multicolumn{5}{c}{} \\
-\multicolumn{5}{c}{\textbf{Feature Usage by \#Users}} \\ \hline
-\textbf{Hashtag} & 592,363 & 10.08 & 1 & \#retweet \\ \hline
-\textbf{Mention} & 26,293 & 5.44 & 1 & dimensionist \\ \hline
-\textbf{Location} & 739,120 & 641.5 & 2 & london \\ \hline
-\textbf{Term} & 1,799,385 & 6,616.65 & 1 & rt \\ \hline %SHOULD BE FIXED
-\multicolumn{5}{c}{} \\
-\multicolumn{5}{c}{\textbf{Feature Using \#Hashtags}} \\ \hline
-\textbf{User} & 18,167 & 2 & 0 & daily\_astrodata \\ \hline
-\textbf{Location} & 2,440,969 & 1,837.79 & 21 & uk \\ \hline
-\end{tabular}
-}}
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 We begin with details of the Twitter testbed for topical classifier learning
 that we evaluate in this paper.  We crawled Twitter data using Twitter
 Streaming API for two years spanning 2013 and 2014 years.
 %This type of crawling provides us with a very sparse set of data, roughly $1\%$ of all tweets \footnote{\hyperref[]{http://allthingsd.com/20101110/twitter-firehose-too-intense-take-a-sip-from-the-garden-hose-or-sample-the-spritzer|}}. 
 We collected more than 2.5 TB of compressed data, which contains a total number 
-of $829,026,458$ English tweets. In the context 
+of $811,683,028$ English tweets. In the context 
 of Twitter, we consider five feature types for each tweet.  Each
 tweet has a \textit{User} feature (i.e., the person who tweeted it), a
 possible \textit{Location} (i.e., a string provided as meta-data), and
@@ -95,9 +31,58 @@ different international and U.S. locations for different topics.
 While English speaking countries dominate English tweets, we see that
 the Middle East and Malaysia additionally stand out for the topic of
 Human Caused Disaster (MH370 incident), Iran, U.S., and Europe for nuclear
-negotiations the ``Iran deal'', and soccer for some (English-speaking)
+negotiations the ``Iran Nuclear deal'', and soccer for some (English-speaking)
 countries where it is popular.  For U.S. states, we see that Colorado
 stands out for health epidemics (both whooping cough and pneumonic
 plague), Missouri stands out for social issues (\#blacklivesmatter in
 St. Louis), and Texas stands out for space due to NASA's presence
 there.
+
+
+\begin{figure*}[t]
+\centering
+\begin{tabular}{ccc}
+\subfloat[Fig:][Human Caused Disaster]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-humancauseddisaster_location.pdf}}
+\subfloat[Fig:][Iran Nuclear Deal]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-irannucleardeal_location.pdf}}
+\subfloat[Fig:][Soccer]{\includegraphics[width=0.33\textwidth]{images/location/world/socialsensor-world-soccer_location.pdf}} \\
+\subfloat[Fig:][Health Epidemics]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-health_epidemics_location.pdf}}
+\subfloat[Fig:][Social Issues]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-socialissues_location.pdf}}
+\subfloat[Fig:][Space]{\includegraphics[width=0.33\textwidth]{images/location/states/SocialSensor-us-states-space_location.pdf}} \\
+\end{tabular}
+\caption {Per capita tweet frequency across different international and U.S. locations for different topics. The legend provides the number of tweets per 1 Million capita.}
+\label{fig:choropleths}
+\end{figure*}
+
+
+
+\begin{table}[t!]
+\centering
+\caption{\label{table:featureStatistics}Feature Statistics of our $811,683,028$ tweet corpus.} % in our Twitter dataset}
+{\renewcommand{\arraystretch}{1.2}
+\resizebox{0.48\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|}
+%\hline
+\multicolumn{5}{c}{\textbf{\#Unique Features}} \\ \hline
+\textbf{User} & \textbf{Hashtag} & \textbf{Mention} & \textbf{Location} & \textbf{Term} \\ \hline
+85,794,831 & 13,607,023 & 46,391,269 & 18,244,772 & 16,212,640 \\ \hline %14,197,509
+\multicolumn{5}{c}{} \\
+\multicolumn{5}{c}{\textbf{Feature Usage in \#Tweets}} \\ \hline
+\textbf{Feature} & \textbf{Max} & \textbf{Avg} & \textbf{Median} & \textbf{Most frequent} \\ \hline
+\textbf{User} & 10,196 & 8.67 & 2 & running\_status \\ \hline
+\textbf{Hashtag} & 1,653,159 & 13.91 & 1 & \#retweet \\ \hline
+\textbf{Mention} & 6,291 & 1.26 & 1 & tweet\_all\_time \\ \hline %$\rightarrow$null \\ \hline
+\textbf{Location} & 10,848,224 & 9,562.34 & 130 & london \\ \hline
+\textbf{Term} & 241,896,559 & 492.37 & 1 & rt \\ \hline 
+\multicolumn{5}{c}{} \\
+\multicolumn{5}{c}{\textbf{Feature Usage by \#Users}} \\ \hline
+\textbf{Hashtag} & 592,363 & 10.08 & 1 & \#retweet \\ \hline
+\textbf{Mention} & 26,293 & 5.44 & 1 & dimensionist \\ \hline
+\textbf{Location} & 739,120 & 641.5 & 2 & london \\ \hline
+\textbf{Term} & 1,799,385 & 6,616.65 & 1 & rt \\ \hline %SHOULD BE FIXED
+\multicolumn{5}{c}{} \\
+\multicolumn{5}{c}{\textbf{Feature Using \#Hashtags}} \\ \hline
+\textbf{User} & 18,167 & 2 & 0 & daily\_astrodata \\ \hline
+\textbf{Location} & 2,440,969 & 1,837.79 & 21 & uk \\ \hline
+\end{tabular}
+}}
+\end{table}

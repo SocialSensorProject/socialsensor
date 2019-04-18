@@ -19,7 +19,8 @@
 %%%%% TRACKING GENERAL TOPICS
 % TODO for Scott: Need to rewrite in a more retrospective manner.
 %                 Should this go as the first point in related work?
-\textcolor{red}{There is a substantial body of research related to topic classification in social media. Below, we review the major works related to Twitter topic classification, applications of classifiers for social media. This latter includes tweet recommendation, event detection in social media, and friend sensors.}
+\textcolor{red}{There is a substantial body of research related to topic classification in social media. Below, we review the major works related to Twitter topic classification, topic modeling for social media and  applications of classifiers for social media. This latter includes tweet recommendation, event detection in social media, and friend sensors.
+}
 
 \subsection*{Twitter Topic Classification} 
 
@@ -28,6 +29,11 @@ Topic classification for social media aims to detect and track general topics su
 We expand on \citep{lin2011smoothing}'s work and use a set of hashtags instead of a single hashtag.  Similarly, we extract features consisting of hashtags, mentions, unigram terms, and authors as done in this prior work, but also add location as another feature, which has shown to be the second most important feature for topic classification after unigram terms.
 Furthermore, we provided a novel learning and evaluation paradigm based on splitting both the data and hashtags along temporal boundaries to generate train, validation and test datasets in order to evaluate long-term generalization of trained topic classifiers.  In contrast, we remark that \citep{lin2011smoothing} only evaluated over 1 week, \citep{magdy} over 4 days,
 and \citep{yang2014large} did not explicitly mention the data duration or that their study was intended to assess long-term performance.  Hence these previous studies do not permit one to assess the long-term topic classification performance of topic classifiers for Twitter as intended by the 2 year longitudinal study performed in this article.
+
+\subsection*{Topic Modeling for Social Media} 
+\textcolor{red}{
+While topic models such as Latent Dirichlet Allocation (LDA) (\cite{blei2003latent}) have a long history of successful application to news articles and academic abstracts, they are often less coherent when applied to social media in general and microblog content in particular like Twitter mainly because of short and messy text (\cite{sanner:sigir13}).
+}
 
 % there are many fine-grain but important differences between previous works and this work with the most important ones being:
 % \begin{enumerate}
