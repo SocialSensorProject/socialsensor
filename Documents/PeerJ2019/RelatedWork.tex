@@ -31,9 +31,19 @@ Furthermore, we provided a novel learning and evaluation paradigm based on split
 and \citep{yang2014large} did not explicitly mention the data duration or that their study was intended to assess long-term performance.  Hence these previous studies do not permit one to assess the long-term topic classification performance of topic classifiers for Twitter as intended by the 2 year longitudinal study performed in this article.
 
 \subsection*{Topic Modeling for Social Media} 
+
 \textcolor{red}{
-While topic models such as Latent Dirichlet Allocation (LDA) (\cite{blei2003latent}) have a long history of successful application to news articles and academic abstracts, they are often less coherent when applied to social media in general and microblog content in particular like Twitter mainly because of short and messy text (\cite{sanner:sigir13}).
+Topic model is a type of statistical model for discovering the abstract ``topics'' that occur in a collection of documents (\cite{Blei2012}). For that purpose, machine learning researchers have developed a suite of algorithms mainly based on Probabilistic Latent Semantic Analysis (PLSA) (\cite{Hofmann1999}), 
+Non-negative matrix factorization (\cite{Lee1999,Arora2012,luo2017probabilistic}), and Latent Dirichlet allocation (LDA) (\cite{blei2003latent}). This latter is perhaps the most common topic model currently in use. 
 }
+
+\textcolor{red}{
+While topic models such as LDA have a long history of successful application to diverse topics such as news articles (\cite{chen2010opinion,cohen2013classifying,Greene2015})  and medical science (\cite{paul2011you,wu2012ranking,zhang2017idoctor}), they are often less coherent when applied to social media in general and microblog content  like Twitter in particular. This latter poses challenges for topic modeling mainly because it contains short and messy text (\cite{Zhao2011,Han2012,sanner:sigir13,Jelodar2018}).
+This problem has been mainly addressed through pooling (\cite{Hong2010,Weng2010,Naveed2011,sanner:sigir13,alvarez2016topic}), which is a data preprocessing step that consists of merging related tweets together and presenting them as a single document to the topic model algorithm.
+Finally, several work proposed to integrate some information of network structure with topic modelling, which has proven to be effective  (\cite{Tang2008,Chen2012,Kim2012,Chen2017}).
+}
+
+
 
 % there are many fine-grain but important differences between previous works and this work with the most important ones being:
 % \begin{enumerate}
