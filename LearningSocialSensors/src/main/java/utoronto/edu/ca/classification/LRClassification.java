@@ -145,6 +145,7 @@ public class LRClassification {
          */
         FeatureNode[][] testx = this.test.getDatasetFeatureNode(hyperparameters.getFeature_ranking(), hyperparameters.getNum_features());
         double[] testy = this.test.getLables();
+        String[] testids = this.test.getIds();
         double[] y_probability_positive_class = new double[testy.length];
         int positive_class_label = model.getLabels()[0];
         for (int i = 0; i < testx.length; i++) {
@@ -152,6 +153,7 @@ public class LRClassification {
             double[] prob_estimates = new double[model.getNrClass()];
             Linear.predictProbability(model, instance, prob_estimates);
             y_probability_positive_class[i] = prob_estimates[0];
+//            System.out.println(testids[i] + "\t" + prob_estimates[0] + "\t" + testy[i]);
         }
         Metrics metric = new Metrics();
         double ap = metric.getAveragePrecisionAtK(Misc.double2IntArray(testy), y_probability_positive_class, positive_class_label, 1000);

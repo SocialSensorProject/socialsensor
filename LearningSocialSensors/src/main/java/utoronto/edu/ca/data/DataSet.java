@@ -67,6 +67,11 @@ public final class DataSet {
     private final OpenIntToFloatHashMap columnNonZeroEntries = new OpenIntToFloatHashMap(0f);
 
     /**
+     * Tweets id if available.
+     */
+    private final String[] tids;
+
+    /**
      * Labels of each instance (0,1).
      */
     private final OpenMapRealVector labels;
@@ -162,6 +167,7 @@ public final class DataSet {
         for (int j = 0; j < columnDimension; j++) {
             this.entries[j] = new OpenMapRealVector(rowDimension);
         }
+        tids = new String[rowDimension];
         labels = new OpenMapRealVector(rowDimension);
         this.term_features = term_features;
         this.hashtag_features = hashtag_features;
@@ -204,7 +210,19 @@ public final class DataSet {
                         }
                         pb.step();
                         pb.setExtraMessage("Reading...");
-                        Matcher m = Pattern.compile("\\s*(\\[[^\\]]*\\])|\\),[^\\]]*").matcher(str);
+
+                        /**
+                         * Get tweet id.
+                         */
+                        Matcher m = Pattern.compile("^[0-9]*").matcher(str);
+                        m.find();
+                        String tid = m.group();
+                        tids[i] = tid;
+
+                        /**
+                         * Get indices and values.
+                         */
+                        m = Pattern.compile("\\s*(\\[[^\\]]*\\])|\\),[^\\]]*").matcher(str);
                         m.find();
                         String[] indices = m.group().replaceAll("\\[|\\]", "").split(",");
                         m.find();
@@ -676,6 +694,15 @@ public final class DataSet {
             }
         }
         return out;
+    }
+
+    /**
+     * This method returns an array containing ids.
+     *
+     * @return
+     */
+    public String[] getIds() {
+        return tids;
     }
 
     /**
