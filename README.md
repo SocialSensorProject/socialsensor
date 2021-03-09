@@ -36,10 +36,7 @@ git: github.com/rishirdua/twitter-lucene
 
 AUTHORS
 -------
-Scott Sanner <Scott.Sanner@nicta.com.au>
-Zahra Iman (zahra.iman87@gmail.com)
-Mohamed Reda BOUADJENEK <rbouadjenek@gmail.com>
-Dan Nguyen <nguyenk4@onid.oregonstate.edu>
+Scott Sanner (Scott.Sanner@nicta.com.au), Zahra Iman (zahra.iman87@gmail.com), Mohamed Reda BOUADJENEK (rbouadjenek@gmail.com), Dan Nguyen (nguyenk4@onid.oregonstate.edu).
 
 To submit bugs, feature requests, submit patches
 Email: Zahra Iman<imanz@onid.orst.edu>
